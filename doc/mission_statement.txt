@@ -1,0 +1,100 @@
+Hi, everyone involved in the java-to-xyz converter!
+On the weekend I gave the issue a bit more thought and this would be my rough plan:
+
+To finally support more modern language features of java like generics, inner classes, lambda expressions, enums, etc.
+a new conversion technology is necessary. I want to create a converter that uses the compiled java byte code and 
+transfers this to a javascript code. By this, the tricky work of the actual compilation can be done be a standard
+java compiler. This compilation is done (just as now) per class without  looking at other classes during the process.
+
+The generated javascript files then needs to be combined together with natively implemented classes to form
+the final exectuable javascript program. This step will be done by a linker which basically concatenates all files 
+in the correct order. An optional minifying/obfuscating step with some standard tool can be optinally added as well
+
+To keep things simple, I want to do the the whole redesign process in multiple smaller steps:
+- Improve the linking process and generated code
+- Extend the set of supported java core libraries: Mainly the collections framework
+- New java-to-javascript converter 
+
+For other conversion targets (C# right now) another converter will be needed as well, but the linking
+stage is not necessary there.
+
+1. Linking process:
+
+1.1. Fetching parts
+The linker will automatically fetch all code pieces that are needed for a given project (leaving out 
+the unneded parts) and determine the order in which they must be put together. This ordering
+is important because the creation of a class always depends on certain classes already being 
+created first. I will do this (like it is done aready) by annotating the javascript code pieces with 
+the proper linker directives. For this the existing java2javascript needs to be slightly modified,
+as well as the existing native javascript codebase.
+The Linker annotations are in the form of javascript comments:
+//reference//directory/subdir/file
+               tells the linker that the current file needs the other file to be loaded also 
+               (but in no particual order)
+//load//directory/subdir/file
+               tells the linker that the current file needs the other file to be loaded 
+               _before_ the current file.
+//complete//directory/subdir/file
+               tells the linker that the current file needs the other file and all files
+               referenced (by any directive or any indirect chain) to be loaded
+               _before_ the current file.
+The linker  needs to work out an ordering to satisfy all the directives. If no such ordering
+is possible, this constitutes a link error.
+
+1.2. Checking correctness
+In addition to the linking itself, the linker has the responsibility to check for certain 
+requirements  that are necessary for correct program execution and that could not be
+checked on a per-file basis, namely to prevent name clashes between fields and methods
+of classes in the same inheritance hierarchy (static memers are no issue here):
+- No two fields in the same instance may have the same name, no matter which class did declare them
+  (even if some are declared private in java)
+- Instance methods will be name-mangled to contain the number of parameters (e.g. substring_2), but
+no two methods may have the same name in inheritance hierarchies (a method overriding
+a parent method does not count)
+//parent//directory/subdir/file
+               tells the linker that the other file must be considered as parent class for the
+               sake of name clash detection
+//lockname//name
+               tell the linker that the given name (either an instance field or a new instance method
+                    (one that does not override another) needs to be unique in the whole hierarchy
+
+2. Extend the library base
+
+I want to keep things small, so only the library classes will be included that give the most
+benefit to the developer. I have to come up with a list of classes and methods (not all
+methods are probably needed), but it roughly comes down to add the nicer stuff from the
+java.util package: ArrayList, HashMap/Hashtable, HashSet, Iterator, Iterable
+Implementing the Iterator/Iterable stuff will later allow the use of foreach loops. Even until
+the converter also provides direct langauge support, these libraries are very useful already.
+
+The classes ArrayList, HashMap, StringBuilder are basically non-thread-safe (faster)
+versions of Vector,Hashtable,StringBuffer. Since threads are not supported for javascript, these 
+classes are completely identical and here just to allow use of the faster versions in a
+non-converted environment while still allowing conversion of the code
+(sharing code between game server and game client).
+
+
+
+
+3. Converter
+
+By using the byte code as a starting point, java and indeed any language that compiles 
+to byte code can be converted to javascript.
+But certain language features will still _not_ be supported:
+- Threads
+- Exceptions
+- Reflection
+- long (will not fit into a javascipt Number), float (unneccesary)
+
+Java type exception handling does not fit the way javascript does this
+(javascript has no type-dependent catch clauses) and so it is easiest to completely
+leave exception handling way. Note that exceptional situations that would 
+result in a runtime-exception in java (null-pointer, out of bounds, etc.)  will behave 
+completely unpredictable in the javascript environment: Sometimes causing
+a javascript exception (calling method of null object), sometimes they are silently
+ignored (reading outside of array bounds delivers 'undefined'),
+sometimes they cause strange data changes (writing outside of bounds just extend the array).
+
+Please comment,
+Reinhard
+
