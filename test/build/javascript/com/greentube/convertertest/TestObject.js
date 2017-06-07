@@ -14,37 +14,37 @@ var com_greentube_convertertest_TestObject = _extendClass(com_greentube_converte
     
 
     // constructors
-    initialConstructor_0: function() {
+    _0: function() {
 this.somestring=null; 
 this.somenumber=0; 
 this.moreobject=null; 
 this.dummyobject=null; 
                   // construct without parameters
-        com_greentube_convertertest_TestParentIntermediate.prototype.initialConstructor_0.call(this);                     // constructor calling superconstructor
+        com_greentube_convertertest_TestParentIntermediate.prototype._0.call(this);                     // constructor calling superconstructor
         this.somenumber_f = (4711);
         this.somestring_f = ("defaulttext");
     return this;},
 
-    initialConstructor_1: function(str) {        // constructor with 1 parametere
-        com_greentube_convertertest_TestObject.prototype.initialConstructor_2.call(this,(str),(4711));              // calling second constructor of 'this'
+    _1: function(str) {        // constructor with 1 parametere
+        com_greentube_convertertest_TestObject.prototype._2.call(this,(str),(4711));              // calling second constructor of 'this'
     return this;},    
                                     // constructor with 2 parameters
-    initialConstructor_2: function(somestring, somenumber) {
+    _2: function(somestring, somenumber) {
 this.somestring=null; 
 this.somenumber=0; 
 this.moreobject=null; 
 this.dummyobject=null; 
  
-        com_greentube_convertertest_TestParentIntermediate.prototype.initialConstructor_1.call (this,(4));                      // constructor calling superconstructor
+        com_greentube_convertertest_TestParentIntermediate.prototype._1.call (this,(4));                      // constructor calling superconstructor
         this.somestring_f = (somestring);   // local variables shadowing attributes
         this.somenumber_f = (somenumber);
     return this;},
-    initialConstructor_3: function(a, b, c)  {
+    _3: function(a, b, c)  {
 this.somestring=null; 
 this.somenumber=0; 
 this.moreobject=null; 
 this.dummyobject=null; 
- com_greentube_convertertest_TestParentIntermediate.prototype.initialConstructor_0.call(this);  
+ com_greentube_convertertest_TestParentIntermediate.prototype._0.call(this);  
                                         // call default constructor of superclass     
     return this;},
       

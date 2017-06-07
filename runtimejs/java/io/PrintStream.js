@@ -4,7 +4,7 @@
 //load// java/lang/Object
 var java_io_PrintStream = _extendClass (java_lang_Object, {
 
-	initialConstructor_1: function(iserr) {
+	_1: function(iserr) {
         this.iserr_f = iserr;
         return this;
     },

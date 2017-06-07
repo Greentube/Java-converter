@@ -7,11 +7,11 @@
 //load// com/greentube/convertertest/TestParent
 var com_greentube_convertertest_TestParentIntermediate = _extendClass(com_greentube_convertertest_TestParent, {
 
-	initialConstructor_1: function(i) {
-		com_greentube_convertertest_TestParent.prototype.initialConstructor_1.call(this,(i));
+	_1: function(i) {
+		com_greentube_convertertest_TestParent.prototype._1.call(this,(i));
 	return this;},
 
-	initialConstructor_0: function() { com_greentube_convertertest_TestParent.prototype.initialConstructor_0.call(this); 
+	_0: function() { com_greentube_convertertest_TestParent.prototype._0.call(this); 
 	return this;},
 	
     add_2:function(a, b)

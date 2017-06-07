@@ -7,12 +7,12 @@ var com_greentube_convertertest_SecondaryClasses = _extendClass(java_lang_Object
 	
 	
 	
-	initialConstructor_0: function() {
+	_0: function() {
 this.s2=null; 
 this.s3=null; 
- java_lang_Object.prototype.initialConstructor_0.call(this); 
-		this.s2_f = ((new com_greentube_convertertest_S2).initialConstructor_0());
-		this.s3_f = ((new com_greentube_convertertest_S3).initialConstructor_0());		
+ java_lang_Object.prototype._0.call(this); 
+		this.s2_f = ((new com_greentube_convertertest_S2)._0());
+		this.s3_f = ((new com_greentube_convertertest_S3)._0());		
 	return this;},
 	
 	x_0:function() {
@@ -38,8 +38,8 @@ com_greentube_convertertest_SecondaryClasses.prototype.ssx_f = (99);
 var com_greentube_convertertest_S2 = _extendClass(java_lang_Object,  {	
 	
 
-	initialConstructor_0: function() 
-	{ java_lang_Object.prototype.initialConstructor_0.call(this); return this;},
+	_0: function() 
+	{ java_lang_Object.prototype._0.call(this); return this;},
 	x_0:function() {
 		return ("s2="+com_greentube_convertertest_S2.prototype.ss2_f);
 	},
@@ -54,8 +54,8 @@ com_greentube_convertertest_S2.prototype.ss2_f = (98);
 var com_greentube_convertertest_S3 = _extendClass(java_lang_Object,  {
 	
 
-	initialConstructor_0: function()
-	{ java_lang_Object.prototype.initialConstructor_0.call(this); 		
+	_0: function()
+	{ java_lang_Object.prototype._0.call(this); 		
 	return this;},	
 	x_0:function() {
 		return ("s3="+com_greentube_convertertest_S3.prototype.ss3_f);

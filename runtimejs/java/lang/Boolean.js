@@ -1,6 +1,6 @@
 //load// java/lang/Object
 var java_lang_Boolean = _extendClass (java_lang_Object, {
-	initialConstructor_1: function(b) {
+	_1: function(b) {
 		this.b_f = b;
         return this;
     },
@@ -13,20 +13,20 @@ var java_lang_Boolean = _extendClass (java_lang_Object, {
         }
         return false;
     },
+    hashCode_0: function() {
+        return this.b_f ? 1231 : 1237;
+    },
     toString_0: function() {
-      return java_lang_Boolean.prototype.toString_1(this.b_f);
-    },
-    
-    toString_1: function(b) {
-      return b ? "true" : "false";
-    },
-
-    valueOf_1: function(b) {
-      return b ? java_lang_Boolean.prototype.TRUE_f : java_lang_Boolean.prototype.FALSE_f;
+      return java_lang_Boolean.s.toString_1(this.b_f);
     },
     
  },"java_lang_Boolean", []);
 
-java_lang_Boolean.prototype.TRUE_f = (new java_lang_Boolean).initialConstructor_1(true);
-java_lang_Boolean.prototype.FALSE_f = (new java_lang_Boolean).initialConstructor_1(false);
- 
+java_lang_Boolean.s.toString_1 = function(b) {
+      return b ? "true" : "false";
+};
+java_lang_Boolean.s.valueOf_1 = function(b) {
+      return b ? java_lang_Boolean.s.TRUE_f : java_lang_Boolean.s.FALSE_f;
+};
+java_lang_Boolean.s.TRUE_f = (new java_lang_Boolean)._1(true);
+java_lang_Boolean.s.FALSE_f = (new java_lang_Boolean)._1(false);

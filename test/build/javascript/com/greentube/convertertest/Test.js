@@ -14,7 +14,7 @@
 //load// java/lang/Object
 var com_greentube_convertertest_Test = _extendClass(java_lang_Object,  {
 initialConstructor_0: function(){
-return java_lang_Object.prototype.initialConstructor_0.call(this);
+return java_lang_Object.prototype._0.call(this);
 }, 
 	
     // --------- java features not supported by Java2FlashConverter -----------
@@ -108,12 +108,12 @@ return java_lang_Object.prototype.initialConstructor_0.call(this);
                
         this.assertI_2((com_greentube_convertertest_StaticClass.prototype.a_f), (17));
         this.assertO_2((com_greentube_convertertest_StaticClass.prototype.b_f), ("hello kitty"));
-        this.assertO_2((com_greentube_convertertest_StaticClass.prototype.c_f), ((new java_util_Vector).initialConstructor_0()));
+        this.assertO_2((com_greentube_convertertest_StaticClass.prototype.c_f), ((new java_util_Vector)._0()));
         this.assertB_1(((_denullify(com_greentube_convertertest_StaticClass.prototype.d_f )._is_com_greentube_convertertest_DummyClass) ));   
         this.assertO_2((com_greentube_convertertest_StaticClass.prototype.e_f), (null));
         this.assertI_2((com_greentube_convertertest_StaticClass.prototype.f_f), (0));    
         
-        var  t = ((new com_greentube_convertertest_TestObject).initialConstructor_0());
+        var  t = ((new com_greentube_convertertest_TestObject)._0());
         this.assertI_2((t.accessParentStatic_0()), (66));
     },
     
@@ -122,19 +122,19 @@ return java_lang_Object.prototype.initialConstructor_0.call(this);
     	java_lang_System.prototype.out_f.println_1(("- constructor"));
     	
     	var  t;
-        t = ((new com_greentube_convertertest_TestObject).initialConstructor_0());
+        t = ((new com_greentube_convertertest_TestObject)._0());
         this.assertI_2((t.somenumber_f), (4711));
         this.assertO_2((t.somestring_f), ("defaulttext"));
         
-        t = ((new com_greentube_convertertest_TestObject).initialConstructor_1(("any")));
+        t = ((new com_greentube_convertertest_TestObject)._1(("any")));
         this.assertI_2((t.somenumber_f), (4711));
         this.assertO_2((t.somestring_f), ("any"));
         
-        t = ((new com_greentube_convertertest_TestObject).initialConstructor_2(("nixi"),(44)));
+        t = ((new com_greentube_convertertest_TestObject)._2(("nixi"),(44)));
         this.assertI_2((t.somenumber_f), (44));
         this.assertO_2((t.somestring_f), ("nixi"));
         
-        var  d = ((new com_greentube_convertertest_DummyClass).initialConstructor_0());
+        var  d = ((new com_greentube_convertertest_DummyClass)._0());
         this.assertO_2((d.secondaryString_0()), ("secondary"));
     },
     
@@ -191,7 +191,7 @@ return java_lang_Object.prototype.initialConstructor_0.call(this);
         this.assertO_2((sa[(3)]), (null));
         		
         var  tob = (_createArray((3),null));
-        tob[(0)] = ((new com_greentube_convertertest_TestObject).initialConstructor_0());
+        tob[(0)] = ((new com_greentube_convertertest_TestObject)._0());
         this.assertB_1((tob[(0)]!=null));
         this.assertO_2((tob[(1)]),(null));
         var  tob2 = (_createArray((3),null));
@@ -232,7 +232,7 @@ return java_lang_Object.prototype.initialConstructor_0.call(this);
     	var  staticint99 = (44);
     	this.assertI_2((staticint99), (44));
     	
-    	var  t = ((new com_greentube_convertertest_TestObject).initialConstructor_2((null),(5)));
+    	var  t = ((new com_greentube_convertertest_TestObject)._2((null),(5)));
     	this.assertI_2((t.shadowAttributeSum_0()), (88+123+5));    
     },
     getShadowed99_0:function()
@@ -251,7 +251,7 @@ return java_lang_Object.prototype.initialConstructor_0.call(this);
 //        assertB(! (o instanceof int[][]));
 //        assertB(! (o instanceof String[]));
 
-        var  t = ((new com_greentube_convertertest_TestObject).initialConstructor_0());
+        var  t = ((new com_greentube_convertertest_TestObject)._0());
         o = (t);
         this.assertB_1(((_denullify(o )._is_java_lang_Object) ));
         this.assertB_1(((_denullify(o )._is_com_greentube_convertertest_TestObject) ));
@@ -264,7 +264,7 @@ return java_lang_Object.prototype.initialConstructor_0.call(this);
         this.assertO_2((f.hello_0()), ("hello"));
         this.assertB_1(((_denullify(t )._is_com_greentube_convertertest_TestInterface) ));
         this.assertB_1((!(((_denullify(t )._is_com_greentube_convertertest2_TestInterfaceX) ))));
-        var  t2 = ((new com_greentube_convertertest2_TestObject2).initialConstructor_0());
+        var  t2 = ((new com_greentube_convertertest2_TestObject2)._0());
         this.assertB_1(((_denullify(t2 )._is_com_greentube_convertertest_TestInterface) ));
         this.assertB_1(((_denullify(t2 )._is_com_greentube_convertertest2_TestInterfaceX) ));
         this.assertB_1(((_denullify(t2 )._is_com_greentube_convertertest2_TestInterface2) ));
@@ -275,7 +275,7 @@ return java_lang_Object.prototype.initialConstructor_0.call(this);
         this.assertB_1(((_denullify(a )._is_java_lang_Object) ));
         var  oa = (a);
         this.assertI_2( ((( oa))[(0)]),  (5));
-        this.assertB_1(((_denullify((new java_lang_Integer).initialConstructor_1((1)) )._is_java_lang_Object) ));
+        this.assertB_1(((_denullify((new java_lang_Integer)._1((1)) )._is_java_lang_Object) ));
         var  it = (null);
         var  it2 = (it);
         // null is never an instance of anything
@@ -508,9 +508,9 @@ return java_lang_Object.prototype.initialConstructor_0.call(this);
     	
     	this.assertI_2((java_lang_Byte.prototype.MIN_VALUE_f), (-128));
     	this.assertI_2((java_lang_Byte.prototype.MAX_VALUE_f), (127));
-    	var  b = ((new java_lang_Byte).initialConstructor_1(((_castTObyte) (5))));
-    	var  b2 = ((new java_lang_Byte).initialConstructor_1(((_castTObyte) (7))));
-    	var  b3 = ((new java_lang_Byte).initialConstructor_1(((_castTObyte) (5))));
+    	var  b = ((new java_lang_Byte)._1(((_castTObyte) (5))));
+    	var  b2 = ((new java_lang_Byte)._1(((_castTObyte) (7))));
+    	var  b3 = ((new java_lang_Byte)._1(((_castTObyte) (5))));
     	
     	this.assertB_1((! b.equals_1(("5"))));
     	this.assertB_1((! b.equals_1((b2))));
@@ -528,9 +528,9 @@ return java_lang_Object.prototype.initialConstructor_0.call(this);
     	
     	this.assertD_2((java_lang_Double.prototype.MIN_VALUE_f), (4.9E-324));
     	this.assertD_2((java_lang_Double.prototype.MAX_VALUE_f), (1.7976931348623157E308));
-    	var  d = ((new java_lang_Double).initialConstructor_1((5)));
-    	var  d2 = ((new java_lang_Double).initialConstructor_1((7)));
-    	var  d3 = ((new java_lang_Double).initialConstructor_1((5)));
+    	var  d = ((new java_lang_Double)._1((5)));
+    	var  d2 = ((new java_lang_Double)._1((7)));
+    	var  d3 = ((new java_lang_Double)._1((5)));
     	
     	this.assertB_1((! d.equals_1((d2))));
     	this.assertB_1((! d.equals_1(("5.0"))));
@@ -553,9 +553,9 @@ return java_lang_Object.prototype.initialConstructor_0.call(this);
     	
     	this.assertI_2((java_lang_Integer.prototype.MIN_VALUE_f), (-2147483648));
     	this.assertI_2((java_lang_Integer.prototype.MAX_VALUE_f), (2147483647));
-    	var  i = ((new java_lang_Integer).initialConstructor_1( (5)));
-    	var  i2 = ((new java_lang_Integer).initialConstructor_1( (7)));
-    	var  i3 = ((new java_lang_Integer).initialConstructor_1( (5)));
+    	var  i = ((new java_lang_Integer)._1( (5)));
+    	var  i2 = ((new java_lang_Integer)._1( (7)));
+    	var  i3 = ((new java_lang_Integer)._1( (5)));
     	
     	this.assertB_1((! i.equals_1(("5"))));
     	this.assertB_1((! i.equals_1((i2))));
@@ -572,9 +572,9 @@ return java_lang_Object.prototype.initialConstructor_0.call(this);
     booleantest_0:function() {
     	java_lang_System.prototype.out_f.println_1(("- boolean"));
     	
-    	var  t = ((new java_lang_Boolean).initialConstructor_1((true)));
-    	var  f = ((new java_lang_Boolean).initialConstructor_1((false)));
-    	var  f2 = ((new java_lang_Boolean).initialConstructor_1((false)));
+    	var  t = ((new java_lang_Boolean)._1((true)));
+    	var  f = ((new java_lang_Boolean)._1((false)));
+    	var  f2 = ((new java_lang_Boolean)._1((false)));
     	
     	this.assertB_1((t.equals_1((java_lang_Boolean.prototype.TRUE_f))));
     	this.assertB_1((!t.equals_1(("TRUE"))));
@@ -617,8 +617,8 @@ return java_lang_Object.prototype.initialConstructor_0.call(this);
     
     objecttest_0:function() {
     	java_lang_System.prototype.out_f.println_1 (("- object"));
-    	var  o = ((new java_lang_Object).initialConstructor_0());
-    	var  o2 = ((new java_lang_Object).initialConstructor_0());
+    	var  o = ((new java_lang_Object)._0());
+    	var  o2 = ((new java_lang_Object)._0());
     	this.assertB_1((o.toString_0().startsWith_1(("java.lang.Object"))));
     	
     	this.assertB_1( (! o.equals_1((o2))));
@@ -634,7 +634,7 @@ return java_lang_Object.prototype.initialConstructor_0.call(this);
         a = ("" + a + " you");             // string building with + 
         a = (a + " " + 4711);              // add a number to a string
         this.assertO_2((a),("hello you 4711"));
-        a = ("some " + 44 + " more " + (((new java_lang_Integer).initialConstructor_1((88)))) + " concats " + (new com_greentube_convertertest_TestParent).initialConstructor_1((3)));
+        a = ("some " + 44 + " more " + (((new java_lang_Integer)._1((88)))) + " concats " + (new com_greentube_convertertest_TestParent)._1((3)));
         this.assertO_2((a), ("some 44 more 88 concats TestParent3"));
         this.assertO_2 ((44 - 33 + "hi"), ("11hi"));
         this.assertO_2 ((44 + "" + 33 + "hi"), ("4433hi"));
@@ -676,8 +676,8 @@ return java_lang_Object.prototype.initialConstructor_0.call(this);
 
         this.assertB_1( (a.equals_1((a + ""))));
         this.assertB_1((! a.equals_1((null))));
-        this.assertB_1(("TestParent3".equals_1(((new com_greentube_convertertest_TestParent).initialConstructor_1((3)).toString_0()))));
-        this.assertB_1((!"TestParent3".equals_1(((new java_lang_Integer).initialConstructor_1((5))))));
+        this.assertB_1(("TestParent3".equals_1(((new com_greentube_convertertest_TestParent)._1((3)).toString_0()))));
+        this.assertB_1((!"TestParent3".equals_1(((new java_lang_Integer)._1((5))))));
         
         this.assertI_2( (a.indexOf_1((116))), (4));
         this.assertI_2( (a.indexOf_1((113))), (-1));
@@ -760,23 +760,23 @@ return java_lang_Object.prototype.initialConstructor_0.call(this);
     stringbuffertest_0:function()
     {
     	java_lang_System.prototype.out_f.println_1(("- stringbuffer"));
-    	var  b = ((new java_lang_StringBuffer).initialConstructor_0());
+    	var  b = ((new java_lang_StringBuffer)._0());
     	b.append_1(("small"));
     	this.assertI_2((b.length_0()), (5));
     	this.assertO_2((b.toString_0()), ("small"));
     	
-    	b = ((new java_lang_StringBuffer).initialConstructor_1(("larger")));
+    	b = ((new java_lang_StringBuffer)._1(("larger")));
     	b.append_1(("text"));
-    	b.append_1(((new java_lang_Integer).initialConstructor_1((5))));
+    	b.append_1(((new java_lang_Integer)._1((5))));
     	this.assertI_2((b.length_0()), (11));
     	this.assertO_2((b.toString_0()), ("largertext5"));
     	
     	this.assertB_1((!b.equals_1(("largettext5"))));
     	this.assertB_1((!b.equals_1((null))));
-    	this.assertB_1((! (((new java_lang_StringBuffer).initialConstructor_0())).equals_1(((new java_lang_StringBuffer).initialConstructor_0()))));
+    	this.assertB_1((! (((new java_lang_StringBuffer)._0())).equals_1(((new java_lang_StringBuffer)._0()))));
     	this.assertB_1((b.equals_1((b))));
     	
-    	var  c = ((new java_lang_StringBuffer).initialConstructor_0());
+    	var  c = ((new java_lang_StringBuffer)._0());
     	c.append_1((b.toString_0()));
     	this.assertB_1((!b.equals_1((c))));
     },
@@ -785,8 +785,8 @@ return java_lang_Object.prototype.initialConstructor_0.call(this);
     	java_lang_System.prototype.out_f.println_1(("- vector"));
     	
         var  v;
-        v = ((new java_util_Vector).initialConstructor_0());
-        var  v2 = ((new java_util_Vector).initialConstructor_0());
+        v = ((new java_util_Vector)._0());
+        var  v2 = ((new java_util_Vector)._0());
         this.assertO_2((v.toString_0()),("[]"));
         this.assertO_2((v),(v2));        
         v.add_1 (("homer"));
@@ -877,8 +877,8 @@ return java_lang_Object.prototype.initialConstructor_0.call(this);
         this.assertO_2((a[(0)]), ("homer"));
         this.assertO_2((a[(4)]), ("meggy"));
         
-        v = ((new java_util_Vector).initialConstructor_0());
-        v.add_1(((new java_lang_Integer).initialConstructor_1((4))));
+        v = ((new java_util_Vector)._0());
+        v.add_1(((new java_lang_Integer)._1((4))));
         v.add_1(("nixi"));
         v.add_1((_createArray((2),0)));
         this.assertB_1((v.toString_0().startsWith_1(("[4, nixi, ["))));
@@ -888,23 +888,23 @@ return java_lang_Object.prototype.initialConstructor_0.call(this);
     hashtabletest_0:function() {
     	java_lang_System.prototype.out_f.println_1(("- hashtable"));
     	
-    	var  ht = ((new java_util_Hashtable).initialConstructor_0());
-    	ht.put_2(("Test"), ((new java_lang_Integer).initialConstructor_1((1))));
-    	ht.put_2(("Test2"), ((new java_lang_Integer).initialConstructor_1((2))));
+    	var  ht = ((new java_util_Hashtable)._0());
+    	ht.put_2(("Test"), ((new java_lang_Integer)._1((1))));
+    	ht.put_2(("Test2"), ((new java_lang_Integer)._1((2))));
     	
     	this.assertI_2((ht.size_0()), (2));
     	this.assertB_1((!ht.isEmpty_0()));
     	this.assertB_1((ht.containsKey_1(("Test"))));
-    	this.assertO_2((ht.get_1(("Test"))), ((new java_lang_Integer).initialConstructor_1((1))));
+    	this.assertO_2((ht.get_1(("Test"))), ((new java_lang_Integer)._1((1))));
     	
-    	ht.put_2(("Test"), ((new java_lang_Integer).initialConstructor_1((3))));
-    	this.assertO_2((ht.get_1(("Test"))), ((new java_lang_Integer).initialConstructor_1((3))));
+    	ht.put_2(("Test"), ((new java_lang_Integer)._1((3))));
+    	this.assertO_2((ht.get_1(("Test"))), ((new java_lang_Integer)._1((3))));
     	    	
     	var  cl = ( ht.clone_0());
     	this.assertI_2((cl.size_0()), (2));
     	this.assertB_1((! ((cl==ht))));
     	this.assertB_1((cl.equals_1((ht))));
-    	this.assertB_1((!ht.equals_1(((new java_util_Hashtable).initialConstructor_0()))));
+    	this.assertB_1((!ht.equals_1(((new java_util_Hashtable)._0()))));
     	this.assertB_1((!ht.equals_1(("dummy"))));
     	
     	ht.remove_1(("Test2"));
@@ -921,11 +921,11 @@ return java_lang_Object.prototype.initialConstructor_0.call(this);
     	ht.put_2(("A"),  ("something"));
     	ht.put_2(("B"),  ("some other"));
     	ht.put_2(("C"),  ("more text"));
-    	ht.put_2(("D"),  ((new java_lang_Integer).initialConstructor_1((99))));
+    	ht.put_2(("D"),  ((new java_lang_Integer)._1((99))));
     	ht.put_2(("E"),  (_createArray((2),0)) );
     	java_lang_System.prototype.out_f.println_1(("  Hashtable representation: "+ht.toString_0()));
     	
-    	var  ht2 = ((new java_util_Hashtable).initialConstructor_0());
+    	var  ht2 = ((new java_util_Hashtable)._0());
     	var  e = (ht.keys_0());
     	while ((e.hasMoreElements_0()))
     	{	var  k = ( e.nextElement_0());
@@ -935,7 +935,7 @@ return java_lang_Object.prototype.initialConstructor_0.call(this);
     	this.assertB_1((!ht.equals_1((null))));
     	
     	e = (ht.elements_0());
-    	var  ev = ((new java_util_Vector).initialConstructor_0());
+    	var  ev = ((new java_util_Vector)._0());
     	while ((e.hasMoreElements_0()))
     	{	ev.add_1((e.nextElement_0()));
     	}
@@ -1061,7 +1061,7 @@ return java_lang_Object.prototype.initialConstructor_0.call(this);
     {
     	java_lang_System.prototype.out_f.println_1(("- secondary classes"));
     	
-    	var  s = ((new com_greentube_convertertest_SecondaryClasses).initialConstructor_0());
+    	var  s = ((new com_greentube_convertertest_SecondaryClasses)._0());
     	this.assertO_2((s.testrun_0()), ("x=99|sx=99|s2=98|ss2=98|s3=97|ss3=97"));
     	this.assertO_2((com_greentube_convertertest_SecondaryClasses.prototype.statictestrun_0()), ("sx=99|ss2=98|ss3=97"));    	    
     },        

@@ -19,16 +19,16 @@ var com_greentube_convertertest_TestParent = _extendClass(java_lang_Object,  {
     
     
     
-    initialConstructor_0: function() {
+    _0: function() {
 this.dummyvector=null; 
- java_lang_Object.prototype.initialConstructor_0.call(this); 
-        this.dummyvector_f = ((new java_util_Vector).initialConstructor_0());
+ java_lang_Object.prototype._0.call(this); 
+        this.dummyvector_f = ((new java_util_Vector)._0());
         this.dummyvector_f.addElement_1 (("el:0"));
     return this;},
-    initialConstructor_1: function(vectorsize) {
+    _1: function(vectorsize) {
 this.dummyvector=null; 
- java_lang_Object.prototype.initialConstructor_0.call(this); 
-        this.dummyvector_f = (vectorsize>0) ? ((new java_util_Vector).initialConstructor_0()) : (null);
+ java_lang_Object.prototype._0.call(this); 
+        this.dummyvector_f = (vectorsize>0) ? ((new java_util_Vector)._0()) : (null);
         for (var  i=(0); (i<vectorsize); i++) {
             this.dummyvector_f.addElement_1(("el:"+i));
         }

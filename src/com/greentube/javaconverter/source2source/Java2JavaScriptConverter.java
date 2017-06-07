@@ -658,7 +658,7 @@ public class Java2JavaScriptConverter extends AnyConverter {
             	} else {
             		int aidx = findNonterminalNode(children,"Arguments");
             		int numpar = children[aidx].countNonterminalNodes("Expression", 3);
-            		children = insertNode(children, aidx, new Node(").initialConstructor_"+numpar));
+            		children = insertNode(children, aidx, new Node(")._"+numpar));
             		children = insertNode(children, 0, new Node("("));
             	}
             }
@@ -1008,11 +1008,11 @@ public class Java2JavaScriptConverter extends AnyConverter {
 //        	name+"_"+numparams;
 //    }
     String composeInternalSuperCallName(String classname, int numparams) {
-        return classname+".prototype.initialConstructor_"+numparams+".call";
+        return classname+".prototype._"+numparams+".call";
     }
     
     String composeInternalConstructorMethodName(int numparams) {
-        return "initialConstructor_"+numparams;
+        return "_"+numparams;
     }
     
     String removePackageName(String fullqualifiedname) {

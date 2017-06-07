@@ -1,9 +1,11 @@
 //load// java/lang/Object
 var java_lang_Double = _extendClass ( java_lang_Object, {
-
-	initialConstructor_1: function(d) {
+	_1: function(d) {
 		this.d_f = d;
         return this;
+    },
+    doubleValue_0: function() {
+        return this.d_f;
     },
     
     equals_1: function(d) {
@@ -12,24 +14,26 @@ var java_lang_Double = _extendClass ( java_lang_Object, {
         }
         return false;
     },
-
-    doubleValue_0: function() {
-        return this.d_f;
-    },
-    
+    hashCode_0: function() {
+        return this.d_f & 0xffffffff;
+    },    
     toString_0: function() {
-        return java_lang_Double.prototype.toString_1(this.d_f);
+        return java_lang_Double.s.toString_1(this.d_f);
     },
 
-    toString_1: function(d) {
-        var s = d.toString();
-        if (s.indexOf('.')<0) return s+".0";
-        return s;
-    },
 },"java_lang_Double", []);
 
-java_lang_Double.prototype.MIN_VALUE_f = 4.9E-324;
-java_lang_Double.prototype.MAX_VALUE_f = 1.7976931348623157E308;
-java_lang_Double.prototype.POSITIVE_INFINITY_f = 1.0/0.0;
-java_lang_Double.prototype.NEGATIVE_INFINITY_f = -1.0/0.0;
+java_lang_Double.s.toString_1 = function(d) {
+    var s = d.toString();
+    if (s.indexOf('.')<0) return s+".0";
+    return s;
+};
+java_lang_Double.s.valueOf_1 = function (d) {
+    return (new java_lang_Double())._1(d);
+};
+
+java_lang_Double.s.MIN_VALUE_f = 4.9E-324;
+java_lang_Double.s.MAX_VALUE_f = 1.7976931348623157E308;
+java_lang_Double.s.POSITIVE_INFINITY_f = 1.0/0.0;
+java_lang_Double.s.NEGATIVE_INFINITY_f = -1.0/0.0;
 

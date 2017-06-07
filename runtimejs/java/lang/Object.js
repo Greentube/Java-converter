@@ -8,7 +8,7 @@ function java_lang_Object()
 };
 
 // internal default constructor
-java_lang_Object.prototype.initialConstructor_0 = function()
+java_lang_Object.prototype._0 = function()
 {
     return this;
 };
@@ -22,14 +22,18 @@ java_lang_Object.prototype.equals_1 = function(a)
 {
   return this===a;
 };
+java_lang_Object.prototype.hashCode_0 = function()
+{
+  return 0;  // there is no real way to have a identity number 
+};
 // provide the standard javascript means to convert anything to a string
 java_lang_Object.prototype.toString = function()
 {
   return this.toString_0();
 };
+
 // add type detection flag
 java_lang_Object.prototype._is_java_lang_Object = true;
-
 
 
 // ---- global toolbox functions for classes and arrays ----
@@ -54,6 +58,9 @@ function _extendClass (base, methods, classname, interfaces)
   f.prototype['_is_'+classname] = true;
   populateIsInterfaceProperties(interfaces);
 
+  // create container for the static members (fields and methods)
+  f.s = {};
+  
   // done
   return f;
   
@@ -66,9 +73,14 @@ function _extendClass (base, methods, classname, interfaces)
 }
 
 // create a new interface with possible superinterfaces as well
-function _defineInterface(classname, superinterfaces)
+function _defineInterface(defaultmethods, classname, superinterfaces)
 {
-    return { classname: classname, superinterfaces: superinterfaces };
+    var i = {};
+    i.defaultmethods = defaultmethods;
+    i.classname = classname;
+    i.superinterfaces = superinterfaces;
+    i.s = {};   // container for all static members
+    return i;
 }
 
 
@@ -130,8 +142,6 @@ function _newString() {
     return "";   
   }
 }
-
-
 
 // create a (possible multidimensional) array with a initialization value for
 // all elements.

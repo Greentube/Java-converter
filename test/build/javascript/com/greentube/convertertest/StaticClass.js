@@ -21,7 +21,7 @@
 
 var com_greentube_convertertest_StaticClass = _extendClass(java_lang_Object,  {
 initialConstructor_0: function(){
-return java_lang_Object.prototype.initialConstructor_0.call(this);
+return java_lang_Object.prototype._0.call(this);
 }, 
     
     
@@ -169,7 +169,7 @@ return java_lang_Object.prototype.initialConstructor_0.call(this);
 		}
 
 		// Step 5. Output
-        var  out = ((new java_lang_StringBuffer).initialConstructor_0());
+        var  out = ((new java_lang_StringBuffer)._0());
         var  hex = ("0123456789abcdef");
 		for (var  i = (0); (i < 4); i++)
 		{
@@ -187,7 +187,7 @@ return java_lang_Object.prototype.initialConstructor_0.call(this);
 	
 	printints_2:function(a, len)
 	{
-		var  b = ((new java_lang_StringBuffer).initialConstructor_0());
+		var  b = ((new java_lang_StringBuffer)._0());
 		for (var  i=(0); (i<len); i++) {
 			b.append_1((" "+a[(i)]));
 		}
@@ -197,8 +197,8 @@ return java_lang_Object.prototype.initialConstructor_0.call(this);
 },"com_greentube_convertertest_StaticClass",[]);
 com_greentube_convertertest_StaticClass.prototype.a_f = (17);
 com_greentube_convertertest_StaticClass.prototype.b_f = ("hello kitty");
-com_greentube_convertertest_StaticClass.prototype.c_f = ((new java_util_Vector).initialConstructor_0());
-com_greentube_convertertest_StaticClass.prototype.d_f = ((new com_greentube_convertertest_DummyClass).initialConstructor_0());
+com_greentube_convertertest_StaticClass.prototype.c_f = ((new java_util_Vector)._0());
+com_greentube_convertertest_StaticClass.prototype.d_f = ((new com_greentube_convertertest_DummyClass)._0());
 com_greentube_convertertest_StaticClass.prototype.e_f=null;
 com_greentube_convertertest_StaticClass.prototype.f_f=0;
 com_greentube_convertertest_StaticClass.prototype.ia_f = [ [ [ (4), (4) ] ,

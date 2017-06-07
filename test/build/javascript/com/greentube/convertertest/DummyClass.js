@@ -14,7 +14,7 @@
 var com_greentube_convertertest_DummyClass = _extendClass(java_lang_Object, {
     
     /** Creates a new instance of DummyClass */
-    initialConstructor_0: function() { java_lang_Object.prototype.initialConstructor_0.call(this); 
+    _0: function() { java_lang_Object.prototype._0.call(this); 
     return this;},
     
     /*OVERRIDE*/ toString_0:function() {
@@ -23,7 +23,7 @@ var com_greentube_convertertest_DummyClass = _extendClass(java_lang_Object, {
     
     secondaryString_0:function()
     {
-    	return ((((new com_greentube_convertertest_Secondary).initialConstructor_0())).secondaryString_0());    	
+    	return ((((new com_greentube_convertertest_Secondary)._0())).secondaryString_0());    	
     }
 },"com_greentube_convertertest_DummyClass",[]);
 
@@ -32,10 +32,10 @@ var com_greentube_convertertest_DummyClass = _extendClass(java_lang_Object, {
 var com_greentube_convertertest_Secondary = _extendClass(java_lang_Object, {
 	
 	
-	initialConstructor_0: function()
+	_0: function()
 	{
 this.s=null; 
- java_lang_Object.prototype.initialConstructor_0.call(this); 		
+ java_lang_Object.prototype._0.call(this); 		
 		this.s_f = ("secondary");
 	return this;},	
 	

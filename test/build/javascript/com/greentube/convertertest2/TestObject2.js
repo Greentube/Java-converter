@@ -4,7 +4,7 @@
 //load// java/lang/Object
 var com_greentube_convertertest2_TestObject2 = _extendClass(java_lang_Object,  {
 initialConstructor_0: function(){
-return java_lang_Object.prototype.initialConstructor_0.call(this);
+return java_lang_Object.prototype._0.call(this);
 }, 
 
     add_2:function(a, b)

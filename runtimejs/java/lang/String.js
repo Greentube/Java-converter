@@ -30,6 +30,10 @@ String.prototype.equals_1 = function(str) {
 	return this.valueOf() == str.valueOf();
 };
 
+String.prototype.hashCode_1 = function() {
+  return 4711;  // TODO: compute correct value
+};
+
 String.prototype.indexOf_1 = function(str) {
 	if (typeof str === "string") {
 		return this.indexOf(str);
