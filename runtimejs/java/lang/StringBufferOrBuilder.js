@@ -11,7 +11,7 @@ var java_lang_StringBufferOrBuilder = _extendClass( java_lang_Object, {
     },
     
     append_1: function(o) {
-        this.parts.push(o!=null?o.toString_0():"null");
+        this.parts.push(String(o));
         return this;
     },
   

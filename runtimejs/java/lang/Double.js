@@ -18,19 +18,20 @@ var java_lang_Double = _extendClass ( java_lang_Object, {
         return this.d_f & 0xffffffff;
     },    
     toString_0: function() {
-        return java_lang_Double.s.toString_1(this.d_f);
+        var s = this.d_f.toString();
+        if (s.indexOf('.')<0) return s+".0";
+        return s;
+    },
+    toString_1: function(d) {
+        var s = d.toString();
+        if (s.indexOf('.')<0) return s+".0";
+        return s;
+    },
+    valueOf_1: function (d) {
+        return (new java_lang_Double())._1(d);
     },
 
-},"java_lang_Double", []);
-
-java_lang_Double.s.toString_1 = function(d) {
-    var s = d.toString();
-    if (s.indexOf('.')<0) return s+".0";
-    return s;
-};
-java_lang_Double.s.valueOf_1 = function (d) {
-    return (new java_lang_Double())._1(d);
-};
+},"java_lang_Double", null);
 
 java_lang_Double.s.MIN_VALUE_f = 4.9E-324;
 java_lang_Double.s.MAX_VALUE_f = 1.7976931348623157E308;

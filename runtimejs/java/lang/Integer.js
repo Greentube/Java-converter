@@ -20,14 +20,16 @@ var java_lang_Integer = _extendClass( java_lang_Object, {
     toString_0: function() {
         return this.i_f.toString();
     },
- },"java_lang_Integer", []);
- 
-java_lang_Integer.s.toString_1 = function(i) {
+    
+    toString_1 : function(i) {
         return i.toString();
-};
-java_lang_Integer.s.valueOf_1 = function(i) {
+    },
+    valueOf_1: function(i) {
         return (new java_lang_Integer())._1(i);
-};
+    },
+    
+ },"java_lang_Integer",  null);
  
-java_lang_Integer.prototype.MAX_VALUE_f = 2147483647;
-java_lang_Integer.prototype.MIN_VALUE_f = -2147483648;
+ 
+java_lang_Integer.s.MAX_VALUE_f = 2147483647;
+java_lang_Integer.s.MIN_VALUE_f = -2147483648;

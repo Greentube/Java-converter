@@ -1211,7 +1211,7 @@ public class Node {
         if (text.equals("ClassDeclaration")) {
         	classname=findTerminalNodeAfter(findTerminalNode("class")).concatTerminalSymbols();
         }
-        if (text.equals("FieldDeclaration")|| text.equals("Expression")) {   
+        if (text.equals("FieldDeclaration") || text.equals("Expression")) {   
         	Node n = findTerminalNode("static");
         	if (n!=null || staticfound) {
         		Vector names = new Vector();

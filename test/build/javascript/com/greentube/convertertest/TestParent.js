@@ -49,7 +49,7 @@ this.dummyvector=null;
     
 
 },"com_greentube_convertertest_TestParent",[]);
-com_greentube_convertertest_TestParent.prototype.staticparentattribute_f = (66);
+com_greentube_convertertest_TestParent.s.staticparentattribute_f = (66);
 
 
 //reference// java/lang/Math

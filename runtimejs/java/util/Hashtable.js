@@ -2,9 +2,8 @@
 //load// java/util/MapImpl
 var java_util_Hashtable = _extendClass( java_util_MapImpl, {
     
-    
-    
-}, "java_util_Hashtable", []);
+       
+}, "java_util_Hashtable",  null);
 
 //load// java/util/Enumeration
 var java_util_HashtableEnumeration = _extendClass( java_lang_Object, {

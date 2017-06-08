@@ -22,6 +22,6 @@ var java_lang_Enum = _extendClass (java_lang_Object, {
         return this.name_0();
     }
     
- },"java_lang_Enum", []);
+ },"java_lang_Enum", null);
 
  

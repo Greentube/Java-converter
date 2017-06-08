@@ -20,14 +20,15 @@ var java_lang_Byte = _extendClass( java_lang_Object, {
 		return this.b_f.toString();
     },    
     
-},"java_lang_Byte", []);
+    toString_1: function (b) {
+        return b.toString();
+    },
+    valueOf_1: function (b) {
+        return (new java_lang_Byte())._1(b);
+    },    
+    
+},"java_lang_Byte", null);
 
 
-java_lang_Byte.s.toString_1 = function (b) {
-    return b.toString();
-};
-java_lang_Byte.s.valueOf_1 = function (b) {
-    return (new java_lang_Byte())._1(b);
-};
 java_lang_Byte.s.MIN_VALUE_f = -128;
 java_lang_Byte.s.MAX_VALUE_f = 127;

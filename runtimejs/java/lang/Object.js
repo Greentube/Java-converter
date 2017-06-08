@@ -50,21 +50,23 @@ function _extendClass (base, methods, classname, interfaces)
   f.prototype.__proto__ = base.prototype;
   
   // add/overwrite methods that are newly defined
-  for (var name in methods) {      
-      f.prototype[name] = methods[name];
+  if (methods) {
+      for (var name in methods) {      
+        f.prototype[name] = methods[name];
+      }
   }  
   
   // add attributes than can be used to check for class/interface type
   f.prototype['_is_'+classname] = true;
   populateIsInterfaceProperties(interfaces);
 
-  // create container for the static members (fields and methods)
+  // create container for the static fields members
   f.s = {};
   
   // done
   return f;
   
-  function populateIsInterfaceProperties(interfaces) {
+  function populateIsInterfaceProperties(interfaces) {    
     for (var index=0; interfaces && index<interfaces.length; index++) {     
         f.prototype['_is_' + interfaces[index].classname] = true;
         populateIsInterfaceProperties(interfaces[index].superinterfaces);
@@ -73,10 +75,9 @@ function _extendClass (base, methods, classname, interfaces)
 }
 
 // create a new interface with possible superinterfaces as well
-function _defineInterface(defaultmethods, classname, superinterfaces)
+function _defineInterface(classname, superinterfaces)
 {
     var i = {};
-    i.defaultmethods = defaultmethods;
     i.classname = classname;
     i.superinterfaces = superinterfaces;
     i.s = {};   // container for all static members

@@ -24,7 +24,7 @@ java_lang_Object.prototype.equals_1 = function(a)
 };
 java_lang_Object.prototype.hashCode_0 = function()
 {
-  return 0;  // no way to have a kind of identity number 
+  return 0;  // there is no real way to have a identity number 
 };
 // provide the standard javascript means to convert anything to a string
 java_lang_Object.prototype.toString = function()
@@ -58,6 +58,9 @@ function _extendClass (base, methods, classname, interfaces)
   f.prototype['_is_'+classname] = true;
   populateIsInterfaceProperties(interfaces);
 
+  // create container for the static members (fields and methods)
+  f.s = {};
+  
   // done
   return f;
   
@@ -70,12 +73,13 @@ function _extendClass (base, methods, classname, interfaces)
 }
 
 // create a new interface with possible superinterfaces as well
-function _defineInterface(classname, superinterfaces)
+function _defineInterface(defaultmethods, classname, superinterfaces)
 {
     var i = {};
+    i.defaultmethods = defaultmethods;
     i.classname = classname;
     i.superinterfaces = superinterfaces;
-    i.prototype = {};   // create an empty object to hold static members
+    i.s = {};   // container for all static members
     return i;
 }
 
@@ -139,8 +143,6 @@ function _newString() {
   }
 }
 
-
-
 // create a (possible multidimensional) array with a initialization value for
 // all elements.
 // the sizes for the dimensions are given as arguments 1 to n, and the 
@@ -201,7 +203,6 @@ Array.prototype._is_Array = true;
 
 
 
-
 // A test class to test the conversion of various features from java to other languages
 
 //load// java/lang/Object
@@ -209,45 +210,7 @@ var com_greentube_convertertest_Test = _extendClass(java_lang_Object,  {
 initialConstructor_0: function(){
 return java_lang_Object.prototype._0.call(this);
 }, 
-	
-    // --------- java features not supported by Java2FlashConverter -----------
-    
-    //    {                                 // static initializer code
-    //        for (int i=0; i<2; i++) {
-    //            Debug.log("init"+i);
-    //        }
-    //    }
-    
-    // public Test(int i) { return; }  // constructor with return statement
-
-    // int attrib = 5;                 // instance attribute with initializer
-    
-    // void dosomething(int i) {}      // method signature differs only in parameter
-    // void dosomething(String s) {}   //   types but not in number of parameters
-    
-    // void finalize() {}              // finalizer methods
-    
-    // public synchroinzed void x() {} // synchronized methods
-    
-    // public void y() { synchronized(this) {}} // synchronized blocks
-    
-    // public void z() { throw new NullPointerException(); } // try,catch,throw,finally
-    
-    // class inner { }                         // inner classes
-
-    // int i,j[];          // number of [] differ for multiple variables in single declarator
-    
-    // a[j++] += 1;         // may not add something to left side with side effects 
-                            // (can not be mapped to method call)
-    
-    // int stringtest_0;    // attributes and local variables must not end with _ or
-                            // _<number> to prevent collision with method names
-    
-    // a /= 5;              // the /= operator is not allowed
-    // double d;            // no support for double precission floating point types
-    // long l;              // no support for long data types
-    
-	
+		
     // ----------- allowed features --------------------------------------------
     
     // class attributes
@@ -281,7 +244,7 @@ return java_lang_Object.prototype._0.call(this);
         this.hashtabletest_0();        
         this.vectortest_0();
         
-        this.converttest_0();
+//        converttest();
 //        encodedecodetest();
         this.secondaryclassestest_0();
         this.complexoperationtest_0();
@@ -292,12 +255,12 @@ return java_lang_Object.prototype._0.call(this);
     staticattributestests_0:function()
     {
     	java_lang_System.prototype.out_f.println_1(("- static attributes"));
-        this.assertI_2((com_greentube_convertertest_Test.prototype.staticint_f), (4));
-        this.assertI_2((com_greentube_convertertest_Test.prototype.staticint99_f) ,(99));
+        this.assertI_2((com_greentube_convertertest_Test.s.staticint_f), (4));
+        this.assertI_2((com_greentube_convertertest_Test.s.staticint99_f) ,(99));
         
-        this.assertI_2((com_greentube_convertertest_Test.prototype.static1_f) ,(0));
-        com_greentube_convertertest_Test.prototype.static1_f = (44);
-        this.assertI_2((com_greentube_convertertest_Test.prototype.static1_f), (44));
+        this.assertI_2((com_greentube_convertertest_Test.s.static1_f) ,(0));
+        com_greentube_convertertest_Test.s.static1_f = (44);
+        this.assertI_2((com_greentube_convertertest_Test.s.static1_f), (44));
                
         this.assertI_2((com_greentube_convertertest_StaticClass.prototype.a_f), (17));
         this.assertO_2((com_greentube_convertertest_StaticClass.prototype.b_f), ("hello kitty"));
@@ -430,7 +393,7 @@ return java_lang_Object.prototype._0.call(this);
     },
     getShadowed99_0:function()
     {
-    	return (com_greentube_convertertest_Test.prototype.staticint99_f);
+    	return (com_greentube_convertertest_Test.s.staticint99_f);
     },
 
     casttest_0:function() {
@@ -1140,70 +1103,70 @@ return java_lang_Object.prototype._0.call(this);
     	this.assertB_1((ev.contains_1((ht.get_1(("E"))))));
     },
 
-    converttest_0:function() {
-    	java_lang_System.prototype.out_f.println_1(("- convert"));
-        	
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.stringToInt_1(("23"))), (23));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.stringToInt_1(("+312"))), (312));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.stringToInt_1(("+x312"))), (0));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.stringToInt_1(("x23"))), (0));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.stringToInt_1(("23x"))), (0));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.stringToInt_1(("4234.12"))), (0));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.stringToInt_2(("-23"), (47))), (-23));    	
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.stringToInt_2(("-0023"), (47))), (-23));    	
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.stringToInt_2(("+0ab"), (15))), (15));    	
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.stringToInt_2(("+031"), (15))), (31));    	
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.stringToInt_2(("4234.12"), (47))), (47));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.stringToInt_2(("x23"), (47))), (47));
-    	
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.stringToInt_3(("x23"), (1),(2))), (23));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.stringToInt_3(("x23"), (0),(2))), (0));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.stringToInt_4(("x-23f"), (1),(3), (99))), (-23));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.stringToInt_4(("x-23f"), (1),(4), (99))), (99));
-    	
-    	this.assertD_2((com_greentube_gameutil_Convert.prototype.stringToDouble_1(("4234.4"))), (4234.4));
-    	this.assertD_2((com_greentube_gameutil_Convert.prototype.stringToDouble_1(("-4123123.4"))), (-4123123.4));
-    	this.assertD_2((com_greentube_gameutil_Convert.prototype.stringToDouble_1(("4x234.4"))), (0));
-    	this.assertD_2((com_greentube_gameutil_Convert.prototype.stringToDouble_2(("4x234.4"), (33))), (33));
-    	this.assertD_2((com_greentube_gameutil_Convert.prototype.stringToDouble_2(("4234.x4"), (33))), (33));
-    	this.assertD_2((com_greentube_gameutil_Convert.prototype.stringToDouble_2(("NaN"), (5))), (5));
-    	this.assertD_2((com_greentube_gameutil_Convert.prototype.stringToDouble_2(("Infinity"), (5))), (5));
-    	this.assertD_2((com_greentube_gameutil_Convert.prototype.stringToDouble_2(("+Infinity"), (5))), (5));
-    	this.assertD_2((com_greentube_gameutil_Convert.prototype.stringToDouble_2(("+Nan"), (5))), (5));
-    	
-    	this.assertO_2((com_greentube_gameutil_Convert.prototype.charToString_1((120))), ("x"));
-    	
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.doubleToInt_1((-0.3))), (0));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.doubleToInt_1((1.4))), (1));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.doubleToInt_1((-1.4))), (-1));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.doubleToInt_1((5.5))), (6));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.doubleToInt_1((5.9))), (6));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.doubleToInt_1((-3.5))), (-4));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.doubleToInt_1((-3.7))), (-4));
-    	
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.hexToInt_1(("f"))), (15));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.hexToInt_1(("-a"))), (-10));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.hexToInt_1(("fA"))), (16*15+10));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.hexToInt_1(("2F"))), (32+15));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.hexToInt_1(("-002F"))), (-((32+15))));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.hexToInt_1(("x"))), (0));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.hexToInt_1(("13x"))), (0));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.hexToInt_1(("-013x"))), (0));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.hexToInt_1(("-0fb.44"))), (0));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.hexToInt_1(("-0fb.4x"))), (0));
-    	
-    	this.assertO_2((com_greentube_gameutil_Convert.prototype.doubleToStringRounded_1((1355.11))), ("1355"));
-    	this.assertO_2((com_greentube_gameutil_Convert.prototype.doubleToStringRounded_1((1355.5))), ("1356"));
-    	this.assertO_2((com_greentube_gameutil_Convert.prototype.doubleToStringRounded_1((-3.5))), ("-4"));
-    	this.assertO_2((com_greentube_gameutil_Convert.prototype.doubleToStringRounded_1((423455.7))), ("423456"));
-    	this.assertO_2((com_greentube_gameutil_Convert.prototype.doubleToStringRounded_1((-423455.7))), ("-423456"));
-    	this.assertO_2((com_greentube_gameutil_Convert.prototype.doubleToStringRounded_1((-423455.7))), ("-423456"));
-    	
-    	this.assertO_2((com_greentube_gameutil_Convert.prototype.doubleToStringRounded_2((14144), ("#"))), ("14#144"));
-    	this.assertO_2((com_greentube_gameutil_Convert.prototype.doubleToStringRounded_2((999999.9), ("\x27"))), ("1\x27000\x27000"));
-    	this.assertO_2((com_greentube_gameutil_Convert.prototype.doubleToStringRounded_2((-999999.5), ("\x27"))), ("-1\x27000\x27000"));
-    },
-    
+//    public static void converttest() {
+//    	System.out.println("- convert");
+//        	
+//    	assertI(Convert.stringToInt("23"), 23);
+//    	assertI(Convert.stringToInt("+312"), 312);
+//    	assertI(Convert.stringToInt("+x312"), 0);
+//    	assertI(Convert.stringToInt("x23"), 0);
+//    	assertI(Convert.stringToInt("23x"), 0);
+//    	assertI(Convert.stringToInt("4234.12"), 0);
+//    	assertI(Convert.stringToInt("-23", 47), -23);    	
+//    	assertI(Convert.stringToInt("-0023", 47), -23);    	
+//    	assertI(Convert.stringToInt("+0ab", 15), 15);    	
+//    	assertI(Convert.stringToInt("+031", 15), 31);    	
+//    	assertI(Convert.stringToInt("4234.12", 47), 47);
+//    	assertI(Convert.stringToInt("x23", 47), 47);
+//    	
+//    	assertI(Convert.stringToInt("x23", 1,2), 23);
+//    	assertI(Convert.stringToInt("x23", 0,2), 0);
+//    	assertI(Convert.stringToInt("x-23f", 1,3, 99), -23);
+//    	assertI(Convert.stringToInt("x-23f", 1,4, 99), 99);
+//    	
+//    	assertD(Convert.stringToDouble("4234.4"), 4234.4);
+//    	assertD(Convert.stringToDouble("-4123123.4"), -4123123.4);
+//    	assertD(Convert.stringToDouble("4x234.4"), 0);
+//    	assertD(Convert.stringToDouble("4x234.4", 33), 33);
+//    	assertD(Convert.stringToDouble("4234.x4", 33), 33);
+//    	assertD(Convert.stringToDouble("NaN", 5), 5);
+//    	assertD(Convert.stringToDouble("Infinity", 5), 5);
+//    	assertD(Convert.stringToDouble("+Infinity", 5), 5);
+//    	assertD(Convert.stringToDouble("+Nan", 5), 5);
+//    	
+//    	assertO(Convert.charToString('x'), "x");
+//    	
+//    	assertI(Convert.doubleToInt(-0.3), 0);
+//    	assertI(Convert.doubleToInt(1.4), 1);
+//    	assertI(Convert.doubleToInt(-1.4), -1);
+//    	assertI(Convert.doubleToInt(5.5), 6);
+//    	assertI(Convert.doubleToInt(5.9), 6);
+//    	assertI(Convert.doubleToInt(-3.5), -4);
+//    	assertI(Convert.doubleToInt(-3.7), -4);
+//    	
+//    	assertI(Convert.hexToInt("f"), 15);
+//    	assertI(Convert.hexToInt("-a"), -10);
+//    	assertI(Convert.hexToInt("fA"), 16*15+10);
+//    	assertI(Convert.hexToInt("2F"), 32+15);
+//    	assertI(Convert.hexToInt("-002F"), -(32+15));
+//    	assertI(Convert.hexToInt("x"), 0);
+//    	assertI(Convert.hexToInt("13x"), 0);
+//    	assertI(Convert.hexToInt("-013x"), 0);
+//    	assertI(Convert.hexToInt("-0fb.44"), 0);
+//    	assertI(Convert.hexToInt("-0fb.4x"), 0);
+//    	
+//    	assertO(Convert.doubleToStringRounded(1355.11), "1355");
+//    	assertO(Convert.doubleToStringRounded(1355.5), "1356");
+//    	assertO(Convert.doubleToStringRounded(-3.5), "-4");
+//    	assertO(Convert.doubleToStringRounded(423455.7), "423456");
+//    	assertO(Convert.doubleToStringRounded(-423455.7), "-423456");
+//    	assertO(Convert.doubleToStringRounded(-423455.7), "-423456");
+//    	
+//    	assertO(Convert.doubleToStringRounded(14144, "#"), "14#144");
+//    	assertO(Convert.doubleToStringRounded(999999.9, "'"), "1'000'000");
+//    	assertO(Convert.doubleToStringRounded(-999999.5, "'"), "-1'000'000");
+//    }
+//    
 //    public static void encodedecodetest()
 //    {
 //    	Debug.log("- encode/decode");
@@ -1337,9 +1300,9 @@ return java_lang_Object.prototype._0.call(this);
     }
     
 },"com_greentube_convertertest_Test",[]);
-com_greentube_convertertest_Test.prototype.staticint_f = (4);
-com_greentube_convertertest_Test.prototype.staticint99_f = (99);
-com_greentube_convertertest_Test.prototype.static1_f=0, com_greentube_convertertest_Test.prototype.static2_f=0;
+com_greentube_convertertest_Test.s.staticint_f = (4);
+com_greentube_convertertest_Test.s.staticint99_f = (99);
+com_greentube_convertertest_Test.s.static1_f=0, com_greentube_convertertest_Test.s.static2_f=0;
 
 
 
@@ -1365,11 +1328,1000 @@ com_greentube_convertertest_Test.prototype.static1_f=0, com_greentube_convertert
 //reference// java/lang/Object
 //reference// java/lang/String
 //reference// com/greentube/convertertest2/TestObject2
-//reference// com/greentube/gameutil/Convert
 //reference// java/util/Enumeration
 //reference// java/lang/Boolean
 //load// java/lang/Object
-var java_util_Vector = _extendClass( java_lang_Object, {
+var java_lang_Byte = _extendClass( java_lang_Object, {
+	_1: function(b) {
+		this.b_f = b;
+        return this;
+    },
+	byteValue_0: function() {
+		return this.b_f;
+	},
+    equals_1: function(b) {
+        if (b!=null && b._is_java_lang_Byte && this.b_f == b.b_f) {
+            return true;
+        }
+        return false;
+    },
+    hashCode_0: function() {
+        return this.b_f;
+    },
+	toString_0: function() {
+		return this.b_f.toString();
+    },    
+    
+},"java_lang_Byte", []);
+
+
+java_lang_Byte.s.toString_1 = function (b) {
+    return b.toString();
+};
+java_lang_Byte.s.valueOf_1 = function (b) {
+    return (new java_lang_Byte())._1(b);
+};
+java_lang_Byte.s.MIN_VALUE_f = -128;
+java_lang_Byte.s.MAX_VALUE_f = 127;
+/*
+ * TestParent.java
+ *
+ * Created on 24. Februar 2005, 08:43
+ */
+
+
+
+
+
+
+
+// Parent parent class of java2flash test class to show various features 
+// concerning inheritance.
+
+//load// java/lang/Object
+var com_greentube_convertertest_TestParent = _extendClass(java_lang_Object,  {
+    
+    
+    
+    
+    _0: function() {
+this.dummyvector=null; 
+ java_lang_Object.prototype._0.call(this); 
+        this.dummyvector_f = ((new java_util_Vector)._0());
+        this.dummyvector_f.addElement_1 (("el:0"));
+    return this;},
+    _1: function(vectorsize) {
+this.dummyvector=null; 
+ java_lang_Object.prototype._0.call(this); 
+        this.dummyvector_f = (vectorsize>0) ? ((new java_util_Vector)._0()) : (null);
+        for (var  i=(0); (i<vectorsize); i++) {
+            this.dummyvector_f.addElement_1(("el:"+i));
+        }
+    return this;},
+    
+    gimmedummy_0:function() {
+        return (null);
+    },
+
+    toString_0:function()
+    {
+    	return ("TestParent"+this.dummyvector_f.size_0());
+    },
+    
+    staticmethod_0:function() {
+    	return (88);
+    }
+    
+
+},"com_greentube_convertertest_TestParent",[]);
+com_greentube_convertertest_TestParent.s.staticparentattribute_f = (66);
+
+
+//reference// java/lang/Math
+//reference// java/lang/Integer
+//reference// java/lang/System
+//reference// java/lang/Byte
+//reference// java/lang/Boolean
+//reference// java/util/Vector
+//reference// java/lang/Object
+//reference// java/lang/String
+//reference// java/lang/Double
+//reference// java/lang/StringBuffer
+//reference// java/lang/Runnable
+//load// java/lang/Object
+var java_lang_Integer = _extendClass( java_lang_Object, {
+	_1: function(i) {
+		this.i_f = i;
+        return this;
+    },
+	intValue_0: function() {
+		return this.i_f;
+    },
+    
+    equals_1: function(i) {
+        if (i!=null && i._is_java_lang_Integer && i.i_f==this.i_f) {
+            return true;
+        }
+        return false;
+    },
+    hashCode_0: function() {
+        return this.i_f;
+    },    
+    toString_0: function() {
+        return this.i_f.toString();
+    },
+ },"java_lang_Integer", []);
+ 
+java_lang_Integer.s.toString_1 = function(i) {
+        return i.toString();
+};
+java_lang_Integer.s.valueOf_1 = function(i) {
+        return (new java_lang_Integer())._1(i);
+};
+ 
+java_lang_Integer.s.MAX_VALUE_f = 2147483647;
+java_lang_Integer.s.MIN_VALUE_f = -2147483648;
+//load// java/lang/Object
+var java_lang_Math = _extendClass( java_lang_Object, {} }, "java_lang_Math", [] );
+
+java_lang_Math.s.abs_1 = Math.abs;
+java_lang_Math.s.acos_1 = Math.acos;
+java_lang_Math.s.asin_1 = Math.asin;
+java_lang_Math.s.atan_1 = Math.atan;
+java_lang_Math.s.atan2_2 = Math.atan2;
+java_lang_Math.s.ceil_1 = Math.ceil;
+java_lang_Math.s.cos_1 = Math.cos;
+java_lang_Math.s.exp_1 = Math.exp;
+java_lang_Math.s.floor_1 = Math.floor;
+// java_lang_Math.s.IEEEremainder(f1,f2) = // not supported
+java_lang_Math.s.log_1 = Math.log;
+java_lang_Math.s.max_2 = Math.max;
+java_lang_Math.s.min_2 = Math.min;
+java_lang_Math.s.pow_2 = Math.pow;
+java_lang_Math.s.round_1 = Math.round;  // deprecated
+java_lang_Math.s.rint_1 = Math.round;
+java_lang_Math.s.sin_1 = Math.sin;
+java_lang_Math.s.sqrt_1 = Math.sqrt;
+java_lang_Math.s.tan_1 = Math.tan;
+
+    // No native support for log10 in all common browsers yet, workaround returns imprecise result, unlike Java's and e.g. Chrome's log10 implementations.
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log10
+    if(typeof Math.log10 === "function") {
+      java_lang_Math.s.log10_1 = Math.log10;
+    }
+    else {
+      java_lang_Math.s.log10_1 = function log10(x) {
+        // e.g. in Firefox 24.1.1, the following returns -1.9999999999999996 instead of -2 for x = 0.01
+        // similar to workaround using Math.LN10, except probably faster and seems to work better for
+        // threshold cases >= 1, like 100, 10000, etc.
+        var result = Math.log(x) * Math.LOG10E;
+        var rounded = Math.round(result);
+        
+        // correct rounding error
+        if(Math.abs(Math.round(result) - (result)) < 0.00000000000001)
+          return rounded;
+        else
+          return result;
+      }
+    }
+
+java_lang_Math.s.E_f =  2.718281828459045; 
+java_lang_Math.s.PI_f = 3.141592653589793;
+/*
+ * TestInterface.java
+ *
+ * Created on 24. Februar 2005, 13:54
+ */
+
+
+
+
+/**
+ *
+ * @author  reinhard
+ */
+//load// java/lang/Object
+var com_greentube_convertertest_TestInterface = _defineInterface("com_greentube_convertertest_TestInterface",null);
+
+//reference// java/lang/Math
+//reference// java/lang/Integer
+//reference// java/lang/System
+//reference// java/lang/Byte
+//reference// java/lang/Boolean
+//reference// java/lang/Object
+//reference// java/lang/String
+//reference// java/lang/Double
+//reference// java/lang/StringBuffer
+//reference// java/lang/Runnable
+//load// java/lang/Object
+var java_lang_Double = _extendClass ( java_lang_Object, {
+	_1: function(d) {
+		this.d_f = d;
+        return this;
+    },
+    doubleValue_0: function() {
+        return this.d_f;
+    },
+    
+    equals_1: function(d) {
+        if (d!=null && d._is_java_lang_Double && this.d_f==d.d_f) {
+            return true;
+        }
+        return false;
+    },
+    hashCode_0: function() {
+        return this.d_f & 0xffffffff;
+    },    
+    toString_0: function() {
+        return java_lang_Double.s.toString_1(this.d_f);
+    },
+
+},"java_lang_Double", []);
+
+java_lang_Double.s.toString_1 = function(d) {
+    var s = d.toString();
+    if (s.indexOf('.')<0) return s+".0";
+    return s;
+};
+java_lang_Double.s.valueOf_1 = function (d) {
+    return (new java_lang_Double())._1(d);
+};
+
+java_lang_Double.s.MIN_VALUE_f = 4.9E-324;
+java_lang_Double.s.MAX_VALUE_f = 1.7976931348623157E308;
+java_lang_Double.s.POSITIVE_INFINITY_f = 1.0/0.0;
+java_lang_Double.s.NEGATIVE_INFINITY_f = -1.0/0.0;
+
+//load// java/lang/Object
+var java_lang_Runnable = _defineInterface({}, "java_lang_Runnable", []);
+
+
+//load// java/lang/Object
+var com_greentube_convertertest_SecondaryClasses = _extendClass(java_lang_Object, 
+ {
+	
+	
+	
+	
+	_0: function() {
+this.s2=null; 
+this.s3=null; 
+ java_lang_Object.prototype._0.call(this); 
+		this.s2_f = ((new com_greentube_convertertest_S2)._0());
+		this.s3_f = ((new com_greentube_convertertest_S3)._0());		
+	return this;},
+	
+	x_0:function() {
+		return ("x="+com_greentube_convertertest_SecondaryClasses.s.ssx_f);
+	},
+	 
+	y_0:function() {
+		return ("sx="+com_greentube_convertertest_SecondaryClasses.s.ssx_f);
+	},
+	
+	testrun_0:function() {
+		return (this.x_0()+"|"+this.y_0()+"|"+this.s2_f.x_0()+"|"+com_greentube_convertertest_S2.prototype.y_0()+"|"+this.s3_f.x_0()+"|"+com_greentube_convertertest_S3.prototype.y_0());
+	},
+	
+	statictestrun_0:function() {
+		return (this.y_0()+"|"+com_greentube_convertertest_S2.prototype.y_0()+"|"+com_greentube_convertertest_S3.prototype.y_0());		
+	}
+},"com_greentube_convertertest_SecondaryClasses",[]);
+com_greentube_convertertest_SecondaryClasses.s.ssx_f = (99);
+
+
+//load// java/lang/Object
+var com_greentube_convertertest_S2 = _extendClass(java_lang_Object,  {	
+	
+
+	_0: function() 
+	{ java_lang_Object.prototype._0.call(this); return this;},
+	x_0:function() {
+		return ("s2="+com_greentube_convertertest_S2.s.ss2_f);
+	},
+	y_0:function() {
+		return ("ss2="+com_greentube_convertertest_S2.s.ss2_f);	
+	}
+},"com_greentube_convertertest_S2",[]);
+com_greentube_convertertest_S2.s.ss2_f = (98);
+
+
+//load// java/lang/Object
+var com_greentube_convertertest_S3 = _extendClass(java_lang_Object,  {
+	
+
+	_0: function()
+	{ java_lang_Object.prototype._0.call(this); 		
+	return this;},	
+	x_0:function() {
+		return ("s3="+com_greentube_convertertest_S3.s.ss3_f);
+	},
+	y_0:function() {
+		return ("ss3="+com_greentube_convertertest_S3.s.ss3_f);	
+	}
+},"com_greentube_convertertest_S3",[]);
+com_greentube_convertertest_S3.s.ss3_f = (97);
+
+
+//reference// java/lang/Math
+//reference// java/lang/Integer
+//reference// java/lang/System
+//reference// java/lang/Byte
+//reference// java/lang/Boolean
+//reference// java/lang/Object
+//reference// java/lang/String
+//reference// java/lang/Double
+//reference// java/lang/StringBuffer
+//reference// java/lang/Runnable
+
+
+
+//Parent class of java2flash test class to test super super calls
+
+//load// com/greentube/convertertest/TestInterface
+//load// com/greentube/convertertest/TestParent
+var com_greentube_convertertest_TestParentIntermediate = _extendClass(com_greentube_convertertest_TestParent, {
+
+	_1: function(i) {
+		com_greentube_convertertest_TestParent.prototype._1.call(this,(i));
+	return this;},
+
+	_0: function() { com_greentube_convertertest_TestParent.prototype._0.call(this); 
+	return this;},
+	
+    add_2:function(a, b)
+    {
+    	return (a+b);
+    },
+    hello_0:function()
+    {
+    	return ("hello");
+    }	
+	
+},"com_greentube_convertertest_TestParentIntermediate",[com_greentube_convertertest_TestInterface]);
+
+
+//reference// java/lang/Math
+//reference// java/lang/Integer
+//reference// java/lang/System
+//reference// java/lang/Byte
+//reference// java/lang/Boolean
+//reference// com/greentube/convertertest/TestParent
+//reference// com/greentube/convertertest/TestInterface
+//reference// java/lang/Object
+//reference// java/lang/String
+//reference// java/lang/Double
+//reference// java/lang/StringBuffer
+//reference// java/lang/Runnable
+/*
+ * DummyClass.java
+ *
+ * Created on 09. September 2005, 10:18
+ */
+
+
+
+/**
+ *
+ * @author  reinhard
+ */
+//load// java/lang/Object
+var com_greentube_convertertest_DummyClass = _extendClass(java_lang_Object, {
+    
+    /** Creates a new instance of DummyClass */
+    _0: function() { java_lang_Object.prototype._0.call(this); 
+    return this;},
+    
+    /*OVERRIDE*/ toString_0:function() {
+        return ("dummy");
+    },
+    
+    secondaryString_0:function()
+    {
+    	return ((((new com_greentube_convertertest_Secondary)._0())).secondaryString_0());    	
+    }
+},"com_greentube_convertertest_DummyClass",[]);
+
+
+//load// java/lang/Object
+var com_greentube_convertertest_Secondary = _extendClass(java_lang_Object, {
+	
+	
+	_0: function()
+	{
+this.s=null; 
+ java_lang_Object.prototype._0.call(this); 		
+		this.s_f = ("secondary");
+	return this;},	
+	
+	secondaryString_0:function()
+	{
+		return (this.s_f);
+	}
+	
+},"com_greentube_convertertest_Secondary",[]);
+
+//reference// java/lang/Math
+//reference// java/lang/Integer
+//reference// java/lang/System
+//reference// java/lang/Byte
+//reference// java/lang/Boolean
+//reference// java/lang/Object
+//reference// java/lang/String
+//reference// java/lang/Double
+//reference// java/lang/StringBuffer
+//reference// java/lang/Runnable
+
+
+
+// A test class to test the conversion of various features from java to other languages
+
+//load// com/greentube/convertertest/TestParentIntermediate
+var com_greentube_convertertest_TestObject = _extendClass(com_greentube_convertertest_TestParentIntermediate, {
+    
+    // instance attributes
+                      // instance attribute default initializer
+                      // instance attribute default initializer
+
+    
+    
+
+    // constructors
+    _0: function() {
+this.somestring=null; 
+this.somenumber=0; 
+this.moreobject=null; 
+this.dummyobject=null; 
+                  // construct without parameters
+        com_greentube_convertertest_TestParentIntermediate.prototype._0.call(this);                     // constructor calling superconstructor
+        this.somenumber_f = (4711);
+        this.somestring_f = ("defaulttext");
+    return this;},
+
+    _1: function(str) {        // constructor with 1 parametere
+        com_greentube_convertertest_TestObject.prototype._2.call(this,(str),(4711));              // calling second constructor of 'this'
+    return this;},    
+                                    // constructor with 2 parameters
+    _2: function(somestring, somenumber) {
+this.somestring=null; 
+this.somenumber=0; 
+this.moreobject=null; 
+this.dummyobject=null; 
+ 
+        com_greentube_convertertest_TestParentIntermediate.prototype._1.call (this,(4));                      // constructor calling superconstructor
+        this.somestring_f = (somestring);   // local variables shadowing attributes
+        this.somenumber_f = (somenumber);
+    return this;},
+    _3: function(a, b, c)  {
+this.somestring=null; 
+this.somenumber=0; 
+this.moreobject=null; 
+this.dummyobject=null; 
+ com_greentube_convertertest_TestParentIntermediate.prototype._0.call(this);  
+                                        // call default constructor of superclass     
+    return this;},
+      
+    shadowAttributeSum_0:function()
+    {
+    	var  somenumber = (123);
+    	return (this.shadowAttribute_0() + somenumber + this.staticmethod_0());
+    },
+    shadowAttribute_0:function()
+    {
+    	return (this.somenumber_f);
+    },
+    
+    accessParentStatic_0:function() {
+    	return (this.staticparentattribute_f);
+    },
+    
+    // should not be confused with the shadowAttribute method
+    shadowAttribute_1:function(someparameter)
+    {
+    	return (someparameter);
+    }
+    
+},"com_greentube_convertertest_TestObject",[]);
+
+
+
+
+//reference// java/lang/Math
+//reference// java/lang/Integer
+//reference// java/lang/System
+//reference// java/lang/Byte
+//reference// java/lang/Boolean
+//reference// com/greentube/convertertest/TestParentIntermediate
+//reference// java/lang/Object
+//reference// java/lang/String
+//reference// java/lang/Double
+//reference// java/lang/StringBuffer
+//reference// java/lang/Runnable
+
+
+//load// java/lang/Object
+var com_greentube_convertertest2_TestInterfaceX = _defineInterface("com_greentube_convertertest2_TestInterfaceX",null);
+
+//reference// java/lang/Math
+//reference// java/lang/Integer
+//reference// java/lang/System
+//reference// java/lang/Byte
+//reference// java/lang/Boolean
+//reference// java/lang/Object
+//reference// java/lang/String
+//reference// java/lang/Double
+//reference// java/lang/StringBuffer
+//reference// java/lang/Runnable
+
+
+ 
+
+//load// com/greentube/convertertest/TestInterface
+//load// com/greentube/convertertest2/TestInterfaceX
+var com_greentube_convertertest2_TestInterface2 = _defineInterface("com_greentube_convertertest2_TestInterface2",[com_greentube_convertertest_TestInterface,com_greentube_convertertest2_TestInterfaceX]);
+
+//reference// java/lang/Math
+//reference// java/lang/Integer
+//reference// java/lang/System
+//reference// java/lang/Byte
+//reference// java/lang/Boolean
+//reference// com/greentube/convertertest/TestInterface
+//reference// java/lang/Object
+//reference// com/greentube/convertertest2/TestInterfaceX
+//reference// java/lang/String
+//reference// java/lang/Double
+//reference// java/lang/StringBuffer
+//reference// java/lang/Runnable
+
+//load// java/lang/Object
+
+// extend the javascript String object by monkey-patching in the necessary
+// java methods
+
+String.prototype._is_String = true;
+
+
+
+String.prototype.charAt_1 = function(x) {
+	return this.charCodeAt(x);
+};
+
+String.prototype.compareTo_1 = function (str) {
+    return this < str ? -1 : this > str ? 1 : 0;
+};
+
+String.prototype.concat_1 = function (str) {
+  return this.concat(str);
+};
+
+String.prototype.endsWith_1 = function(suffix) {
+    return this.indexOf(suffix, this.length - suffix.length) !== -1;
+};
+
+String.prototype.equals_1 = function(str) {
+  if (str==null) return false;
+  if (!(str._is_String)) return false;  
+	return this.valueOf() == str.valueOf();
+};
+
+String.prototype.hashCode_1 = function() {
+  return 4711;  // TODO: compute correct value
+};
+
+String.prototype.indexOf_1 = function(str) {
+	if (typeof str === "string") {
+		return this.indexOf(str);
+	} else {
+		return this.indexOf(String.fromCharCode(str));
+	}
+};
+
+String.prototype.indexOf_2 = function(str, x) {
+	if (typeof str === "string") {
+		return this.indexOf(str,x);
+	} else {
+		return this.indexOf(String.fromCharCode(str),x);
+	}
+};
+
+String.prototype.isEmpty_0 = function() {
+   return this.length_0() === 0;
+};   
+
+String.prototype.lastIndexOf_1 = function(str) {
+    if (typeof str === "string") {
+        return this.lastIndexOf(str);
+    } else {
+        return this.lastIndexOf(String.fromCharCode(str));
+    }
+};
+
+String.prototype.lastIndexOf_2 = function(str, x) {
+    if (typeof str === "string") {
+        return this.lastIndexOf(str, x);
+    } else {
+        return this.lastIndexOf(String.fromCharCode(str), x);
+    }
+};
+
+String.prototype.length_0 = function () {
+    return this.length;
+};
+
+String.prototype.replace_2 = function (str1, str2) {
+	if (typeof str1 === 'number')
+		str1 = String.fromCharCode(str1);
+	if (typeof str2 === 'number')
+		str2 = String.fromCharCode(str2);
+	if (str1==".") //TODO
+		str1="\\.";
+	return this.replace(new RegExp(str1,"g"),str2);
+};
+
+String.prototype.startsWith_1 = function(prefix) {
+    return this.indexOf(prefix) === 0;
+};
+
+String.prototype.substring_1 = function(start) {
+  return this.substring(start);
+};
+
+String.prototype.substring_2 = function(start,end) {
+  return this.substring(start,end);
+};  
+
+String.prototype.toCharArray_0 = function () {
+	var chararray = this.split('');
+	var i = 0;
+	chararray.forEach(function(entry) {
+	    chararray[i] = entry.charCodeAt();
+	    i++;
+	});
+	return chararray;
+};
+
+String.prototype.toString_0 = function() {
+  return this;
+};
+
+String.prototype.trim_0 = function() {
+  return this.trim();
+};
+
+
+
+//load// com/greentube/convertertest2/TestInterface2
+//load// java/lang/Object
+var com_greentube_convertertest2_TestObject2 = _extendClass(java_lang_Object,  {
+initialConstructor_0: function(){
+return java_lang_Object.prototype._0.call(this);
+}, 
+
+    add_2:function(a, b)
+    {
+    	return (a+b);
+    },
+    hello_0:function()
+    {
+    	return ("hello");
+    },	
+    sub_2:function(a, b)
+    {
+    	return (a-b);
+    }
+    
+},"com_greentube_convertertest2_TestObject2",[com_greentube_convertertest2_TestInterface2]);
+
+
+//reference// java/lang/Math
+//reference// java/lang/Integer
+//reference// com/greentube/convertertest2/TestInterface2
+//reference// java/lang/System
+//reference// java/lang/Byte
+//reference// java/lang/Boolean
+//reference// java/lang/Object
+//reference// java/lang/String
+//reference// java/lang/Double
+//reference// java/lang/StringBuffer
+//reference// java/lang/Runnable
+//load// java/lang/Object
+var java_util_Enumeration = _defineInterface({}, "java_util_Enumeration", []);
+
+//load// java/lang/Object
+var java_lang_Boolean = _extendClass (java_lang_Object, {
+	_1: function(b) {
+		this.b_f = b;
+        return this;
+    },
+	booleanValue_0: function() {
+		return this.b_f;
+    },
+    equals_1: function(b) {
+        if (b!=null && b._is_java_lang_Boolean && this.b_f == b.b_f) {
+          return true;
+        }
+        return false;
+    },
+    hashCode_0: function() {
+        return this.b_f ? 1231 : 1237;
+    },
+    toString_0: function() {
+      return java_lang_Boolean.s.toString_1(this.b_f);
+    },
+    
+ },"java_lang_Boolean", []);
+
+java_lang_Boolean.s.toString_1 = function(b) {
+      return b ? "true" : "false";
+};
+java_lang_Boolean.s.valueOf_1 = function(b) {
+      return b ? java_lang_Boolean.s.TRUE_f : java_lang_Boolean.s.FALSE_f;
+};
+java_lang_Boolean.s.TRUE_f = (new java_lang_Boolean)._1(true);
+java_lang_Boolean.s.FALSE_f = (new java_lang_Boolean)._1(false);
+
+//reference// java/lang/String
+
+//load// java/lang/Object
+var java_io_PrintStream = _extendClass (java_lang_Object, {
+
+	_1: function(iserr) {
+        this.iserr_f = iserr;
+        return this;
+    },
+    
+	println_1: function(obj) {
+		if (this.iserr_f) {
+            console.warn(obj);
+        } else {
+            console.log(obj);
+        }
+    },
+    
+},"java_io_PrintStream", []);
+
+//complete// java/io/PrintStream
+//load// java/lang/Object
+var java_lang_System = _extendClass( java_lang_Object, {}, "java_lang_System", []);
+
+java_lang_System.s.arraycopy_5 = function(src, srcPos, dest, destPos, length) {
+    if (destPos<=srcPos) {
+      for (var i = 0; i < length; i++) {
+        dest[i + destPos] = src[i + srcPos];
+      }
+    } else {
+      for (var i = length-1; i >=0; i--) {
+        dest[i + destPos] = src[i + srcPos];
+      }
+    }
+};
+
+java_lang_System_s.exit_1: function(status) {
+};
+
+java_lang_System.s.out_f = (new java_io_PrintStream())._1(false);
+java_lang_System.s.err_f = (new java_io_PrintStream())._1(true);
+//load// java/lang/Object
+var java_lang_StringBufferOrBuilder = _extendClass( java_lang_Object, {
+
+    _0: function() {
+        this.parts = [];
+        return this;
+    },
+    _1: function(initialvalue) {
+        this.parts = [initialvalue];
+        return this;
+    },
+    
+    append_1: function(o) {
+        this.parts.push(o!=null?o.toString_0():"null");
+        return this;
+    },
+  
+    length_0: function() {
+        var length = 0;
+        for (var i = 0; i<this.parts.length; i++){
+            length += this.parts[i].length;
+        }
+        return length;
+    },
+  
+    toString_0: function() {
+        return this.parts.join("");
+    }
+      
+ },"java_lang_StringBufferOrBuilder", []);
+ 
+//load// java/lang/StringBufferOrBuilder
+var java_lang_StringBuffer = _extendClass( java_lang_StringBufferOrBuilder, {} "java_lang_StringBuffer", []);
+//load// java/lang/Object
+//reference// java/util/function/BiConsumer
+var java_util_Map = _defineInterface( {
+    
+    forEach_1: function(biconsumer) {
+    }
+    
+},"java_util_Map",[]);  
+//load// java/lang/Object
+//load// java/util/Map
+var java_util_MapImpl = _extendClass( java_lang_Object, {
+
+	_0: function() {
+		 this.hashtable = {};
+         return this;
+	},
+	 
+    clone_0: function() {
+        var n2 = (new java_util_Hashtable)._0();
+        for (var i in this.hashtable) {
+            if ( this.hashtable.hasOwnProperty(i)) {
+                n2.put_2(i,this.hashtable[i]);
+            }
+        } 
+        return n2;    
+    },
+   
+	clear_0: function() {
+		this.hashtable = {};
+	},
+	
+	containsKey_1: function(key) {
+		return this.hashtable.hasOwnProperty(key);
+	},
+	
+	get_1: function(key) {
+        if (this.hashtable.hasOwnProperty(key)) {
+            return this.hashtable[key];
+        }
+        return null;
+	},
+	
+	isEmpty_0: function(){
+        return this.size_0() == 0;
+	},
+	
+	keys_0: function(){
+		var keys = (new java_util_HashtableEnumeration())._0();
+		for (var k in this.hashtable) {
+			if ( this.hashtable.hasOwnProperty(k)) {
+		    	keys.values.push(k);
+            }
+		}
+		return keys;
+	},
+
+    elements_0: function() {
+        var elements = (new java_util_HashtableEnumeration())._0();
+        for (var k in this.hashtable) {
+            if ( this.hashtable.hasOwnProperty(k)) {
+                elements.values.push(this.hashtable[k]);
+            }
+        }
+        return elements;
+    },
+	
+	put_2: function(key, value) {
+		if (key != null && value != null) {
+			this.hashtable[key] = value;
+		}
+	},
+	
+	remove_1: function(key) {
+        if (this.hashtable.hasOwnProperty(key)) {
+            var rtn = this.hashtable[key];
+            delete this.hashtable[key];
+            return rtn;
+        }
+        return null;
+	},
+	
+	size_0: function(){
+		var size = 0;
+		for (var i in this.hashtable) {
+			if (this.hashtable.hasOwnProperty(i)) {
+				size ++;
+            }
+		}
+		return size;
+	},
+	
+	toString_0: function(){
+		var result = "";
+		for (var k in this.hashtable)	{	  
+            if (this.hashtable.hasOwnProperty(k)) {
+                if (result.length>1) {
+                    result = result + ", ";
+                }
+                var v = this.hashtable[k];
+                if (v==null) {
+                    result = result + k + "=null";
+                } else {
+                    result = result + k + "=" + v.toString_0();
+                }
+            }
+		}
+		return "{" + result + "}";
+	},
+	  
+    equals_1: function(h) {
+        if (h==null || !h._is_java_util_Hashtable || this.size_0()!=h.size_0()) {
+            return false;
+        }
+        for (k in this.hashtable) {
+            if (this.hashtable.hasOwnProperty(k)) {
+                if (!h.hashtable.hasOwnProperty(k)) return false;
+                var o1 = this.hashtable[k];
+                var o2 = h.hashtable[k];
+                if (o1==null) {   
+                    if (o2!=null) return false;
+                }
+                else if (!o1.equals_1(o2)) {
+                    return false;
+                }
+            }
+        }    
+        return true;
+    }
+
+},"java_util_MapImpl", [java_util_Map]);
+
+
+//load// java/lang/Object
+//load// java/util/MapImpl
+var java_util_Hashtable = _extendClass( java_util_MapImpl, {
+    
+    
+    
+}, "java_util_Hashtable", []);
+
+//load// java/util/Enumeration
+var java_util_HashtableEnumeration = _extendClass( java_lang_Object, {
+    
+	_0: function() {
+		this.values = [];
+        this.idx = 0;
+        return this;
+	},
+    	
+	hasMoreElements_0 : function() {	
+		return this.idx < this.values.length;
+	},
+	
+	nextElement_0 : function() {	
+		if (this.idx >= this.values.length) return null;			
+		var o = this.values[this.idx];
+		this.idx++;			
+		return o;		
+	}		
+
+}, "java_util_HashtableEnumeration", [java_util_Enumeration] );
+
+//load// java/lang/Object
+var java_util_function_BiConsumer = _defineInterface( {
+   
+   andThen_1: function (after) {
+       return (new java_util_function_BiConsumerPair())._2(this,after);
+   }
+    
+}, "java_util_function_BiConsumer", []);
+//load// java/lang/Object
+var java_lang_Iterable = _defineInterface( {
+    
+    forEach_1: function (consumer) {
+        var i = this.iterator_0();
+        while (i.hasNext_0()) {
+            consumer.accept_1(i.next_0());
+        }
+    }
+    
+}, "java_lang_Iterable", []);
+//load// java/lang/Iterable
+var java_util_Collection = _defineInterface({}, "java_util_Collection", [java_lang_Iterable]);
+//load// java/util/Collection
+var java_util_List = _defineInterface({},"java_util_List",[java_util_Collection]);  
+//load// java/lang/Object
+//load// java/util/List
+var java_util_ListImpl = _extendClass( java_lang_Object, {
 
 	_0: function() {
         this.storage = [];
@@ -1552,1069 +2504,10 @@ var java_util_Vector = _extendClass( java_lang_Object, {
         return true;  
     }
   	
-},"java_util_Vector", []);
+},"java_util_ListImpl", [java_util_List]);
 
-//load// java/lang/Object
-var java_lang_Byte = _extendClass( java_lang_Object, {
-
-	_1: function(byteValue) {
-		this.byteValue_f = byteValue;
-        return this;
-    },
-    
-	byteValue_0: function() {
-		return this.byteValue_f;
-	},
-  
-	toString_0: function() {
-		return this.byteValue_f.toString();
-    },
-    
-    equals_1: function(b) {
-        if (b!=null && b._is_java_lang_Byte && this.byteValue_f == b.byteValue_f) {
-            return true;
-        }
-        return false;
-    },
-
-    toString_1: function (byteValue) {
-        return byteValue.toString();
-    },
-    
-},"java_lang_Byte", []);
-
-java_lang_Byte.prototype.MIN_VALUE_f = -128;
-java_lang_Byte.prototype.MAX_VALUE_f = 127;
-/*
- * TestParent.java
- *
- * Created on 24. Februar 2005, 08:43
- */
-
-
-
-
-
-
-
-// Parent parent class of java2flash test class to show various features 
-// concerning inheritance.
-
-//load// java/lang/Object
-var com_greentube_convertertest_TestParent = _extendClass(java_lang_Object,  {
-    
-    
-    
-    
-    _0: function() {
-this.dummyvector=null; 
- java_lang_Object.prototype._0.call(this); 
-        this.dummyvector_f = ((new java_util_Vector)._0());
-        this.dummyvector_f.addElement_1 (("el:0"));
-    return this;},
-    _1: function(vectorsize) {
-this.dummyvector=null; 
- java_lang_Object.prototype._0.call(this); 
-        this.dummyvector_f = (vectorsize>0) ? ((new java_util_Vector)._0()) : (null);
-        for (var  i=(0); (i<vectorsize); i++) {
-            this.dummyvector_f.addElement_1(("el:"+i));
-        }
-    return this;},
-    
-    gimmedummy_0:function() {
-        return (null);
-    },
-
-    toString_0:function()
-    {
-    	return ("TestParent"+this.dummyvector_f.size_0());
-    },
-    
-    staticmethod_0:function() {
-    	return (88);
-    }
-    
-
-},"com_greentube_convertertest_TestParent",[]);
-com_greentube_convertertest_TestParent.prototype.staticparentattribute_f = (66);
-
-
-//reference// java/lang/Math
-//reference// java/lang/Integer
-//reference// java/lang/System
-//reference// java/lang/Byte
-//reference// java/lang/Boolean
-//reference// java/util/Vector
-//reference// java/lang/Object
-//reference// java/lang/String
-//reference// java/lang/Double
-//reference// java/lang/StringBuffer
-//reference// java/lang/Runnable
-//load// java/lang/Object
-var java_lang_Integer = _extendClass( java_lang_Object, {
-
-	_1: function(integer) {
-		this.integer_f = integer;
-        return this;
-    },
-    
-    equals_1: function(i) {
-        if (i!=null && i._is_java_lang_Integer && i.integer_f==this.integer_f) {
-            return true;
-        }
-        return false;
-    },
-    
-	intValue_0: function() {
-		return this.integer_f;
-    },
-    
-    toString_0: function() {
-        return this.integer_f.toString();
-    },
-
-    toString_1: function(integer) {
-        return integer.toString();
-    },
-    
- },"java_lang_Integer", []);
- 
- 
-java_lang_Integer.prototype.MAX_VALUE_f = 2147483647;
-java_lang_Integer.prototype.MIN_VALUE_f = -2147483648;
-//load// java/lang/Object
-
-var java_lang_Math = _extendClass( java_lang_Object, {
-
-    abs_1: Math.abs,
-    acos_1: Math.acos,
-    asin_1: Math.asin,
-    atan_1: Math.atan,
-    atan2_2: Math.atan2,
-    ceil_1: Math.ceil,
-    cos_1: Math.cos,
-    exp_1: Math.exp,
-    floor_1: Math.floor,
-    log_1: Math.log,
-    max_2: Math.max,
-    min_2: Math.min,
-    pow_2: Math.pow,
-    round_1: Math.round,
-    sin_1: Math.sin,
-    sqrt_1: Math.sqrt,
-    tan_1: Math.tan,
-
-}, "java_lang_Math", [] );
-
-java_lang_Math.prototype.E_f =  2.718281828459045; 
-java_lang_Math.prototype.PI_f = 3.141592653589793;
-
-
-    // No native support for log10 in all common browsers yet, workaround returns imprecise result, unlike Java's and e.g. Chrome's log10 implementations.
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log10
-    if(typeof Math.log10 === "function") {
-      java_lang_Math.prototype.log10_1 = Math.log10;
-    }
-    else {
-      java_lang_Math.prototype.log10_1 = function log10(x) {
-        // e.g. in Firefox 24.1.1, the following returns -1.9999999999999996 instead of -2 for x = 0.01
-        // similar to workaround using Math.LN10, except probably faster and seems to work better for threshold cases >= 1, like 100, 10000, etc.
-        var result = Math.log(x) * Math.LOG10E;
-        var rounded = Math.round(result);
-        
-        // correct rounding error
-        if(Math.abs(Math.round(result) - (result)) < 0.00000000000001)
-          return rounded;
-        else
-          return result;
-      }
-    }
-/*
- * TestInterface.java
- *
- * Created on 24. Februar 2005, 13:54
- */
-
-
-
-
-/**
- *
- * @author  reinhard
- */
-//load// java/lang/Object
-var com_greentube_convertertest_TestInterface = _defineInterface("com_greentube_convertertest_TestInterface",null);
-
-//reference// java/lang/Math
-//reference// java/lang/Integer
-//reference// java/lang/System
-//reference// java/lang/Byte
-//reference// java/lang/Boolean
-//reference// java/lang/Object
-//reference// java/lang/String
-//reference// java/lang/Double
-//reference// java/lang/StringBuffer
-//reference// java/lang/Runnable
-//load// java/lang/Object
-var java_lang_Double = _extendClass ( java_lang_Object, {
-
-	_1: function(d) {
-		this.d_f = d;
-        return this;
-    },
-    
-    equals_1: function(d) {
-        if (d!=null && d._is_java_lang_Double && this.d_f==d.d_f) {
-            return true;
-        }
-        return false;
-    },
-
-    doubleValue_0: function() {
-        return this.d_f;
-    },
-    
-    toString_0: function() {
-        return java_lang_Double.prototype.toString_1(this.d_f);
-    },
-
-    toString_1: function(d) {
-        var s = d.toString();
-        if (s.indexOf('.')<0) return s+".0";
-        return s;
-    },
-},"java_lang_Double", []);
-
-java_lang_Double.prototype.MIN_VALUE_f = 4.9E-324;
-java_lang_Double.prototype.MAX_VALUE_f = 1.7976931348623157E308;
-java_lang_Double.prototype.POSITIVE_INFINITY_f = 1.0/0.0;
-java_lang_Double.prototype.NEGATIVE_INFINITY_f = -1.0/0.0;
-
-//load// java/lang/Object
-var java_lang_Runnable = _defineInterface("java_lang_Runnable", null);
-
-
-//load// java/lang/Object
-var com_greentube_convertertest_SecondaryClasses = _extendClass(java_lang_Object, 
- {
-	
-	
-	
-	
-	_0: function() {
-this.s2=null; 
-this.s3=null; 
- java_lang_Object.prototype._0.call(this); 
-		this.s2_f = ((new com_greentube_convertertest_S2)._0());
-		this.s3_f = ((new com_greentube_convertertest_S3)._0());		
-	return this;},
-	
-	x_0:function() {
-		return ("x="+com_greentube_convertertest_SecondaryClasses.prototype.ssx_f);
-	},
-	 
-	y_0:function() {
-		return ("sx="+com_greentube_convertertest_SecondaryClasses.prototype.ssx_f);
-	},
-	
-	testrun_0:function() {
-		return (this.x_0()+"|"+this.y_0()+"|"+this.s2_f.x_0()+"|"+com_greentube_convertertest_S2.prototype.y_0()+"|"+this.s3_f.x_0()+"|"+com_greentube_convertertest_S3.prototype.y_0());
-	},
-	
-	statictestrun_0:function() {
-		return (this.y_0()+"|"+com_greentube_convertertest_S2.prototype.y_0()+"|"+com_greentube_convertertest_S3.prototype.y_0());		
-	}
-},"com_greentube_convertertest_SecondaryClasses",[]);
-com_greentube_convertertest_SecondaryClasses.prototype.ssx_f = (99);
-
-
-//load// java/lang/Object
-var com_greentube_convertertest_S2 = _extendClass(java_lang_Object,  {	
-	
-
-	_0: function() 
-	{ java_lang_Object.prototype._0.call(this); return this;},
-	x_0:function() {
-		return ("s2="+com_greentube_convertertest_S2.prototype.ss2_f);
-	},
-	y_0:function() {
-		return ("ss2="+com_greentube_convertertest_S2.prototype.ss2_f);	
-	}
-},"com_greentube_convertertest_S2",[]);
-com_greentube_convertertest_S2.prototype.ss2_f = (98);
-
-
-//load// java/lang/Object
-var com_greentube_convertertest_S3 = _extendClass(java_lang_Object,  {
-	
-
-	_0: function()
-	{ java_lang_Object.prototype._0.call(this); 		
-	return this;},	
-	x_0:function() {
-		return ("s3="+com_greentube_convertertest_S3.prototype.ss3_f);
-	},
-	y_0:function() {
-		return ("ss3="+com_greentube_convertertest_S3.prototype.ss3_f);	
-	}
-},"com_greentube_convertertest_S3",[]);
-com_greentube_convertertest_S3.prototype.ss3_f = (97);
-
-
-//reference// java/lang/Math
-//reference// java/lang/Integer
-//reference// java/lang/System
-//reference// java/lang/Byte
-//reference// java/lang/Boolean
-//reference// java/lang/Object
-//reference// java/lang/String
-//reference// java/lang/Double
-//reference// java/lang/StringBuffer
-//reference// java/lang/Runnable
-
-
-
-//Parent class of java2flash test class to test super super calls
-
-//load// com/greentube/convertertest/TestInterface
-//load// com/greentube/convertertest/TestParent
-var com_greentube_convertertest_TestParentIntermediate = _extendClass(com_greentube_convertertest_TestParent, {
-
-	_1: function(i) {
-		com_greentube_convertertest_TestParent.prototype._1.call(this,(i));
-	return this;},
-
-	_0: function() { com_greentube_convertertest_TestParent.prototype._0.call(this); 
-	return this;},
-	
-    add_2:function(a, b)
-    {
-    	return (a+b);
-    },
-    hello_0:function()
-    {
-    	return ("hello");
-    }	
-	
-},"com_greentube_convertertest_TestParentIntermediate",[com_greentube_convertertest_TestInterface]);
-
-
-//reference// java/lang/Math
-//reference// java/lang/Integer
-//reference// java/lang/System
-//reference// java/lang/Byte
-//reference// java/lang/Boolean
-//reference// com/greentube/convertertest/TestParent
-//reference// com/greentube/convertertest/TestInterface
-//reference// java/lang/Object
-//reference// java/lang/String
-//reference// java/lang/Double
-//reference// java/lang/StringBuffer
-//reference// java/lang/Runnable
-/*
- * DummyClass.java
- *
- * Created on 09. September 2005, 10:18
- */
-
-
-
-/**
- *
- * @author  reinhard
- */
-//load// java/lang/Object
-var com_greentube_convertertest_DummyClass = _extendClass(java_lang_Object, {
-    
-    /** Creates a new instance of DummyClass */
-    _0: function() { java_lang_Object.prototype._0.call(this); 
-    return this;},
-    
-    /*OVERRIDE*/ toString_0:function() {
-        return ("dummy");
-    },
-    
-    secondaryString_0:function()
-    {
-    	return ((((new com_greentube_convertertest_Secondary)._0())).secondaryString_0());    	
-    }
-},"com_greentube_convertertest_DummyClass",[]);
-
-
-//load// java/lang/Object
-var com_greentube_convertertest_Secondary = _extendClass(java_lang_Object, {
-	
-	
-	_0: function()
-	{
-this.s=null; 
- java_lang_Object.prototype._0.call(this); 		
-		this.s_f = ("secondary");
-	return this;},	
-	
-	secondaryString_0:function()
-	{
-		return (this.s_f);
-	}
-	
-},"com_greentube_convertertest_Secondary",[]);
-
-//reference// java/lang/Math
-//reference// java/lang/Integer
-//reference// java/lang/System
-//reference// java/lang/Byte
-//reference// java/lang/Boolean
-//reference// java/lang/Object
-//reference// java/lang/String
-//reference// java/lang/Double
-//reference// java/lang/StringBuffer
-//reference// java/lang/Runnable
-//load// java/lang/Object
-var java_lang_StringBuffer = _extendClass( java_lang_Object, {
-
-    _0: function() {
-        this.parts = [];
-        return this;
-    },
-
-    _1: function(initialvalue) {
-        this.parts = [initialvalue];
-        return this;
-    },
-    
-    append_1: function(o) {
-        this.parts.push(o!=null?o.toString_0():"null");
-        return this;
-    },
-  
-    length_0: function() {
-        var length = 0;
-        for (var i = 0; i<this.parts.length; i++){
-            length += this.parts[i].length;
-        }
-        return length;
-    },
-  
-    toString_0: function() {
-        return this.parts.join("");
-    }
-      
- },"java_lang_StringBuffer", []);
- 
-
-
-
-// A test class to test the conversion of various features from java to other languages
-
-//load// com/greentube/convertertest/TestParentIntermediate
-var com_greentube_convertertest_TestObject = _extendClass(com_greentube_convertertest_TestParentIntermediate, {
-    
-    // instance attributes
-                      // instance attribute default initializer
-                      // instance attribute default initializer
-
-    
-    
-
-    // constructors
-    _0: function() {
-this.somestring=null; 
-this.somenumber=0; 
-this.moreobject=null; 
-this.dummyobject=null; 
-                  // construct without parameters
-        com_greentube_convertertest_TestParentIntermediate.prototype._0.call(this);                     // constructor calling superconstructor
-        this.somenumber_f = (4711);
-        this.somestring_f = ("defaulttext");
-    return this;},
-
-    _1: function(str) {        // constructor with 1 parametere
-        com_greentube_convertertest_TestObject.prototype._2.call(this,(str),(4711));              // calling second constructor of 'this'
-    return this;},    
-                                    // constructor with 2 parameters
-    _2: function(somestring, somenumber) {
-this.somestring=null; 
-this.somenumber=0; 
-this.moreobject=null; 
-this.dummyobject=null; 
- 
-        com_greentube_convertertest_TestParentIntermediate.prototype._1.call (this,(4));                      // constructor calling superconstructor
-        this.somestring_f = (somestring);   // local variables shadowing attributes
-        this.somenumber_f = (somenumber);
-    return this;},
-    _3: function(a, b, c)  {
-this.somestring=null; 
-this.somenumber=0; 
-this.moreobject=null; 
-this.dummyobject=null; 
- com_greentube_convertertest_TestParentIntermediate.prototype._0.call(this);  
-                                        // call default constructor of superclass     
-    return this;},
-      
-    shadowAttributeSum_0:function()
-    {
-    	var  somenumber = (123);
-    	return (this.shadowAttribute_0() + somenumber + this.staticmethod_0());
-    },
-    shadowAttribute_0:function()
-    {
-    	return (this.somenumber_f);
-    },
-    
-    accessParentStatic_0:function() {
-    	return (this.staticparentattribute_f);
-    },
-    
-    // should not be confused with the shadowAttribute method
-    shadowAttribute_1:function(someparameter)
-    {
-    	return (someparameter);
-    }
-    
-},"com_greentube_convertertest_TestObject",[]);
-
-
-
-
-//reference// java/lang/Math
-//reference// java/lang/Integer
-//reference// java/lang/System
-//reference// java/lang/Byte
-//reference// java/lang/Boolean
-//reference// com/greentube/convertertest/TestParentIntermediate
-//reference// java/lang/Object
-//reference// java/lang/String
-//reference// java/lang/Double
-//reference// java/lang/StringBuffer
-//reference// java/lang/Runnable
-
-
-//load// java/lang/Object
-var com_greentube_convertertest2_TestInterfaceX = _defineInterface("com_greentube_convertertest2_TestInterfaceX",null);
-
-//reference// java/lang/Math
-//reference// java/lang/Integer
-//reference// java/lang/System
-//reference// java/lang/Byte
-//reference// java/lang/Boolean
-//reference// java/lang/Object
-//reference// java/lang/String
-//reference// java/lang/Double
-//reference// java/lang/StringBuffer
-//reference// java/lang/Runnable
-
-
- 
-
-//load// com/greentube/convertertest/TestInterface
-//load// com/greentube/convertertest2/TestInterfaceX
-var com_greentube_convertertest2_TestInterface2 = _defineInterface("com_greentube_convertertest2_TestInterface2",[com_greentube_convertertest_TestInterface,com_greentube_convertertest2_TestInterfaceX]);
-
-//reference// java/lang/Math
-//reference// java/lang/Integer
-//reference// java/lang/System
-//reference// java/lang/Byte
-//reference// java/lang/Boolean
-//reference// com/greentube/convertertest/TestInterface
-//reference// java/lang/Object
-//reference// com/greentube/convertertest2/TestInterfaceX
-//reference// java/lang/String
-//reference// java/lang/Double
-//reference// java/lang/StringBuffer
-//reference// java/lang/Runnable
-
-//load// java/lang/Object
-
-// extend the javascript String object by monkey-patching in the necessary
-// java methods
-
-String.prototype._is_String = true;
-
-
-
-String.prototype.charAt_1 = function(x) {
-	return this.charCodeAt(x);
-};
-
-String.prototype.compareTo_1 = function (str) {
-    return this < str ? -1 : this > str ? 1 : 0;
-};
-
-String.prototype.concat_1 = function (str) {
-  return this.concat(str);
-};
-
-String.prototype.endsWith_1 = function(suffix) {
-    return this.indexOf(suffix, this.length - suffix.length) !== -1;
-};
-
-String.prototype.equals_1 = function(str) {
-  if (str==null) return false;
-  if (!(str._is_String)) return false;  
-	return this.valueOf() == str.valueOf();
-};
-
-String.prototype.indexOf_1 = function(str) {
-	if (typeof str === "string") {
-		return this.indexOf(str);
-	} else {
-		return this.indexOf(String.fromCharCode(str));
-	}
-};
-
-String.prototype.indexOf_2 = function(str, x) {
-	if (typeof str === "string") {
-		return this.indexOf(str,x);
-	} else {
-		return this.indexOf(String.fromCharCode(str),x);
-	}
-};
-
-String.prototype.isEmpty_0 = function() {
-   return this.length_0() === 0;
-};   
-
-String.prototype.lastIndexOf_1 = function(str) {
-    if (typeof str === "string") {
-        return this.lastIndexOf(str);
-    } else {
-        return this.lastIndexOf(String.fromCharCode(str));
-    }
-};
-
-String.prototype.lastIndexOf_2 = function(str, x) {
-    if (typeof str === "string") {
-        return this.lastIndexOf(str, x);
-    } else {
-        return this.lastIndexOf(String.fromCharCode(str), x);
-    }
-};
-
-String.prototype.length_0 = function () {
-    return this.length;
-};
-
-String.prototype.replace_2 = function (str1, str2) {
-	if (typeof str1 === 'number')
-		str1 = String.fromCharCode(str1);
-	if (typeof str2 === 'number')
-		str2 = String.fromCharCode(str2);
-	if (str1==".") //TODO
-		str1="\\.";
-	return this.replace(new RegExp(str1,"g"),str2);
-};
-
-String.prototype.startsWith_1 = function(prefix) {
-    return this.indexOf(prefix) === 0;
-};
-
-String.prototype.substring_1 = function(start) {
-  return this.substring(start);
-};
-
-String.prototype.substring_2 = function(start,end) {
-  return this.substring(start,end);
-};  
-
-String.prototype.toCharArray_0 = function () {
-	var chararray = this.split('');
-	var i = 0;
-	chararray.forEach(function(entry) {
-	    chararray[i] = entry.charCodeAt();
-	    i++;
-	});
-	return chararray;
-};
-
-String.prototype.toString_0 = function() {
-  return this;
-};
-
-String.prototype.trim_0 = function() {
-  return this.trim();
-};
-
-
-
-//load// com/greentube/convertertest2/TestInterface2
-//load// java/lang/Object
-var com_greentube_convertertest2_TestObject2 = _extendClass(java_lang_Object,  {
-initialConstructor_0: function(){
-return java_lang_Object.prototype._0.call(this);
-}, 
-
-    add_2:function(a, b)
-    {
-    	return (a+b);
-    },
-    hello_0:function()
-    {
-    	return ("hello");
-    },	
-    sub_2:function(a, b)
-    {
-    	return (a-b);
-    }
-    
-},"com_greentube_convertertest2_TestObject2",[com_greentube_convertertest2_TestInterface2]);
-
-
-//reference// java/lang/Math
-//reference// java/lang/Integer
-//reference// com/greentube/convertertest2/TestInterface2
-//reference// java/lang/System
-//reference// java/lang/Byte
-//reference// java/lang/Boolean
-//reference// java/lang/Object
-//reference// java/lang/String
-//reference// java/lang/Double
-//reference// java/lang/StringBuffer
-//reference// java/lang/Runnable
-//load// java/lang/Object
-var com_greentube_gameutil_Convert = _extendClass( java_lang_Object,  {
-  
-    stringToInt_1: function(s)
-    {
-        return com_greentube_gameutil_Convert.prototype.stringToInt_2(s,0);
-    },
-    
-    stringToInt_2: function(s, def) {
-        if ((s==null) || (s.length_0() < 1)) {
-            return (def);
-        }
-        var sign = 1;
-        if (s.startsWith_1("+")) {
-            s = s.substring_1(1);
-        } else if (s.startsWith_1("-")) {
-            s = s.substring_1(1);
-            sign = -1;
-        }
-        while (s.startsWith_1("0") && s.length>1) {
-            s = s.substring_1(1);
-        }        
-        var intvalue = parseInt(s);
-        if (isNaN(intvalue) || !(intvalue.toString()===s)) {
-          return def;
-        }
-        return sign*intvalue;
-    },
-    
-    hexToInt_1: function(s) {
-        if ((s==null) || (s.length_0() < 1)) {
-            return (0);
-        }
-        var sign = 1;
-        if (s.startsWith_1("+")) {
-            s = s.substring_1(1);
-        } else if (s.startsWith_1("-")) {
-            s = s.substring_1(1);
-            sign = -1;
-        }
-        while (s.startsWith_1("0") && s.length>1) {
-            s = s.substring_1(1);
-        }        
-
-        var intvalue = parseInt(s, 16);
-        if (isNaN(intvalue) || !(intvalue.toString(16)===s.toLowerCase())) {
-          return 0;
-        }
-        return sign*intvalue;
-    },
-        
-    stringToDouble_1: function(s) {
-        return com_greentube_gameutil_Convert.prototype.stringToDouble_2(s, 0);
-    },
-
-    stringToDouble_2: function(s, def) {
-        if (s==null || s.length_0()<1) {
-            return def;
-        }
-        if (s.startsWith_1("+")) {
-            s = s.substring_1(1);
-        }
-//        if (s.startsWith("NaN") || s.startsWith("Infinity")) {
-//            return def;
-//        }
-        if (!isFinite(+s)) return def;
-        
-        var v = parseFloat(s);
-        if (!isFinite(v)) return def;
-        return v;
-    },
-
-    stringToInt_4: function(s, offset, length, def) {
-        if ((s.length_0()<offset+length)) {return (def);}
-        return com_greentube_gameutil_Convert.prototype.stringToInt_2(s.substring_2(offset,offset+length), def);
-    },
-    
-    stringToInt_3: function(s, offset, length)
-    {
-        return (com_greentube_gameutil_Convert.prototype.stringToInt_4(s, offset, length, 0));
-    },
-    
-    charToString_1: function(c)
-    {
-        return String.fromCharCode(c);
-    },
-    
-    doubleToInt_1: function(d)
-    {
-        if (d>=0) return Math.floor(d+0.5);
-        else      return Math.ceil(d-0.5); 
-    },
-    
-    doubleToStringRounded_1: function(n)
-    {
-        return com_greentube_gameutil_Convert.prototype.doubleToStringRounded_2(n, "");
-    },
-
-    doubleToStringRounded_2: function(n, tsddot)
-    {
-    	if ((n<0)) {
-        return ("-"+com_greentube_gameutil_Convert.prototype.printNonnegativeIntegralDouble_2((Math.round((-n))),(tsddot)));
-      }
-    	else {
-        return (com_greentube_gameutil_Convert.prototype.printNonnegativeIntegralDouble_2((Math.round((n))),(tsddot)));
-     }
-    },
-    
-    printNonnegativeIntegralDouble_2: function(n, tsddot) {
-        if (!(n>=1000 && n<(1.0e+100))) return (""+Math.floor(n))
-        var  tsd = Math.floor((n/1000.0));
-
-        var  rest = (n-tsd*1000.0).toString();
-        while ((rest.length_0()<3)) {rest = ("0" + rest);}
-
-        return com_greentube_gameutil_Convert.prototype.printNonnegativeIntegralDouble_2
-          ((tsd),(tsddot)) + tsddot + rest;
-    }, 
- 
-},"com_greentube_gameutil_Convert", []);
-
-//load// java/lang/Object
-var java_util_Enumeration = _defineInterface("java_util_Enumeration", null);
-
-//load// java/lang/Object
-var java_util_Hashtable = _extendClass( java_lang_Object, {
-
-	_0: function() {
-		 this.hashtable = {};
-         return this;
-	},
-	 
-    clone_0: function() {
-        var n2 = (new java_util_Hashtable)._0();
-        for (var i in this.hashtable) {
-            if ( this.hashtable.hasOwnProperty(i)) {
-                n2.put_2(i,this.hashtable[i]);
-            }
-        } 
-        return n2;    
-    },
-   
-	clear_0: function() {
-		this.hashtable = {};
-	},
-	
-	containsKey_1: function(key) {
-		return this.hashtable.hasOwnProperty(key);
-	},
-	
-	get_1: function(key) {
-        if (this.hashtable.hasOwnProperty(key)) {
-            return this.hashtable[key];
-        }
-        return null;
-	},
-	
-	isEmpty_0: function(){
-        return this.size_0() == 0;
-	},
-	
-	keys_0: function(){
-		var keys = (new java_util_HashtableEnumeration())._0();
-		for (var k in this.hashtable) {
-			if ( this.hashtable.hasOwnProperty(k)) {
-		    	keys.values.push(k);
-            }
-		}
-		return keys;
-	},
-
-    elements_0: function() {
-        var elements = (new java_util_HashtableEnumeration())._0();
-        for (var k in this.hashtable) {
-            if ( this.hashtable.hasOwnProperty(k)) {
-                elements.values.push(this.hashtable[k]);
-            }
-        }
-        return elements;
-    },
-	
-	put_2: function(key, value) {
-		if (key != null && value != null) {
-			this.hashtable[key] = value;
-		}
-	},
-	
-	remove_1: function(key) {
-        if (this.hashtable.hasOwnProperty(key)) {
-            var rtn = this.hashtable[key];
-            delete this.hashtable[key];
-            return rtn;
-        }
-        return null;
-	},
-	
-	size_0: function(){
-		var size = 0;
-		for (var i in this.hashtable) {
-			if (this.hashtable.hasOwnProperty(i)) {
-				size ++;
-            }
-		}
-		return size;
-	},
-	
-	toString_0: function(){
-		var result = "";
-		for (var k in this.hashtable)	{	  
-            if (this.hashtable.hasOwnProperty(k)) {
-                if (result.length>1) {
-                    result = result + ", ";
-                }
-                var v = this.hashtable[k];
-                if (v==null) {
-                    result = result + k + "=null";
-                } else {
-                    result = result + k + "=" + v.toString_0();
-                }
-            }
-		}
-		return "{" + result + "}";
-	},
-	  
-    equals_1: function(h) {
-        if (h==null || !h._is_java_util_Hashtable || this.size_0()!=h.size_0()) {
-            return false;
-        }
-        for (k in this.hashtable) {
-            if (this.hashtable.hasOwnProperty(k)) {
-                if (!h.hashtable.hasOwnProperty(k)) return false;
-                var o1 = this.hashtable[k];
-                var o2 = h.hashtable[k];
-                if (o1==null) {   
-                    if (o2!=null) return false;
-                }
-                else if (!o1.equals_1(o2)) {
-                    return false;
-                }
-            }
-        }    
-        return true;
-    }
-
-},"java_util_Hashtable", []);
-
-//load// java/util/Enumeration
-var java_util_HashtableEnumeration = _extendClass( java_lang_Object, {
-    
-	_0: function() {
-		this.values = [];
-        this.idx = 0;
-        return this;
-	},
-    	
-	hasMoreElements_0 : function() {	
-		return this.idx < this.values.length;
-	},
-	
-	nextElement_0 : function() {	
-		if (this.idx >= this.values.length) return null;			
-		var o = this.values[this.idx];
-		this.idx++;			
-		return o;		
-	}		
-
-}, "java_util_HashtableEnumeration", [java_util_Enumeration] );
-
-//load// java/lang/Object
-var java_lang_Boolean = _extendClass (java_lang_Object, {
-	_1: function(b) {
-		this.b_f = b;
-        return this;
-    },
-	booleanValue_0: function() {
-		return this.b_f;
-    },
-    equals_1: function(b) {
-        if (b!=null && b._is_java_lang_Boolean && this.b_f == b.b_f) {
-          return true;
-        }
-        return false;
-    },
-    toString_0: function() {
-      return java_lang_Boolean.prototype.toString_1(this.b_f);
-    },
-    
-    toString_1: function(b) {
-      return b ? "true" : "false";
-    },
-
-    valueOf_1: function(b) {
-      return b ? java_lang_Boolean.prototype.TRUE_f : java_lang_Boolean.prototype.FALSE_f;
-    },
-    
- },"java_lang_Boolean", []);
-
-java_lang_Boolean.prototype.TRUE_f = (new java_lang_Boolean)._1(true);
-java_lang_Boolean.prototype.FALSE_f = (new java_lang_Boolean)._1(false);
- 
-
-//reference// java/lang/String
-
-//load// java/lang/Object
-var java_io_PrintStream = _extendClass (java_lang_Object, {
-
-	_1: function(iserr) {
-        this.iserr_f = iserr;
-        return this;
-    },
-    
-	println_1: function(obj) {
-		if (this.iserr_f) {
-            console.warn(obj);
-        } else {
-            console.log(obj);
-        }
-    },
-    
-},"java_io_PrintStream", []);
-
-
-//load// java/lang/Object
-var java_lang_System = _extendClass( java_lang_Object, {
-  
-  arraycopy_5: function(src, srcPos, dest, destPos, length) {
-    if (destPos<=srcPos) {
-      for (var i = 0; i < length; i++) {
-        dest[i + destPos] = src[i + srcPos];
-      }
-    } else {
-      for (var i = length-1; i >=0; i--) {
-        dest[i + destPos] = src[i + srcPos];
-      }
-    }
-  },
-  
-  exit_1: function(status) {
-  },
-  
-}, "java_lang_System", []);
-
-//complete// java/io/PrintStream
-java_lang_System.prototype.out_f = (new java_io_PrintStream())._1(false);
-java_lang_System.prototype.err_f = (new java_io_PrintStream())._1(true);
+//load// java/util/ListImpl
+var java_util_Vector = _extendClass( java_util_ListImpl, {}, "java_util_Vector", []);
 /*
  * StaticClass.java
  *
@@ -2812,21 +2705,21 @@ return java_lang_Object.prototype._0.call(this);
 	}
 	
 },"com_greentube_convertertest_StaticClass",[]);
-com_greentube_convertertest_StaticClass.prototype.a_f = (17);
-com_greentube_convertertest_StaticClass.prototype.b_f = ("hello kitty");
-com_greentube_convertertest_StaticClass.prototype.c_f = ((new java_util_Vector)._0());
-com_greentube_convertertest_StaticClass.prototype.d_f = ((new com_greentube_convertertest_DummyClass)._0());
-com_greentube_convertertest_StaticClass.prototype.e_f=null;
-com_greentube_convertertest_StaticClass.prototype.f_f=0;
-com_greentube_convertertest_StaticClass.prototype.ia_f = [ [ [ (4), (4) ] ,
+com_greentube_convertertest_StaticClass.s.a_f = (17);
+com_greentube_convertertest_StaticClass.s.b_f = ("hello kitty");
+com_greentube_convertertest_StaticClass.s.c_f = ((new java_util_Vector)._0());
+com_greentube_convertertest_StaticClass.s.d_f = ((new com_greentube_convertertest_DummyClass)._0());
+com_greentube_convertertest_StaticClass.s.e_f=null;
+com_greentube_convertertest_StaticClass.s.f_f=0;
+com_greentube_convertertest_StaticClass.s.ia_f = [ [ [ (4), (4) ] ,
                               [ (6), (7) ]
                             ],
                             [ [ (11), (123), (123) ] ]
                           ];
-com_greentube_convertertest_StaticClass.prototype.sa_f = [ ("one"), ("two"), ("three") ];
-com_greentube_convertertest_StaticClass.prototype.saa_f = [ [ ("x"), ("y") ], [ ("a"), ("b"), ("c")] ];
-com_greentube_convertertest_StaticClass.prototype.ROWCOUNT_f = [(3), (6), (9), (10)];
-com_greentube_convertertest_StaticClass.prototype.REFERENCES_f = [ [[(0),(1)],[(2),(3)],[(4),(5)]],[[(0),(1)],[(1),(2)],[(3),(4)],[(4),(5)],[(6),(7)],[(7),(8)]],[[(0),(1)],[(1),(2)],[(2),(3)],[(3),(4)],[(4),(5)],[(5),(6)],[(6),(7)],[(7),(8)],[(8),(9)]]];
+com_greentube_convertertest_StaticClass.s.sa_f = [ ("one"), ("two"), ("three") ];
+com_greentube_convertertest_StaticClass.s.saa_f = [ [ ("x"), ("y") ], [ ("a"), ("b"), ("c")] ];
+com_greentube_convertertest_StaticClass.s.ROWCOUNT_f = [(3), (6), (9), (10)];
+com_greentube_convertertest_StaticClass.s.REFERENCES_f = [ [[(0),(1)],[(2),(3)],[(4),(5)]],[[(0),(1)],[(1),(2)],[(3),(4)],[(4),(5)],[(6),(7)],[(7),(8)]],[[(0),(1)],[(1),(2)],[(2),(3)],[(3),(4)],[(4),(5)],[(5),(6)],[(6),(7)],[(7),(8)],[(8),(9)]]];
 
 
 //reference// java/lang/Math

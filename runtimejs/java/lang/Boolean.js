@@ -17,16 +17,17 @@ var java_lang_Boolean = _extendClass (java_lang_Object, {
         return this.b_f ? 1231 : 1237;
     },
     toString_0: function() {
-      return java_lang_Boolean.s.toString_1(this.b_f);
+      return this.b_f ? "true" : "false";
     },
     
- },"java_lang_Boolean", []);
-
-java_lang_Boolean.s.toString_1 = function(b) {
+    toString_1: function(b) {
       return b ? "true" : "false";
-};
-java_lang_Boolean.s.valueOf_1 = function(b) {
+    },
+    valueOf_1: function(b) {
       return b ? java_lang_Boolean.s.TRUE_f : java_lang_Boolean.s.FALSE_f;
-};
+    },
+        
+ },"java_lang_Boolean", null);
+
 java_lang_Boolean.s.TRUE_f = (new java_lang_Boolean)._1(true);
 java_lang_Boolean.s.FALSE_f = (new java_lang_Boolean)._1(false);

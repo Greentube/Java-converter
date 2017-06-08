@@ -195,21 +195,21 @@ return java_lang_Object.prototype._0.call(this);
 	}
 	
 },"com_greentube_convertertest_StaticClass",[]);
-com_greentube_convertertest_StaticClass.prototype.a_f = (17);
-com_greentube_convertertest_StaticClass.prototype.b_f = ("hello kitty");
-com_greentube_convertertest_StaticClass.prototype.c_f = ((new java_util_Vector)._0());
-com_greentube_convertertest_StaticClass.prototype.d_f = ((new com_greentube_convertertest_DummyClass)._0());
-com_greentube_convertertest_StaticClass.prototype.e_f=null;
-com_greentube_convertertest_StaticClass.prototype.f_f=0;
-com_greentube_convertertest_StaticClass.prototype.ia_f = [ [ [ (4), (4) ] ,
+com_greentube_convertertest_StaticClass.s.a_f = (17);
+com_greentube_convertertest_StaticClass.s.b_f = ("hello kitty");
+com_greentube_convertertest_StaticClass.s.c_f = ((new java_util_Vector)._0());
+com_greentube_convertertest_StaticClass.s.d_f = ((new com_greentube_convertertest_DummyClass)._0());
+com_greentube_convertertest_StaticClass.s.e_f=null;
+com_greentube_convertertest_StaticClass.s.f_f=0;
+com_greentube_convertertest_StaticClass.s.ia_f = [ [ [ (4), (4) ] ,
                               [ (6), (7) ]
                             ],
                             [ [ (11), (123), (123) ] ]
                           ];
-com_greentube_convertertest_StaticClass.prototype.sa_f = [ ("one"), ("two"), ("three") ];
-com_greentube_convertertest_StaticClass.prototype.saa_f = [ [ ("x"), ("y") ], [ ("a"), ("b"), ("c")] ];
-com_greentube_convertertest_StaticClass.prototype.ROWCOUNT_f = [(3), (6), (9), (10)];
-com_greentube_convertertest_StaticClass.prototype.REFERENCES_f = [ [[(0),(1)],[(2),(3)],[(4),(5)]],[[(0),(1)],[(1),(2)],[(3),(4)],[(4),(5)],[(6),(7)],[(7),(8)]],[[(0),(1)],[(1),(2)],[(2),(3)],[(3),(4)],[(4),(5)],[(5),(6)],[(6),(7)],[(7),(8)],[(8),(9)]]];
+com_greentube_convertertest_StaticClass.s.sa_f = [ ("one"), ("two"), ("three") ];
+com_greentube_convertertest_StaticClass.s.saa_f = [ [ ("x"), ("y") ], [ ("a"), ("b"), ("c")] ];
+com_greentube_convertertest_StaticClass.s.ROWCOUNT_f = [(3), (6), (9), (10)];
+com_greentube_convertertest_StaticClass.s.REFERENCES_f = [ [[(0),(1)],[(2),(3)],[(4),(5)]],[[(0),(1)],[(1),(2)],[(3),(4)],[(4),(5)],[(6),(7)],[(7),(8)]],[[(0),(1)],[(1),(2)],[(2),(3)],[(3),(4)],[(4),(5)],[(5),(6)],[(6),(7)],[(7),(8)],[(8),(9)]]];
 
 
 //reference// java/lang/Math

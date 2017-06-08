@@ -8,7 +8,6 @@
 
 
 
-
 // A test class to test the conversion of various features from java to other languages
 
 //load// java/lang/Object
@@ -16,45 +15,7 @@ var com_greentube_convertertest_Test = _extendClass(java_lang_Object,  {
 initialConstructor_0: function(){
 return java_lang_Object.prototype._0.call(this);
 }, 
-	
-    // --------- java features not supported by Java2FlashConverter -----------
-    
-    //    {                                 // static initializer code
-    //        for (int i=0; i<2; i++) {
-    //            Debug.log("init"+i);
-    //        }
-    //    }
-    
-    // public Test(int i) { return; }  // constructor with return statement
-
-    // int attrib = 5;                 // instance attribute with initializer
-    
-    // void dosomething(int i) {}      // method signature differs only in parameter
-    // void dosomething(String s) {}   //   types but not in number of parameters
-    
-    // void finalize() {}              // finalizer methods
-    
-    // public synchroinzed void x() {} // synchronized methods
-    
-    // public void y() { synchronized(this) {}} // synchronized blocks
-    
-    // public void z() { throw new NullPointerException(); } // try,catch,throw,finally
-    
-    // class inner { }                         // inner classes
-
-    // int i,j[];          // number of [] differ for multiple variables in single declarator
-    
-    // a[j++] += 1;         // may not add something to left side with side effects 
-                            // (can not be mapped to method call)
-    
-    // int stringtest_0;    // attributes and local variables must not end with _ or
-                            // _<number> to prevent collision with method names
-    
-    // a /= 5;              // the /= operator is not allowed
-    // double d;            // no support for double precission floating point types
-    // long l;              // no support for long data types
-    
-	
+		
     // ----------- allowed features --------------------------------------------
     
     // class attributes
@@ -88,7 +49,7 @@ return java_lang_Object.prototype._0.call(this);
         this.hashtabletest_0();        
         this.vectortest_0();
         
-        this.converttest_0();
+//        converttest();
 //        encodedecodetest();
         this.secondaryclassestest_0();
         this.complexoperationtest_0();
@@ -99,12 +60,12 @@ return java_lang_Object.prototype._0.call(this);
     staticattributestests_0:function()
     {
     	java_lang_System.prototype.out_f.println_1(("- static attributes"));
-        this.assertI_2((com_greentube_convertertest_Test.prototype.staticint_f), (4));
-        this.assertI_2((com_greentube_convertertest_Test.prototype.staticint99_f) ,(99));
+        this.assertI_2((com_greentube_convertertest_Test.s.staticint_f), (4));
+        this.assertI_2((com_greentube_convertertest_Test.s.staticint99_f) ,(99));
         
-        this.assertI_2((com_greentube_convertertest_Test.prototype.static1_f) ,(0));
-        com_greentube_convertertest_Test.prototype.static1_f = (44);
-        this.assertI_2((com_greentube_convertertest_Test.prototype.static1_f), (44));
+        this.assertI_2((com_greentube_convertertest_Test.s.static1_f) ,(0));
+        com_greentube_convertertest_Test.s.static1_f = (44);
+        this.assertI_2((com_greentube_convertertest_Test.s.static1_f), (44));
                
         this.assertI_2((com_greentube_convertertest_StaticClass.prototype.a_f), (17));
         this.assertO_2((com_greentube_convertertest_StaticClass.prototype.b_f), ("hello kitty"));
@@ -237,7 +198,7 @@ return java_lang_Object.prototype._0.call(this);
     },
     getShadowed99_0:function()
     {
-    	return (com_greentube_convertertest_Test.prototype.staticint99_f);
+    	return (com_greentube_convertertest_Test.s.staticint99_f);
     },
 
     casttest_0:function() {
@@ -947,70 +908,70 @@ return java_lang_Object.prototype._0.call(this);
     	this.assertB_1((ev.contains_1((ht.get_1(("E"))))));
     },
 
-    converttest_0:function() {
-    	java_lang_System.prototype.out_f.println_1(("- convert"));
-        	
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.stringToInt_1(("23"))), (23));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.stringToInt_1(("+312"))), (312));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.stringToInt_1(("+x312"))), (0));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.stringToInt_1(("x23"))), (0));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.stringToInt_1(("23x"))), (0));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.stringToInt_1(("4234.12"))), (0));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.stringToInt_2(("-23"), (47))), (-23));    	
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.stringToInt_2(("-0023"), (47))), (-23));    	
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.stringToInt_2(("+0ab"), (15))), (15));    	
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.stringToInt_2(("+031"), (15))), (31));    	
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.stringToInt_2(("4234.12"), (47))), (47));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.stringToInt_2(("x23"), (47))), (47));
-    	
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.stringToInt_3(("x23"), (1),(2))), (23));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.stringToInt_3(("x23"), (0),(2))), (0));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.stringToInt_4(("x-23f"), (1),(3), (99))), (-23));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.stringToInt_4(("x-23f"), (1),(4), (99))), (99));
-    	
-    	this.assertD_2((com_greentube_gameutil_Convert.prototype.stringToDouble_1(("4234.4"))), (4234.4));
-    	this.assertD_2((com_greentube_gameutil_Convert.prototype.stringToDouble_1(("-4123123.4"))), (-4123123.4));
-    	this.assertD_2((com_greentube_gameutil_Convert.prototype.stringToDouble_1(("4x234.4"))), (0));
-    	this.assertD_2((com_greentube_gameutil_Convert.prototype.stringToDouble_2(("4x234.4"), (33))), (33));
-    	this.assertD_2((com_greentube_gameutil_Convert.prototype.stringToDouble_2(("4234.x4"), (33))), (33));
-    	this.assertD_2((com_greentube_gameutil_Convert.prototype.stringToDouble_2(("NaN"), (5))), (5));
-    	this.assertD_2((com_greentube_gameutil_Convert.prototype.stringToDouble_2(("Infinity"), (5))), (5));
-    	this.assertD_2((com_greentube_gameutil_Convert.prototype.stringToDouble_2(("+Infinity"), (5))), (5));
-    	this.assertD_2((com_greentube_gameutil_Convert.prototype.stringToDouble_2(("+Nan"), (5))), (5));
-    	
-    	this.assertO_2((com_greentube_gameutil_Convert.prototype.charToString_1((120))), ("x"));
-    	
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.doubleToInt_1((-0.3))), (0));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.doubleToInt_1((1.4))), (1));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.doubleToInt_1((-1.4))), (-1));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.doubleToInt_1((5.5))), (6));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.doubleToInt_1((5.9))), (6));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.doubleToInt_1((-3.5))), (-4));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.doubleToInt_1((-3.7))), (-4));
-    	
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.hexToInt_1(("f"))), (15));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.hexToInt_1(("-a"))), (-10));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.hexToInt_1(("fA"))), (16*15+10));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.hexToInt_1(("2F"))), (32+15));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.hexToInt_1(("-002F"))), (-((32+15))));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.hexToInt_1(("x"))), (0));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.hexToInt_1(("13x"))), (0));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.hexToInt_1(("-013x"))), (0));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.hexToInt_1(("-0fb.44"))), (0));
-    	this.assertI_2((com_greentube_gameutil_Convert.prototype.hexToInt_1(("-0fb.4x"))), (0));
-    	
-    	this.assertO_2((com_greentube_gameutil_Convert.prototype.doubleToStringRounded_1((1355.11))), ("1355"));
-    	this.assertO_2((com_greentube_gameutil_Convert.prototype.doubleToStringRounded_1((1355.5))), ("1356"));
-    	this.assertO_2((com_greentube_gameutil_Convert.prototype.doubleToStringRounded_1((-3.5))), ("-4"));
-    	this.assertO_2((com_greentube_gameutil_Convert.prototype.doubleToStringRounded_1((423455.7))), ("423456"));
-    	this.assertO_2((com_greentube_gameutil_Convert.prototype.doubleToStringRounded_1((-423455.7))), ("-423456"));
-    	this.assertO_2((com_greentube_gameutil_Convert.prototype.doubleToStringRounded_1((-423455.7))), ("-423456"));
-    	
-    	this.assertO_2((com_greentube_gameutil_Convert.prototype.doubleToStringRounded_2((14144), ("#"))), ("14#144"));
-    	this.assertO_2((com_greentube_gameutil_Convert.prototype.doubleToStringRounded_2((999999.9), ("\x27"))), ("1\x27000\x27000"));
-    	this.assertO_2((com_greentube_gameutil_Convert.prototype.doubleToStringRounded_2((-999999.5), ("\x27"))), ("-1\x27000\x27000"));
-    },
-    
+//    public static void converttest() {
+//    	System.out.println("- convert");
+//        	
+//    	assertI(Convert.stringToInt("23"), 23);
+//    	assertI(Convert.stringToInt("+312"), 312);
+//    	assertI(Convert.stringToInt("+x312"), 0);
+//    	assertI(Convert.stringToInt("x23"), 0);
+//    	assertI(Convert.stringToInt("23x"), 0);
+//    	assertI(Convert.stringToInt("4234.12"), 0);
+//    	assertI(Convert.stringToInt("-23", 47), -23);    	
+//    	assertI(Convert.stringToInt("-0023", 47), -23);    	
+//    	assertI(Convert.stringToInt("+0ab", 15), 15);    	
+//    	assertI(Convert.stringToInt("+031", 15), 31);    	
+//    	assertI(Convert.stringToInt("4234.12", 47), 47);
+//    	assertI(Convert.stringToInt("x23", 47), 47);
+//    	
+//    	assertI(Convert.stringToInt("x23", 1,2), 23);
+//    	assertI(Convert.stringToInt("x23", 0,2), 0);
+//    	assertI(Convert.stringToInt("x-23f", 1,3, 99), -23);
+//    	assertI(Convert.stringToInt("x-23f", 1,4, 99), 99);
+//    	
+//    	assertD(Convert.stringToDouble("4234.4"), 4234.4);
+//    	assertD(Convert.stringToDouble("-4123123.4"), -4123123.4);
+//    	assertD(Convert.stringToDouble("4x234.4"), 0);
+//    	assertD(Convert.stringToDouble("4x234.4", 33), 33);
+//    	assertD(Convert.stringToDouble("4234.x4", 33), 33);
+//    	assertD(Convert.stringToDouble("NaN", 5), 5);
+//    	assertD(Convert.stringToDouble("Infinity", 5), 5);
+//    	assertD(Convert.stringToDouble("+Infinity", 5), 5);
+//    	assertD(Convert.stringToDouble("+Nan", 5), 5);
+//    	
+//    	assertO(Convert.charToString('x'), "x");
+//    	
+//    	assertI(Convert.doubleToInt(-0.3), 0);
+//    	assertI(Convert.doubleToInt(1.4), 1);
+//    	assertI(Convert.doubleToInt(-1.4), -1);
+//    	assertI(Convert.doubleToInt(5.5), 6);
+//    	assertI(Convert.doubleToInt(5.9), 6);
+//    	assertI(Convert.doubleToInt(-3.5), -4);
+//    	assertI(Convert.doubleToInt(-3.7), -4);
+//    	
+//    	assertI(Convert.hexToInt("f"), 15);
+//    	assertI(Convert.hexToInt("-a"), -10);
+//    	assertI(Convert.hexToInt("fA"), 16*15+10);
+//    	assertI(Convert.hexToInt("2F"), 32+15);
+//    	assertI(Convert.hexToInt("-002F"), -(32+15));
+//    	assertI(Convert.hexToInt("x"), 0);
+//    	assertI(Convert.hexToInt("13x"), 0);
+//    	assertI(Convert.hexToInt("-013x"), 0);
+//    	assertI(Convert.hexToInt("-0fb.44"), 0);
+//    	assertI(Convert.hexToInt("-0fb.4x"), 0);
+//    	
+//    	assertO(Convert.doubleToStringRounded(1355.11), "1355");
+//    	assertO(Convert.doubleToStringRounded(1355.5), "1356");
+//    	assertO(Convert.doubleToStringRounded(-3.5), "-4");
+//    	assertO(Convert.doubleToStringRounded(423455.7), "423456");
+//    	assertO(Convert.doubleToStringRounded(-423455.7), "-423456");
+//    	assertO(Convert.doubleToStringRounded(-423455.7), "-423456");
+//    	
+//    	assertO(Convert.doubleToStringRounded(14144, "#"), "14#144");
+//    	assertO(Convert.doubleToStringRounded(999999.9, "'"), "1'000'000");
+//    	assertO(Convert.doubleToStringRounded(-999999.5, "'"), "-1'000'000");
+//    }
+//    
 //    public static void encodedecodetest()
 //    {
 //    	Debug.log("- encode/decode");
@@ -1144,9 +1105,9 @@ return java_lang_Object.prototype._0.call(this);
     }
     
 },"com_greentube_convertertest_Test",[]);
-com_greentube_convertertest_Test.prototype.staticint_f = (4);
-com_greentube_convertertest_Test.prototype.staticint99_f = (99);
-com_greentube_convertertest_Test.prototype.static1_f=0, com_greentube_convertertest_Test.prototype.static2_f=0;
+com_greentube_convertertest_Test.s.staticint_f = (4);
+com_greentube_convertertest_Test.s.staticint99_f = (99);
+com_greentube_convertertest_Test.s.static1_f=0, com_greentube_convertertest_Test.s.static2_f=0;
 
 
 
@@ -1172,6 +1133,5 @@ com_greentube_convertertest_Test.prototype.static1_f=0, com_greentube_convertert
 //reference// java/lang/Object
 //reference// java/lang/String
 //reference// com/greentube/convertertest2/TestObject2
-//reference// com/greentube/gameutil/Convert
 //reference// java/util/Enumeration
 //reference// java/lang/Boolean
