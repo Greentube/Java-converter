@@ -233,7 +233,7 @@ public class AnyConverter {
             // no support for types "long", "float"
             Node n = node.findTerminalNode(null);
             if (n!=null 
-            &&  ((n.text.equals("long") && !allow_long) || n.text.equals("float"))) {
+            &&  ((n.text.equals("long") && !allow_long) || n.text.equals("float") || n.text.equals("short"))) {
                 printError (errors, node.lineNumber, "No support for datatype: "+n.text);
             }
             

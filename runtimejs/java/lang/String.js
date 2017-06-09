@@ -4,7 +4,8 @@
 // extend the javascript String object by monkey-patching in the necessary
 // java methods
 
-String.prototype._is_String = true;
+String.prototype._is_java_lang_Object = true;
+String.prototype._is_java_lang_String = true;
 
 
 
@@ -25,8 +26,8 @@ String.prototype.endsWith_1 = function(suffix) {
 };
 
 String.prototype.equals_1 = function(str) {
-  if (str==null) return false;
-  if (!(str._is_String)) return false;  
+    if (str==null) return false;
+    if (!(str._is_java_lang_String)) return false;  
 	return this.valueOf() == str.valueOf();
 };
 
@@ -35,7 +36,7 @@ String.prototype.hashCode_1 = function() {
 };
 
 String.prototype.indexOf_1 = function(str) {
-	if (typeof str === "string") {
+	if (str._is_java_lang_String) {
 		return this.indexOf(str);
 	} else {
 		return this.indexOf(String.fromCharCode(str));
@@ -43,7 +44,7 @@ String.prototype.indexOf_1 = function(str) {
 };
 
 String.prototype.indexOf_2 = function(str, x) {
-	if (typeof str === "string") {
+	if (str._is_java_lang_String) {
 		return this.indexOf(str,x);
 	} else {
 		return this.indexOf(String.fromCharCode(str),x);
@@ -55,7 +56,7 @@ String.prototype.isEmpty_0 = function() {
 };   
 
 String.prototype.lastIndexOf_1 = function(str) {
-    if (typeof str === "string") {
+	if (str._is_java_lang_String) {
         return this.lastIndexOf(str);
     } else {
         return this.lastIndexOf(String.fromCharCode(str));
@@ -63,7 +64,7 @@ String.prototype.lastIndexOf_1 = function(str) {
 };
 
 String.prototype.lastIndexOf_2 = function(str, x) {
-    if (typeof str === "string") {
+	if (str._is_java_lang_String) {
         return this.lastIndexOf(str, x);
     } else {
         return this.lastIndexOf(String.fromCharCode(str), x);
@@ -74,14 +75,10 @@ String.prototype.length_0 = function () {
     return this.length;
 };
 
-String.prototype.replace_2 = function (str1, str2) {
-	if (typeof str1 === 'number')
-		str1 = String.fromCharCode(str1);
-	if (typeof str2 === 'number')
-		str2 = String.fromCharCode(str2);
-	if (str1==".") //TODO
-		str1="\\.";
-	return this.replace(new RegExp(str1,"g"),str2);
+String.prototype.replace_2 = function (oldChar, newChar) {
+	var s = String.fromCharCode(oldChar);
+	if (s==".") s="\\."; // avoid confusion with regular expression syntax
+	return this.replace(new RegExp(s,"g"),String.fromCharCode(newChar));
 };
 
 String.prototype.startsWith_1 = function(prefix) {

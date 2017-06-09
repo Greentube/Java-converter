@@ -3,6 +3,8 @@
 var java_util_Vector = _extendClass( java_util_ListImpl, {
     
     // legacy methods only supported by Vector (but not the List interface )
+    // everything can be easily implemented by just using the methods of the
+    // List interface
     
 	addElement_1: function(o) {
 		this.add_1(o);

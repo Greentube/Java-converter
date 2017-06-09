@@ -31,5 +31,5 @@ var java_lang_Integer = _extendClass( java_lang_Object, {
  },"java_lang_Integer",  null);
  
  
-java_lang_Integer.s.MAX_VALUE_f = 2147483647;
-java_lang_Integer.s.MIN_VALUE_f = -2147483648;
+java_lang_Integer.prototype.MAX_VALUE_f = 2147483647;
+java_lang_Integer.prototype.MIN_VALUE_f = -2147483648;

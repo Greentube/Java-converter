@@ -24,10 +24,10 @@ var java_lang_Boolean = _extendClass (java_lang_Object, {
       return b ? "true" : "false";
     },
     valueOf_1: function(b) {
-      return b ? java_lang_Boolean.s.TRUE_f : java_lang_Boolean.s.FALSE_f;
+      return b ? java_lang_Boolean.prototype.TRUE_f : java_lang_Boolean.prototype.FALSE_f;
     },
         
  },"java_lang_Boolean", null);
 
-java_lang_Boolean.s.TRUE_f = (new java_lang_Boolean)._1(true);
-java_lang_Boolean.s.FALSE_f = (new java_lang_Boolean)._1(false);
+java_lang_Boolean.prototype.TRUE_f = (new java_lang_Boolean)._1(true);
+java_lang_Boolean.prototype.FALSE_f = (new java_lang_Boolean)._1(false);

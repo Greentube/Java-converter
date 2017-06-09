@@ -126,7 +126,9 @@ public class Java2JavaScriptConverter extends AnyConverter {
         }
         
         if (node!=null) {  
-            // do some checking and rearrangements 
+            // do some checking and rearrangements
+        	checkForFlashConstraints(node, errors, false);
+        	
             node.addMissingExtendsClause();             
             node.canonifyArrayDeclarators(errors);
             node.addNecessaryBraces();
@@ -246,6 +248,7 @@ public class Java2JavaScriptConverter extends AnyConverter {
         //add classes from lang package
         fullqualifiednames.put("Boolean", new String[]{"java_lang_Boolean"});
         fullqualifiednames.put("Byte", new String[]{"java_lang_Byte"});
+        fullqualifiednames.put("Character", new String[]{"java_lang_Character"});        
         fullqualifiednames.put("Double", new String[]{"java_lang_Double"});
         fullqualifiednames.put("Enum", new String[]{"java_lang_Enum"});
         fullqualifiednames.put("Integer", new String[]{"java_lang_Integer"});
@@ -622,7 +625,7 @@ public class Java2JavaScriptConverter extends AnyConverter {
 	        			if (children[i].findNonterminalNode("VariableInitializer")==null)
 	        			{	children = insertNode(children, i+1, new Node( (isreference?"=null":"=0")));	        				
 	        			}	        			 
-	        			children = insertNode(children, i, new Node(correctclassname + ".s."));   
+	        			children = insertNode(children, i, new Node(correctclassname + ".prototype."));   
 	        			i=i+2;
 	        		}
         		}
@@ -859,7 +862,7 @@ public class Java2JavaScriptConverter extends AnyConverter {
         			if (primary_expression_has_methodinvocation_suffix) { 
         				children[idx] = new Node(expandClassName(id)+ ".prototype");
         			} else {
-        				children[idx] = new Node(expandClassName(id) + ".s");        				
+        				children[idx] = new Node(expandClassName(id) + ".prototype");        				
         			}
         		}
         		// identifier is a static method - need to access using the class prototype
@@ -869,7 +872,7 @@ public class Java2JavaScriptConverter extends AnyConverter {
         		// identifier is a static attribute - need to access using the class object
         		else if (isstaticmember && !isthismethod) {
         			children[idx] = new Node(id+"_f");        			
-        			children = insertNode(children, idx, new Node(classname+".s."));
+        			children = insertNode(children, idx, new Node(classname+".prototype."));
         		}
         		// identifier can now only be a member of the object - access using the "this" keyword
         		else {

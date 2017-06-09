@@ -1,3 +1,4 @@
+//load// java/util/Iterator
 //load// java/lang/Object
 //load// java/util/List
 var java_util_ListImpl = _extendClass( java_lang_Object, {
@@ -13,13 +14,20 @@ var java_util_ListImpl = _extendClass( java_lang_Object, {
     },
     
     addAll_1: function(collection) {
-        // TODO
+        var i = collection.iterator_0();
+        while (i.hasNext_0()) {
+            this.storage.push(i.next_0());
+        }
     },
     
     addAll_2: function(index, collection) {
-        // TODO
-    },
-      
+        var i = collection.iterator_0();
+        var pos = index;
+        while (i.hasNext_0()) {
+            this.storage.splice(pos++,0, i.next_0());
+        }        
+    },          
+    
 	clear_0: function(){
         this.storage = [];
 	},
@@ -29,22 +37,21 @@ var java_util_ListImpl = _extendClass( java_lang_Object, {
 	},
     
 	containsAll_1: function(collection) {
-        // TODO
+        var i = collection.iterator_0();
+        while (i.hasNext_0()) {
+            if (!this.contains_1(i.next_0())) return false;
+        }
 	},
      
     equals_1: function(b) {
-        if (b==null || !(b._is_java_util_Vector) || this.size_0() != b.size_0()) {
+        var s = this.storage.length;
+        if (b==null || !(b._is_java_util_List) || s != b.size_0()) {
             return false;
         }
-        for (var i=0; i<this.size_0(); i++) {
-            var o1 = this.get_1(i);
-            var o2 = b.get_1(i);
-            if (o1==null) {
-                if (o2!=null) return false;
-            }
-            else if (!o1.equals_1(o2)) {
-                return false;
-            }
+        for (var i=0; i<s; i++) {
+            var e1 = this.storage[i];
+            var e2 = b.get_1(i);
+            if (! (e1==null ? e2==null : e1.equals_1(e2))) return false;
         }
         return true;  
     },
@@ -54,11 +61,19 @@ var java_util_ListImpl = _extendClass( java_lang_Object, {
 	},
     
     hashCode_0: function() {
-        // TODO
+        var hashCode = 1;
+        for (i=0; i<this.storage.length; i++) {
+            var e = this.storage[i];
+            hashCode = ( 31*hashCode + (e==null ? 0 : e.hashCode_0()) ) & 0xffffffff;
+        }
+        return hashCode;
     },
 
-	indexOf_1: function (obj) {
-        return this.indexOf_2(obj,0);
+	indexOf_1: function (o) {
+        for (var i=0; i<this.storage.length; i++) {
+            if (o==null ? (this.storage[i]==null) : o.equals_1(this.storage[i])) return i;
+        }
+        return -1;
     },
 	     
 	isEmpty_0: function () {
@@ -66,7 +81,7 @@ var java_util_ListImpl = _extendClass( java_lang_Object, {
 	},
    
     iterator_0: function() {
-           // TODO
+        return (new java_util_ListImplIterator())._1(storage);
     },
    
 	lastIndexOf_1: function (obj) {
@@ -74,15 +89,27 @@ var java_util_ListImpl = _extendClass( java_lang_Object, {
     },
 	  
     remove_1: function (obj_or_index) {
-        // TODO   returns boolean (when given object) or object (when given index)
+        if  (obj_or_index._is_java_lang_Object) {
+            var idx = this.indexOf_1(obj_or_index);
+            if (idx>=0) {                
+                this.storage.splice(idx,1);
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            var obj = this.storage[obj_or_index];
+            this.storage.splice(obj_or_index,1);
+            return obj;
+        }
     },
 
     removeAll_1: function (collection) {
-        // TODO
+        this.storage = this.storage.filter ( function(e) { return ! collection.contains_1(e); } );
     },
     
-    retailAll_1: function (collection) {
-        // TODO
+    retainAll_1: function (collection) {
+        this.storage = this.storage.filter ( function(e) { return collection.contains_1(e); } );
     },
     
 	set_2: function(index, obj) {
@@ -94,19 +121,13 @@ var java_util_ListImpl = _extendClass( java_lang_Object, {
 	},
 
 	toArray_0: function () {
-		//no implementation with splice because there are some issues with ios7!?
-		var temp = new Array(this.size_0());
-	 
-		for (var i = 0; i < this.size_0(); i++) {
-			temp[i] = this.storage[i];
-		}
-		return temp;
+        return this.storage.slice();
 	},
     
 	toArray_1: function (typetemplatearray) {
+        return this.storage.slice();
     },
-    
-    
+        
     // -- defined both for ArrayList and Vector, but not in the List interface
 	_0: function() {
         this.storage = [];
@@ -114,24 +135,47 @@ var java_util_ListImpl = _extendClass( java_lang_Object, {
     },
     
 	_1: function(collection) {
-        this.storage = [];
+        this.storage = collection.toArray_0();
         return this;
     },
     
     toString_0: function() {
-		var str = "[";	 
+		var parts = [];	 
+        parts.push("[");
 		for (var i=0; i<this.storage.length; i++) {    
 			if (i>0) {
-				str += ", "
+				parts.push(", ");
 			}       
             var o = this.storage[i];
-			str += (o==null) ? 'null' : this.storage[i].toString_0();
+			parts.push((o==null) ? 'null' : o.toString_0());
 		}
-		str += "]"
-		return str;    
+		parts.push("]");
+		return parts.join("");    
 	},
     
     // note: clone is not generally supported - use constructor with initial content    
-  	
+  	            
 },"java_util_ListImpl", [java_util_List]);
 
+
+var java_util_ListImplIterator = _extendClass( java_lang_Object, {
+
+	_1: function(storage) {
+        this.storage = storage;
+        this.next = 0;
+        return this;
+    },
+    
+    hasNext_0: function() {
+        return this.next < this.storage.length;
+    },
+    
+    next_0: function() {
+        return this.storage[this.next++];
+    },
+    
+    remove_0: function() {
+        this.storage.splice(--this.next, 1);
+    },
+    
+},"java_util_ListImplIterator", [java_util_Iterator]);

@@ -35,6 +35,7 @@ public class Test {
         bytetest();        
         doubletest();
         integertest();
+        charactertest();
         mathtest();
         objecttest();
         stringtest();
@@ -70,8 +71,8 @@ public class Test {
         assertO(StaticClass.e, null);
         assertI(StaticClass.f, 0);    
         
-//        TestObject t = new TestObject();	      // no longer correctly supported 
-//        assertI(t.accessParentStatic(), 66);
+        TestObject t = new TestObject();	       
+        assertI(t.accessParentStatic(), 66);
     }
     
     public static void constructortest()
@@ -256,7 +257,7 @@ public class Test {
         assertB ( (c==true||b),  true);
         assertI ( (~(i ^ 4711)), -4708);
         assertI ( ((byte)j) , 18);
-        assertI ( ((short)j) , -19182);
+//        assertI ( ((short)j) , -19182);
         assertI ( ((char)j) , 46354);
         assertI ( ((int)j), 423081234 );
         assertI ( ((int) 4.7), 4);
@@ -272,12 +273,12 @@ public class Test {
         assertI ( (byte) -1234.1, 46);        
         assertI ( (byte) -1234.9, 46);        
         assertI ( (byte) 434.9, -78);        
-        assertI ( (short) 124, 124);
-        assertI ( (short) 44444, -21092);
-        assertI ( (short) -2344444, 14852);
-        assertI ( (short) -1234.1, -1234);        
-        assertI ( (short) -1234.9, -1234);        
-        assertI ( (short) 434.9, 434);        
+//        assertI ( (short) 124, 124);
+//        assertI ( (short) 44444, -21092);
+//        assertI ( (short) -2344444, 14852);
+//        assertI ( (short) -1234.1, -1234);        
+//        assertI ( (short) -1234.9, -1234);        
+//        assertI ( (short) 434.9, 434);        
         assertI ( (char) 1234.5, 1234);
         assertI ( (char) -1234, 64302);
         assertI ( (char) 0.2, 0);
@@ -348,7 +349,7 @@ public class Test {
     	int i;
     	byte b;
     	char c;
-    	short s;
+//    	short s;
     	double d;
     	
     	i = 4711864;
@@ -380,35 +381,6 @@ public class Test {
     	b = (byte) d;
     	assertI(b, 0);
     	
-    	i = 4711863;
-    	s = (short)i;
-    	assertI(s, -6729);
-    	i = -4711863;
-    	s = (short)i;
-    	assertI(s, 6729);    	
-    	d = 12351235;
-    	s = (short) d;
-    	assertI(s, 30467);
-    	s = (short) Integer.MAX_VALUE;
-    	assertI(s, -1);
-    	s = (short) Integer.MIN_VALUE;
-    	assertI(s, 0);    	
-    	d = -14123351235.0;
-    	s = (short) d;
-    	assertI(s, 0);
-    	d = 14123351235.0;
-    	s = (short) d;
-    	assertI(s, -1);
-    	d = 0.0/0.0;
-    	s = (short) d;
-    	assertI(s, 0);
-    	d = Double.POSITIVE_INFINITY;
-    	s = (short) d;
-    	assertI(s, -1);
-    	d = Double.NEGATIVE_INFINITY;
-    	s = (short) d;
-    	assertI(s, 0);
-
     	i = 4711863;
     	c = (char)i;
     	assertI(c, 58807);
@@ -525,6 +497,28 @@ public class Test {
     	assertO(Integer.toString(2346), "2346");    	
     	assertO(Integer.toString(-46), "-46");    	 	
     }
+    
+    public static void charactertest()
+    {
+    	System.out.println("- character");
+    	
+    	assertI(Character.MIN_VALUE, 0);
+    	assertI(Character.MAX_VALUE, 0xffff);
+    	Character c = new Character('A');
+    	Character c2 = new Character('@');
+    	Character c3 = new Character((char)65);
+    	
+    	assertB(! c.equals("A"));
+    	assertB(! c.equals(c2));
+    	assertB(! c.equals(null));
+    	assertB(c.equals(c3));
+    	assertB(c == c3, false);
+    	assertI(c.charValue(), 65);
+    	assertO(c.toString(), "A");
+    	
+    	assertO(Character.toString('P'), "P");    	
+    	assertO(Character.toString((char)0x99), "\u0099");    
+    }
 
     public static void booleantest() {
     	System.out.println("- boolean");
@@ -640,6 +634,8 @@ public class Test {
         assertI( a.indexOf('q'), -1);
         assertI( a.indexOf('t', 8), 10);
         assertI( a.indexOf('q', 20), -1);
+        assertI (a.indexOf("test"), 4);
+        assertI (a.indexOf("unknown"), -1);
         
         assertB( "".isEmpty() );
         assertB( "     ".trim().isEmpty());

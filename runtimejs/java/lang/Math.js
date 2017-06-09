@@ -35,5 +35,5 @@ var java_lang_Math = _extendClass( java_lang_Object, {
 }, "java_lang_Math", null );
 
 
-java_lang_Math.s.E_f =  2.718281828459045; 
-java_lang_Math.s.PI_f = 3.141592653589793;
+java_lang_Math.prototype.E_f =  2.718281828459045; 
+java_lang_Math.prototype.PI_f = 3.141592653589793;
