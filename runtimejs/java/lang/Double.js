@@ -14,9 +14,11 @@ var java_lang_Double = _extendClass ( java_lang_Object, {
         }
         return false;
     },
+    
     hashCode_0: function() {
-        return this.d_f & 0xffffffff;
-    },    
+        return Math.round(d_f);
+    },
+
     toString_0: function() {
         var s = this.d_f.toString();
         if (s.indexOf('.')<0) return s+".0";

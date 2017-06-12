@@ -31,9 +31,13 @@ String.prototype.equals_1 = function(str) {
 	return this.valueOf() == str.valueOf();
 };
 
-String.prototype.hashCode_1 = function() {
-  return 4711;  // TODO: compute correct value
-};
+String.prototype.hashCode_0 = function() {
+    var h = 0;
+    for (var i=0; i<this.length; i++) {
+       h = (h*31 + this.charCodeAt(i)) & 0xffffffff;
+    }
+    return h;
+};   
 
 String.prototype.indexOf_1 = function(str) {
 	if (str._is_java_lang_String) {

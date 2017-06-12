@@ -49,7 +49,7 @@ this.dummyvector=null;
     
 
 },"com_greentube_convertertest_TestParent",[]);
-com_greentube_convertertest_TestParent.s.staticparentattribute_f = (66);
+com_greentube_convertertest_TestParent.prototype.staticparentattribute_f = (66);
 
 
 //reference// java/lang/Math
@@ -58,8 +58,12 @@ com_greentube_convertertest_TestParent.s.staticparentattribute_f = (66);
 //reference// java/lang/Byte
 //reference// java/lang/Boolean
 //reference// java/util/Vector
+//reference// java/lang/Enum
 //reference// java/lang/Object
+//reference// java/lang/Character
 //reference// java/lang/String
+//reference// java/lang/StringBuilder
 //reference// java/lang/Double
 //reference// java/lang/StringBuffer
+//reference// java/lang/Iterable
 //reference// java/lang/Runnable

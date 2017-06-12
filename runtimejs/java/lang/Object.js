@@ -16,7 +16,7 @@ java_lang_Object.prototype._0 = function()
 // add default member functions
 java_lang_Object.prototype.toString_0 = function()
 {
-  return 'java.lang.Object';
+  return this._classNameString;
 };
 java_lang_Object.prototype.equals_1 = function(a)
 {
@@ -34,6 +34,7 @@ java_lang_Object.prototype.toString = function()
 
 // add type detection flag
 java_lang_Object.prototype._is_java_lang_Object = true;
+java_lang_Object.prototype._classNameString = "java.lang.Object";
 
 
 // ---- global toolbox functions for classes and arrays ----
@@ -58,6 +59,8 @@ function _extendClass (base, methods, classname, interfaces)
   
   // add attributes than can be used to check for class/interface type
   f.prototype['_is_'+classname] = true;
+  f.prototype._classNameString = classname.replace(new RegExp("_","g"),".");
+  
   populateIsInterfaceProperties(interfaces);
 
   // create container for the static fields members

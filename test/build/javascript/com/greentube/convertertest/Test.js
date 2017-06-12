@@ -15,8 +15,6 @@ var com_greentube_convertertest_Test = _extendClass(java_lang_Object,  {
 initialConstructor_0: function(){
 return java_lang_Object.prototype._0.call(this);
 }, 
-		
-    // ----------- allowed features --------------------------------------------
     
     // class attributes
                // static attribute with initializer 
@@ -39,15 +37,18 @@ return java_lang_Object.prototype._0.call(this);
         
         this.booleantest_0();        
         this.bytetest_0();        
+        this.charactertest_0();
         this.doubletest_0();
         this.integertest_0();
         this.mathtest_0();
         this.objecttest_0();
         this.stringtest_0();
-        this.systemtest_0();
         this.stringbuffertest_0();
+        this.stringbuildertest_0();
+        this.systemtest_0();
+        
+        this.vectortest_0();                
         this.hashtabletest_0();        
-        this.vectortest_0();
         
 //        converttest();
 //        encodedecodetest();
@@ -60,12 +61,12 @@ return java_lang_Object.prototype._0.call(this);
     staticattributestests_0:function()
     {
     	java_lang_System.prototype.out_f.println_1(("- static attributes"));
-        this.assertI_2((com_greentube_convertertest_Test.s.staticint_f), (4));
-        this.assertI_2((com_greentube_convertertest_Test.s.staticint99_f) ,(99));
+        this.assertI_2((com_greentube_convertertest_Test.prototype.staticint_f), (4));
+        this.assertI_2((com_greentube_convertertest_Test.prototype.staticint99_f) ,(99));
         
-        this.assertI_2((com_greentube_convertertest_Test.s.static1_f) ,(0));
-        com_greentube_convertertest_Test.s.static1_f = (44);
-        this.assertI_2((com_greentube_convertertest_Test.s.static1_f), (44));
+        this.assertI_2((com_greentube_convertertest_Test.prototype.static1_f) ,(0));
+        com_greentube_convertertest_Test.prototype.static1_f = (44);
+        this.assertI_2((com_greentube_convertertest_Test.prototype.static1_f), (44));
                
         this.assertI_2((com_greentube_convertertest_StaticClass.prototype.a_f), (17));
         this.assertO_2((com_greentube_convertertest_StaticClass.prototype.b_f), ("hello kitty"));
@@ -74,7 +75,7 @@ return java_lang_Object.prototype._0.call(this);
         this.assertO_2((com_greentube_convertertest_StaticClass.prototype.e_f), (null));
         this.assertI_2((com_greentube_convertertest_StaticClass.prototype.f_f), (0));    
         
-        var  t = ((new com_greentube_convertertest_TestObject)._0());
+        var  t = ((new com_greentube_convertertest_TestObject)._0());	       
         this.assertI_2((t.accessParentStatic_0()), (66));
     },
     
@@ -198,7 +199,7 @@ return java_lang_Object.prototype._0.call(this);
     },
     getShadowed99_0:function()
     {
-    	return (com_greentube_convertertest_Test.s.staticint99_f);
+    	return (com_greentube_convertertest_Test.prototype.staticint99_f);
     },
 
     casttest_0:function() {
@@ -245,6 +246,11 @@ return java_lang_Object.prototype._0.call(this);
         
         var  s = ( it2);	// null may be cast to anything
         this.assertO_2((s), (null)); 
+        
+        // check if the toString operation delivers sensible defaults
+        this.assertB_1(((new java_lang_Object)._0().toString_0().startsWith_1(("java.lang.Object"))));
+        this.assertB_1(((new com_greentube_convertertest_ClassWithNoToString)._0().toString_0().startsWith_1(("com.greentube.convertertest.ClassWithNoToString"))));
+//        assertB((new int[3]).toString().startsWith("[I@"));
     },
     
     operatortest_0:function() {
@@ -260,7 +266,7 @@ return java_lang_Object.prototype._0.call(this);
         this.assertB_2 ( (((c==true)||(b))),  (true));
         this.assertI_2 ( (((~((i ^ 4711))))), (-4708));
         this.assertI_2 ( ((((_castTObyte)(j)))) , (18));
-        this.assertI_2 ( ((((_castTOshort)(j)))) , (-19182));
+//        assertI ( ((short)j) , -19182);
         this.assertI_2 ( ((((_castTOchar)(j)))) , (46354));
         this.assertI_2 ( ((((_castTOint)(j)))), (423081234) );
         this.assertI_2 ( ((((_castTOint) (4.7)))), (4));
@@ -276,12 +282,12 @@ return java_lang_Object.prototype._0.call(this);
         this.assertI_2 ( ((_castTObyte) (-1234.1)), (46));        
         this.assertI_2 ( ((_castTObyte) (-1234.9)), (46));        
         this.assertI_2 ( ((_castTObyte) (434.9)), (-78));        
-        this.assertI_2 ( ((_castTOshort) (124)), (124));
-        this.assertI_2 ( ((_castTOshort) (44444)), (-21092));
-        this.assertI_2 ( ((_castTOshort) (-2344444)), (14852));
-        this.assertI_2 ( ((_castTOshort) (-1234.1)), (-1234));        
-        this.assertI_2 ( ((_castTOshort) (-1234.9)), (-1234));        
-        this.assertI_2 ( ((_castTOshort) (434.9)), (434));        
+//        assertI ( (short) 124, 124);
+//        assertI ( (short) 44444, -21092);
+//        assertI ( (short) -2344444, 14852);
+//        assertI ( (short) -1234.1, -1234);        
+//        assertI ( (short) -1234.9, -1234);        
+//        assertI ( (short) 434.9, 434);        
         this.assertI_2 ( ((_castTOchar) (1234.5)), (1234));
         this.assertI_2 ( ((_castTOchar) (-1234)), (64302));
         this.assertI_2 ( ((_castTOchar) (0.2)), (0));
@@ -352,7 +358,7 @@ return java_lang_Object.prototype._0.call(this);
     	var  i;
     	var  b;
     	var  c;
-    	var  s;
+//    	short s;
     	var  d;
     	
     	i = (4711864);
@@ -384,35 +390,6 @@ return java_lang_Object.prototype._0.call(this);
     	b = ((_castTObyte) (d));
     	this.assertI_2((b), (0));
     	
-    	i = (4711863);
-    	s = ((_castTOshort)(i));
-    	this.assertI_2((s), (-6729));
-    	i = (-4711863);
-    	s = ((_castTOshort)(i));
-    	this.assertI_2((s), (6729));    	
-    	d = (12351235);
-    	s = ((_castTOshort) (d));
-    	this.assertI_2((s), (30467));
-    	s = ((_castTOshort) (java_lang_Integer.prototype.MAX_VALUE_f));
-    	this.assertI_2((s), (-1));
-    	s = ((_castTOshort) (java_lang_Integer.prototype.MIN_VALUE_f));
-    	this.assertI_2((s), (0));    	
-    	d = (-14123351235.0);
-    	s = ((_castTOshort) (d));
-    	this.assertI_2((s), (0));
-    	d = (14123351235.0);
-    	s = ((_castTOshort) (d));
-    	this.assertI_2((s), (-1));
-    	d = (0.0/0.0);
-    	s = ((_castTOshort) (d));
-    	this.assertI_2((s), (0));
-    	d = (java_lang_Double.prototype.POSITIVE_INFINITY_f);
-    	s = ((_castTOshort) (d));
-    	this.assertI_2((s), (-1));
-    	d = (java_lang_Double.prototype.NEGATIVE_INFINITY_f);
-    	s = ((_castTOshort) (d));
-    	this.assertI_2((s), (0));
-
     	i = (4711863);
     	c = ((_castTOchar)(i));
     	this.assertI_2((c), (58807));
@@ -462,8 +439,39 @@ return java_lang_Object.prototype._0.call(this);
     	this.assertI_2(((_castTOint)(d)), (java_lang_Integer.prototype.MIN_VALUE_f));
     	d = (0.0 / 0.0);
     	this.assertI_2(((_castTOint)(d)), (0));
+    	this.assertI_2(((_castTOint)(0.1)), (0));
+    	this.assertI_2(((_castTOint)(17.9)), (17));
+    	this.assertI_2(((_castTOint)(1.4)), (1));
+    	this.assertI_2(((_castTOint)(1.7)), (1));
+    	this.assertI_2(((_castTOint)(-1.7)), (-1));
+    	this.assertI_2(((_castTOint)(-1.99)), (-1));
+    	this.assertI_2(((_castTOint)(-2.0)), (-2));
     },
     
+    booleantest_0:function() {
+    	java_lang_System.prototype.out_f.println_1(("- boolean"));
+    	
+    	var  t = ((new java_lang_Boolean)._1((true)));
+    	var  f = ((new java_lang_Boolean)._1((false)));
+    	var  f2 = ((new java_lang_Boolean)._1((false)));
+    	
+    	this.assertB_1((t.equals_1((java_lang_Boolean.prototype.TRUE_f))));
+    	this.assertB_1((!t.equals_1(("TRUE"))));
+    	this.assertB_1((!t.equals_1(("true"))));
+    	this.assertB_1((!t.equals_1((null))));
+    	this.assertB_1((f.equals_1((f2))));
+    	this.assertB_2((f == f2), (false));
+    	this.assertB_2((t.booleanValue_0()), (true));
+    	this.assertB_2((f.booleanValue_0()), (false));
+    	this.assertO_2((t.toString_0()), ("true"));
+    	this.assertO_2((f.toString_0()), ("false"));    	
+    	this.assertO_2((java_lang_Boolean.prototype.toString_1((false))), ("false"));
+    	this.assertB_1((java_lang_Boolean.prototype.valueOf_1((true)) == java_lang_Boolean.prototype.TRUE_f));
+    	this.assertB_1((java_lang_Boolean.prototype.valueOf_1((false)) == java_lang_Boolean.prototype.FALSE_f));
+    	this.assertI_2((t.hashCode_0()), (1231));
+    	this.assertI_2((f.hashCode_0()), (1237));
+    },
+
     bytetest_0:function() {
     	java_lang_System.prototype.out_f.println_1(("- byte"));
     	
@@ -471,7 +479,7 @@ return java_lang_Object.prototype._0.call(this);
     	this.assertI_2((java_lang_Byte.prototype.MAX_VALUE_f), (127));
     	var  b = ((new java_lang_Byte)._1(((_castTObyte) (5))));
     	var  b2 = ((new java_lang_Byte)._1(((_castTObyte) (7))));
-    	var  b3 = ((new java_lang_Byte)._1(((_castTObyte) (5))));
+    	var  b3 = (java_lang_Byte.prototype.valueOf_1(((_castTObyte)(5))));
     	
     	this.assertB_1((! b.equals_1(("5"))));
     	this.assertB_1((! b.equals_1((b2))));
@@ -482,7 +490,35 @@ return java_lang_Object.prototype._0.call(this);
     	this.assertO_2((b.toString_0()), ("5"));
     	this.assertO_2((java_lang_Byte.prototype.toString_1(((_castTObyte)(6)))), ("6"));    	
     	this.assertO_2((java_lang_Byte.prototype.toString_1(((_castTObyte)(-36)))), ("-36"));    	
+    	this.assertI_2((b.hashCode_0()), (5));
+    	this.assertI_2((b2.hashCode_0()), (7));
+    	this.assertI_2((java_lang_Byte.prototype.valueOf_1(((_castTObyte)(-44))).hashCode_0()),(-44));
     },
+    
+    charactertest_0:function()
+    {
+    	java_lang_System.prototype.out_f.println_1(("- character"));
+    	
+    	this.assertI_2((java_lang_Character.prototype.MIN_VALUE_f), (0));
+    	this.assertI_2((java_lang_Character.prototype.MAX_VALUE_f), (0xffff));
+    	var  c = ((new java_lang_Character)._1((65)));
+    	var  c2 = ((new java_lang_Character)._1((64)));
+    	var  c3 = (java_lang_Character.prototype.valueOf_1(((_castTOchar)(65))));
+    	
+    	this.assertB_1((! c.equals_1(("A"))));
+    	this.assertB_1((! c.equals_1((c2))));
+    	this.assertB_1((! c.equals_1((null))));
+    	this.assertB_1((c.equals_1((c3))));
+    	this.assertB_2((c == c3), (false));
+    	this.assertI_2((c.charValue_0()), (65));
+    	this.assertO_2((c.toString_0()), ("A"));
+    	
+    	this.assertO_2((java_lang_Character.prototype.toString_1((80))), ("P"));    	
+    	this.assertO_2((java_lang_Character.prototype.toString_1(((_castTOchar)(0x99)))), (""));
+    	this.assertI_2((c.hashCode_0()), (65));
+    	this.assertI_2((c2.hashCode_0()), (64));
+    },
+
     
     doubletest_0:function() {
     	java_lang_System.prototype.out_f.println_1(("- double"));
@@ -491,7 +527,7 @@ return java_lang_Object.prototype._0.call(this);
     	this.assertD_2((java_lang_Double.prototype.MAX_VALUE_f), (1.7976931348623157E308));
     	var  d = ((new java_lang_Double)._1((5)));
     	var  d2 = ((new java_lang_Double)._1((7)));
-    	var  d3 = ((new java_lang_Double)._1((5)));
+    	var  d3 = (java_lang_Double.prototype.valueOf_1((5.00)));
     	
     	this.assertB_1((! d.equals_1((d2))));
     	this.assertB_1((! d.equals_1(("5.0"))));
@@ -516,7 +552,7 @@ return java_lang_Object.prototype._0.call(this);
     	this.assertI_2((java_lang_Integer.prototype.MAX_VALUE_f), (2147483647));
     	var  i = ((new java_lang_Integer)._1( (5)));
     	var  i2 = ((new java_lang_Integer)._1( (7)));
-    	var  i3 = ((new java_lang_Integer)._1( (5)));
+    	var  i3 = (java_lang_Integer.prototype.valueOf_1( (5)));
     	
     	this.assertB_1((! i.equals_1(("5"))));
     	this.assertB_1((! i.equals_1((i2))));
@@ -528,28 +564,11 @@ return java_lang_Object.prototype._0.call(this);
     	
     	this.assertO_2((java_lang_Integer.prototype.toString_1((2346))), ("2346"));    	
     	this.assertO_2((java_lang_Integer.prototype.toString_1((-46))), ("-46"));    	 	
-    },
-
-    booleantest_0:function() {
-    	java_lang_System.prototype.out_f.println_1(("- boolean"));
+    	this.assertI_2((i.hashCode_0()), (5));
     	
-    	var  t = ((new java_lang_Boolean)._1((true)));
-    	var  f = ((new java_lang_Boolean)._1((false)));
-    	var  f2 = ((new java_lang_Boolean)._1((false)));
-    	
-    	this.assertB_1((t.equals_1((java_lang_Boolean.prototype.TRUE_f))));
-    	this.assertB_1((!t.equals_1(("TRUE"))));
-    	this.assertB_1((!t.equals_1((null))));
-    	this.assertB_1((f.equals_1((f2))));
-    	this.assertB_2((f == f2), (false));
-    	this.assertB_2((t.booleanValue_0()), (true));
-    	this.assertB_2((f.booleanValue_0()), (false));
-    	this.assertO_2((t.toString_0()), ("true"));
-    	this.assertO_2((f.toString_0()), ("false"));    	
-    	this.assertO_2((java_lang_Boolean.prototype.toString_1((false))), ("false"));
-    	this.assertB_1((java_lang_Boolean.prototype.valueOf_1((true)) == java_lang_Boolean.prototype.TRUE_f));
-    	this.assertB_1((java_lang_Boolean.prototype.valueOf_1((false)) == java_lang_Boolean.prototype.FALSE_f));
+    	this.assertI_2((java_lang_Integer.prototype.valueOf_1((-23523523)).hashCode_0()), (-23523523));
     },
+    
 
     mathtest_0:function() {
     	java_lang_System.prototype.out_f.println_1(("- math"));
@@ -569,7 +588,18 @@ return java_lang_Object.prototype._0.call(this);
         this.assertD_2((java_lang_Math.prototype.max_2((4),(6))), (6));        
         this.assertD_2((java_lang_Math.prototype.min_2((124),(5))), (5));        
         this.assertD_2((java_lang_Math.prototype.pow_2((2),(3))), (8));
-        this.assertD_2((java_lang_Math.prototype.round_1((6.3))), (6));
+        this.assertI_2(((_castTOint)(java_lang_Math.prototype.round_1((6.3)))), (6));
+        this.assertI_2(((_castTOint)(java_lang_Math.prototype.round_1((-6.3)))), (-6));
+        this.assertI_2(((_castTOint)(java_lang_Math.prototype.round_1((6.5)))), (7));
+        this.assertI_2(((_castTOint)(java_lang_Math.prototype.round_1((-6.5)))), (-6));
+        this.assertI_2(((_castTOint)(java_lang_Math.prototype.round_1((5.5)))), (6));
+        this.assertI_2(((_castTOint)(java_lang_Math.prototype.round_1((-5.5)))), (-5));
+        this.assertD_2((java_lang_Math.prototype.rint_1((6.3))), (6.0));
+        this.assertD_2((java_lang_Math.prototype.rint_1((-16.3))), (-16.0));
+        this.assertD_2((java_lang_Math.prototype.rint_1((-16.5))), (-16.0));
+        this.assertD_2((java_lang_Math.prototype.rint_1((16.5))), (16.0));
+        this.assertD_2((java_lang_Math.prototype.rint_1((-17.5))), (-18.0));
+        this.assertD_2((java_lang_Math.prototype.rint_1((17.5))), (18.0));
         this.assertApproximately_2((java_lang_Math.prototype.sin_1((java_lang_Math.prototype.PI_f/2.0))), (1));
         this.assertD_2((java_lang_Math.prototype.sqrt_1((4))),(2));
         this.assertApproximately_2((java_lang_Math.prototype.tan_1((java_lang_Math.prototype.PI_f/4.0))), (1));
@@ -640,10 +670,15 @@ return java_lang_Object.prototype._0.call(this);
         this.assertB_1(("TestParent3".equals_1(((new com_greentube_convertertest_TestParent)._1((3)).toString_0()))));
         this.assertB_1((!"TestParent3".equals_1(((new java_lang_Integer)._1((5))))));
         
+        this.assertI_2((a.hashCode_0()), (486025514));
+        this.assertI_2(("nothing useful".hashCode_0()), (-1885956535));
+        
         this.assertI_2( (a.indexOf_1((116))), (4));
         this.assertI_2( (a.indexOf_1((113))), (-1));
         this.assertI_2( (a.indexOf_2((116), (8))), (10));
         this.assertI_2( (a.indexOf_2((113), (20))), (-1));
+        this.assertI_2 ((a.indexOf_1(("test"))), (4));
+        this.assertI_2 ((a.indexOf_1(("unknown"))), (-1));
         
         this.assertB_1( ("".isEmpty_0()) );
         this.assertB_1( ("     ".trim_0().isEmpty_0()));
@@ -740,6 +775,47 @@ return java_lang_Object.prototype._0.call(this);
     	var  c = ((new java_lang_StringBuffer)._0());
     	c.append_1((b.toString_0()));
     	this.assertB_1((!b.equals_1((c))));
+    	
+    	c = ((new java_lang_StringBuffer)._0()); 
+    	c.append_1((java_lang_Character.prototype.valueOf_1((33))));
+    	c.append_1(("no"));
+    	c.append_1((47));
+    	c.append_1(("yes"));
+    	c.append_1((66.7));
+    	c.append_1((java_lang_Character.prototype.valueOf_1((63))));
+    	c.append_1((-66555.7423));
+    	c.append_1((null));
+    	this.assertO_2((c.toString_0()),("!no47yes66.7?-66555.7423null"));
+    },
+    
+    stringbuildertest_0:function()
+    {
+    	java_lang_System.prototype.out_f.println_1(("- stringbuilder"));
+    	var  b = ((new java_lang_StringBuilder)._0());
+    	b.append_1(("V"));
+    	b.append_1((8));
+    	this.assertI_2((b.length_0()), (2));
+    	this.assertO_2((b.toString_0()), ("V8"));
+    	b.append_1((null));
+    	b.append_1((66));
+    	b.append_1((null));    	
+    	this.assertO_2((b.toString_0()), ("V8null66null"));
+    	
+    	
+    	b = ((new java_lang_StringBuilder)._1(("init")));
+    	b.append_1(((new java_lang_Integer)._1((5))));
+    	b.append_1((1));
+    	this.assertO_2((b.toString_0()), ("init51"));
+    	
+    	this.assertB_1((!b.equals_1(("init51"))));
+    	this.assertB_1((!b.equals_1((null))));
+    	this.assertB_1((! (((new java_lang_StringBuilder)._0())).equals_1(((new java_lang_StringBuilder)._0()))));
+    	this.assertB_1((b.equals_1((b))));
+    	
+    	var  c = ((new java_lang_StringBuilder)._0());
+    	c.append_1((b.toString_0()));
+    	this.assertB_1((!b.equals_1((c))));
+    	this.assertB_1((b.toString_0().equals_1((c.toString_0()))));    	    
     },
     
     vectortest_0:function() {
@@ -829,6 +905,16 @@ return java_lang_Object.prototype._0.call(this);
         c = ( v.clone_0());
         c.set_2((3), ("LISA"));
         this.assertO_2((c.toString_0()), ("[homer, marge, bart, LISA, meggy]"));
+        
+        var  en = (c.elements_0());
+        this.assertB_1((en.hasMoreElements_0()));
+        this.assertO_2((en.nextElement_0()),("homer"));
+        this.assertO_2((en.nextElement_0()),("marge"));
+        this.assertO_2((en.nextElement_0()),("bart"));
+        this.assertB_1((en.hasMoreElements_0()));
+        this.assertO_2((en.nextElement_0()),("LISA"));
+        this.assertO_2((en.nextElement_0()),("meggy"));
+        this.assertB_1((!en.hasMoreElements_0()));
         
         c.setSize_1((0));
         this.assertI_2((c.size_0()), (0));
@@ -1105,9 +1191,9 @@ return java_lang_Object.prototype._0.call(this);
     }
     
 },"com_greentube_convertertest_Test",[]);
-com_greentube_convertertest_Test.s.staticint_f = (4);
-com_greentube_convertertest_Test.s.staticint99_f = (99);
-com_greentube_convertertest_Test.s.static1_f=0, com_greentube_convertertest_Test.s.static2_f=0;
+com_greentube_convertertest_Test.prototype.staticint_f = (4);
+com_greentube_convertertest_Test.prototype.staticint99_f = (99);
+com_greentube_convertertest_Test.prototype.static1_f=0, com_greentube_convertertest_Test.prototype.static2_f=0;
 
 
 
@@ -1115,22 +1201,27 @@ com_greentube_convertertest_Test.s.static1_f=0, com_greentube_convertertest_Test
 //reference// java/util/Vector
 //reference// java/lang/System
 //reference// java/lang/Byte
+//reference// java/lang/Character
 //reference// com/greentube/convertertest/TestParent
 //reference// com/greentube/convertertest/StaticClass
 //reference// java/lang/Integer
 //reference// java/lang/Math
 //reference// com/greentube/convertertest/TestInterface
 //reference// java/lang/Double
+//reference// java/lang/StringBuilder
 //reference// java/lang/Runnable
 //reference// com/greentube/convertertest/SecondaryClasses
 //reference// com/greentube/convertertest/TestParentIntermediate
+//reference// java/lang/Enum
 //reference// com/greentube/convertertest2/TestInterface2
+//reference// com/greentube/convertertest/ClassWithNoToString
 //reference// com/greentube/convertertest/DummyClass
 //reference// java/lang/StringBuffer
 //reference// java/util/Hashtable
 //reference// com/greentube/convertertest/TestObject
 //reference// com/greentube/convertertest2/TestInterfaceX
 //reference// java/lang/Object
+//reference// java/lang/Iterable
 //reference// java/lang/String
 //reference// com/greentube/convertertest2/TestObject2
 //reference// java/util/Enumeration

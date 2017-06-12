@@ -33,9 +33,9 @@ public class Test {
         
         booleantest();        
         bytetest();        
+        charactertest();
         doubletest();
         integertest();
-        charactertest();
         mathtest();
         objecttest();
         stringtest();
@@ -43,8 +43,8 @@ public class Test {
         stringbuildertest();
         systemtest();
         
-        hashtabletest();        
         vectortest();                
+        hashtabletest();        
         
 //        converttest();
 //        encodedecodetest();
@@ -242,6 +242,11 @@ public class Test {
         
         String s = (String) it2;	// null may be cast to anything
         assertO(s, null); 
+        
+        // check if the toString operation delivers sensible defaults
+        assertB(new Object().toString().startsWith("java.lang.Object"));
+        assertB(new ClassWithNoToString().toString().startsWith("com.greentube.convertertest.ClassWithNoToString"));
+//        assertB((new int[3]).toString().startsWith("[I@"));
     }
     
     public static void operatortest() {
@@ -430,8 +435,39 @@ public class Test {
     	assertI((int)d, Integer.MIN_VALUE);
     	d = 0.0 / 0.0;
     	assertI((int)d, 0);
+    	assertI((int)0.1, 0);
+    	assertI((int)17.9, 17);
+    	assertI((int)1.4, 1);
+    	assertI((int)1.7, 1);
+    	assertI((int)-1.7, -1);
+    	assertI((int)-1.99, -1);
+    	assertI((int)-2.0, -2);
     }
     
+    public static void booleantest() {
+    	System.out.println("- boolean");
+    	
+    	Boolean t = new Boolean(true);
+    	Boolean f = new Boolean(false);
+    	Boolean f2 = new Boolean(false);
+    	
+    	assertB(t.equals(Boolean.TRUE));
+    	assertB(!t.equals("TRUE"));
+    	assertB(!t.equals("true"));
+    	assertB(!t.equals(null));
+    	assertB(f.equals(f2));
+    	assertB(f == f2, false);
+    	assertB(t.booleanValue(), true);
+    	assertB(f.booleanValue(), false);
+    	assertO(t.toString(), "true");
+    	assertO(f.toString(), "false");    	
+    	assertO(Boolean.toString(false), "false");
+    	assertB(Boolean.valueOf(true) == Boolean.TRUE);
+    	assertB(Boolean.valueOf(false) == Boolean.FALSE);
+    	assertI(t.hashCode(), 1231);
+    	assertI(f.hashCode(), 1237);
+    }
+
     public static void bytetest() {
     	System.out.println("- byte");
     	
@@ -439,7 +475,7 @@ public class Test {
     	assertI(Byte.MAX_VALUE, 127);
     	Byte b = new Byte((byte) 5);
     	Byte b2 = new Byte((byte) 7);
-    	Byte b3 = new Byte((byte) 5);
+    	Byte b3 = Byte.valueOf((byte)5);
     	
     	assertB(! b.equals("5"));
     	assertB(! b.equals(b2));
@@ -450,7 +486,35 @@ public class Test {
     	assertO(b.toString(), "5");
     	assertO(Byte.toString((byte)6), "6");    	
     	assertO(Byte.toString((byte)-36), "-36");    	
+    	assertI(b.hashCode(), 5);
+    	assertI(b2.hashCode(), 7);
+    	assertI(Byte.valueOf((byte)-44).hashCode(),-44);
     }
+    
+    public static void charactertest()
+    {
+    	System.out.println("- character");
+    	
+    	assertI(Character.MIN_VALUE, 0);
+    	assertI(Character.MAX_VALUE, 0xffff);
+    	Character c = new Character('A');
+    	Character c2 = new Character('@');
+    	Character c3 = Character.valueOf((char)65);
+    	
+    	assertB(! c.equals("A"));
+    	assertB(! c.equals(c2));
+    	assertB(! c.equals(null));
+    	assertB(c.equals(c3));
+    	assertB(c == c3, false);
+    	assertI(c.charValue(), 65);
+    	assertO(c.toString(), "A");
+    	
+    	assertO(Character.toString('P'), "P");    	
+    	assertO(Character.toString((char)0x99), "\u0099");
+    	assertI(c.hashCode(), 65);
+    	assertI(c2.hashCode(), 64);
+    }
+
     
     public static void doubletest() {
     	System.out.println("- double");
@@ -459,7 +523,7 @@ public class Test {
     	assertD(Double.MAX_VALUE, 1.7976931348623157E308);
     	Double d = new Double(5);
     	Double d2 = new Double(7);
-    	Double d3 = new Double(5);
+    	Double d3 = Double.valueOf(5.00);
     	
     	assertB(! d.equals(d2));
     	assertB(! d.equals("5.0"));
@@ -484,7 +548,7 @@ public class Test {
     	assertI(Integer.MAX_VALUE, 2147483647);
     	Integer i = new Integer( 5);
     	Integer i2 = new Integer( 7);
-    	Integer i3 = new Integer( 5);
+    	Integer i3 = Integer.valueOf( 5);
     	
     	assertB(! i.equals("5"));
     	assertB(! i.equals(i2));
@@ -496,50 +560,11 @@ public class Test {
     	
     	assertO(Integer.toString(2346), "2346");    	
     	assertO(Integer.toString(-46), "-46");    	 	
+    	assertI(i.hashCode(), 5);
+    	
+    	assertI(Integer.valueOf(-23523523).hashCode(), -23523523);
     }
     
-    public static void charactertest()
-    {
-    	System.out.println("- character");
-    	
-    	assertI(Character.MIN_VALUE, 0);
-    	assertI(Character.MAX_VALUE, 0xffff);
-    	Character c = new Character('A');
-    	Character c2 = new Character('@');
-    	Character c3 = new Character((char)65);
-    	
-    	assertB(! c.equals("A"));
-    	assertB(! c.equals(c2));
-    	assertB(! c.equals(null));
-    	assertB(c.equals(c3));
-    	assertB(c == c3, false);
-    	assertI(c.charValue(), 65);
-    	assertO(c.toString(), "A");
-    	
-    	assertO(Character.toString('P'), "P");    	
-    	assertO(Character.toString((char)0x99), "\u0099");    
-    }
-
-    public static void booleantest() {
-    	System.out.println("- boolean");
-    	
-    	Boolean t = new Boolean(true);
-    	Boolean f = new Boolean(false);
-    	Boolean f2 = new Boolean(false);
-    	
-    	assertB(t.equals(Boolean.TRUE));
-    	assertB(!t.equals("TRUE"));
-    	assertB(!t.equals(null));
-    	assertB(f.equals(f2));
-    	assertB(f == f2, false);
-    	assertB(t.booleanValue(), true);
-    	assertB(f.booleanValue(), false);
-    	assertO(t.toString(), "true");
-    	assertO(f.toString(), "false");    	
-    	assertO(Boolean.toString(false), "false");
-    	assertB(Boolean.valueOf(true) == Boolean.TRUE);
-    	assertB(Boolean.valueOf(false) == Boolean.FALSE);
-    }
 
     public static void mathtest() {
     	System.out.println("- math");
@@ -559,7 +584,18 @@ public class Test {
         assertD(Math.max(4,6), 6);        
         assertD(Math.min(124,5), 5);        
         assertD(Math.pow(2,3), 8);
-        assertD(Math.round(6.3), 6);
+        assertI((int)Math.round(6.3), 6);
+        assertI((int)Math.round(-6.3), -6);
+        assertI((int)Math.round(6.5), 7);
+        assertI((int)Math.round(-6.5), -6);
+        assertI((int)Math.round(5.5), 6);
+        assertI((int)Math.round(-5.5), -5);
+        assertD(Math.rint(6.3), 6.0);
+        assertD(Math.rint(-16.3), -16.0);
+        assertD(Math.rint(-16.5), -16.0);
+        assertD(Math.rint(16.5), 16.0);
+        assertD(Math.rint(-17.5), -18.0);
+        assertD(Math.rint(17.5), 18.0);
         assertApproximately(Math.sin(Math.PI/2.0), 1);
         assertD(Math.sqrt(4),2);
         assertApproximately(Math.tan(Math.PI/4.0), 1);
@@ -629,6 +665,9 @@ public class Test {
         assertB(! a.equals(null));
         assertB("TestParent3".equals(new TestParent(3).toString()));
         assertB(!"TestParent3".equals(new Integer(5)));
+        
+        assertI(a.hashCode(), 486025514);
+        assertI("nothing useful".hashCode(), -1885956535);
         
         assertI( a.indexOf('t'), 4);
         assertI( a.indexOf('q'), -1);
@@ -732,6 +771,17 @@ public class Test {
     	StringBuffer c = new StringBuffer();
     	c.append(b.toString());
     	assertB(!b.equals(c));
+    	
+    	c = new StringBuffer(); 
+    	c.append(Character.valueOf('!'));
+    	c.append("no");
+    	c.append(47);
+    	c.append("yes");
+    	c.append(66.7);
+    	c.append(Character.valueOf('?'));
+    	c.append(-66555.7423);
+    	c.append((Object)null);
+    	assertO(c.toString(),"!no47yes66.7?-66555.7423null");
     }
     
     public static void stringbuildertest()
@@ -851,6 +901,16 @@ public class Test {
         c = (Vector) v.clone();
         c.set(3, "LISA");
         assertO(c.toString(), "[homer, marge, bart, LISA, meggy]");
+        
+        Enumeration en = c.elements();
+        assertB(en.hasMoreElements());
+        assertO(en.nextElement(),"homer");
+        assertO(en.nextElement(),"marge");
+        assertO(en.nextElement(),"bart");
+        assertB(en.hasMoreElements());
+        assertO(en.nextElement(),"LISA");
+        assertO(en.nextElement(),"meggy");
+        assertB(!en.hasMoreElements());
         
         c.setSize(0);
         assertI(c.size(), 0);

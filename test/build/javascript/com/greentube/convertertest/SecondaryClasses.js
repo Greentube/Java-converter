@@ -16,11 +16,11 @@ this.s3=null;
 	return this;},
 	
 	x_0:function() {
-		return ("x="+com_greentube_convertertest_SecondaryClasses.s.ssx_f);
+		return ("x="+com_greentube_convertertest_SecondaryClasses.prototype.ssx_f);
 	},
 	 
 	y_0:function() {
-		return ("sx="+com_greentube_convertertest_SecondaryClasses.s.ssx_f);
+		return ("sx="+com_greentube_convertertest_SecondaryClasses.prototype.ssx_f);
 	},
 	
 	testrun_0:function() {
@@ -31,7 +31,7 @@ this.s3=null;
 		return (this.y_0()+"|"+com_greentube_convertertest_S2.prototype.y_0()+"|"+com_greentube_convertertest_S3.prototype.y_0());		
 	}
 },"com_greentube_convertertest_SecondaryClasses",[]);
-com_greentube_convertertest_SecondaryClasses.s.ssx_f = (99);
+com_greentube_convertertest_SecondaryClasses.prototype.ssx_f = (99);
 
 
 //load// java/lang/Object
@@ -41,13 +41,13 @@ var com_greentube_convertertest_S2 = _extendClass(java_lang_Object,  {
 	_0: function() 
 	{ java_lang_Object.prototype._0.call(this); return this;},
 	x_0:function() {
-		return ("s2="+com_greentube_convertertest_S2.s.ss2_f);
+		return ("s2="+com_greentube_convertertest_S2.prototype.ss2_f);
 	},
 	y_0:function() {
-		return ("ss2="+com_greentube_convertertest_S2.s.ss2_f);	
+		return ("ss2="+com_greentube_convertertest_S2.prototype.ss2_f);	
 	}
 },"com_greentube_convertertest_S2",[]);
-com_greentube_convertertest_S2.s.ss2_f = (98);
+com_greentube_convertertest_S2.prototype.ss2_f = (98);
 
 
 //load// java/lang/Object
@@ -58,13 +58,13 @@ var com_greentube_convertertest_S3 = _extendClass(java_lang_Object,  {
 	{ java_lang_Object.prototype._0.call(this); 		
 	return this;},	
 	x_0:function() {
-		return ("s3="+com_greentube_convertertest_S3.s.ss3_f);
+		return ("s3="+com_greentube_convertertest_S3.prototype.ss3_f);
 	},
 	y_0:function() {
-		return ("ss3="+com_greentube_convertertest_S3.s.ss3_f);	
+		return ("ss3="+com_greentube_convertertest_S3.prototype.ss3_f);	
 	}
 },"com_greentube_convertertest_S3",[]);
-com_greentube_convertertest_S3.s.ss3_f = (97);
+com_greentube_convertertest_S3.prototype.ss3_f = (97);
 
 
 //reference// java/lang/Math
@@ -72,8 +72,12 @@ com_greentube_convertertest_S3.s.ss3_f = (97);
 //reference// java/lang/System
 //reference// java/lang/Byte
 //reference// java/lang/Boolean
+//reference// java/lang/Enum
 //reference// java/lang/Object
+//reference// java/lang/Character
 //reference// java/lang/String
+//reference// java/lang/StringBuilder
 //reference// java/lang/Double
 //reference// java/lang/StringBuffer
+//reference// java/lang/Iterable
 //reference// java/lang/Runnable

@@ -81,7 +81,7 @@ var java_util_ListImpl = _extendClass( java_lang_Object, {
 	},
    
     iterator_0: function() {
-        return (new java_util_ListImplIterator())._1(storage);
+        return (new java_util_ListImplIterator())._1(this.storage);
     },
    
 	lastIndexOf_1: function (obj) {
@@ -151,9 +151,7 @@ var java_util_ListImpl = _extendClass( java_lang_Object, {
 		}
 		parts.push("]");
 		return parts.join("");    
-	},
-    
-    // note: clone is not generally supported - use constructor with initial content    
+	}, 
   	            
 },"java_util_ListImpl", [java_util_List]);
 

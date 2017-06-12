@@ -32,9 +32,13 @@ var com_greentube_convertertest_TestParentIntermediate = _extendClass(com_greent
 //reference// java/lang/Byte
 //reference// java/lang/Boolean
 //reference// com/greentube/convertertest/TestParent
+//reference// java/lang/Enum
 //reference// com/greentube/convertertest/TestInterface
 //reference// java/lang/Object
+//reference// java/lang/Character
 //reference// java/lang/String
+//reference// java/lang/StringBuilder
 //reference// java/lang/Double
 //reference// java/lang/StringBuffer
+//reference// java/lang/Iterable
 //reference// java/lang/Runnable

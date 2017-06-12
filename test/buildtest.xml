@@ -10,7 +10,7 @@
     <mkdir dir="${basedir}/build/javascript" />
     <convertJava2JavaScript dest="${basedir}/build/javascript" external="${basedir}/runtime">
         <fileset dir="${basedir}">
-            <include name="**/*.java"/>
+            <include name="src/**/*.java"/>
         </fileset>
     </convertJava2JavaScript>
   	

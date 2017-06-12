@@ -19,8 +19,12 @@ var com_greentube_convertertest_TestInterface = _defineInterface("com_greentube_
 //reference// java/lang/System
 //reference// java/lang/Byte
 //reference// java/lang/Boolean
+//reference// java/lang/Enum
 //reference// java/lang/Object
+//reference// java/lang/Character
 //reference// java/lang/String
+//reference// java/lang/StringBuilder
 //reference// java/lang/Double
 //reference// java/lang/StringBuffer
+//reference// java/lang/Iterable
 //reference// java/lang/Runnable

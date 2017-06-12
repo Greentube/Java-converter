@@ -16,7 +16,13 @@ var java_lang_Math = _extendClass( java_lang_Object, {
     min_2: Math.min,
     pow_2: Math.pow,
     round_1: Math.round,  // deprecated
-    rint_1: Math.round,
+    rint_1: function (x) {
+        if (x % 0.5 !== 0) {        
+            return Math.round(x);
+        } else {
+            return (Math.floor(x) % 2 === 0) ? Math.floor(x) : Math.round(x);
+        }
+    },
     sin_1: Math.sin,
     sqrt_1: Math.sqrt,
     tan_1: Math.tan,

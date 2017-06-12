@@ -2,21 +2,7 @@
 //load// java/util/Map
 var java_util_MapImpl = _extendClass( java_lang_Object, {
 
-	_0: function() {
-		 this.hashtable = {};
-         return this;
-	},
-	 
-    clone_0: function() {
-        var n2 = (new java_util_Hashtable)._0();
-        for (var i in this.hashtable) {
-            if ( this.hashtable.hasOwnProperty(i)) {
-                n2.put_2(i,this.hashtable[i]);
-            }
-        } 
-        return n2;    
-    },
-   
+    // -- methods defined in the List interface
 	clear_0: function() {
 		this.hashtable = {};
 	},
@@ -24,44 +10,52 @@ var java_util_MapImpl = _extendClass( java_lang_Object, {
 	containsKey_1: function(key) {
 		return this.hashtable.hasOwnProperty(key);
 	},
+    
+	containsValue_1: function(value) {
+		// TODO 
+	},
+    
+//    entrySet_0: function() {
+//        
+//    },
 	
+    equals_1: function(h) {
+        if (h==null || !h._is_java_util_Map || this.size_0()!=h.size_0()) {
+            return false;
+        }
+        // TODO
+        return true;
+    },
+
 	get_1: function(key) {
         if (this.hashtable.hasOwnProperty(key)) {
             return this.hashtable[key];
         }
         return null;
 	},
-	
-	isEmpty_0: function(){
-        return this.size_0() == 0;
-	},
-	
-	keys_0: function(){
-		var keys = (new java_util_HashtableEnumeration())._0();
-		for (var k in this.hashtable) {
-			if ( this.hashtable.hasOwnProperty(k)) {
-		    	keys.values.push(k);
-            }
-		}
-		return keys;
-	},
-
-    elements_0: function() {
-        var elements = (new java_util_HashtableEnumeration())._0();
-        for (var k in this.hashtable) {
-            if ( this.hashtable.hasOwnProperty(k)) {
-                elements.values.push(this.hashtable[k]);
-            }
-        }
-        return elements;
+    
+    hashCode_0: function() {
+        // TODO
     },
 	
+	isEmpty_0: function(){
+        return this.size_0() <= 0;
+	},
+
+	keySet_0: function() {
+        // TODO
+    }, 
+
 	put_2: function(key, value) {
 		if (key != null && value != null) {
 			this.hashtable[key] = value;
 		}
 	},
-	
+    
+    putAll_1: function(map) {
+        // TODO
+    },
+	    
 	remove_1: function(key) {
         if (this.hashtable.hasOwnProperty(key)) {
             var rtn = this.hashtable[key];
@@ -81,6 +75,22 @@ var java_util_MapImpl = _extendClass( java_lang_Object, {
 		return size;
 	},
 	
+    values_0: function() {
+        // TODO
+    },
+    
+
+    // methods only in HashMap and Hashtable but not in the Map interface
+   	_0: function() {
+		 this.hashtable = {};
+         return this;
+	},
+
+   	_1: function(map) {
+		 this.hashtable = {};  // TODO - copy data
+         return this;
+	},
+    
 	toString_0: function(){
 		var result = "";
 		for (var k in this.hashtable)	{	  
@@ -99,26 +109,7 @@ var java_util_MapImpl = _extendClass( java_lang_Object, {
 		return "{" + result + "}";
 	},
 	  
-    equals_1: function(h) {
-        if (h==null || !h._is_java_util_Hashtable || this.size_0()!=h.size_0()) {
-            return false;
-        }
-        for (k in this.hashtable) {
-            if (this.hashtable.hasOwnProperty(k)) {
-                if (!h.hashtable.hasOwnProperty(k)) return false;
-                var o1 = this.hashtable[k];
-                var o2 = h.hashtable[k];
-                if (o1==null) {   
-                    if (o2!=null) return false;
-                }
-                else if (!o1.equals_1(o2)) {
-                    return false;
-                }
-            }
-        }    
-        return true;
-    }
-
+    
 },"java_util_MapImpl", [java_util_Map]);
 
 

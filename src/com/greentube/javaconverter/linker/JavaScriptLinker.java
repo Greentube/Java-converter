@@ -23,6 +23,7 @@ public class JavaScriptLinker
 		
 		// write all modules
 		FileOutputStream os = new FileOutputStream(outputfile);
+		os.write("\"use strict\";\n".getBytes("utf-8"));
 		linker.writeOrdered(os);
 		
 		// add startup code to launch the main method
