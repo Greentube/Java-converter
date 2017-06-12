@@ -16,7 +16,7 @@ var java_lang_Double = _extendClass ( java_lang_Object, {
     },
     
     hashCode_0: function() {
-        return Math.round(d_f);
+        return Math.round(d_f) & 0xffffffff;
     },
 
     toString_0: function() {

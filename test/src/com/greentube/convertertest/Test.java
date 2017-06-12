@@ -900,20 +900,26 @@ public class Test {
         
         c = (Vector) v.clone();
         c.set(3, "LISA");
-        assertO(c.toString(), "[homer, marge, bart, LISA, meggy]");
+        c.setElementAt("MARGE",1);
+        assertO(c.toString(), "[homer, MARGE, bart, LISA, meggy]");
+        c.setSize(2);
+        assertI(c.size(), 2);
+        c.setSize(4);
+        assertI(c.size(), 4);
+        assertO(c.get(0),"homer");        
+        assertO(c.get(1),"MARGE");        
+        assertO(c.get(2),null);        
+        assertO(c.get(3),null);        
         
-        Enumeration en = c.elements();
+        Enumeration en = v.elements();
         assertB(en.hasMoreElements());
         assertO(en.nextElement(),"homer");
         assertO(en.nextElement(),"marge");
         assertO(en.nextElement(),"bart");
         assertB(en.hasMoreElements());
-        assertO(en.nextElement(),"LISA");
+        assertO(en.nextElement(),"lisa");
         assertO(en.nextElement(),"meggy");
         assertB(!en.hasMoreElements());
-        
-        c.setSize(0);
-        assertI(c.size(), 0);
         
         a = v.toArray();
         assertI(a.length, 5);
