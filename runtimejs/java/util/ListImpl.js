@@ -1,7 +1,8 @@
-//load// java/util/Iterator
-//load// java/lang/Object
+//reference// java/util/JSArrayIterator
+//reference// java/util/Iterator
 //load// java/util/List
-var java_util_ListImpl = _extendClass( java_lang_Object, {
+//load// java/util/AbstractCollection
+var java_util_ListImpl = _extendClass( java_util_AbstractCollection, {
 
     // -- methods defined in the List interface
     add_1: function (obj) {
@@ -32,16 +33,17 @@ var java_util_ListImpl = _extendClass( java_lang_Object, {
         this.storage = [];
 	},
       
-	contains_1: function(obj) {
-        return (this.indexOf_1(obj)>=0);
-	},
+//	contains_1: function(obj) {
+//        return (this.indexOf_1(obj)>=0);
+//	},
     
-	containsAll_1: function(collection) {
-        var i = collection.iterator_0();
-        while (i.hasNext_0()) {
-            if (!this.contains_1(i.next_0())) return false;
-        }
-	},
+//	containsAll_1: function(collection) {
+//        var i = collection.iterator_0();
+//        while (i.hasNext_0()) {
+//            if (!this.contains_1(i.next_0())) return false;
+//        }
+//        return true;
+//	},
      
     equals_1: function(b) {
         var s = this.storage.length;
@@ -62,7 +64,7 @@ var java_util_ListImpl = _extendClass( java_lang_Object, {
     
     hashCode_0: function() {
         var hashCode = 1;
-        for (i=0; i<this.storage.length; i++) {
+        for (var i=0; i<this.storage.length; i++) {
             var e = this.storage[i];
             hashCode = ( 31*hashCode + (e==null ? 0 : e.hashCode_0()) ) & 0xffffffff;
         }
@@ -76,20 +78,23 @@ var java_util_ListImpl = _extendClass( java_lang_Object, {
         return -1;
     },
 	     
-	isEmpty_0: function () {
-		return this.size_0() <= 0;
-	},
+//	isEmpty_0: function () {
+//		return this.size_0() <= 0;
+//	},
    
     iterator_0: function() {
-        return (new java_util_ListImplIterator())._1(this.storage);
+        return (new java_util_JSArrayIterator())._1(this.storage);
     },
    
-	lastIndexOf_1: function (obj) {
-        return this.lastIndexOf_2(obj,this.size_0()-1);
+	lastIndexOf_1: function (o) {
+        for (var i=this.storage.length-1; i>=0; i--) {
+            if (o==null ? (this.storage[i]==null) : o.equals_1(this.storage[i])) return i;
+        }
+        return -1;
     },
 	  
     remove_1: function (obj_or_index) {
-        if  (obj_or_index._is_java_lang_Object) {
+        if  (obj_or_index==null || obj_or_index._is_java_lang_Object) {
             var idx = this.indexOf_1(obj_or_index);
             if (idx>=0) {                
                 this.storage.splice(idx,1);
@@ -105,11 +110,23 @@ var java_util_ListImpl = _extendClass( java_lang_Object, {
     },
 
     removeAll_1: function (collection) {
-        this.storage = this.storage.filter ( function(e) { return ! collection.contains_1(e); } );
+        this._filter(collection,false);
     },
     
     retainAll_1: function (collection) {
-        this.storage = this.storage.filter ( function(e) { return collection.contains_1(e); } );
+        this._filter(collection,true);
+    },
+    
+    _filter: function(collection, keep) {
+        var s = [];
+        for (var i=0; i<this.storage.length; i++) {
+            var o = this.storage[i];
+            var c = collection.contains_1(o);
+            if ((c && keep) || (!c && !keep)) {
+                s.push(o);
+            }
+        }
+        this.storage = s;
     },
     
 	set_2: function(index, obj) {
@@ -124,9 +141,9 @@ var java_util_ListImpl = _extendClass( java_lang_Object, {
         return this.storage.slice();
 	},
     
-	toArray_1: function (typetemplatearray) {
-        return this.storage.slice();
-    },
+//	toArray_1: function (typetemplatearray) {
+//        return this.storage.slice();
+//    },
         
     // -- defined both for ArrayList and Vector, but not in the List interface
 	_0: function() {
@@ -139,41 +156,19 @@ var java_util_ListImpl = _extendClass( java_lang_Object, {
         return this;
     },
     
-    toString_0: function() {
-		var parts = [];	 
-        parts.push("[");
-		for (var i=0; i<this.storage.length; i++) {    
-			if (i>0) {
-				parts.push(", ");
-			}       
-            var o = this.storage[i];
-			parts.push((o==null) ? 'null' : o.toString_0());
-		}
-		parts.push("]");
-		return parts.join("");    
-	}, 
+//    toString_0: function() {
+//		var parts = [];	 
+//        parts.push("[");
+//		for (var i=0; i<this.storage.length; i++) {    
+//			if (i>0) {
+//				parts.push(", ");
+//			}       
+//           var o = this.storage[i];
+//			parts.push((o==null) ? 'null' : o.toString_0());
+//		}
+//		parts.push("]");
+//		return parts.join("");    
+//	}, 
   	            
 },"java_util_ListImpl", [java_util_List]);
 
-
-var java_util_ListImplIterator = _extendClass( java_lang_Object, {
-
-	_1: function(storage) {
-        this.storage = storage;
-        this.next = 0;
-        return this;
-    },
-    
-    hasNext_0: function() {
-        return this.next < this.storage.length;
-    },
-    
-    next_0: function() {
-        return this.storage[this.next++];
-    },
-    
-    remove_0: function() {
-        this.storage.splice(--this.next, 1);
-    },
-    
-},"java_util_ListImplIterator", [java_util_Iterator]);

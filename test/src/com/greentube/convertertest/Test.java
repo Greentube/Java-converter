@@ -4,8 +4,14 @@ import com.greentube.convertertest2.TestInterface2;
 import com.greentube.convertertest2.TestInterfaceX;
 import com.greentube.convertertest2.TestObject2;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
 // A test class to test the conversion of various features from java to other languages
@@ -43,8 +49,10 @@ public class Test {
         stringbuildertest();
         systemtest();
         
-        vectortest();                
+        vectortest();
+        arraylisttest();
         hashtabletest();        
+        hashmaptest();        
         
 //        converttest();
 //        encodedecodetest();
@@ -933,23 +941,154 @@ public class Test {
         assertB(v.toString().startsWith("[4, nixi, ["));
         assertB(!v.equals(null));
     }
+
+    public static void arraylisttest() {
+    	System.out.println("- arraylist");
+    	
+        List l;
+        l = new ArrayList();
+        ArrayList l2 = new ArrayList();
+        assertO(l.toString(),"[]");
+        assertO(l,l2);
+        assertO(l,new Vector());
+        assertB(l2.equals(new Vector()));
+                
+        l.add ("alice");
+        l.add ("bob");
+        l.add ("carl");
+        l.add ("doris");
+        assertO(l.toString(),"[alice, bob, carl, doris]");
+        l.add (3, "corbin");
+        l.add (5, "xavier");
+        assertO(l.toString(),"[alice, bob, carl, corbin, doris, xavier]");
+        
+        l2.add("_");
+        l2.addAll(l);
+        assertO(l2.toString(),"[_, alice, bob, carl, corbin, doris, xavier]");
+        l2.addAll(3,l);
+        assertO(l2.toString(),"[_, alice, bob, alice, bob, carl, corbin, doris, xavier, carl, corbin, doris, xavier]");
+        l2.clear();
+        assertO(l2.toString(),"[]");
+        l2.add("corbin");
+        l2.add("xavier");
+        
+        assertB(l.contains("bob"));
+        assertB(!l.contains("marge"));
+        assertB(!l.contains(Byte.valueOf((byte)4)));
+        assertB(!l.contains(null));
+        l.add(null);
+        assertB(l.contains(null));
+        l.remove(null);
+        assertB(l.containsAll(l2));
+        l2.add("hugo");
+        assertB(!l.containsAll(l2));
+        l2.remove("hugo");
+        
+        Vector v = new Vector();
+        v.add("corbin");
+        assertB(!l2.equals(v));
+        v.add("xavier");
+        assertB(l2.equals(v));
+        assertO(l2.get(0),"corbin");
+        assertO(l2.get(1),"xavier");
+        
+        assertI(l.hashCode(), -1717592617);
+        assertI(l2.hashCode(), 188425001);
+        v.add(1,null);
+        assertI(v.hashCode(), -1235551511);
+        
+        l2.add(new Double(44.3));
+        assertI(l2.indexOf("corbin"),0);
+        assertI(l2.indexOf(Double.valueOf(44.3)),2);
+        
+        assertB(!l2.isEmpty());
+        l2.clear();
+        assertB(l2.isEmpty());
+        
+        Iterator it=l.iterator();
+        assertB(it.hasNext());
+        assertO(it.next(),"alice");
+        assertO(it.next(),"bob");
+        assertO(it.next(),"carl");
+        assertO(it.next(),"corbin");
+        assertO(it.next(),"doris");
+        assertB(it.hasNext());
+        assertO(it.next(),"xavier");
+        assertB(!it.hasNext());
+        
+        assertI(l.lastIndexOf("carl"), 2);
+        l.add("carl");
+        assertI(l.lastIndexOf("carl"), 6);        
+        l.remove(2);
+        assertO(l.toString(),"[alice, bob, corbin, doris, xavier, carl]");
+        l.remove("doris");
+        assertO(l.toString(),"[alice, bob, corbin, xavier, carl]");
+        
+        l2.clear();
+        l2.add("bob");
+        l2.add("xavier");
+        l.removeAll(l2);
+        assertO(l.toString(),"[alice, corbin, carl]");
+        l.add("dodo");
+        l.add(null);
+        l.add("elvis");
+        l.add(null);
+        assertO(l.toString(),"[alice, corbin, carl, dodo, null, elvis, null]");
+        l.remove(null);       
+        assertO(l.toString(),"[alice, corbin, carl, dodo, elvis, null]");
+        l.add(1,null);
+        assertO(l.toString(),"[alice, null, corbin, carl, dodo, elvis, null]");        
+        l2.clear();
+        l2.add("hippie");
+        l.removeAll(l2);
+        assertO(l.toString(),"[alice, null, corbin, carl, dodo, elvis, null]");        
+        l2.add(null);
+        l.removeAll(l2);
+        assertO(l.toString(),"[alice, corbin, carl, dodo, elvis]");        
+        l.add(4, null);
+        assertO(l.toString(),"[alice, corbin, carl, dodo, null, elvis]");        
+        
+        l2.clear();
+        l2.add("corbin");
+        l2.add(null);
+        l2.add("heimo");
+        assertO(l2.toString(),"[corbin, null, heimo]");     
+        assertB(l2.contains(null));
+        assertI(l.size(),6);
+        l.retainAll(l2);        
+        assertI(l.size(),2);
+        assertO(l.toString(),"[corbin, null]");
+        l.set(1, "more");
+        assertO(l.toString(),"[corbin, more]");
+        assertI(l.size(),2);
+        
+        Object[] oa = new ArrayList(l).toArray(new String[0]);
+        assertI(oa.length,2);
+        assertO(oa[0],"corbin");
+        assertO(oa[1],"more");
+    }
+    
     
     public static void hashtabletest() {
     	System.out.println("- hashtable");
     	
     	Hashtable ht = new Hashtable();
     	ht.put("Test", new Integer(1));
-    	ht.put("Test2", new Integer(2));
-    	
+    	ht.put("Test2", new Integer(2));    	
+    	System.out.println("  Hashtable representation: "+ht.toString());
+
     	assertI(ht.size(), 2);
     	assertB(!ht.isEmpty());
     	assertB(ht.containsKey("Test"));
-    	assertO(ht.get("Test"), new Integer(1));
+    	assertB(ht.contains(Integer.valueOf(2)));
+    	assertB(!ht.contains("trixi"));
+    	assertO(ht.get("Test"), Integer.valueOf(1));
     	
     	ht.put("Test", new Integer(3));
     	assertO(ht.get("Test"), new Integer(3));
     	    	
     	Hashtable cl = (Hashtable) ht.clone();
+    	System.out.println(cl);
     	assertI(cl.size(), 2);
     	assertB(! (cl==ht));
     	assertB(cl.equals(ht));
@@ -963,6 +1102,7 @@ public class Test {
     	assertB(cl.containsKey("Test2")); // the clone was not modified
     	
     	ht.clear();
+    	assertO(ht, new HashMap());
     	assertI(ht.size(), 0);
     	assertB(ht.isEmpty());
     	assertB(! ht.containsKey("Test"));
@@ -989,13 +1129,99 @@ public class Test {
     	{	ev.add(e.nextElement());
     	}
     	assertI(ev.size(), 5);
-    	assertB(ev.contains(ht.get("A")));
-    	assertB(ev.contains(ht.get("B")));
-    	assertB(ev.contains(ht.get("C")));
-    	assertB(ev.contains(ht.get("D")));
+    	assertB(ev.contains("something"));
+    	assertB(ev.contains("some other"));
+    	assertB(ev.contains("more text"));
+    	assertB(ev.contains(Integer.valueOf(99)));
     	assertB(ev.contains(ht.get("E")));
     }
 
+    public static void hashmaptest() {
+    	System.out.println("- hashmap");
+    	
+    	HashMap ht = new HashMap();
+    	assertB(ht.isEmpty());
+    	ht.put("Test", new Integer(1));
+    	ht.put("Test2", new Integer(2));
+    	
+    	assertI(ht.size(), 2);
+    	assertB(!ht.isEmpty());
+    	assertB(ht.containsKey("Test"));
+    	assertO(ht.get("Test"), Integer.valueOf(1));
+    	
+    	ht.put("Test", new Integer(3));
+    	assertO(ht.get("Test"), new Integer(3));
+    	    	
+    	HashMap cl = new HashMap(ht);
+    	assertI(cl.size(), 2);
+    	assertB(! (cl==ht));
+    	assertB(cl.equals(ht));
+    	assertB(!ht.equals(new Hashtable()));
+    	assertB(!ht.equals("dummy"));
+    	
+    	ht.remove("Test2");
+    	assertI(ht.size(), 1);
+    	assertB(ht.containsKey("Test"));
+    	assertB(!ht.containsKey("Test2"));
+    	assertB(!ht.containsValue(Integer.valueOf(1)));
+    	assertB(!ht.containsValue(Integer.valueOf(99)));
+    	assertB(cl.containsKey("Test2")); // the clone was not modified
+    	assertB(cl.containsValue(Integer.valueOf(3)));
+    	
+    	ht.clear();
+    	assertO(ht, new Hashtable());
+    	assertO(ht, new HashMap());
+    	assertI(ht.size(), 0);
+    	assertB(ht.isEmpty());
+    	assertB(! ht.containsKey("Test"));
+    	
+    	HashMap hm = new HashMap(ht);
+    	hm.put(Integer.valueOf(1),  "one");
+    	Hashtable ht2 = new Hashtable(hm);
+    	ht2.put(Integer.valueOf(10), "ten");
+    	ht2.put(Integer.valueOf(11), "elven");
+    	assertB(! hm.equals(ht2));
+    	hm.put(Integer.valueOf(10), "ten");
+    	hm.put(Integer.valueOf(11), "elven");
+    	assertO(hm,ht2);
+    	hm.put(null,  "nothing");
+    	hm.put(Integer.valueOf(0),  null);
+    	System.out.println("  Hashmap representation: "+hm.toString());
+    	    	
+    	assertO(hm.get(Integer.valueOf(1)),"one");
+    	assertO(hm.get(Integer.valueOf(10)),"ten");   
+    	assertO(hm.get(null), "nothing");
+    	assertO(hm.get(Integer.valueOf(0)), null);
+    	assertO(hm.hashCode(), -2068808738);
+    	hm.put(null, null);
+    	assertO(hm.hashCode(), 96834577);
+    	assertB(hm.containsKey(null));
+    	hm.remove(null);
+    	assertB(!hm.containsKey(null));
+    	assertO(hm.hashCode(), 96834577);
+    	
+    	ht2.clear();
+    	ht2.put("1", "ONE");
+    	ht2.put("2", "TWO");
+    	assertI(hm.size(), 4);
+    	hm.putAll(ht2);
+    	assertO(hm.get("1"), "ONE");
+    	assertO(hm.get("2"), "TWO");
+    	assertI(hm.size(), 6);
+    	
+    	Collection c = hm.values();
+    	assertI(c.size(), 6);
+    	assertB(c.contains("ONE"));
+    	assertB(!c.contains("ZERO"));
+    	
+    	Set s = hm.keySet();
+    	assertI(s.size(), 6);
+    	assertB(s.contains("1"));
+    	assertB(!s.contains("-1"));    	
+    }
+    
+    
+    
 //    public static void converttest() {
 //    	System.out.println("- convert");
 //        	

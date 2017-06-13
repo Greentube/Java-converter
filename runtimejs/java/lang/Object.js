@@ -24,7 +24,7 @@ java_lang_Object.prototype.equals_1 = function(a)
 };
 java_lang_Object.prototype.hashCode_0 = function()
 {
-  return 0;  // there is no real way to have a identity number 
+  return 1;  // there is no real way to have a identity number 
 };
 // provide the standard javascript means to convert anything to a string
 java_lang_Object.prototype.toString = function()
@@ -80,15 +80,15 @@ function _extendClass (base, methods, classname, interfaces)
 // create a new interface with possible superinterfaces as well
 function _defineInterface(classname, superinterfaces)
 {
-    var i = {};
-    i.classname = classname;
-    i.superinterfaces = superinterfaces;
-    i.s = {};   // container for all static members
-    return i;
+    return {
+        classname: classname,
+        superinterfaces: superinterfaces,
+        prototype: {}    // container for all static members
+    };
 }
 
 
-// return the parameter provided, but in case of null, return a 1 instead.
+// return the parameter provided, but in case of null, return a 'false' instead.
 // this is necessary to avoid runtime errors when checking for type instance
 function _denullify(x)
 {
@@ -190,6 +190,9 @@ Array.prototype.equals_1 = function (o) {
 
 Array.prototype.toString_0 = function () {
     return "[";
+};
+Array.prototype.hashCode_0 = function () {
+    return "2";
 };
 
 Array.prototype.__defineGetter__('length_f', function() { return this.length; });
