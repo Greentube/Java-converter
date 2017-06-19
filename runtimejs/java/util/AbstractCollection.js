@@ -23,8 +23,8 @@ var java_util_AbstractCollection = _extendClass( java_lang_Object, {
             if (!this.contains_1(i.next_0())) return false;
         }
         return true;
-	},
-  
+	}, 
+    
 	isEmpty_0: function () {
         return this.size_0()<=0;
 	},
@@ -45,10 +45,6 @@ var java_util_AbstractCollection = _extendClass( java_lang_Object, {
         }
         return a;        
 	},
-    
-	toArray_1: function (typetemplatearray) {
-        return this.toArray_0();
-    },
           
     toString_0: function() {
 		var parts = [];	 
@@ -63,7 +59,7 @@ var java_util_AbstractCollection = _extendClass( java_lang_Object, {
 		parts.push("]");
 		return parts.join("");    
 	}, 
-  	            
+    
 },"java_util_AbstractCollection", [java_util_Collection]);
 
 

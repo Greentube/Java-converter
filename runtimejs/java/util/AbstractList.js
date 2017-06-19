@@ -2,7 +2,7 @@
 //reference// java/util/Iterator
 //load// java/util/List
 //load// java/util/AbstractCollection
-var java_util_ListImpl = _extendClass( java_util_AbstractCollection, {
+var java_util_AbstractList = _extendClass( java_util_AbstractCollection, {
 
     // -- methods defined in the List interface
     add_1: function (obj) {
@@ -16,34 +16,28 @@ var java_util_ListImpl = _extendClass( java_util_AbstractCollection, {
     
     addAll_1: function(collection) {
         var i = collection.iterator_0();
+        var didappend = false;
         while (i.hasNext_0()) {
             this.storage.push(i.next_0());
+            didappend = true;
         }
+        return didappend;
     },
     
     addAll_2: function(index, collection) {
         var i = collection.iterator_0();
         var pos = index;
+        var didappend = false;
         while (i.hasNext_0()) {
             this.storage.splice(pos++,0, i.next_0());
+            didappend = true;
         }        
+        return didappend;
     },          
     
 	clear_0: function(){
         this.storage = [];
-	},
-      
-//	contains_1: function(obj) {
-//        return (this.indexOf_1(obj)>=0);
-//	},
-    
-//	containsAll_1: function(collection) {
-//        var i = collection.iterator_0();
-//        while (i.hasNext_0()) {
-//            if (!this.contains_1(i.next_0())) return false;
-//        }
-//        return true;
-//	},
+	},      
      
     equals_1: function(b) {
         var s = this.storage.length;
@@ -57,33 +51,33 @@ var java_util_ListImpl = _extendClass( java_util_AbstractCollection, {
         }
         return true;  
     },
-  
+
     get_1: function(index) {
         return this.storage[index];	
 	},
     
     hashCode_0: function() {
         var hashCode = 1;
-        for (var i=0; i<this.storage.length; i++) {
-            var e = this.storage[i];
+        for (var it=this.iterator_0(); it.hasNext_0(); ) {
+            var e = it.next_0();
             hashCode = ( 31*hashCode + (e==null ? 0 : e.hashCode_0()) ) & 0xffffffff;
         }
         return hashCode;
-    },
-
+    },       
+    
 	indexOf_1: function (o) {
         for (var i=0; i<this.storage.length; i++) {
             if (o==null ? (this.storage[i]==null) : o.equals_1(this.storage[i])) return i;
         }
         return -1;
     },
-	     
+	        
 //	isEmpty_0: function () {
 //		return this.size_0() <= 0;
 //	},
    
     iterator_0: function() {
-        return (new java_util_JSArrayIterator())._1(this.storage);
+        return (new java_util_JSArrayIterator())._3(this.storage,0,this.storage.length);
     },
    
 	lastIndexOf_1: function (o) {
@@ -155,20 +149,7 @@ var java_util_ListImpl = _extendClass( java_util_AbstractCollection, {
         this.storage = collection.toArray_0();
         return this;
     },
-    
-//    toString_0: function() {
-//		var parts = [];	 
-//        parts.push("[");
-//		for (var i=0; i<this.storage.length; i++) {    
-//			if (i>0) {
-//				parts.push(", ");
-//			}       
-//           var o = this.storage[i];
-//			parts.push((o==null) ? 'null' : o.toString_0());
-//		}
-//		parts.push("]");
-//		return parts.join("");    
-//	}, 
+
   	            
-},"java_util_ListImpl", [java_util_List]);
+},"java_util_AbstractList", [java_util_List]);
 

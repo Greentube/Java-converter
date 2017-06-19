@@ -10,4 +10,4 @@ var java_util_Set = _defineInterface("java_util_Set", [java_util_Collection]);
 // Iterator<E>	iterator()
 // int	size()
 // Object[]	toArray()
-// <T> T[]	toArray(T[] a)
+

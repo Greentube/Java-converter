@@ -191,6 +191,7 @@ Array.prototype.equals_1 = function (o) {
 Array.prototype.toString_0 = function () {
     return "[";
 };
+
 Array.prototype.hashCode_0 = function () {
     return "2";
 };

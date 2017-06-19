@@ -1062,7 +1062,7 @@ public class Test {
         assertO(l.toString(),"[corbin, more]");
         assertI(l.size(),2);
         
-        Object[] oa = new ArrayList(l).toArray(new String[0]);
+        Object[] oa = new ArrayList(l).toArray();
         assertI(oa.length,2);
         assertO(oa[0],"corbin");
         assertO(oa[1],"more");
@@ -1074,11 +1074,14 @@ public class Test {
     	
     	Hashtable ht = new Hashtable();
     	ht.put("Test", new Integer(1));
-    	ht.put("Test2", new Integer(2));    	
-    	System.out.println("  Hashtable representation: "+ht.toString());
+    	ht.put("Test2", new Integer(2));    
+    	String st = ht.toString();
+    	assertB(st.indexOf("Test=1")>=0);
+    	assertB(st.indexOf("Test2=2")>=0);
+    	assertB(st.indexOf(", ")>=0);    	
 
     	assertI(ht.size(), 2);
-    	assertB(!ht.isEmpty());
+    	assertB(!ht.isEmpty());    	
     	assertB(ht.containsKey("Test"));
     	assertB(ht.contains(Integer.valueOf(2)));
     	assertB(!ht.contains("trixi"));
@@ -1088,7 +1091,6 @@ public class Test {
     	assertO(ht.get("Test"), new Integer(3));
     	    	
     	Hashtable cl = (Hashtable) ht.clone();
-    	System.out.println(cl);
     	assertI(cl.size(), 2);
     	assertB(! (cl==ht));
     	assertB(cl.equals(ht));
@@ -1112,7 +1114,9 @@ public class Test {
     	ht.put("C",  "more text");
     	ht.put("D",  new Integer(99));
     	ht.put("E",  new int[2] );
-    	System.out.println("  Hashtable representation: "+ht.toString());
+    	st = ht.toString();
+    	assertB(st.indexOf("E=[")>=0);
+    	assertB(st.indexOf("A=something")>=0);
     	
     	Hashtable ht2 = new Hashtable();
     	Enumeration e = ht.keys();
@@ -1177,28 +1181,34 @@ public class Test {
     	
     	HashMap hm = new HashMap(ht);
     	hm.put(Integer.valueOf(1),  "one");
+    	assertO(hm.get(Integer.valueOf(1)), "one");
+    	assertO(hm.toString(), "{1=one}");
     	Hashtable ht2 = new Hashtable(hm);
     	ht2.put(Integer.valueOf(10), "ten");
-    	ht2.put(Integer.valueOf(11), "elven");
+    	ht2.put(Integer.valueOf(11), "eleven");
     	assertB(! hm.equals(ht2));
     	hm.put(Integer.valueOf(10), "ten");
-    	hm.put(Integer.valueOf(11), "elven");
+    	hm.put(Integer.valueOf(11), "eleven");
     	assertO(hm,ht2);
     	hm.put(null,  "nothing");
     	hm.put(Integer.valueOf(0),  null);
-    	System.out.println("  Hashmap representation: "+hm.toString());
+    	String st = hm.toString();
+    	assertB(st.indexOf("null=nothing")>=0);
+    	assertB(st.indexOf("0=null")>=0);
+    	assertB(st.indexOf("10=ten")>=0);
+    	assertB(st.indexOf("no=no")<0);
     	    	
     	assertO(hm.get(Integer.valueOf(1)),"one");
     	assertO(hm.get(Integer.valueOf(10)),"ten");   
     	assertO(hm.get(null), "nothing");
     	assertO(hm.get(Integer.valueOf(0)), null);
-    	assertO(hm.hashCode(), -2068808738);
+    	assertO(hm.hashCode(), 828991637);
     	hm.put(null, null);
-    	assertO(hm.hashCode(), 96834577);
+    	assertO(hm.hashCode(), -1300332344);
     	assertB(hm.containsKey(null));
     	hm.remove(null);
     	assertB(!hm.containsKey(null));
-    	assertO(hm.hashCode(), 96834577);
+    	assertO(hm.hashCode(), -1300332344);
     	
     	ht2.clear();
     	ht2.put("1", "ONE");

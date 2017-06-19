@@ -2,14 +2,16 @@
 //load// java/lang/Object
 var java_util_JSArrayIterator = _extendClass( java_lang_Object, {
 
-	_1: function(storage) {
+	_3: function(storage,from,to) {
         this.storage = storage;
-        this.next = 0;
+        this.from = from;
+        this.to = to;
+        this.next = from;
         return this;
     },
     
     hasNext_0: function() {
-        return this.next < this.storage.length;
+        return this.next < this.to;
     },
     
     next_0: function() {
@@ -17,3 +19,4 @@ var java_util_JSArrayIterator = _extendClass( java_lang_Object, {
     },
         
 },"java_util_JSArrayIterator", [java_util_Iterator]);
+

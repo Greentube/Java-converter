@@ -10,4 +10,3 @@ var java_util_Collection = _defineInterface("java_util_Collection", [java_lang_I
 // Iterator<E>	iterator()
 // int	size()
 // Object[]	toArray()
-// <T> T[]	toArray(T[] a)

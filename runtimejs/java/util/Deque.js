@@ -36,4 +36,3 @@ var java_util_Deque = _defineInterface("java_util_Deque",[java_util_Queue]);
 // Iterator<E>	iterator()
 // int	size()
 // Object[]	toArray()
-// <T> T[]	toArray(T[] a)

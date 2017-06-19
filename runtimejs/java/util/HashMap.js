@@ -1,3 +1,3 @@
 //load// java/lang/Object
-//load// java/util/MapImpl
-var java_util_HashMap = _extendClass( java_util_MapImpl, null, "java_util_HashMap", null);
+//load// java/util/AbstractMap
+var java_util_HashMap = _extendClass( java_util_AbstractMap, null, "java_util_HashMap", null);

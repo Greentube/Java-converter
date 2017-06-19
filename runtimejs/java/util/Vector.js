@@ -1,6 +1,6 @@
 //reference// java/util/IteratorEnumeration
-//load// java/util/ListImpl
-var java_util_Vector = _extendClass( java_util_ListImpl, {
+//load// java/util/AbstractList
+var java_util_Vector = _extendClass( java_util_AbstractList, {
     
     // legacy methods only supported by Vector (but not the List interface )
     // everything can be easily implemented by just using the methods of the
