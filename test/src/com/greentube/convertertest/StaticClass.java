@@ -60,7 +60,7 @@ public class StaticClass {
 	 */
 	public static String md5(byte[] bytes)
 	{
-		// tables of 6-bit integer values coded as singe characters
+		// tables of 6-bit integer values coded as single characters
 		String kvalues =
 			"\000\001\002\003" + "\004\005\006\007" + "\010\011\012\013" + 
 		    "\014\015\016\017" + "\001\006\013\000" + "\005\012\017\004" + 
@@ -182,13 +182,13 @@ public class StaticClass {
 		return out.toString();
 	}
 	
-	static void printints(int[] a, int len)
-	{
-		StringBuffer b = new StringBuffer();
-		for (int i=0; i<len; i++) {
-			b.append(" "+a[i]);
-		}
-		System.out.println(b.toString());
-	}
+//	static void printints(int[] a, int len)
+//	{
+//		StringBuffer b = new StringBuffer();
+//		for (int i=0; i<len; i++) {
+//			b.append(" "+a[i]);
+//		}
+//		System.out.println(b.toString());
+//	}
 	
 }
