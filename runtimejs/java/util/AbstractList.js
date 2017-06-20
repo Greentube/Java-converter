@@ -4,7 +4,16 @@
 //load// java/util/AbstractCollection
 var java_util_AbstractList = _extendClass( java_util_AbstractCollection, {
 
-    // -- methods defined in the List interface
+	_0: function() {
+        this.storage = [];
+        return this;
+    },
+    
+	_1: function(collection) {
+        this.storage = collection.toArray_0();
+        return this;
+    },
+
     add_1: function (obj) {
 		this.storage.push(obj);  
         return true;
@@ -13,7 +22,7 @@ var java_util_AbstractList = _extendClass( java_util_AbstractCollection, {
 	add_2: function(index, obj) {
         this.storage.splice (index,0, obj);
     },
-    
+
     addAll_1: function(collection) {
         var i = collection.iterator_0();
         var didappend = false;
@@ -38,7 +47,10 @@ var java_util_AbstractList = _extendClass( java_util_AbstractCollection, {
 	clear_0: function(){
         this.storage = [];
 	},      
-     
+    
+    //contains       implemented by AbstractCollection
+    //containsAll    implemented by AbstractCollection
+    
     equals_1: function(b) {
         var s = this.storage.length;
         if (b==null || !(b._is_java_util_List) || s != b.size_0()) {
@@ -72,9 +84,7 @@ var java_util_AbstractList = _extendClass( java_util_AbstractCollection, {
         return -1;
     },
 	        
-//	isEmpty_0: function () {
-//		return this.size_0() <= 0;
-//	},
+    // isEmpty             implemented by AbstractCollection
    
     iterator_0: function() {
         return (new java_util_JSArrayIterator())._3(this.storage,0,this.storage.length);
@@ -135,21 +145,6 @@ var java_util_AbstractList = _extendClass( java_util_AbstractCollection, {
         return this.storage.slice();
 	},
     
-//	toArray_1: function (typetemplatearray) {
-//        return this.storage.slice();
-//    },
-        
-    // -- defined both for ArrayList and Vector, but not in the List interface
-	_0: function() {
-        this.storage = [];
-        return this;
-    },
-    
-	_1: function(collection) {
-        this.storage = collection.toArray_0();
-        return this;
-    },
-
   	            
 },"java_util_AbstractList", [java_util_List]);
 

@@ -9,9 +9,26 @@
 //load// java/util/AbstractCollection
 //load// java/util/Set
 //load// java/util/JSArrayIterator
+
 var java_util_AbstractMap = _extendClass( java_lang_Object, {
     
-    // -- methods defined in the List interface
+   	_0: function() {
+        this.stringtable = {};
+        this.commontable = {};
+        this.totalelements = 0;
+        return this;
+	},
+
+   	_1: function(map) {
+        this._0();
+        var it = map.keySet_0().iterator_0();
+        while (it.hasNext_0()) {
+            var k = it.next_0();
+            this.put_2(k,map.get_1(k));
+        }
+        return this;
+	},
+    
 	clear_0: function() {
 		this.stringtable = {};
 		this.commontable = {};
@@ -34,10 +51,6 @@ var java_util_AbstractMap = _extendClass( java_lang_Object, {
 	containsValue_1: function(value) {
         return this.values_0().contains_1(value);
 	},
-    
-//    entrySet_0: function() {            // NOT SUPPORTED
-//        
-//    },
 	
     equals_1: function(h) {
         if (h==null || !h._is_java_util_Map || this.size_0()!=h.size_0()) {
@@ -164,24 +177,6 @@ var java_util_AbstractMap = _extendClass( java_lang_Object, {
         return (new java_util_MapValueView())._1(this);
     },
     
-    // methods only in HashMap and Hashtable but not in the Map interface
-   	_0: function() {
-        this.stringtable = {};
-        this.commontable = {};
-        this.totalelements = 0;
-        return this;
-	},
-
-   	_1: function(map) {
-        this._0();
-        var it = map.keySet_0().iterator_0();
-        while (it.hasNext_0()) {
-            var k = it.next_0();
-            this.put_2(k,map.get_1(k));
-        }
-        return this;
-	},
-    
 	toString_0: function(){
 		var parts = ["{"];
         for (var it=this.keySet_0().iterator_0(); it.hasNext_0(); ) {
@@ -209,6 +204,11 @@ function _isValidStringKey(s) {
 
 var java_util_MapKeyView = _extendClass( java_util_AbstractCollection, {
 
+    _1: function(map) {
+        this.map = map;
+        return this;
+	},
+    
     contains_1: function(o) {
         return this.map.containsKey_1(o);
     },        
@@ -261,16 +261,16 @@ var java_util_MapKeyView = _extendClass( java_util_AbstractCollection, {
     },
     
 // Object[]	toArray()              // implemented by AbstractCollection
+   	
+},"java_util_MapKeyView", [java_util_Set]);
+
+
+var java_util_MapValueView = _extendClass( java_util_AbstractCollection, {
 
    	_1: function(map) {
         this.map = map;
         return this;
 	},
-
-},"java_util_MapKeyView", [java_util_Set]);
-
-
-var java_util_MapValueView = _extendClass( java_util_AbstractCollection, {
 
 // contains_1:                     // implemented by AbstractCollection
 // containsAll_1                   // implemented by AbstractCollection
@@ -304,10 +304,6 @@ var java_util_MapValueView = _extendClass( java_util_AbstractCollection, {
     
 // Object[]	toArray()              // implemented by AbstractCollection
 
-   	_1: function(map) {
-        this.map = map;
-        return this;
-	},
 
 },"java_util_MapValueView", [java_util_Collection]);
 

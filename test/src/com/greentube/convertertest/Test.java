@@ -4,10 +4,13 @@ import com.greentube.convertertest2.TestInterface2;
 import com.greentube.convertertest2.TestInterfaceX;
 import com.greentube.convertertest2.TestObject2;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -26,7 +29,7 @@ public class Test {
     
 
     public static void main(String[] args) {
-        System.out.println ("-- language converter test suite started" );
+        System.out.println ("-- java converter test suite started" );
         
         staticattributestests();
         constructortest();
@@ -53,13 +56,15 @@ public class Test {
         arraylisttest();
         hashtabletest();        
         hashmaptest();        
+        hashsettest();
+        arraydequetest();
         
 //        converttest();
 //        encodedecodetest();
         secondaryclassestest();
         complexoperationtest();
         
-        System.out.println ("-- language converter test suite finished" );
+        System.out.println ("-- java converter test suite finished" );
     }
     
     public static void staticattributestests()
@@ -1230,6 +1235,78 @@ public class Test {
     	assertB(!s.contains("-1"));    	
     }
     
+    public static void hashsettest() {
+    	System.out.println("- hashset");
+    	
+    	Set s = new HashSet();
+    	s.add("hey");
+    	s.add(Integer.valueOf(4711));
+    	s.add(Byte.valueOf((byte)44));
+    	assertB(s.contains("hey"));
+    	assertB(s.contains(Integer.valueOf(4711)));
+    	assertB(s.contains(Byte.valueOf((byte)44)));    	
+    	assertB(!s.contains(Integer.valueOf(44)));
+    	assertB(s.remove(Integer.valueOf(4711)));
+    	assertB(!s.contains(Integer.valueOf(4711)));
+    	assertB(s.toString().indexOf("44")>=0);
+    }
+    
+    public static void arraydequetest() {
+    	System.out.println("- arraydeque");
+    	Deque d = new ArrayDeque();
+    	d.add("p1");
+    	d.add("p2");
+    	d.addFirst("p0");
+    	d.addLast("p3");
+    	d.addLast("p4");
+    	assertO(d.size(), 5);
+    	assertB(d.contains("p2"));
+    	assertB(!d.contains("px"));
+    	assertO(d.toString(),"[p0, p1, p2, p3, p4]");
+    	
+    	assertO(d.poll(),  "p0");
+    	assertO(d.toString(),"[p1, p2, p3, p4]");
+    	for (int i=0; i<20; i++) d.addFirst("p0");
+    	for (int i=0; i<19; i++) assertO(d.removeFirst(),"p0");
+    	assertO(d.toString(),"[p0, p1, p2, p3, p4]");
+    	
+    	assertO(d.poll(), "p0");
+    	assertO(d.poll(), "p1");
+    	assertO(d.pollFirst(), "p2");
+    	assertO(d.pollLast(), "p4");
+    	assertO(d.pollLast(), "p3");
+    	
+    	d.clear();
+    	for (int i=0; i<100; i++) d.add(Integer.valueOf(i));
+    	for (int i=0; i<1000; i++) {
+    		assertO(d.poll(), Integer.valueOf(i));
+    		d.add(Integer.valueOf(100+i));
+    	}
+    	
+    	d.clear();
+    	for (int i=0; i<100; i++) d.addFirst(Integer.valueOf(i));
+    	for (int i=0; i<1000; i++) {
+    		assertO(d.pollLast(), Integer.valueOf(i));
+    		d.addFirst(Integer.valueOf(100+i));
+    	}
+    	
+    	ArrayDeque a = new ArrayDeque(d);
+    	for (int i=0; i<100; i++) {
+    		assertO(a.pollLast(), Integer.valueOf(1000+i));
+    	}
+    	
+    	int i = 1100;
+    	for (Iterator it = d.iterator(); it.hasNext(); ) {
+    		assertO(it.next(), Integer.valueOf(--i));
+    	}
+    	i = 1000;
+    	for (Iterator it = d.descendingIterator(); it.hasNext(); ) {
+    		assertO(it.next(), Integer.valueOf(i++));
+    	}
+    	
+    	
+    	
+    }
     
     
 //    public static void converttest() {

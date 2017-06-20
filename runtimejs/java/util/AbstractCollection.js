@@ -8,6 +8,7 @@
 //reference// java/util/Iterator
 var java_util_AbstractCollection = _extendClass( java_lang_Object, {
 
+
 	contains_1: function(obj) {
         var i = this.iterator_0();
         while (i.hasNext_0()) {
@@ -25,9 +26,14 @@ var java_util_AbstractCollection = _extendClass( java_lang_Object, {
         return true;
 	}, 
     
+    //equals          implemented by Object
+    //hashCode        implemented by Object
+
 	isEmpty_0: function () {
         return this.size_0()<=0;
 	},
+    
+    //iterator        abstract - must be implemented by subclass
     
     size_0: function() {   
         var num = 0;

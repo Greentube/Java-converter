@@ -1,38 +1,33 @@
-//load// java/lang/Queue
+//load// java/util/Queue
 var java_util_Deque = _defineInterface("java_util_Deque",[java_util_Queue]);  
 
 // -- methods:
-// boolean	add(E e)
+// boolean	add(E e)                         // inherited from Queue
 // void	addFirst(E e)
 // void	addLast(E e)
+// boolean	contains(Object o)               // inherited from Queue
+// boolean	containsAll(Collection<?> c)     // inherited from Queue
 // Iterator<E>	descendingIterator()
-// E	element()
+// E	element()                            // inherited from Queue
+// boolean	equals(Object o)                 // inherited from Queue
+// int	hashCode()                           // inherited from Queue
+// boolean	isEmpty()                        // inherited from Queue
+// Iterator<E>	iterator()                   // inherited from Queue
 // E	getFirst()
 // E	getLast()
-// boolean	offer(E e)
+// boolean	offer(E e)                       // inherited from Queue
 // boolean	offerFirst(E e)
 // boolean	offerLast(E e)
-// E	peek()
+// E	peek()                               // inherited from Queue
 // E	peekFirst()
 // E	peekLast()
-// E	poll()
+// E	poll()                               // inherited from Queue
 // E	pollFirst()
 // E	pollLast()
 // E	pop()
 // void	push(E e)
-// E	remove()
-// boolean	remove(Object o)
+// E	remove()                             // inherited from Queue 
 // E	removeFirst()
-// boolean	removeFirstOccurrence(Object o)
 // E	removeLast()
-// boolean	removeLastOccurrence(Object o)
-
-// -- methods inherited from Collection:
-// boolean	contains(Object o)
-// boolean	containsAll(Collection<?> c)
-// boolean	equals(Object o)
-// int	hashCode()
-// boolean	isEmpty()
-// Iterator<E>	iterator()
-// int	size()
-// Object[]	toArray()
+// int	size()                               // inherited from Queue
+// Object[]	toArray()                        // inherited from Queue

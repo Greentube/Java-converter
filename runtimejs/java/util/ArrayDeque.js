@@ -1,9 +1,21 @@
 //load// java/util/AbstractCollection
 //load// java/util/Deque
 //reference// java/util/JSArrayIterator
+//reference// java/util/Iterator
+
 var java_util_ArrayDeque = _extendClass( java_util_AbstractCollection, {
 
-    // everything from the Deque interface
+	_0: function() {
+        this.storage = [];
+        this.firstindex = 0;
+        return this;
+	},
+    
+	_1: function(collection) {
+        this.storage = collection.toArray_0();
+        this.firstindex = 0;
+        return this;
+	},
     
     add_1: function (obj) {
         this.addLast_1(obj);
@@ -20,10 +32,11 @@ var java_util_ArrayDeque = _extendClass( java_util_AbstractCollection, {
     },
     
     addFirst_1: function (obj) {
-        if (firstindex>0) {
+        if (this.firstindex>0) {
             this.storage[--this.firstindex] = obj;
         } else {
-            this.storage.push(obj);  
+            this.storage.splice(0,0, null,null,null,null,null,null,null,null,null, obj);  
+            this.firstindex=9;
         }
     },   
     
@@ -62,7 +75,7 @@ var java_util_ArrayDeque = _extendClass( java_util_AbstractCollection, {
     // isEmpty_0:  implemented by AbstractCollection
 
     iterator_0: function() {
-        return (new java_lang_JSArrayIterator())
+        return (new java_util_JSArrayIterator())
             ._3(this.storage, this.firstindex, this.storage.length);
     },    
     
@@ -118,33 +131,29 @@ var java_util_ArrayDeque = _extendClass( java_util_AbstractCollection, {
         this.removeFirst_0();
     },
 
-    remove_1: function(obj) {
-        return this.removeFirstOccurence_1(obj);
-    },
+//    remove_1:    not implemented
     
     removeFirst_0: function() {
-        // TODO
-    ),     
+        var e = this.storage[this.firstindex++];
+        // check if need to do compaction 
+        if (this.firstindex*2 >= this.storage.length) {
+            this.storage.splice(0,this.firstindex);
+            this.firstindex = 0;
+        }
+        
+        return e;
+    },     
     
     removeLast_0: function() {
-        // TODO
-    ),     
+        var e = this.storage.pop();
+        if (this.storage.length==0) this.firstindex=0;
+        return e;
+    },     
         
-    removeFirstOccurence_1: function(obj) {
-        // TODO
-    },
-    
-    removeLastOccurence_1: function(obj) {
-        //TODO
-    },
-    
-    removeAll_1: function (collection) {
-        this._filter(collection,false);
-    },
-    
-    retainAll_1: function (collection) {
-        this._filter(collection,true);
-    },
+//    removeFirstOccurence_1:   not implemented 
+//    removeLastOccurence_1:    not implemented
+//    removeAll_1:              not implemented
+//    retainAll_1:              not implemented
             
     size_0: function() {
         return this.storage.length - this.firstindex;
@@ -152,33 +161,6 @@ var java_util_ArrayDeque = _extendClass( java_util_AbstractCollection, {
  
     // toArray_0   implemented by AbstractCollection
     
-    _filter: function(collection, keep) {
-        var s = [];
-        for (var i=this.firstindex; i<this.storage.length; i++) {
-            var o = this.storage[i];
-            var c = collection.contains_1(o);
-            if ((c && keep) || (!c && !keep)) {
-                s.push(o);
-            }
-        }
-        this.storage = s;
-        this.firstindex = 0;
-    },
-    
-    
-    // methods not in interface, but directly on the ArrayDequeue
-    
-	_0: function() {
-        this.storage = [];
-        this.firstindex = 0;
-        return this;
-	},
-    
-	_1: function(collection) {
-        this.storage = collection.toArray_0();
-        this.firstindex = 0;
-        return this;
-	},
 	
 },"java_util_ArrayDeque", [java_util_Deque]);
 
