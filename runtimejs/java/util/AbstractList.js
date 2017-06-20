@@ -20,14 +20,20 @@ var java_util_AbstractList = _extendClass( java_util_AbstractCollection, {
     },   
    
 	add_2: function(index, obj) {
-        this.storage.splice (index,0, obj);
+        if(index==this.storage.length) {
+            this.storage.push(obj);
+        } else if (index==0) {
+            this.storage.shift(obj);
+        } else {
+            this.storage.splice (index,0, obj);
+        }
     },
 
     addAll_1: function(collection) {
         var i = collection.iterator_0();
         var didappend = false;
         while (i.hasNext_0()) {
-            this.storage.push(i.next_0());
+            this.add_1(i.next_0());
             didappend = true;
         }
         return didappend;
@@ -38,7 +44,7 @@ var java_util_AbstractList = _extendClass( java_util_AbstractCollection, {
         var pos = index;
         var didappend = false;
         while (i.hasNext_0()) {
-            this.storage.splice(pos++,0, i.next_0());
+            this.add_2(pos++, i.next_0());
             didappend = true;
         }        
         return didappend;
@@ -97,19 +103,19 @@ var java_util_AbstractList = _extendClass( java_util_AbstractCollection, {
         return -1;
     },
 	  
-    remove_1: function (obj_or_index) {        
+    remove_1: function (obj_or_index) {   
         if  (obj_or_index==null || obj_or_index._is_java_lang_Object) {
             var idx = this.indexOf_1(obj_or_index);
-            if (idx>=0) {                
-                this.storage.splice(idx,1);
-                return true;
-            } else {
-                return false;
-            }
+            if (idx<0) return false;
+            if (idx==0) this.storage.shift();
+            else        this.storage.splice(idx,1);
+            return true;
         } else {
-            var obj = this.storage[obj_or_index];
-            this.storage.splice(obj_or_index,1);
-            return obj;
+            var idx = obj_or_index;
+            var obj = this.storage[idx];
+            if (idx==0) this.storage.shift();
+            else        this.storage.splice(idx,1);
+            return obj;            
         }
     },
 

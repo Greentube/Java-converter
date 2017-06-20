@@ -32,8 +32,10 @@ var java_util_ArrayDeque = _extendClass( java_util_AbstractCollection, {
     },
     
     addFirst_1: function (obj) {
+        // when it is still possible to store something before the block of valid data
         if (this.firstindex>0) {
             this.storage[--this.firstindex] = obj;
+        // otherwise increase leading space in buffer by 10 elements 
         } else {
             this.storage.splice(0,0, null,null,null,null,null,null,null,null,null, obj);  
             this.firstindex=9;
@@ -96,12 +98,12 @@ var java_util_ArrayDeque = _extendClass( java_util_AbstractCollection, {
     },
     
     peekFirst_0: function() {
-        if (this.storage.length<=0) return null;
+        if (this.firstindex>=this.storage.length) return null;
         return this.storage[this.firstindex];
     },
     
     peekLast_0: function() {
-        if (this.storage.length<=0) return null;
+        if (this.firstindex>=this.storage.length) return null;
         return this.storage[this.storage.length-1];
     },
     
@@ -110,12 +112,12 @@ var java_util_ArrayDeque = _extendClass( java_util_AbstractCollection, {
     },
     
     pollFirst_0: function() {
-        if (this.storage.length<=0) return null;
+        if (this.firstindex>=this.storage.length) return null;
         return this.removeFirst_0();
     },
     
     pollLast_0: function() {
-        if (this.storage.length<=0) return null;
+        if (this.firstindex>=this.storage.length) return null;
         return this.removeLast_0();
     },
     
@@ -139,15 +141,12 @@ var java_util_ArrayDeque = _extendClass( java_util_AbstractCollection, {
         if (this.firstindex*2 >= this.storage.length) {
             this.storage.splice(0,this.firstindex);
             this.firstindex = 0;
-        }
-        
+        }        
         return e;
     },     
     
     removeLast_0: function() {
-        var e = this.storage.pop();
-        if (this.storage.length==0) this.firstindex=0;
-        return e;
+        return this.storage.pop();
     },     
         
 //    removeFirstOccurence_1:   not implemented 
