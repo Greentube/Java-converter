@@ -11,8 +11,8 @@ var java_util_HashSet = _extendClass( java_util_AbstractCollection, {
     
     _1: function(collection) {
         this.map = (new java_util_HashMap())._0();
-        for (it = collection.iterator_0(); it.hasNext_0(); ) {
-            this.map.put_2(i.next_0(),"")
+        for (var it = collection.iterator_0(); it.hasNext_0(); ) {
+            this.map.put_2(it.next_0(),"")
         }
         return this;
     },
@@ -43,7 +43,7 @@ var java_util_HashSet = _extendClass( java_util_AbstractCollection, {
     // containsAll    implemented by AbstractCollection
     
     equals_1: function(s) {
-        return this.map.equals_1(s);
+        return this.map.keySet_0().equals_1(s);
     },
     
     hashCode_0: function() {
@@ -69,4 +69,4 @@ var java_util_HashSet = _extendClass( java_util_AbstractCollection, {
     // toString  implemented by AbstractCollection
     
     
-}, "java_util_HashSet", java_util_Set);
+}, "java_util_HashSet", [java_util_Set]);

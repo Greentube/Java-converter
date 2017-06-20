@@ -1228,11 +1228,43 @@ public class Test {
     	assertI(c.size(), 6);
     	assertB(c.contains("ONE"));
     	assertB(!c.contains("ZERO"));
-    	
+
+		Vector vals = new Vector();
+    	vals.add(null);
+    	vals.add("one");
+    	vals.add("ONE");
+    	vals.add("TWO");
+    	vals.add("ten");
+    	vals.add("eleven");
+    	Iterator it =  c.iterator();
+    	assertB(it.hasNext());
+    	assertB(vals.remove(it.next()));
+    	assertB(it.hasNext());
+    	assertB(vals.remove(it.next()));
+    	assertB(it.hasNext());
+    	assertB(vals.remove(it.next()));
+    	assertB(it.hasNext());
+    	assertB(vals.remove(it.next()));
+    	assertB(it.hasNext());
+    	assertB(vals.remove(it.next()));
+    	assertB(it.hasNext());
+    	assertB(vals.remove(it.next()));
+    	assertB(!it.hasNext());
+    			
     	Set s = hm.keySet();
     	assertI(s.size(), 6);
     	assertB(s.contains("1"));
-    	assertB(!s.contains("-1"));    	
+    	assertB(!s.contains("-1"));   
+    	Set s2 = new HashSet();
+    	for (Iterator it2 = s.iterator(); it2.hasNext(); ) {
+    		s2.add(it2.next());
+    	}
+    	assertI(s.size(),6);
+    	assertI(s2.size(),6);
+    	assertI(s.hashCode(),121);
+    	assertI(s2.hashCode(),121);
+    	assertO(s,s2);
+    	assertO(s2,s);
     }
     
     public static void hashsettest() {
@@ -1249,6 +1281,18 @@ public class Test {
     	assertB(s.remove(Integer.valueOf(4711)));
     	assertB(!s.contains(Integer.valueOf(4711)));
     	assertB(s.toString().indexOf("44")>=0);
+    	
+    	Set s2 = new HashSet(s);
+    	assertI(s2.size(), 2);
+    	Set s3 = new HashSet();
+    	assertB(s3.addAll(s));
+    	assertO(s2,s3);
+    	assertI(s3.hashCode(), s2.hashCode());
+    	assertI(s3.hashCode(), 103240);
+    	
+    	Iterator it = s2.iterator();
+    	assertB(s3.contains(it.next()));
+    	assertB(s3.contains(it.next()));    	
     }
     
     public static void arraydequetest() {
@@ -1270,24 +1314,34 @@ public class Test {
     	for (int i=0; i<19; i++) assertO(d.removeFirst(),"p0");
     	assertO(d.toString(),"[p0, p1, p2, p3, p4]");
     	
+    	assertO(d.element(), "p0");
+    	assertO(d.peek(), "p0");
+    	assertO(d.peekFirst(), "p0");
+    	assertO(d.getFirst(), "p0");
+    	assertO(d.peekLast(), "p4");
+    	assertO(d.getLast(), "p4");
     	assertO(d.poll(), "p0");
     	assertO(d.poll(), "p1");
     	assertO(d.pollFirst(), "p2");
     	assertO(d.pollLast(), "p4");
     	assertO(d.pollLast(), "p3");
+    	assertO(d.poll(), null);
+    	assertO(d.pollFirst(), null);
+    	assertO(d.pollLast(), null);
     	
     	d.clear();
+    	assertO(d.peek(),null);
     	for (int i=0; i<100; i++) d.add(Integer.valueOf(i));
     	for (int i=0; i<1000; i++) {
     		assertO(d.poll(), Integer.valueOf(i));
-    		d.add(Integer.valueOf(100+i));
+    		d.offer(Integer.valueOf(100+i));
     	}
     	
     	d.clear();
     	for (int i=0; i<100; i++) d.addFirst(Integer.valueOf(i));
     	for (int i=0; i<1000; i++) {
     		assertO(d.pollLast(), Integer.valueOf(i));
-    		d.addFirst(Integer.valueOf(100+i));
+    		d.offerFirst(Integer.valueOf(100+i));
     	}
     	
     	ArrayDeque a = new ArrayDeque(d);
@@ -1303,8 +1357,28 @@ public class Test {
     	for (Iterator it = d.descendingIterator(); it.hasNext(); ) {
     		assertO(it.next(), Integer.valueOf(i++));
     	}
+    	assertI(d.size(),100);
     	
+    	ArrayDeque b = new ArrayDeque();
+    	assertB(b.addAll(d));
+    	assertB(!b.addAll(new ArrayList()));
     	
+    	assertO(d.remove(), Integer.valueOf(1099));
+    	assertO(d.removeFirst(), Integer.valueOf(1098));
+    	assertO(d.removeLast(), Integer.valueOf(1000));
+    	
+    	assertI(b.size(), 100);
+    	assertB(b.contains(Integer.valueOf(1050)));
+    	assertB(!b.contains(Integer.valueOf(10)));
+    	b.offerLast("end");
+    	assertB(b.contains("end"));
+    	assertO(b.removeLast(), "end");
+    	b.push("stacktop");
+    	b.push("stacktop2");
+    	assertB(b.contains("stacktop2"));
+    	assertB(!b.contains("wrzlbrmpft"));
+    	assertO(b.pop(), "stacktop2");
+    	assertO(b.pop(), "stacktop");
     	
     }
     

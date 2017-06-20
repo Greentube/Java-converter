@@ -97,7 +97,7 @@ var java_util_AbstractList = _extendClass( java_util_AbstractCollection, {
         return -1;
     },
 	  
-    remove_1: function (obj_or_index) {
+    remove_1: function (obj_or_index) {        
         if  (obj_or_index==null || obj_or_index._is_java_lang_Object) {
             var idx = this.indexOf_1(obj_or_index);
             if (idx>=0) {                

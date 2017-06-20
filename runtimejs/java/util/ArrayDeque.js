@@ -128,7 +128,7 @@ var java_util_ArrayDeque = _extendClass( java_util_AbstractCollection, {
     },
     
     remove_0: function() {
-        this.removeFirst_0();
+        return this.removeFirst_0();
     },
 
 //    remove_1:    not implemented

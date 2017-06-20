@@ -204,7 +204,7 @@ function _isValidStringKey(s) {
 
 var java_util_MapKeyView = _extendClass( java_util_AbstractCollection, {
 
-    _1: function(map) {
+    _1: function(map) {   
         this.map = map;
         return this;
 	},
@@ -215,7 +215,7 @@ var java_util_MapKeyView = _extendClass( java_util_AbstractCollection, {
     
 // containsAll_1                   // implemented by AbstractCollection
 
-    equals_0: function(b) {
+    equals_1: function(b) {
         if (b==null || !(b._is_java_util_Set) || this.size_0() != b.size_0()) {
             return false;
         }
@@ -290,9 +290,11 @@ var java_util_MapValueView = _extendClass( java_util_AbstractCollection, {
             }
         }
         // search through all hashcode-buckets        
-        for (var buckets in mi.commontable) { 
-            for (var kv of buckets) { 
-                v.push(kv[1]);
+        for (var hc in mi.commontable) { 
+            if (mi.commontable.hasOwnProperty(hc)) {
+                for (var kv of mi.commontable[hc]) { 
+                    v.push(kv[1]);
+                }
             }
         }
         return (new java_util_JSArrayIterator())._3(v,0,v.length);     
