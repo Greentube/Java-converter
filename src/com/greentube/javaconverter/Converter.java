@@ -28,27 +28,30 @@ public class Converter extends Frontend {
 	  protected void processNoErrors(CompilationUnit unit) {
 //		  unit.generateClassfile();
 		  System.out.println("Processing: "+unit.getClassSource().pathName());
+		  CodePrinter p = new CodePrinter(System.out);
+		  unit.generateJS(p);
+		  p.flush();
 	  }
 
-	  /**
-	   * Check that the output directory given in args exists.
-	   */
-	  @Override
-	  public int processArgs(String[] args) {
-	    int result = super.processArgs(args);
-	    if (result != 0) {
-	      return result;
-	    }
-	    if (program.options().hasValueForOption("-d")) {
-	      String destDir = program.options().getValueForOption("-d");
-	      File dir = new File(destDir);
-	      if (!dir.isDirectory()) {
-	        System.err.println("Error: output directory not found: " + destDir);
-	        return EXIT_CONFIG_ERROR;
-	      }
-	    }
-	    return EXIT_SUCCESS;
-	  }
+//	  /**
+//	   * Check that the output directory given in args exists.
+//	   */
+//	  @Override
+//	  public int processArgs(String[] args) {
+//	    int result = super.processArgs(args);
+//	    if (result != 0) {
+//	      return result;
+//	    }
+//	    if (program.options().hasValueForOption("-d")) {
+//	      String destDir = program.options().getValueForOption("-d");
+//	      File dir = new File(destDir);
+//	      if (!dir.isDirectory()) {
+//	        System.err.println("Error: output directory not found: " + destDir);
+//	        return EXIT_CONFIG_ERROR;
+//	      }
+//	    }
+//	    return EXIT_SUCCESS;
+//	  }
 	  
 
 }

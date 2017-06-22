@@ -1,0 +1,65 @@
+aspect GenerateJS {
+  	
+  	public void ASTNode.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		for (ASTNode<ASTNode> c:astChildren()) {
+  			c.generateJS(out);
+  		}	
+  	}
+
+//  	public void CompilationUnit.generateJS(com.greentube.javaconverter.CodePrinter out) {    
+//	    out.println("//javascript");
+//    	for (TypeDecl t:getTypeDecls()) {
+//    		t.generateJS(out);
+//    	}
+//  	}
+  
+	public void ClassDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {  
+    	if (hasDocComment()) {
+      		out.println(docComment());
+    	}
+//    	out.print(getModifiers());
+    	out.print("var ");
+    	out.print(constantPoolName().replace('/','_'));
+    	out.print(" = _extendClass(");
+    	
+    	if (hasSuperClass()) {
+      		out.print(superclass().constantPoolName().replace('/','_'));
+    	} else {
+    		out.print("java_lang_Object");
+    	} 
+    	out.print (",{ ");
+    	out.increaseIndent(); out.println();
+    	    	    	
+//    	if (hasImplements()) {
+//      		out.print(" implements ");
+//      		out.join(getImplementss(), new PrettyPrinter.Joiner() {
+//        	@Override
+//        	public void printSeparator(PrettyPrinter out) {
+//          	out.print(", ");
+//        	}
+//     	});
+//    }
+//    	out.print(" {");
+//    out.println();
+//    out.indent(1);
+//    out.join(getBodyDecls(), new PrettyPrinter.Joiner() {
+//      @Override
+//      public void printSeparator(PrettyPrinter out) {
+//        out.println();
+//        out.println();
+//      }
+//    });
+//    if (!out.isNewLine()) {
+//      out.println();
+//    }
+
+		out.decreaseIndent(); out.println();
+		out.println("},\""+constantPoolName().replace('/','_')+"\", null);");
+  	}
+  
+//  	public void TypeDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {
+//    	out.print(constantPoolName());
+//    }  
+  
+  
+}

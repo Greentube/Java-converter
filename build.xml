@@ -69,6 +69,11 @@
 					<include name="*.jadd"/>
 				</fileset>
 				
+				<fileset dir="${basedir}/backendjs">
+					<include name="*.jrag"/>
+					<include name="*.jadd"/>
+				</fileset>
+				
 			</jastadd>
 	</target>
 	
