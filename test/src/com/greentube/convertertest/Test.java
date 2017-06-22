@@ -640,7 +640,7 @@ public class Test {
         assertO (44 + "" + 33 + "hi", "4433hi");
         assertO ("" + 44 + 33 + "hi", "4433hi");
         // some special characters
-        a = "üäö € \000\003\7";
+        a = "Ã¼Ã¤Ã¶ â‚¬ \000\003\7";
         assertI ((int) a.charAt(0), 252);
         assertI ((int) a.charAt(1), 228);
         assertI ((int) a.charAt(2), 246);
@@ -1459,7 +1459,7 @@ public class Test {
 //			      new byte[]{27,104,105}  );
 //    	assertBA (ClientConnection.composePacket((byte)27, new String[]{"hi","there"}),
 //			      new byte[]{27,104,105,-1,116,104,101,114,101}  );
-//    	assertBA (ClientConnection.composePacket((byte)27,  new String[]{"","öäü€","end"}),
+//    	assertBA (ClientConnection.composePacket((byte)27,  new String[]{"","ï¿½ï¿½ï¿½ï¿½","end"}),
 //    			  new byte[]{27,-1,-61,-74,-61,-92,-61,-68,-30,-126,-84,-1,101,110,100} );
 //    	assertBA (ClientConnection.composePacket((byte)27,  new String[]{"","","h", ""}),
 //  			  new byte[]{27,-1,-1,104,-1} );
@@ -1472,7 +1472,7 @@ public class Test {
 //    			new byte[]{27, -2} );
 //    	p.clear();
 //    	p.addElement("");
-//    	p.addElement("öäü€");
+//    	p.addElement("ï¿½ï¿½ï¿½ï¿½");
 //    	p.addElement("end");
 //    	assertBA (ClientConnection.composePacket((byte)27, p), 
 //  			  new byte[]{27,-1,-61,-74,-61,-92,-61,-68,-30,-126,-84,-1,101,110,100} );
@@ -1486,7 +1486,7 @@ public class Test {
 //    	assertSA(ClientConnection.decomposePacket(new byte[]{ 33, 104,105,-1,116,104,101,114,101 }),
 //    				new String[]{"hi","there"} );
 //    	assertSA(ClientConnection.decomposePacket(new byte[]{ 33, -1,-61,-74,-61,-92,-61,-68,-30,-126,-84,-1,101,110,100 }),
-//    				new String[]{"","öäü€","end"} );    	
+//    				new String[]{"","ï¿½ï¿½ï¿½ï¿½","end"} );    	
 //    	assertSA(ClientConnection.decomposePacket(new byte[]{ 33, -1,-1,-1 }),
 //				new String[]{"","","",""} );    	
 //    	assertSA(ClientConnection.decomposePacket(new byte[]{ 33, -1,65,-1,-1 }),

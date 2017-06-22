@@ -1,0 +1,80 @@
+<project name="JavaConverter" default="generate">
+	<property name="extendjpath" location="${basedir}/../extendj"/>
+
+	<taskdef name="jastadd" classname="org.jastadd.JastAddTask"
+		classpath="${extendjpath}/tools/jastadd2.jar"/>
+
+	<target name="build" depends="clean,generate" description="Build the converter">		
+	</target>
+	
+	<target name="clean" description="Clean builded files">
+		<delete dir="${basedir}/gen"/>
+	</target>
+		
+	<target name="generate" description="Generate the converter program from JastAdd files">
+			<!-- Generate AST node types and weave aspect modules. -->
+			<mkdir dir="${basedir}/gen"/>
+			<jastadd
+				package="org.extendj.ast"
+				rewrite="cnta"
+				safeLazy="true"
+				beaver="true"
+				visitCheck="false"
+				cacheCycle="false"
+				outdir="${basedir}/gen"
+				>
+				<fileset dir="${extendjpath}/java4/grammar">
+					<include name="*.ast"/>
+					<exclude name="CatchClause.ast"/>
+					<exclude name="Literals.ast"/>
+				</fileset>
+				<fileset dir="${extendjpath}/java4/frontend">
+					<include name="*.jrag"/>
+					<include name="*.jadd"/>
+					<exclude name="BytecodeAttributes.jrag"/>
+					<exclude name="BytecodeDescriptor.jrag"/>
+					<exclude name="BytecodeReader.jrag"/>
+					<exclude name="Constant.jadd"/>
+					<exclude name="Literals.jrag"/>
+					<exclude name="Variable.jadd"/>
+				</fileset>			
+				<fileset dir="${extendjpath}/java4/backend">
+					<include name="*.jrag"/>
+					<include name="*.jadd"/>
+				</fileset>					
+				<fileset dir="${extendjpath}/java5/grammar">
+					<include name="*.ast"/>
+				</fileset>
+				<fileset dir="${extendjpath}/java5/frontend">
+					<include name="*.jrag"/>
+					<include name="*.jadd"/>
+				</fileset>				
+				<fileset dir="${extendjpath}/java5/backend">
+					<include name="*.jrag"/>
+					<include name="*.jadd"/>
+				</fileset>												
+				<fileset dir="${extendjpath}/java6/frontend">
+					<include name="*.jrag"/>
+					<include name="*.jadd"/>
+				</fileset>
+				<fileset dir="${extendjpath}/java7/grammar">
+					<include name="*.ast"/>
+				</fileset>
+				<fileset dir="${extendjpath}/java7/frontend">
+					<include name="*.jrag"/>
+					<include name="*.jadd"/>
+				</fileset>				
+				<fileset dir="${extendjpath}/java7/backend">
+					<include name="*.jrag"/>
+					<include name="*.jadd"/>
+				</fileset>
+				
+			</jastadd>
+	</target>
+	
+	<target name="version">
+		<ant dir="${extendjpath}/" antfile="build.xml" target="update-version-string" inheritAll="false"/>  			
+	</target>
+
+
+</project>
