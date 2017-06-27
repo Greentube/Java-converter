@@ -1,65 +1,160 @@
 aspect GenerateJS {
-  	
+  	  	
   	public void ASTNode.generateJS(com.greentube.javaconverter.CodePrinter out) {
-  		for (ASTNode<ASTNode> c:astChildren()) {
-  			c.generateJS(out);
-  		}	
+  		out.error("Unexpected syntax element: "+this.getClass().getName()+" (internal compiler problem)");
+		this.dumpTree(System.out);
   	}
 
-//  	public void CompilationUnit.generateJS(com.greentube.javaconverter.CodePrinter out) {    
-//	    out.println("//javascript");
-//    	for (TypeDecl t:getTypeDecls()) {
-//    		t.generateJS(out);
-//    	}
-//  	}
-  
-	public void ClassDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {  
-    	if (hasDocComment()) {
-      		out.println(docComment());
+  	public void CompilationUnit.generateJS() {    
+    	for (TypeDecl t:getTypeDecls()) {
+			com.greentube.javaconverter.CodePrinter out = 
+				new com.greentube.javaconverter.CodePrinter(System.out);
+    		out.print("FILE: "+t.constantPoolName()+".js");
+    		t.generateJS(out);
+    		out.printExternals();
+    		out.println();
     	}
-//    	out.print(getModifiers());
+  	}
+    	
+	public void ClassDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {  
+		out.println();		
     	out.print("var ");
     	out.print(constantPoolName().replace('/','_'));
     	out.print(" = _extendClass(");
     	
     	if (hasSuperClass()) {
-      		out.print(superclass().constantPoolName().replace('/','_'));
+      		out.printAndMemorizeLoad(superclass().constantPoolName());
     	} else {
-    		out.print("java_lang_Object");
+    		out.printAndMemorizeLoad("java/lang/Object");
     	} 
     	out.print (",{ ");
-    	out.increaseIndent(); out.println();
+    	out.increaseIndent(); 
+    	    	    
+      	Collection<BodyDecl> methods = methodsAndConstructors();
+      	for (BodyDecl b : methods) {
+	        b.generateJS(out);
+    	}    	    	    
     	    	    	
-//    	if (hasImplements()) {
-//      		out.print(" implements ");
-//      		out.join(getImplementss(), new PrettyPrinter.Joiner() {
-//        	@Override
-//        	public void printSeparator(PrettyPrinter out) {
-//          	out.print(", ");
-//        	}
-//     	});
-//    }
-//    	out.print(" {");
-//    out.println();
-//    out.indent(1);
-//    out.join(getBodyDecls(), new PrettyPrinter.Joiner() {
-//      @Override
-//      public void printSeparator(PrettyPrinter out) {
-//        out.println();
-//        out.println();
-//      }
-//    });
-//    if (!out.isNewLine()) {
-//      out.println();
-//    }
-
 		out.decreaseIndent(); out.println();
-		out.println("},\""+constantPoolName().replace('/','_')+"\", null);");
+		out.print("},\"" + constantPoolName().replace('/','_') + "\",");
+		if (!hasImplements()) {
+			out.print("null");
+		} else {
+			out.print("[");
+			int n=0;
+      		for (Iterator<TypeDecl> iter = interfacesIterator(); iter.hasNext(); n++) {
+      			if (n>0) out.print(",");
+        		out.printAndMemorizeLoad(iter.next().constantPoolName());
+      		}			
+			out.print("]");
+		} 
+		out.print(");");
+
+		for (BodyDecl bd:getBodyDeclList()) {
+			for (FieldDeclarator fd:bd.fieldDeclarations()) {
+				if (fd.isStatic()) {
+					out.println();
+					out.print(constantPoolName().replace('/','_')+".prototype."+fd.getID()+" = ");
+					Expr e = fd.getInit();
+					if (e!=null) {
+						e.generateJS(out);
+					} else if (fd.fieldDecl().type().isPrimitiveType()) {
+						out.print("0");
+					} else {
+						out.print("null");
+					}
+					out.print(";");
+				}
+			}
+		}
   	}
-  
+  	
+	public void InterfaceDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {
+		out.println();		
+    	out.print("var ");
+    	out.print(constantPoolName().replace('/','_'));
+    	out.print(" = _defineInterface(");
+		out.print("\""+constantPoolName().replace('/','_')+"\",");
+		if (!hasSuperInterface()) {
+			out.print("null");
+    		out.printAndMemorizeLoad("java/lang/Object");
+		} else {
+			out.print("[");
+			int n=0;
+      		for (Iterator<TypeDecl> iter = interfacesIterator(); iter.hasNext(); n++) {
+      			if (n>0) out.print(",");
+        		out.printAndMemorizeLoad(iter.next().constantPoolName());
+      		}			
+			out.print("]");
+		}
+		out.print(");");
+	}  
+  	
 //  	public void TypeDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {
 //    	out.print(constantPoolName());
 //    }  
   
-  
+
+  	public void ConstructorDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {
+		Block block = getBlock();
+		if (block==null) return;
+
+  		int numpar = getNumParameter();  		
+  		out.println();
+  		out.print("_"+numpar+": function(");
+  		for (int i=0; i<numpar; i++) {
+  			if (i>0) out.print(",");
+  			out.print(getParameter(i).name());
+  		}
+  		out.print(")");
+		out.println();
+  		out.print("{");  		
+		out.increaseIndent();
+  		int n = block.getNumStmt();
+  		for (int i=0; i<n; i++) {
+  			Stmt stmt = block.getStmt(i);
+  			stmt.generateJS(out);
+  		}
+  		out.println();
+  		out.print("return this;");
+		out.decreaseIndent();
+		out.println();  		  		
+		out.print("},");
+  	}
+
+//	public void EnumConstant.generateJS(com.greentube.javaconverter.CodePrinter out) {
+//	}
+//	public void InstantInitializer.generateJS(com.greentube.javaconverter.CodePrinter out) {
+//	}
+//	public void FieldDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {
+//	}
+//	public void MemberClassDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {
+//	}
+//	public void MemberInterfaceDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {
+//	}
+
+  	public void MethodDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {
+		Block block = getBlock();
+		if (block==null) return;
+
+  		int numpar = getNumParameter();  		
+  		out.println();
+  		out.print(name()+"_"+numpar+": function(");
+  		for (int i=0; i<numpar; i++) {
+  			if (i>0) out.print(",");
+  			out.print(getParameter(i).name());
+  		}
+  		out.print(")");
+  		
+  		block.generateJS(out);
+  		
+  		out.print(",");
+  	}
+
+//	public void StaticInitializer.generateJS(com.greentube.javaconverter.CodePrinter out) {
+//	}
+
+//	public void SubstitutedBodyDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {
+//	}
+  	
 }

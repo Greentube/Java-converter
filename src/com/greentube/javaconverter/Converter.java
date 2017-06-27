@@ -27,10 +27,8 @@ public class Converter extends Frontend {
 	  @Override
 	  protected void processNoErrors(CompilationUnit unit) {
 //		  unit.generateClassfile();
-		  System.out.println("Processing: "+unit.getClassSource().pathName());
-		  CodePrinter p = new CodePrinter(System.out);
-		  unit.generateJS(p);
-		  p.flush();
+//		  System.out.println("Processing: "+unit.getClassSource().pathName());
+		  unit.generateJS();
 	  }
 
 //	  /**

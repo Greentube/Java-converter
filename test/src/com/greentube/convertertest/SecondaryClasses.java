@@ -2,6 +2,8 @@ package com.greentube.convertertest;
 
 public class SecondaryClasses 
 {
+	static int defaultvalue1;
+	static String defaultvalue2;
 	static int ssx = 99;
 	
 	S2 s2;

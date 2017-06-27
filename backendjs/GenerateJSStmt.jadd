@@ -1,0 +1,97 @@
+aspect GenerateJS {
+ 
+ 	// --- AssertStmt ---
+ 	
+ 	// --- BasicTWR ---
+ 	
+ 	// --- Block ---
+ 	
+	public void Block.generateJS(com.greentube.javaconverter.CodePrinter out) {
+		out.println();
+		out.print("{");
+		out.increaseIndent();
+  		int n = getNumStmt();
+  		for (int i=0; i<n; i++) {
+  			Stmt stmt = getStmt(i);
+  			stmt.generateJS(out);
+  		}
+		out.decreaseIndent();
+		out.println();  		  		
+		out.print("}");
+  	}
+  
+  	// --- BranchTargetStmt ---
+  	
+  	// --- BreakStmt ---
+  	
+  	// --- Case ---
+  	
+  	// --- ContinueStmt ---
+  
+    // --- EmptyStmt ---
+    
+    // --- ExprStmt ---
+  
+	public void ExprStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+		out.println();    
+		getExpr().generateJS(out);
+		out.print(";");
+	}  	
+	
+	// --- IfStmt ---
+	public void IfStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+		out.println();
+		out.print("if (");
+		getCondition().generateJS(out);
+		out.print(") ");
+		getThen().generateJS(out);
+		Stmt e = getElse();
+		if (e!=null) {
+			out.println();
+			out.print("else ");
+			e.generateJS(out);
+		}
+	}  	
+	
+	// --- LocalClassDeclStmt ---
+	
+	// --- ReturnStmt ---
+
+	public void ReturnStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+		out.println();
+		if (enclosingBodyDecl() instanceof ConstructorDecl) {
+			out.print("return this;");
+		} else {
+			Expr r = getResult();
+			if (r==null) {
+				out.print("return;");
+			} else {
+				out.print("return ");
+				r.generateJS(out);
+				out.print(";");
+			}
+		}
+	}  	
+	
+	// --- SynchronizedStmt ---
+	
+	public void SynchronizedStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+		out.error("Threading is not supported");
+	}
+	
+	// --- ThrowStmt ---
+	
+	public void ThrowStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+		out.error("Exceptions are not supported");
+	}
+	
+	// --- TryStmt ---
+	
+	public void TryStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+		out.error("Exceptions are not supported");
+	}
+	
+	// --- VarDeclStmt ---
+	
+}
+

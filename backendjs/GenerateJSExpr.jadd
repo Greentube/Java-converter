@@ -1,0 +1,318 @@
+aspect GenerateJS {
+ 
+ 	// --- Access --- 
+ 	
+  	public void AbstractDot.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getLeft().generateJS(out);
+  		out.print(".");
+  		getRight().generateJS(out);
+ 	}
+//  	public void Wildcard.generateJS(com.greentube.javaconverter.CodePrinter out) {
+// 	}
+//  	public void WildcardExtends.generateJS(com.greentube.javaconverter.CodePrinter out) {
+// 	}
+//  	public void WildcardSuper.generateJS(com.greentube.javaconverter.CodePrinter out) {
+// 	}
+//  	public void ArrayAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
+// 	}
+//  	public void ClassAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
+// 	}
+  	public void ClassInstanceExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+		int n = getNumArg();
+  		out.print("(new ");
+  		out.printAndMemorizeReference(type().constantPoolName());
+  		out.print("())._"+n+"(");
+  		for (int i=0; i<n; i++) {
+			if (i>0) out.print(",");
+			getArg(i).generateJS(out);  		
+  		}
+  		out.print(")");
+ 	}
+//  	public void ConstructorAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
+// 	}
+//  	public void DiamondAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
+// 	}
+  	public void MethodAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		MethodDecl m = decl();
+  		if (m.isStatic()) {
+  			out.printAndMemorizeReference(m.hostType().constantPoolName());
+  			out.print(".prototype.");
+  		} else if (!isRightChildOfDot()) {
+  			out.print("this.");
+  		}
+  		
+  		out.print(name()+"_"+getNumArg()+"(");
+  		for (int i=0; i<getNumArg(); i++) {
+  			if (i>0) out.print(",");
+  			getArg(i).generateJS(out);
+  		}
+  		out.print(")");  	
+ 	}
+//  	public void PackageAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
+// 	}
+//  	public void ParseName.generateJS(com.greentube.javaconverter.CodePrinter out) {
+// 	}
+//  	public void SuperAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
+// 	}
+//  	public void ThisAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
+// 	}
+  	public void TypeAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
+//  		out.printAndMemorizeReference(type().constantPoolName());
+//		out.print(".prototype");  		  	
+ 	}
+  	public void VarAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		Variable v = varDecl();
+  		if (v.isClassVariable()) {
+			out.printAndMemorizeReference(hostType().constantPoolName());  		
+  			out.print(".prototype."+getID()+"_f");  			  			
+  		} else if (v.isInstanceVariable()) {
+			if (!isRightChildOfDot()) {
+  				out.print("this.");
+  			}  		
+			out.print(getID()+"_f");
+  		} else {	// must be local variable or parameter
+			out.print(getID());
+  		}  		
+ 	}
+  	
+  	// --- ArrayInit ---
+  	
+  	
+  	// --- AssignExpr ---
+
+  	public void AssignMinusExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getDest().generateJS(out);
+  		out.print("-=");
+  		getSource().generateJS(out);
+  	}
+  	public void AssignPlusExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getDest().generateJS(out);
+  		out.print("+=");
+  		getSource().generateJS(out);
+  	}
+  	public void AssignAndExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getDest().generateJS(out);
+  		out.print("&=");
+  		getSource().generateJS(out);
+  	}
+  	public void AssignOrExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getDest().generateJS(out);
+  		out.print("|=");
+  		getSource().generateJS(out);
+  	}
+  	public void AssignXorExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getDest().generateJS(out);
+  		out.print("^=");
+  		getSource().generateJS(out);
+  	}
+  	public void AssignDivExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getDest().generateJS(out);
+  		out.print("/=");
+  		getSource().generateJS(out);
+  	}
+  	public void AssignModExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getDest().generateJS(out);
+  		out.print("%=");
+  		getSource().generateJS(out);
+  	}
+  	public void AssignMulExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getDest().generateJS(out);
+  		out.print("%=");
+  		getSource().generateJS(out);
+  	}
+  	public void AssignLShiftExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getDest().generateJS(out);
+  		out.print("<<=");
+  		getSource().generateJS(out);
+  	}
+  	public void AssignRShiftExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getDest().generateJS(out);
+  		out.print(">>=");
+  		getSource().generateJS(out);
+  	}
+  	public void AssignURShiftExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getDest().generateJS(out);
+  		out.print(">>>=");
+  		getSource().generateJS(out);
+  	}
+  	public void AssignSimpleExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getDest().generateJS(out);
+  		out.print("=");
+  		getSource().generateJS(out);
+  	}
+  	  	
+  	// --- Binary ---
+
+  	public void AddExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getLeftOperand().generateJS(out);
+  		out.print("+");
+  		getRightOperand().generateJS(out);
+  	}
+  	public void SubExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getLeftOperand().generateJS(out);
+  		out.print("-");
+  		getRightOperand().generateJS(out);  	
+  	}
+  	public void DivExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getLeftOperand().generateJS(out);
+  		out.print("/");
+  		getRightOperand().generateJS(out);  	
+  	}
+  	public void ModExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getLeftOperand().generateJS(out);
+  		out.print("%");
+  		getRightOperand().generateJS(out);  	
+  	}
+  	public void MulExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getLeftOperand().generateJS(out);
+  		out.print("*");
+  		getRightOperand().generateJS(out);  	
+  	}
+  	public void AndBitwiseExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getLeftOperand().generateJS(out);
+  		out.print("&");
+  		getRightOperand().generateJS(out);  	
+  	}
+  	public void OrBitwiseExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getLeftOperand().generateJS(out);
+  		out.print("|");
+  		getRightOperand().generateJS(out);  	
+  	}
+  	public void XorBitwiseExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getLeftOperand().generateJS(out);
+  		out.print("^");
+  		getRightOperand().generateJS(out);  	
+  	}
+  	public void AndLogicalExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getLeftOperand().generateJS(out);
+  		out.print("&&");
+  		getRightOperand().generateJS(out);  	
+  	}
+  	public void OrLogicalExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getLeftOperand().generateJS(out);
+  		out.print("||");
+  		getRightOperand().generateJS(out);  	
+  	}
+  	public void EqualityExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getLeftOperand().generateJS(out);
+  		out.print("==");
+  		getRightOperand().generateJS(out);  	
+  	}
+  	public void GEExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getLeftOperand().generateJS(out);
+  		out.print(">=");
+  		getRightOperand().generateJS(out);  	
+  	}
+  	public void GTExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getLeftOperand().generateJS(out);
+  		out.print(">");
+  		getRightOperand().generateJS(out);  	
+  	}
+  	public void LEExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getLeftOperand().generateJS(out);
+  		out.print("<=");
+  		getRightOperand().generateJS(out);  	
+  	}
+  	public void LTExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getLeftOperand().generateJS(out);
+  		out.print("<=");
+  		getRightOperand().generateJS(out);  	
+  	}
+  	public void LShiftExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getLeftOperand().generateJS(out);
+  		out.print("<<");
+  		getRightOperand().generateJS(out);  	
+  	}
+  	public void RShiftExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getLeftOperand().generateJS(out);
+  		out.print(">>");
+  		getRightOperand().generateJS(out);  	
+  	}
+  	public void URShiftExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getLeftOperand().generateJS(out);
+  		out.print(">>>");
+  		getRightOperand().generateJS(out);  	
+  	}
+  	
+  	
+  	// --- CastExpr ---
+  	
+  	// --- ConditionalExpr ---
+  	
+  	// --- InstanceOfExpr ---
+  	
+  	// --- PrimaryExpr ---
+  	
+//  	public void ArrayCreationExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+//  	}
+  	public void BooleanLiteral.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		out.print(isTrue()?"true":"false");
+  	}
+  	public void CharacterLiteral.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		out.print(constant().intValue());	
+  	}
+//  	public void IllegalLiteral.generateJS(com.greentube.javaconverter.CodePrinter out) {
+//  	}
+  	public void NullLiteral.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		out.print("null");
+  	}
+  	public void DoubleLiteral.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		out.print(constant().doubleValue());	
+  	}
+  	public void FloatingPointLiteral.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		out.error("Type 'float' not supported");
+  	}
+  	public void IntegerLiteral.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		out.print(constant().intValue());	
+  	}
+  	public void LongLiteral.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		out.error("Type 'long' not supported");
+  	}
+  	public void StringLiteral.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		out.print("\"");
+  		out.print(constant().stringValue());	  	
+  		out.print("\"");
+  	}
+  	public void ParExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		out.print("(");
+  		getExpr().generateJS(out);
+  		out.print(")");
+  	}
+
+  	
+  	// --- Unary ---
+  	public void BitNotExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		out.print("~");
+  		getOperand().generateJS(out);  	
+  	}
+  	public void LogNotExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		out.print("!");
+  		getOperand().generateJS(out);  	
+  	}
+  	public void MinusExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		out.print("-");
+  		getOperand().generateJS(out);  	
+  	}
+  	public void PlusExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+// ??  		out.print("+");    
+  		getOperand().generateJS(out);  	
+  	}
+  	public void PostDecExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getOperand().generateJS(out);  	
+  		out.print(" -- ");    
+  	}
+  	public void PostIncExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getOperand().generateJS(out);  	
+  		out.print(" ++ ");    
+  	}
+  	public void PreDecExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		out.print(" -- ");    
+  		getOperand().generateJS(out);  	
+  	}
+  	public void PreIncExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		out.print(" ++ ");    
+  		getOperand().generateJS(out);  	
+  	}
+  	
+}
+
