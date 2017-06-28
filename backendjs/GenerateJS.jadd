@@ -54,7 +54,7 @@ aspect GenerateJS {
 			for (FieldDeclarator fd:bd.fieldDeclarations()) {
 				if (fd.isStatic()) {
 					out.println();
-					out.print(constantPoolName().replace('/','_')+".prototype."+fd.getID()+" = ");
+					out.print(constantPoolName().replace('/','_')+".prototype."+fd.getID()+"_f = ");
 					Expr e = fd.getInit();
 					if (e!=null) {
 						e.generateJS(out);
@@ -105,6 +105,7 @@ aspect GenerateJS {
   		for (int i=0; i<numpar; i++) {
   			if (i>0) out.print(",");
   			out.print(getParameter(i).name());
+  			out.print("_l");
   		}
   		out.print(")");
 		out.println();
@@ -143,6 +144,7 @@ aspect GenerateJS {
   		for (int i=0; i<numpar; i++) {
   			if (i>0) out.print(",");
   			out.print(getParameter(i).name());
+  			out.print("_l");  			
   		}
   		out.print(")");
   		

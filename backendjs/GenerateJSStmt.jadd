@@ -12,8 +12,10 @@ aspect GenerateJS {
 		out.increaseIndent();
   		int n = getNumStmt();
   		for (int i=0; i<n; i++) {
+  			out.println();
   			Stmt stmt = getStmt(i);
   			stmt.generateJS(out);
+  			if (!(stmt instanceof Case)) out.print(";");
   		}
 		out.decreaseIndent();
 		out.println();  		  		
@@ -22,9 +24,58 @@ aspect GenerateJS {
   
   	// --- BranchTargetStmt ---
   	
+//	public void DoStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+// 	}
+//	public void EnhancedForStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+// 	}
+	public void ForStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+		out.print("for (");
+		for (int i=0; i<getNumInitStmt(); i++) {
+			getInitStmt(i).generateJS(out);
+		}
+		out.print("; ");
+		if (hasCondition()) {
+			getCondition().generateJS(out);
+		}
+		out.print("; ");
+		for (int i=0; i<getNumUpdateStmt(); i++) {
+			getUpdateStmt(i).generateJS(out);
+		}
+		out.print(")");
+		getStmt().generateJS(out);
+ 	}
+//	public void LabeledStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+// 	}
+	public void SwitchStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+		out.print("switch (");
+		getExpr().generateJS(out);
+		out.print(")");
+		getBlock().generateJS(out);	
+ 	}
+
+	public void WhileStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+		out.print("while (");
+		getCondition().generateJS(out);
+		out.print(")");
+		getStmt().generateJS(out);	
+ 	}
+  	
   	// --- BreakStmt ---
   	
+	public void BreakStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+		out.print("break");
+	}
+  	
   	// --- Case ---
+  	
+	public void ConstCase.generateJS(com.greentube.javaconverter.CodePrinter out) {
+		out.print("case ");
+		getValue().generateJS(out);
+		out.print(":");
+	}
+	public void DefaultCase.generateJS(com.greentube.javaconverter.CodePrinter out) {
+		out.print("default:");
+	}
   	
   	// --- ContinueStmt ---
   
@@ -33,14 +84,12 @@ aspect GenerateJS {
     // --- ExprStmt ---
   
 	public void ExprStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
-		out.println();    
 		getExpr().generateJS(out);
-		out.print(";");
 	}  	
 	
 	// --- IfStmt ---
+	
 	public void IfStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
-		out.println();
 		out.print("if (");
 		getCondition().generateJS(out);
 		out.print(") ");
@@ -58,17 +107,15 @@ aspect GenerateJS {
 	// --- ReturnStmt ---
 
 	public void ReturnStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
-		out.println();
 		if (enclosingBodyDecl() instanceof ConstructorDecl) {
-			out.print("return this;");
+			out.print("return this");
 		} else {
 			Expr r = getResult();
 			if (r==null) {
-				out.print("return;");
+				out.print("return");
 			} else {
 				out.print("return ");
 				r.generateJS(out);
-				out.print(";");
 			}
 		}
 	}  	
@@ -92,6 +139,19 @@ aspect GenerateJS {
 	}
 	
 	// --- VarDeclStmt ---
+	
+	public void VarDeclStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+		for (int i=0; i<getNumDeclarator(); i++) {
+			VariableDeclarator d = getDeclarator(i);			
+			out.print("var " + d.name() + "_l = ");
+			Expr e = d.getInit();
+			if (e!=null) {
+				e.generateJS(out);
+			} else {
+				out.print(type().isPrimitiveType() ? "0" : "null");
+			}
+		}
+	}
 	
 }
 

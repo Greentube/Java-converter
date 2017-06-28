@@ -3,8 +3,10 @@ aspect GenerateJS {
  	// --- Access --- 
  	
   	public void AbstractDot.generateJS(com.greentube.javaconverter.CodePrinter out) {
-  		getLeft().generateJS(out);
-  		out.print(".");
+  		if (! getLeft().isTypeAccess() ) {
+  			getLeft().generateJS(out);
+  			if (! (isArrayAccess()) ) out.print(".");
+  		}
   		getRight().generateJS(out);
  	}
 //  	public void Wildcard.generateJS(com.greentube.javaconverter.CodePrinter out) {
@@ -13,8 +15,11 @@ aspect GenerateJS {
 // 	}
 //  	public void WildcardSuper.generateJS(com.greentube.javaconverter.CodePrinter out) {
 // 	}
-//  	public void ArrayAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
-// 	}
+  	public void ArrayAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		out.print("[");
+  		getExpr().generateJS(out);
+  		out.print("]");
+ 	}
 //  	public void ClassAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
 // 	}
   	public void ClassInstanceExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
@@ -56,88 +61,109 @@ aspect GenerateJS {
 // 	}
 //  	public void ThisAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
 // 	}
-  	public void TypeAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
-//  		out.printAndMemorizeReference(type().constantPoolName());
-//		out.print(".prototype");  		  	
- 	}
+//  	public void TypeAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
+// 	}
+  	public void ArrayTypeAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
+	}
+  	public void ArrayTypeWithSizeAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		ArrayDecl t = (ArrayDecl) type();
+  		TypeDecl et = t.elementType();
+  		out.print("_createArray(");
+  		getExpr().generateJS(out);
+  		out.print(",");
+  		out.print(et.isPrimitiveType() ? "0" : "null");
+  		out.print(")");
+	}   	
+
   	public void VarAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
   		Variable v = varDecl();
   		if (v.isClassVariable()) {
-			out.printAndMemorizeReference(hostType().constantPoolName());  		
+			out.printAndMemorizeReference(v.hostType().constantPoolName());  		
   			out.print(".prototype."+getID()+"_f");  			  			
   		} else if (v.isInstanceVariable()) {
 			if (!isRightChildOfDot()) {
   				out.print("this.");
   			}  		
 			out.print(getID()+"_f");
-  		} else {	// must be local variable or parameter
+  		} else if (v.isLocalVariable()) {  		
+			out.print(getID()+"_l");
+  		} else {
+  			// this fits in no other category - maybe the 'length' attribute of arrays 
 			out.print(getID());
   		}  		
  	}
   	
   	// --- ArrayInit ---
   	
+  	public void ArrayInit.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		out.print("[");
+  		for (int i=0; i<getNumInit(); i++) {
+  			if (i>0) out.print(",");
+  			getInit(i).generateJS(out);
+  		}
+  		out.print("]");
+  	}
   	
   	// --- AssignExpr ---
 
   	public void AssignMinusExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
   		getDest().generateJS(out);
-  		out.print("-=");
+  		out.print(" -= ");
   		getSource().generateJS(out);
   	}
   	public void AssignPlusExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
   		getDest().generateJS(out);
-  		out.print("+=");
+  		out.print(" += ");
   		getSource().generateJS(out);
   	}
   	public void AssignAndExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
   		getDest().generateJS(out);
-  		out.print("&=");
+  		out.print(" &= ");
   		getSource().generateJS(out);
   	}
   	public void AssignOrExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
   		getDest().generateJS(out);
-  		out.print("|=");
+  		out.print(" |= ");
   		getSource().generateJS(out);
   	}
   	public void AssignXorExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
   		getDest().generateJS(out);
-  		out.print("^=");
+  		out.print(" ^= ");
   		getSource().generateJS(out);
   	}
   	public void AssignDivExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
   		getDest().generateJS(out);
-  		out.print("/=");
+  		out.print(" /= ");
   		getSource().generateJS(out);
   	}
   	public void AssignModExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
   		getDest().generateJS(out);
-  		out.print("%=");
+  		out.print(" %= ");
   		getSource().generateJS(out);
   	}
   	public void AssignMulExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
   		getDest().generateJS(out);
-  		out.print("%=");
+  		out.print(" %= ");
   		getSource().generateJS(out);
   	}
   	public void AssignLShiftExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
   		getDest().generateJS(out);
-  		out.print("<<=");
+  		out.print(" <<= ");
   		getSource().generateJS(out);
   	}
   	public void AssignRShiftExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
   		getDest().generateJS(out);
-  		out.print(">>=");
+  		out.print(" >>= ");
   		getSource().generateJS(out);
   	}
   	public void AssignURShiftExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
   		getDest().generateJS(out);
-  		out.print(">>>=");
+  		out.print(" >>>= ");
   		getSource().generateJS(out);
   	}
   	public void AssignSimpleExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
   		getDest().generateJS(out);
-  		out.print("=");
+  		out.print(" = ");
   		getSource().generateJS(out);
   	}
   	  	
@@ -237,14 +263,51 @@ aspect GenerateJS {
   	
   	// --- CastExpr ---
   	
+  	public void CastExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getExpr().generateJS(out);
+  	}
+  	
   	// --- ConditionalExpr ---
   	
+  	public void ConditionalExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getCondition().generateJS(out);
+  		out.print("?");
+  		getTrueExpr().generateJS(out);
+  		out.print(":");
+  		getFalseExpr().generateJS(out);
+  	}
+  	
   	// --- InstanceOfExpr ---
+
+  	public void InstanceOfExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  	  	TypeDecl t = getTypeAccess().type();
+  	  	if (t.isArrayDecl()) {
+//  	  		out.error("Can not create type check for array types");
+// 	  		out.print("false");
+	  		out.print("(_denullify(");
+  			getExpr().generateJS(out);
+  			out.print(")._is_Array)");
+  	  	} else if (!t.isReferenceType()) {
+  	  		out.error("Can not create type check for primitive types");
+  	  		out.print("false");
+  	  	} else {
+	  		out.print("(_denullify(");
+  			getExpr().generateJS(out);
+  			out.print(").");
+	  		out.print("_is_");
+	  		out.printAndMemorizeReference(t.constantPoolName());
+  			out.print(")");
+  		}
+  	}
   	
   	// --- PrimaryExpr ---
   	
-//  	public void ArrayCreationExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
-//  	}
+  	public void ArrayCreationExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getTypeAccess().generateJS(out);
+  		if (hasArrayInit()) {
+  			getArrayInit().generateJS(out);
+  		}
+  	}
   	public void BooleanLiteral.generateJS(com.greentube.javaconverter.CodePrinter out) {
   		out.print(isTrue()?"true":"false");
   	}
@@ -269,8 +332,39 @@ aspect GenerateJS {
   		out.error("Type 'long' not supported");
   	}
   	public void StringLiteral.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		String v = constant().stringValue();
   		out.print("\"");
-  		out.print(constant().stringValue());	  	
+  		for (int i=0; i<v.length(); i++) {
+  			char c = v.charAt(i);
+  			switch(c) {
+  			case '\b': 	out.print("\\b");
+  						break;
+  			case '\f':  out.print("\\f");	
+  			            break;
+  			case '\n':  out.print("\\n"); 
+  			            break;
+  			case '\r':  out.print("\\r");
+  			            break;
+  			case '\t':  out.print("\\t");
+  			            break;
+  			case '\\':  out.print("\\\\");
+  			            break;
+  			case '"':   out.print("\\\"");
+  			            break;  			
+  			default: 
+  				if (c>=32 && c<=126) {
+  				 	out.print(c);
+  				} else {
+  					String hx = Integer.toHexString((int)c);
+  					out.print("\\u");
+  					for (int j=hx.length(); j<4; j++) {
+  						out.print("0");
+  					} 
+  					out.print(hx);
+  				}
+  				break;
+  			}
+  		}
   		out.print("\"");
   	}
   	public void ParExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
@@ -294,7 +388,7 @@ aspect GenerateJS {
   		getOperand().generateJS(out);  	
   	}
   	public void PlusExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
-// ??  		out.print("+");    
+  		out.print("+");    
   		getOperand().generateJS(out);  	
   	}
   	public void PostDecExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
