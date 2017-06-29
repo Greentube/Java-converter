@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="Build java converter test project" default="build">
+<project name="Test project to legacy html5 target" default="build">
 
   <taskdef name="convertJava2JavaScript" classname="com.greentube.javaconverter.source2source.Java2JavaScriptAntTask"/> 
   <taskdef name="linkJavaScript" classname="com.greentube.javaconverter.linker.JavaScriptLinkerAntTask"/> 
 			
   <target name="build">
   	
-  	<delete dir="${basedir}/build"/>
-    <mkdir dir="${basedir}/build/javascript" />
-    <convertJava2JavaScript dest="${basedir}/build/javascript" external="${basedir}/runtime">
+  	<delete dir="${basedir}/build/html5_legacy"/>
+    <mkdir dir="${basedir}/build/html5_legacy" />
+    <convertJava2JavaScript dest="${basedir}/build/html5_legacy" external="${basedir}/runtime">
         <fileset dir="${basedir}">
             <include name="src/**/*.java"/>
         </fileset>
     </convertJava2JavaScript>
   	
     <linkJavaScript 
-    		output="${basedir}/build/javascript/main.js" 
-    		searchpath="${basedir}/build/javascript,${basedir}/../runtimejs"
+    		output="${basedir}/build/html5_legacy/main.js" 
+    		searchpath="${basedir}/build/html5_legacy,${basedir}/../runtimejs"
     		mainfile="com/greentube/convertertest/Test"
     		>
     </linkJavaScript>		

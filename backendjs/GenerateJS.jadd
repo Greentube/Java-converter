@@ -5,14 +5,23 @@ aspect GenerateJS {
 		this.dumpTree(System.out);
   	}
 
-  	public void CompilationUnit.generateJS() {    
+  	public void CompilationUnit.generateJS(File outputfolder) {
     	for (TypeDecl t:getTypeDecls()) {
-			com.greentube.javaconverter.CodePrinter out = 
-				new com.greentube.javaconverter.CodePrinter(System.out);
-    		out.print("FILE: "+t.constantPoolName()+".js");
-    		t.generateJS(out);
-    		out.printExternals();
-    		out.println();
+    		try {    		
+    			File f= new File(outputfolder, t.constantPoolName()+".js"); 
+    		   	f.getParentFile().mkdirs();
+    		   	
+				com.greentube.javaconverter.CodePrinter out = 
+					new com.greentube.javaconverter.CodePrinter(new FileOutputStream(f));
+
+	    		t.generateJS(out);
+    			out.printExternals();
+    			out.println();
+    			out.close();
+    		
+    		} catch (IOException e) {
+      			e.printStackTrace();
+    		}
     	}
   	}
     	
@@ -77,7 +86,7 @@ aspect GenerateJS {
 		out.print("\""+constantPoolName().replace('/','_')+"\",");
 		if (!hasSuperInterface()) {
 			out.print("null");
-    		out.printAndMemorizeLoad("java/lang/Object");
+    		out.memorizeLoad("java/lang/Object");
 		} else {
 			out.print("[");
 			int n=0;
@@ -97,8 +106,7 @@ aspect GenerateJS {
 
   	public void ConstructorDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {
 		Block block = getBlock();
-		if (block==null) return;
-
+		
   		int numpar = getNumParameter();  		
   		out.println();
   		out.print("_"+numpar+": function(");
@@ -111,10 +119,13 @@ aspect GenerateJS {
 		out.println();
   		out.print("{");  		
 		out.increaseIndent();
+		getConstructorInvocation().generateJS(out);
   		int n = block.getNumStmt();
   		for (int i=0; i<n; i++) {
+  			out.println();
   			Stmt stmt = block.getStmt(i);
   			stmt.generateJS(out);
+			out.print(";");  			
   		}
   		out.println();
   		out.print("return this;");

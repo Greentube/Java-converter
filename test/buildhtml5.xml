@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Test project to html5 target" default="build">
+
+  <taskdef name="convertJava" classname="com.greentube.javaconverter.ConverterAntTask"/> 
+  <taskdef name="linkJavaScript" classname="com.greentube.javaconverter.linker.JavaScriptLinkerAntTask"/> 
+			
+  <target name="build">
+  	
+  	<delete dir="${basedir}/build/html5"/>
+    <mkdir dir="${basedir}/build/html5" />
+    <convertJava dest="${basedir}/build/html5" external="${basedir}/runtime">
+        <fileset dir="${basedir}/src">
+            <include name="**/*.java"/>
+        </fileset>
+    </convertJava>
+  	
+    <linkJavaScript 
+    		output="${basedir}/build/html5/main.js" 
+    		searchpath="${basedir}/build/html5,${basedir}/../runtimejs"
+    		mainfile="com/greentube/convertertest/Test"
+    		>
+    </linkJavaScript>		
+
+  </target>
+  
+  <target name="clean">
+	<delete dir="${basedir}/build"/>  	
+  </target>
+
+  <target name="cleanbuild" depends="clean,build">
+  </target>
+  	
+</project>

@@ -95,7 +95,7 @@ public class JavaScriptLinker
 		}		
 		
 		// incorporate the completion constraints into the loading constraints:
-		// before loading the constrainted module, all modules _referenced_ by the
+		// before loading the constrained module, all modules _referenced_ by the
 		// target must already be loaded 
 		for (int[] c:completionconstraints) {
 			int from = c[0];

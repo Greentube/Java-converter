@@ -59,8 +59,6 @@ public class Test {
         hashsettest();
         arraydequetest();
         
-//        converttest();
-//        encodedecodetest();
         secondaryclassestest();
         complexoperationtest();
         
@@ -124,13 +122,15 @@ public class Test {
         int[][]a = new int[4][5];                
         assertI(a.length, 4);
         a[0][2] = 77;
-        assertI(a[0].length, 5);
-        assertI(a[1].length, 5);
+        assertI((a[0]).length, 5);
+        assertI((a[1]).length, 5);
         assertI(a[2].length, 5);
         assertI(a[3].length, 5);
         assertI(a[0][0], 0);
         assertI(a[3][3], 0);
         assertI(a[0][2], 77);
+        int[][]axy = new int[3][3];
+        assertI(axy[0].length,3);
         
         int[][]b[][] = new int[4][2][7][];       // declare arrays with various styles
         assertI(b.length,4);

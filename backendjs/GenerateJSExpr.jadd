@@ -3,10 +3,7 @@ aspect GenerateJS {
  	// --- Access --- 
  	
   	public void AbstractDot.generateJS(com.greentube.javaconverter.CodePrinter out) {
-  		if (! getLeft().isTypeAccess() ) {
-  			getLeft().generateJS(out);
-  			if (! (isArrayAccess()) ) out.print(".");
-  		}
+  		getLeft().generateJS(out);
   		getRight().generateJS(out);
  	}
 //  	public void Wildcard.generateJS(com.greentube.javaconverter.CodePrinter out) {
@@ -32,9 +29,26 @@ aspect GenerateJS {
 			getArg(i).generateJS(out);  		
   		}
   		out.print(")");
+  		
+  		// check if this is inside a static initializer - must force early loading of created class
+  		if (enclosingBodyDecl().isField()) {
+  			out.memorizeComplete(type().constantPoolName());
+  		}
  	}
-//  	public void ConstructorAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
-// 	}
+  	public void ConstructorAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		String target = decl().hostType().constantPoolName();
+  		if (!target.equals("java/lang/Object")) {
+			out.println();
+			out.printAndMemorizeReference(target);
+			out.print(".prototype._" + getNumArg() + ".call(this");
+			for (int i=0; i<getNumArg(); i++) {
+  				out.print(",");
+ 				getArg(i).generateJS(out);  			
+			}
+			out.print(");");
+		}
+ 	}
+ 	
 //  	public void DiamondAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
 // 	}
   	public void MethodAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
@@ -42,7 +56,9 @@ aspect GenerateJS {
   		if (m.isStatic()) {
   			out.printAndMemorizeReference(m.hostType().constantPoolName());
   			out.print(".prototype.");
-  		} else if (!isRightChildOfDot()) {
+  		} else if (isRightChildOfDot()) {
+  			out.print(".");
+  		} else {
   			out.print("this.");
   		}
   		
@@ -59,20 +75,18 @@ aspect GenerateJS {
 // 	}
 //  	public void SuperAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
 // 	}
-//  	public void ThisAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
-// 	}
-//  	public void TypeAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
-// 	}
+  	public void ThisAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		out.print("this");
+ 	}
+  	public void TypeAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
+ 	}
   	public void ArrayTypeAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getAccess().generateJS(out);
 	}
   	public void ArrayTypeWithSizeAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
-  		ArrayDecl t = (ArrayDecl) type();
-  		TypeDecl et = t.elementType();
-  		out.print("_createArray(");
+  		getAccess().generateJS(out);
   		getExpr().generateJS(out);
   		out.print(",");
-  		out.print(et.isPrimitiveType() ? "0" : "null");
-  		out.print(")");
 	}   	
 
   	public void VarAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
@@ -81,15 +95,17 @@ aspect GenerateJS {
 			out.printAndMemorizeReference(v.hostType().constantPoolName());  		
   			out.print(".prototype."+getID()+"_f");  			  			
   		} else if (v.isInstanceVariable()) {
-			if (!isRightChildOfDot()) {
+			if (isRightChildOfDot()) {
+				out.print(".");
+			} else {
   				out.print("this.");
   			}  		
 			out.print(getID()+"_f");
-  		} else if (v.isLocalVariable()) {  		
+  		} else if (v.isLocalVariable() || v.isParameter()) {  		
 			out.print(getID()+"_l");
   		} else {
   			// this fits in no other category - maybe the 'length' attribute of arrays 
-			out.print(getID());
+			out.print("."+getID());
   		}  		
  	}
   	
@@ -180,9 +196,18 @@ aspect GenerateJS {
   		getRightOperand().generateJS(out);  	
   	}
   	public void DivExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
-  		getLeftOperand().generateJS(out);
-  		out.print("/");
-  		getRightOperand().generateJS(out);  	
+		TypeDecl t = type();
+		if (t.isFloat() || t.isDouble()) {
+	  		getLeftOperand().generateJS(out);
+  			out.print("/");
+  			getRightOperand().generateJS(out);
+  		} else {  	
+			out.print("_divideInteger(");
+	  		getLeftOperand().generateJS(out);
+  			out.print(",");
+  			getRightOperand().generateJS(out);
+			out.print(")");
+  		}
   	}
   	public void ModExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
   		getLeftOperand().generateJS(out);
@@ -219,9 +244,14 @@ aspect GenerateJS {
   		out.print("||");
   		getRightOperand().generateJS(out);  	
   	}
-  	public void EqualityExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  	public void EQExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
   		getLeftOperand().generateJS(out);
   		out.print("==");
+  		getRightOperand().generateJS(out);  	
+  	}
+  	public void NEExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		getLeftOperand().generateJS(out);
+  		out.print("!=");
   		getRightOperand().generateJS(out);  	
   	}
   	public void GEExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
@@ -241,7 +271,7 @@ aspect GenerateJS {
   	}
   	public void LTExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
   		getLeftOperand().generateJS(out);
-  		out.print("<=");
+  		out.print("<");
   		getRightOperand().generateJS(out);  	
   	}
   	public void LShiftExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
@@ -264,7 +294,28 @@ aspect GenerateJS {
   	// --- CastExpr ---
   	
   	public void CastExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
-  		getExpr().generateJS(out);
+		TypeDecl t = type();
+		if (t.isPrimitiveType()) {
+			if (t.isByte()) { 
+				out.print("_castTObyte(");
+				getExpr().generateJS(out);
+				out.print(")");
+			} else if (t.isChar()) {
+				out.print("_castTOchar(");
+				getExpr().generateJS(out);
+				out.print(")");
+			} else if (t.isInt()) {
+				out.print("_castTOint(");
+				getExpr().generateJS(out);
+				out.print(")");
+			} else if (t.isDouble()) {
+				getExpr().generateJS(out);
+			} else {
+				out.error("Type not supported:"+t.fullName());
+			}
+		} else {
+  			getExpr().generateJS(out);
+  		}
   	}
   	
   	// --- ConditionalExpr ---
@@ -303,9 +354,21 @@ aspect GenerateJS {
   	// --- PrimaryExpr ---
   	
   	public void ArrayCreationExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
-  		getTypeAccess().generateJS(out);
   		if (hasArrayInit()) {
   			getArrayInit().generateJS(out);
+  		} else {
+  			Access ta = getTypeAccess();
+	  		out.print("_createArray(");  		
+			ta.generateJS(out);
+			
+			if ((ta instanceof ArrayTypeWithSizeAccess) 
+			 && ta.type().elementType().isPrimitiveType()) { 
+				out.print("0");
+			} else {
+				out.print("null");
+			}
+									
+			out.print(")");  		
   		}
   	}
   	public void BooleanLiteral.generateJS(com.greentube.javaconverter.CodePrinter out) {

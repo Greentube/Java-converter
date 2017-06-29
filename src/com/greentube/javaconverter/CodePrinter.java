@@ -2,6 +2,7 @@ package com.greentube.javaconverter;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
 
 public class CodePrinter extends PrintStream {
@@ -12,8 +13,9 @@ public class CodePrinter extends PrintStream {
 	
 	int indent = 0;
 	
-	public CodePrinter(OutputStream out) {
-		super(out);		
+	public CodePrinter(OutputStream out) throws UnsupportedEncodingException {
+		super(out,false,"utf-8");
+		
 		indent = 0;
 		reference = new HashSet();
 		load = new HashSet();
