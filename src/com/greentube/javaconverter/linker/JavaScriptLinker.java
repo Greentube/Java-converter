@@ -121,7 +121,16 @@ public class JavaScriptLinker
 	
 	private void writeOrdered(OutputStream os) throws IOException {
 		int[] o = mustbeloaded.computeOrdering();
-		if (o==null) throw new IOException("Can not find ordering of modules to satisfy constraints");
+		if (o==null) {
+			int[] cycle = mustbeloaded.findCycle();
+			StringBuffer msg = new StringBuffer("Cyclic dependencys involving modules:");
+			for (int i=0; i<cycle.length; i++) {
+				msg.append(" ");
+				msg.append(index2name.get(Integer.valueOf(cycle[i])));
+			}
+			throw new IOException(msg.toString());
+		}
+		
 		for (int i=0; i<o.length; i++) {
 			System.out.println(index2name.get(o[i]));
 			os.write(modules.get(o[i]));

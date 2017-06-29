@@ -54,8 +54,16 @@ aspect GenerateJS {
   	public void MethodAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
   		MethodDecl m = decl();
   		if (m.isStatic()) {
-  			out.printAndMemorizeReference(m.hostType().constantPoolName());
+  			String target = m.hostType().constantPoolName();
+  			out.printAndMemorizeReference(target);
   			out.print(".prototype.");
+
+	  		// check if this is inside a static initializer - must force early loading of accessed class
+	  		BodyDecl bd = enclosingBodyDecl();
+  			if (bd.isField() || (bd instanceof StaticInitializer)) {
+  				out.memorizeComplete(target);
+  			}
+  			
   		} else if (isRightChildOfDot()) {
   			out.print(".");
   		} else {
@@ -92,8 +100,14 @@ aspect GenerateJS {
   	public void VarAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
   		Variable v = varDecl();
   		if (v.isClassVariable()) {
-			out.printAndMemorizeReference(v.hostType().constantPoolName());  		
-  			out.print(".prototype."+getID()+"_f");  			  			
+  			String target = v.hostType().constantPoolName();
+			out.printAndMemorizeReference(target);  		
+  			out.print(".prototype."+getID()+"_f");  
+  			// check if this is inside a static initializer - must force early loading of accessed class
+	  		BodyDecl bd = enclosingBodyDecl();
+  			if (bd.isField() || (bd instanceof StaticInitializer)) {
+  				out.memorizeComplete(target);
+  			}  		  						  			
   		} else if (v.isInstanceVariable()) {
 			if (isRightChildOfDot()) {
 				out.print(".");
@@ -429,6 +443,12 @@ aspect GenerateJS {
   			}
   		}
   		out.print("\"");
+  		
+  		// check if this is inside a static initializer - must force early loading of created class
+  		BodyDecl bd = enclosingBodyDecl();
+		if (bd.isField() || (bd instanceof StaticInitializer)) {
+  			out.memorizeComplete("java/lang/String");
+  		}  		
   	}
   	public void ParExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
   		out.print("(");

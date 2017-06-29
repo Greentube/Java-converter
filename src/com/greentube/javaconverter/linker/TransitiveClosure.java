@@ -52,43 +52,6 @@ public class TransitiveClosure {
 		return (reachable[from][to/32] & (1<<(to%32))) != 0;
 	}
 	
-	// compute an ordering of the nodes that satisfies all the reachability constraints
-	// in the case that no such ordering can be created, a null is returned
-	public int[] computeOrdering() {
-		// determine total number of nodes that must be ordered before any given node
-		// (also counting the node itself) 
-		int[] blockers = new int[n];
-		for (int from=0; from<n; from++) {
-			for (int to=0; to<n; to++) {
-				if (isReachable(from,to)) blockers[from]++;
-			}
-		}
-		// create the ordering
-		int[] ordering = new int[n];		
-		for (int numordered=0; numordered<n; numordered++) {
-			// try to find an unused node that has no more blockers and can be used
-			// as next in sequence
-			int taken=-1;
-			for (int i=0; i<n; i++) {
-				if (blockers[i]==1) {
-					taken=i;					
-					break;
-				}
-			}
-			if (taken<0) return null;  // no possible node found - ordering failed
-			
-			// memorize taken node for ordering  
-			ordering[numordered] = taken;
-			
-			// decrease blocking count for all other nodes that were blocked by the taken one
-			for (int i=0; i<n; i++) {
-				if (isReachable(i,taken)) blockers[i]--;
-			}
-		}
-		// finally finished
-		return ordering;
-	}
-	
 	
 	// enlarge the matrix if needed
 	private void ensureCapacity(int cap) {
@@ -120,9 +83,56 @@ public class TransitiveClosure {
 	}
 	
 	
+	// Compute an ordering of the nodes that satisfies all the reachability constraints.
+	// In the case that no such ordering can be created because of cycles, a null is returned.
+	public int[] computeOrdering() {
+		// determine total number of other nodes that must be ordered before any given node
+		// (also counting the node itself) 
+		int[] blockers = new int[n];
+		for (int from=0; from<n; from++) {
+			for (int to=0; to<n; to++) {
+				if (isReachable(from,to)) blockers[from]++;
+			}
+		}
+		// create the ordering
+		int[] ordering = new int[n];		
+		for (int numordered=0; numordered<n; numordered++) {
+			// try to find an unused node that has no more blockers and can be used
+			// as next in sequence
+			int taken=-1;
+			for (int i=0; i<n; i++) {
+				if (blockers[i]==1) {
+					taken=i;					
+					break;
+				}
+			}
+			if (taken<0) return null;  // no possible node found - ordering failed
+			
+			// memorize taken node 
+			ordering[numordered] = taken;
+			
+			// decrease blocking count for all other nodes that were blocked by the taken one
+			for (int i=0; i<n; i++) {
+				if (isReachable(i,taken)) blockers[i]--;
+			}
+		}
+		// finally finished
+		return ordering;
+	}
+	
+	// find any pair of nodes which are reachable from one each other, as this 
+	// would form a cycle.
+	public int[] findCycle() {
+		for (int a=0; a<n; a++) {
+			for (int b=0; b<n; b++) {
+				if (a!=b && isReachable(a,b) && isReachable(b,a)) return new int[]{a,b};
+			}
+		}
+		return null;
+	}
 	
 	
-	
+	// --- debug methods ---
 	private void print() {
 		for (int r=0; r<n; r++) {
 			System.out.print((r<10?" ":"")+r+":  ");
@@ -131,8 +141,7 @@ public class TransitiveClosure {
 			}
 			System.out.println();
 		}
-	}
-	
+	}	
 	public static void main(String[] args) {
 		TransitiveClosure c = new TransitiveClosure();
 		c.addEdge(3, 0);
@@ -146,6 +155,5 @@ public class TransitiveClosure {
 		for (int i=0; i<o.length; i++) {
 			System.out.print(" "+o[i]);
 		}
-	}
-	
+	}	
 }

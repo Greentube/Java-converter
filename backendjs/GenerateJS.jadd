@@ -60,20 +60,29 @@ aspect GenerateJS {
 		out.print(");");
 
 		for (BodyDecl bd:getBodyDeclList()) {
-			for (FieldDeclarator fd:bd.fieldDeclarations()) {
-				if (fd.isStatic()) {
-					out.println();
-					out.print(constantPoolName().replace('/','_')+".prototype."+fd.getID()+"_f = ");
-					Expr e = fd.getInit();
-					if (e!=null) {
-						e.generateJS(out);
-					} else if (fd.fieldDecl().type().isPrimitiveType()) {
-						out.print("0");
-					} else {
-						out.print("null");
+			if (bd.isField()) {
+				for (FieldDeclarator fd:bd.fieldDeclarations()) {
+					if (fd.isStatic()) {
+						out.println();
+						out.print(constantPoolName().replace('/','_')+".prototype."+fd.getID()+"_f = ");
+						out.print(fd.fieldDecl().type().isPrimitiveType() ? "0":"null");
+						out.print(";");
 					}
-					out.print(";");
 				}
+			}
+		}		
+		for (BodyDecl bd:getBodyDeclList()) {
+			if (bd.isField()) {
+				for (FieldDeclarator fd:bd.fieldDeclarations()) {
+					if (fd.isStatic() && fd.getInit()!=null) {
+						out.println();
+						out.print(constantPoolName().replace('/','_')+".prototype."+fd.getID()+"_f = ");
+						fd.getInit().generateJS(out);
+						out.print(";");
+					}
+				}
+			} else if (bd instanceof StaticInitializer) {
+				bd.generateJS(out);
 			}
 		}
   	}
@@ -119,7 +128,41 @@ aspect GenerateJS {
 		out.println();
   		out.print("{");  		
 		out.increaseIndent();
-		getConstructorInvocation().generateJS(out);
+
+		for (BodyDecl bd:hostType().getBodyDeclList()) {
+			if (bd.isField()) {
+				for (FieldDeclarator fd:bd.fieldDeclarations()) {
+					if (!fd.isStatic()) {
+						out.println();
+						out.print("this."+fd.getID()+"_f = ");
+						out.print(fd.fieldDecl().type().isPrimitiveType() ? "0":"null");
+						out.print(";");
+					}
+				}
+			}
+		}
+						
+		Stmt ci = getConstructorInvocation();
+		ci.generateJS(out);
+		
+		// TODO: only call if previous incovation was not a this-constructor call
+		{ 
+		for (BodyDecl bd:hostType().getBodyDeclList()) {
+			if (bd.isField()) {
+				for (FieldDeclarator fd:bd.fieldDeclarations()) {
+					if (!fd.isStatic() && fd.getInit()!=null) {
+						out.println();
+						out.print("this."+fd.getID()+"_f = ");
+						fd.getInit().generateJS(out);
+						out.print(";");						
+					}
+				}
+			} else if (bd instanceof InstanceInitializer) {
+				bd.generateJS(out);
+			}
+		}
+		}
+		
   		int n = block.getNumStmt();
   		for (int i=0; i<n; i++) {
   			out.println();
@@ -136,8 +179,9 @@ aspect GenerateJS {
 
 //	public void EnumConstant.generateJS(com.greentube.javaconverter.CodePrinter out) {
 //	}
-//	public void InstantInitializer.generateJS(com.greentube.javaconverter.CodePrinter out) {
-//	}
+	public void InstanceInitializer.generateJS(com.greentube.javaconverter.CodePrinter out) {
+		getBlock().generateJS(out);	
+	}
 //	public void FieldDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {
 //	}
 //	public void MemberClassDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {
@@ -164,8 +208,9 @@ aspect GenerateJS {
   		out.print(",");
   	}
 
-//	public void StaticInitializer.generateJS(com.greentube.javaconverter.CodePrinter out) {
-//	}
+	public void StaticInitializer.generateJS(com.greentube.javaconverter.CodePrinter out) {
+		getBlock().generateJS(out);
+	}
 
 //	public void SubstitutedBodyDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {
 //	}

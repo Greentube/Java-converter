@@ -3,6 +3,10 @@ package com.greentube.convertertest;
 import com.greentube.convertertest2.TestInterface2;
 import com.greentube.convertertest2.TestInterfaceX;
 import com.greentube.convertertest2.TestObject2;
+import com.greentube.convertertest3.InitSequenceTestA;
+import com.greentube.convertertest3.InitSequenceTestB;
+import com.greentube.convertertest3.InitSequenceTestC;
+import com.greentube.convertertest3.InitializerBlockTest;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -27,6 +31,7 @@ public class Test {
 
     static int static1, static2;       // two variables in one line;
     
+    static String initialized = "hello".substring(2);
 
     public static void main(String[] args) {
         System.out.println ("-- java converter test suite started" );
@@ -61,6 +66,7 @@ public class Test {
         
         secondaryclassestest();
         complexoperationtest();
+        initsequencetest();
         
         System.out.println ("-- java converter test suite finished" );
     }
@@ -1513,6 +1519,34 @@ public class Test {
 		);    	
     }
        
+    public static void initsequencetest() {
+    	System.out.println("- initializer sequence");
+    	
+    	assertO(initialized,"llo");
+    	
+    	assertI(InitSequenceTestA.a, 47);
+    	assertI(InitSequenceTestB.b, 60);
+    	assertI(InitSequenceTestC.c, 115);
+    	
+    	assertI(InitializerBlockTest.something, 112233);
+    	assertI(InitializerBlockTest.overridden, 44);
+    	assertO(InitializerBlockTest.nothing, null);    	
+    	assertO(InitializerBlockTest.str, System.out);
+    	InitializerBlockTest ib = new InitializerBlockTest();
+    	assertI(ib.u,107);
+    	assertI(ib.v,321);
+    	assertI(ib.w,0);
+    	assertI(ib.x,9);
+    	assertI(ib.y,123);
+    	assertI(ib.z,27);
+    	ib = new InitializerBlockTest(88);
+    	assertI(ib.u,107);
+    	assertI(ib.v,9416);
+    	assertI(ib.w,0);
+    	assertI(ib.x,9);
+    	assertI(ib.y,123);
+    	assertI(ib.z,1107);
+    }
     
     
     public static void assertI(int value, int expected) {
