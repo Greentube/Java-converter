@@ -17,7 +17,7 @@
     <linkJavaScript 
     		output="${basedir}/build/html5/main.js" 
     		searchpath="${basedir}/build/html5,${basedir}/../runtimejs"
-    		mainfile="com/greentube/convertertest/Test"
+    		mainfile="com/greentube/convertertestjava5/TestJava5"
     		>
     </linkJavaScript>		
 

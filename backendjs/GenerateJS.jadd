@@ -2,6 +2,7 @@ aspect GenerateJS {
   	  	
   	public void ASTNode.generateJS(com.greentube.javaconverter.CodePrinter out) {
   		out.error("Unexpected syntax element: "+this.getClass().getName()+" (internal compiler problem)");
+  		out.print("UNEXPECTED:"+this.getClass().getName());
 		this.dumpTree(System.out);
   	}
 
@@ -11,8 +12,8 @@ aspect GenerateJS {
     			File f= new File(outputfolder, t.constantPoolName()+".js"); 
     		   	f.getParentFile().mkdirs();
     		   	
-				com.greentube.javaconverter.CodePrinter out = 
-					new com.greentube.javaconverter.CodePrinter(new FileOutputStream(f));
+				com.greentube.javaconverter.CodePrinter out = new com.greentube.javaconverter.CodePrinter(
+					new FileOutputStream(f), t.constantPoolName());
 
 	    		t.generateJS(out);
     			out.printExternals();
@@ -26,9 +27,11 @@ aspect GenerateJS {
   	}
     	
 	public void ClassDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {  
+		String jsname = constantPoolName().replace('/','_');
+
 		out.println();		
     	out.print("var ");
-    	out.print(constantPoolName().replace('/','_'));
+    	out.print(jsname);
     	out.print(" = _extendClass(");
     	
     	if (hasSuperClass()) {
@@ -39,13 +42,27 @@ aspect GenerateJS {
     	out.print (",{ ");
     	out.increaseIndent(); 
     	    	    
-      	Collection<BodyDecl> methods = methodsAndConstructors();
-      	for (BodyDecl b : methods) {
+      	for (BodyDecl b : methodsAndConstructors()) {
+      		// check if need to suppress auto-generated methods related to Enums
+			if (b instanceof MethodDecl) {
+      			MethodDecl md = (MethodDecl) b;
+      			if (this instanceof EnumDecl) {
+      				if (md.getID().equals("values") && md.getNumParameter()==0 ) continue;
+      				if (md.getID().equals("valueOf") && md.getNumParameter()==1 )  continue;
+      			}
+				if (md.getID().startsWith("$SwitchMap$") && md.getNumParameter()==0) continue;      		
+      		}
+      		else if (b instanceof ConstructorDecl) {
+      			ConstructorDecl cd = (ConstructorDecl) b;
+      			if (this instanceof EnumDecl) {
+      				if (cd.isSynthetic()) continue;
+      			}      		
+      		}
 	        b.generateJS(out);
     	}    	    	    
     	    	    	
 		out.decreaseIndent(); out.println();
-		out.print("},\"" + constantPoolName().replace('/','_') + "\",");
+		out.print("},\"" + jsname + "\",");
 		if (!hasImplements()) {
 			out.print("null");
 		} else {
@@ -64,7 +81,7 @@ aspect GenerateJS {
 				for (FieldDeclarator fd:bd.fieldDeclarations()) {
 					if (fd.isStatic()) {
 						out.println();
-						out.print(constantPoolName().replace('/','_')+".prototype."+fd.getID()+"_f = ");
+						out.print(jsname+".prototype."+fd.getID()+"_f = ");
 						out.print(fd.fieldDecl().type().isPrimitiveType() ? "0":"null");
 						out.print(";");
 					}
@@ -76,7 +93,7 @@ aspect GenerateJS {
 				for (FieldDeclarator fd:bd.fieldDeclarations()) {
 					if (fd.isStatic() && fd.getInit()!=null) {
 						out.println();
-						out.print(constantPoolName().replace('/','_')+".prototype."+fd.getID()+"_f = ");
+						out.print(jsname+".prototype."+fd.getID()+"_f = ");
 						fd.getInit().generateJS(out);
 						out.print(";");
 					}
@@ -86,6 +103,40 @@ aspect GenerateJS {
 			}
 		}
   	}
+  	
+	public void EnumDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {
+		super.generateJS(out);
+
+		String jsname = constantPoolName().replace('/','_');
+		
+		int ordinal = 0;
+		StringBuffer values = new StringBuffer();
+		
+		for (EnumConstant ec:enumConstants()) {
+			out.println();
+			out.print(jsname+".prototype."+ec.getID()+"_f = ");
+			out.print("(new "+jsname+"())._"+(ec.getNumArg()+2)+"(\""+ec.getID()+"\","+ordinal);
+			for (int i=0; i<ec.getNumArg(); i++) {
+				out.print(",");
+				ec.getArg(i).generateJS(out);
+			}
+			out.print(");");
+			
+			if (ordinal>0) values.append(",");
+			values.append(jsname+".prototype."+ec.getID()+"_f");
+			
+			ordinal++;			
+		}
+		
+		out.println();
+		out.print(jsname+".prototype.values_0 = function() {");
+		out.increaseIndent();
+		out.println();
+		out.print("return ["+values.toString()+"];");
+		out.decreaseIndent();
+		out.println();
+		out.print("};");
+	}  
   	
 	public void InterfaceDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {
 		out.println();		
@@ -121,48 +172,63 @@ aspect GenerateJS {
   		out.print("_"+numpar+": function(");
   		for (int i=0; i<numpar; i++) {
   			if (i>0) out.print(",");
-  			out.print(getParameter(i).name());
-  			out.print("_l");
+  			out.printLocalVariable(getParameter(i).name());
   		}
   		out.print(")");
 		out.println();
   		out.print("{");  		
 		out.increaseIndent();
 
-		for (BodyDecl bd:hostType().getBodyDeclList()) {
-			if (bd.isField()) {
-				for (FieldDeclarator fd:bd.fieldDeclarations()) {
-					if (!fd.isStatic()) {
-						out.println();
-						out.print("this."+fd.getID()+"_f = ");
-						out.print(fd.fieldDecl().type().isPrimitiveType() ? "0":"null");
-						out.print(";");
+		// decide if all the fields have to be initialized right here	
+		boolean needsInit = true;			
+		if (hasConstructorInvocation()) {
+	        Stmt stmt = getConstructorInvocation();
+        	if (stmt instanceof ExprStmt) {
+          		ExprStmt exprStmt = (ExprStmt) stmt;
+          		Expr expr = exprStmt.getExpr();
+          		if (!expr.isSuperConstructorAccess()) {
+            		needsInit = false;
+          		}
+        	}
+      	}		
+		
+		// if calling a constructor of this, do not initialize all variables twice		
+		if (! needsInit) {
+			getConstructorInvocation().generateJS(out);			
+		} else { 
+		// when a super-constructor is called, the initialization of everything else needs to be done here
+			// set instance variables to 0 / null		
+			for (BodyDecl bd:hostType().getBodyDeclList()) {
+				if (bd.isField()) {
+					for (FieldDeclarator fd:bd.fieldDeclarations()) {
+						if (!fd.isStatic()) {
+							out.println();
+							out.print("this."+fd.getID()+"_f = ");
+							out.print(fd.fieldDecl().type().isPrimitiveType() ? "0":"null");
+							out.print(";");
+						}
 					}
 				}
 			}
-		}
-						
-		Stmt ci = getConstructorInvocation();
-		ci.generateJS(out);
-		
-		// TODO: only call if previous incovation was not a this-constructor call
-		{ 
-		for (BodyDecl bd:hostType().getBodyDeclList()) {
-			if (bd.isField()) {
-				for (FieldDeclarator fd:bd.fieldDeclarations()) {
-					if (!fd.isStatic() && fd.getInit()!=null) {
-						out.println();
-						out.print("this."+fd.getID()+"_f = ");
-						fd.getInit().generateJS(out);
-						out.print(";");						
+			// call the super-constructor
+			getConstructorInvocation().generateJS(out);
+			// do all field initializations
+			for (BodyDecl bd:hostType().getBodyDeclList()) {
+				if (bd.isField()) {
+					for (FieldDeclarator fd:bd.fieldDeclarations()) {
+						if (!fd.isStatic() && fd.getInit()!=null) {
+							out.println();
+							out.print("this."+fd.getID()+"_f = ");
+							fd.getInit().generateJS(out);
+							out.print(";");						
+						}
 					}
+				} else if (bd instanceof InstanceInitializer) {
+					bd.generateJS(out);
 				}
-			} else if (bd instanceof InstanceInitializer) {
-				bd.generateJS(out);
 			}
 		}
-		}
-		
+		// execute constructor
   		int n = block.getNumStmt();
   		for (int i=0; i<n; i++) {
   			out.println();
@@ -198,8 +264,7 @@ aspect GenerateJS {
   		out.print(name()+"_"+numpar+": function(");
   		for (int i=0; i<numpar; i++) {
   			if (i>0) out.print(",");
-  			out.print(getParameter(i).name());
-  			out.print("_l");  			
+  			out.printLocalVariable(getParameter(i).name());
   		}
   		out.print(")");
   		

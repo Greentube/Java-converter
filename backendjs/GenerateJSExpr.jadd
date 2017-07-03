@@ -116,7 +116,7 @@ aspect GenerateJS {
   			}  		
 			out.print(getID()+"_f");
   		} else if (v.isLocalVariable() || v.isParameter()) {  		
-			out.print(getID()+"_l");
+			out.printLocalVariable(getID());
   		} else {
   			// this fits in no other category - maybe the 'length' attribute of arrays 
 			out.print("."+getID());

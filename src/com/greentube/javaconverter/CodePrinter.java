@@ -11,11 +11,13 @@ public class CodePrinter extends PrintStream {
 	private HashSet<String> load;
 	private HashSet<String> complete;
 	
+	String filename;
 	int indent = 0;
 	
-	public CodePrinter(OutputStream out) throws UnsupportedEncodingException {
+	public CodePrinter(OutputStream out, String filename) throws UnsupportedEncodingException {
 		super(out,false,"utf-8");
 		
+		this.filename = filename;
 		indent = 0;
 		reference = new HashSet();
 		load = new HashSet();
@@ -38,9 +40,21 @@ public class CodePrinter extends PrintStream {
 	}
 	
 	public void error(String msg) {
-		System.out.print("\nERR: "+msg);
+		System.out.print("\nERR in "+filename+": "+msg);
 		System.out.println();
+//		(new Throwable()).printStackTrace(System.out);
 	}	
+	
+	public void printLocalVariable(String name) {
+		// check if this is a synthetic local variable name
+		if (name.startsWith("@")) {
+			print(name.substring(1));
+			print("_s");
+		} else {
+			print(name);
+			print("_l");
+		}
+	}
 	
 	public void printAndMemorizeReference(String filename) {
 		print (filename.replace('/', '_'));

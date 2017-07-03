@@ -34,9 +34,9 @@ public class Test {
     static String initialized = "hello".substring(2);
 
     public static void main(String[] args) {
-        System.out.println ("-- java converter test suite started" );
+        System.out.println ("-- converter test suite for java 4" );
         
-        staticattributestests();
+        staticattributestest();
         constructortest();
         arraytest();
         shadowingtest();
@@ -67,11 +67,9 @@ public class Test {
         secondaryclassestest();
         complexoperationtest();
         initsequencetest();
-        
-        System.out.println ("-- java converter test suite finished" );
     }
     
-    public static void staticattributestests()
+    public static void staticattributestest()
     {
     	System.out.println("- static attributes");
         assertI(staticint, 4);

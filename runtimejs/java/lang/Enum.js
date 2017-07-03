@@ -6,6 +6,10 @@ var java_lang_Enum = _extendClass (java_lang_Object, {
         return this;
     },
     
+    equals_1 : function(other) {
+        return this===other;
+    },
+    
     hashCode_0 : function() {
         return this.ordinal;
     },
@@ -19,7 +23,7 @@ var java_lang_Enum = _extendClass (java_lang_Object, {
     },
     
     toString_0: function() {
-        return this.name_0();
+        return this.name;
     }
     
  },"java_lang_Enum", null);
