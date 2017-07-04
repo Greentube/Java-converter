@@ -5,7 +5,11 @@ public enum Animal 	{
 	  GIRAFFE(),
 	  TURTLE(Type.REPTILE),
 	  SNAKE(Type.REPTILE),
-	  FROG(Type.AMPHIBIAN);
+	  FROG(Type.AMPHIBIAN) {
+		  public String toString() {
+			  return "Kermit";
+		  }
+	  };
 
 	  private final Type type; 
 

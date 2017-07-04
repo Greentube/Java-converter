@@ -6,27 +6,35 @@ aspect GenerateJS {
 		this.dumpTree(System.out);
   	}
 
-  	public void CompilationUnit.generateJS(File outputfolder) {
+  	public int CompilationUnit.generateJS(File outputfolder) {
+	  int err=0;
     	for (TypeDecl t:getTypeDecls()) {
     		try {    		
-    			File f= new File(outputfolder, t.constantPoolName()+".js"); 
-    		   	f.getParentFile().mkdirs();
-    		   	
-				com.greentube.javaconverter.CodePrinter out = new com.greentube.javaconverter.CodePrinter(
-					new FileOutputStream(f), t.constantPoolName());
-
+				com.greentube.javaconverter.CodePrinter out = 
+					new com.greentube.javaconverter.CodePrinter(outputfolder, t.constantPoolName());
 	    		t.generateJS(out);
-    			out.printExternals();
-    			out.println();
-    			out.close();
-    		
+	    		out.finish();
+	    		err += out.getNumberOfErrors();    		
+    		} catch (IOException e) {
+      			e.printStackTrace();
+    			err++;
+    		}
+    	}
+    	return err;
+  	}
+    	
+	public void ClassDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {
+		for (TypeDecl t:nestedTypes()) {
+    		try {    		
+				com.greentube.javaconverter.CodePrinter o2 = 
+					new com.greentube.javaconverter.CodePrinter(out, t.constantPoolName());
+	    		t.generateJS(o2);
+	    		o2.finish();
     		} catch (IOException e) {
       			e.printStackTrace();
     		}
-    	}
-  	}
-    	
-	public void ClassDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {  
+		}
+	  
 		String jsname = constantPoolName().replace('/','_');
 
 		out.println();		
@@ -42,6 +50,7 @@ aspect GenerateJS {
     	out.print (",{ ");
     	out.increaseIndent(); 
     	    	    
+    	    	        	    	    
       	for (BodyDecl b : methodsAndConstructors()) {
       		// check if need to suppress auto-generated methods related to Enums
 			if (b instanceof MethodDecl) {
@@ -107,20 +116,26 @@ aspect GenerateJS {
 	public void EnumDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {
 		super.generateJS(out);
 
-		String jsname = constantPoolName().replace('/','_');
+		String cpname = constantPoolName();
+		String jsname = cpname.replace('/','_');
+		
+		StringBuffer values = new StringBuffer();
+		boolean needexternalinitialization = false;
 		
 		int ordinal = 0;
-		StringBuffer values = new StringBuffer();
-		
 		for (EnumConstant ec:enumConstants()) {
-			out.println();
-			out.print(jsname+".prototype."+ec.getID()+"_f = ");
-			out.print("(new "+jsname+"())._"+(ec.getNumArg()+2)+"(\""+ec.getID()+"\","+ordinal);
-			for (int i=0; i<ec.getNumArg(); i++) {
-				out.print(",");
-				ec.getArg(i).generateJS(out);
+			if (ec.getInit().type()!=this) {
+				needexternalinitialization = true;
+			} else {
+				out.println();
+				out.print(jsname+".prototype."+ec.getID()+"_f = ");
+				out.print("(new "+jsname+"())._"+(ec.getNumArg()+2)+"(\""+ec.getID()+"\","+ordinal);
+				for (int i=0; i<ec.getNumArg(); i++) {
+					out.print(",");
+					ec.getArg(i).generateJS(out);
+				}
+				out.print(");");				
 			}
-			out.print(");");
 			
 			if (ordinal>0) values.append(",");
 			values.append(jsname+".prototype."+ec.getID()+"_f");
@@ -136,6 +151,36 @@ aspect GenerateJS {
 		out.decreaseIndent();
 		out.println();
 		out.print("};");
+		
+		if (needexternalinitialization) {
+			out.memorizeReference(cpname+"@init");
+			
+    		try {    		
+				com.greentube.javaconverter.CodePrinter o2 = 
+					new com.greentube.javaconverter.CodePrinter(out, cpname+"@init");
+
+				ordinal = 0;
+				for (EnumConstant ec:enumConstants()) {
+					if (ec.getInit().type()!=this) {
+						o2.println();
+						o2.print(jsname+".prototype."+ec.getID()+"_f = ");
+						o2.print("(new ");
+						o2.printAndMemorizeComplete(ec.getInit().type().constantPoolName());
+						o2.print("())._"+(ec.getNumArg()+2)+"(\""+ec.getID()+"\","+ordinal);
+						for (int i=0; i<ec.getNumArg(); i++) {
+							o2.print(",");
+							ec.getArg(i).generateJS(o2);
+						}
+						o2.print(");");
+					}
+					ordinal++;
+				}				
+	    		
+	    		o2.finish();
+    		} catch (IOException e) {
+      			e.printStackTrace();
+    		}
+		}
 	}  
   	
 	public void InterfaceDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {

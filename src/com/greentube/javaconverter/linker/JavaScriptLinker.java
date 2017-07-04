@@ -20,11 +20,12 @@ public class JavaScriptLinker
 		// load all
 		JavaScriptLinker linker = new JavaScriptLinker(searchpath);
 		linker.loadAll(mainfilename);		
+		int[] o = linker.computeOrdering();
 		
 		// write all modules
 		FileOutputStream os = new FileOutputStream(outputfile);
 		os.write("\"use strict\";\n".getBytes("utf-8"));
-		linker.writeOrdered(os);
+		linker.writeOrdered(os,o);
 		
 		// add startup code to launch the main method
 		String startupcode = "\n"
@@ -119,7 +120,7 @@ public class JavaScriptLinker
 		}
 	}
 	
-	private void writeOrdered(OutputStream os) throws IOException {
+	private int[] computeOrdering() throws IOException {
 		int[] o = mustbeloaded.computeOrdering();
 		if (o==null) {
 			int[] cycle = mustbeloaded.findCycle();
@@ -130,7 +131,10 @@ public class JavaScriptLinker
 			}
 			throw new IOException(msg.toString());
 		}
-		
+		return o;		
+	}
+	
+	private void writeOrdered(OutputStream os, int[] o) throws IOException {		
 		for (int i=0; i<o.length; i++) {
 			System.out.println(index2name.get(o[i]));
 			os.write(modules.get(o[i]));

@@ -64,7 +64,7 @@ public class ConverterAntTask extends Task {
         	String[] aa = new String[args.size()];
         	args.copyInto(aa);
             int err = (new Converter()).run(aa);
-            if (err>0) throw new BuildException("Converter terminated with error "+err);
+            if (err>0) throw new BuildException("Converter terminated with "+err+" errors");
         } catch (Exception e) {
             throw new BuildException("Error when converting file in Convert task", e, getLocation());
         }

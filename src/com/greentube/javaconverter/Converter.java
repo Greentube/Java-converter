@@ -10,21 +10,24 @@ import org.extendj.ast.Program;
 public class Converter extends Frontend {
 
 	private File destDir;
+	private int err;
 	
 	public Converter() {
 		super("Converter", "0.0.1");
 		destDir=null;
+		err = 0;
 	}
 	  
 	public int run(String args[]) {
-	    return run(args, Program.defaultBytecodeReader(), Program.defaultJavaParser());
+		run(args, Program.defaultBytecodeReader(), Program.defaultJavaParser());
+	    return err;
 	}
 
 	@Override
 	protected void processNoErrors(CompilationUnit unit) {
 //		  unit.generateClassfile();
 //		  System.out.println("Processing: "+unit.getClassSource().pathName());
-		unit.generateJS(destDir);
+		err = unit.generateJS(destDir);
 	}
 
 	@Override

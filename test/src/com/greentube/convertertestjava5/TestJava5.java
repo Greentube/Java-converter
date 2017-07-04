@@ -62,9 +62,10 @@ public class TestJava5 extends Test {
 		Animal a2 = Animal.GIRAFFE;
 		assertB(a1.isMammal());
 		assertB(!a1.isReptile());
-		assertB(Animal.FROG.isAmphibian());
 		assertO(a2.name(), "GIRAFFE");
 		assertO(a2.toString(), "GIRAFFE!");
+		assertB(Animal.FROG.isAmphibian());
+		assertO(Animal.FROG.toString(), "Kermit");
 		
 		Animal[] animals = Animal.values();
 		assertI(animals.length,5);

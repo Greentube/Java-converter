@@ -3,8 +3,11 @@ aspect GenerateJS {
  	// --- Access --- 
  	
   	public void AbstractDot.generateJS(com.greentube.javaconverter.CodePrinter out) {
-  		getLeft().generateJS(out);
-  		getRight().generateJS(out);
+  		Access a = getRight();
+  		if (! (a instanceof ClassInstanceExpr)) {
+  			getLeft().generateJS(out);
+  		}
+  		a.generateJS(out);
  	}
 //  	public void Wildcard.generateJS(com.greentube.javaconverter.CodePrinter out) {
 // 	}
@@ -23,7 +26,13 @@ aspect GenerateJS {
 		int n = getNumArg();
   		out.print("(new ");
   		out.printAndMemorizeReference(type().constantPoolName());
-  		out.print("())._"+n+"(");
+		out.print("(");  		
+		if (isRightChildOfDot()) {
+			prevExpr().generateJS(out);
+  		} else if (type().isNestedType()) {
+  			out.print("this");
+  		}
+  		out.print("))._"+n+"(");
   		for (int i=0; i<n; i++) {
 			if (i>0) out.print(",");
 			getArg(i).generateJS(out);  		
@@ -56,7 +65,7 @@ aspect GenerateJS {
   		if (m.isStatic()) {
   			String target = m.hostType().constantPoolName();
   			out.printAndMemorizeReference(target);
-  			out.print(".prototype.");
+  			out.print(".prototype."+name()+"_"+getNumArg()+"(");
 
 	  		// check if this is inside a static initializer - must force early loading of accessed class
 	  		BodyDecl bd = enclosingBodyDecl();
@@ -64,13 +73,25 @@ aspect GenerateJS {
   				out.memorizeComplete(target);
   			}
   			
-  		} else if (isRightChildOfDot()) {
-  			out.print(".");
+  		} else if (!isRightChildOfDot()) {
+			out.print("this.");
+			TypeDecl t = hostType();
+			if (t!=m.hostType() && t.isInnerTypeOf(m.hostType())) {
+				while (t!=m.hostType()) {			
+					out.print("outer.");
+					t = t.enclosingType();
+				}
+			}  		
+  			out.print(name()+"_"+getNumArg()+"(");
+  			
+  		} else if (prevExpr().isSuperAccess()) {
+			out.print("."+name()+"_"+getNumArg()+".call(this");
+  			if (getNumArg()>0) out.print(",");
+  			
   		} else {
-  			out.print("this.");
+  			out.print("."+name()+"_"+getNumArg()+"(");
   		}
-  		
-  		out.print(name()+"_"+getNumArg()+"(");
+  		  		  		
   		for (int i=0; i<getNumArg(); i++) {
   			if (i>0) out.print(",");
   			getArg(i).generateJS(out);
@@ -81,8 +102,10 @@ aspect GenerateJS {
 // 	}
 //  	public void ParseName.generateJS(com.greentube.javaconverter.CodePrinter out) {
 // 	}
-//  	public void SuperAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
-// 	}
+  	public void SuperAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  		out.printAndMemorizeReference(type().constantPoolName());
+  		out.print(".prototype");
+ 	}
   	public void ThisAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
   		out.print("this");
  	}
@@ -112,11 +135,22 @@ aspect GenerateJS {
 			if (isRightChildOfDot()) {
 				out.print(".");
 			} else {
-  				out.print("this.");
+				out.print("this.");
+				TypeDecl t = hostType();
+				if (t!=v.hostType() && t.isInnerTypeOf(v.hostType())) {
+					while (t!=v.hostType()) {			
+						out.print("outer.");
+						t = t.enclosingType();
+					}
+				}  		
   			}  		
 			out.print(getID()+"_f");
-  		} else if (v.isLocalVariable() || v.isParameter()) {  		
-			out.printLocalVariable(getID());
+  		} else if (v.isLocalVariable() || v.isParameter()) {  
+  			if (v.hostType() == hostType()) {		
+				out.printLocalVariable(getID());
+			} else {
+				out.error("Can not access local variables of outer class method");
+			}
   		} else {
   			// this fits in no other category - maybe the 'length' attribute of arrays 
 			out.print("."+getID());

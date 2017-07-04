@@ -7,6 +7,8 @@ import com.greentube.convertertest3.InitSequenceTestA;
 import com.greentube.convertertest3.InitSequenceTestB;
 import com.greentube.convertertest3.InitSequenceTestC;
 import com.greentube.convertertest3.InitializerBlockTest;
+import com.greentube.convertertest3.OutherClass;
+import com.greentube.convertertest3.OutherClass.InnerStatic;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -67,6 +69,7 @@ public class Test {
         secondaryclassestest();
         complexoperationtest();
         initsequencetest();
+        innerclasstest();
     }
     
     public static void staticattributestest()
@@ -109,6 +112,9 @@ public class Test {
         
         DummyClass d = new DummyClass();
         assertO(d.secondaryString(), "secondary");
+        
+        assertI(t.depth(),3);
+        assertI(new TestParentIntermediate().depth(),2);
     }
     
 
@@ -1544,6 +1550,28 @@ public class Test {
     	assertI(ib.x,9);
     	assertI(ib.y,123);
     	assertI(ib.z,1107);
+    }
+    
+    public static void innerclasstest() {
+    	System.out.println("- inner classes");
+    	
+    	InnerStatic s = new OutherClass.InnerStatic(44);
+    	assertO(s.toString(), "44,88,99");
+    	
+    	OutherClass x = new OutherClass(4711);
+    	assertO(x.toString(),"!4711:99,4711");
+    	OutherClass.MemberClass m = x.new MemberClass(44);
+    	assertO(m.toString(),"44,4711");
+    	
+    	assertO(x.workWithLocalClass(), "L4721");
+    	assertO(new OutherClass(33).workWithLocalClass(), "L43");
+    	
+    	assertO(x.workWithAnonymousClass(), "A54,4711,4788,7,4788-4788-77");
+    	assertO(new OutherClass(91).workWithAnonymousClass(), "A54,91,168,7,168-168-77");
+
+    	int[] i= new int[1];
+    	new OutherClass(666).getFetcher().fetch(i);
+    	assertI(i[0],666);
     }
     
     

@@ -45,7 +45,13 @@ java_lang_Object.prototype._classNameString = "java.lang.Object";
 function _extendClass (base, methods, classname, interfaces)
 {  
   // the constructor function which will be used with new 
-  var f = function() {}
+  var f = function(optionalOuter) 
+  {
+      // if provided set up the link to the outer object
+      if (optionalOuter) { 
+            this.outer = optionalOuter;
+      }
+  }
   
   // connect prototype chain
   f.prototype.__proto__ = base.prototype;

@@ -103,6 +103,19 @@ aspect GenerateJS {
 	}  	
 	
 	// --- LocalClassDeclStmt ---
+	public void LocalClassDeclStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+		ClassDecl cd = getClassDecl();
+		try {    				
+			com.greentube.javaconverter.CodePrinter o2 = 
+				new com.greentube.javaconverter.CodePrinter(out, cd.constantPoolName());
+			cd.generateJS(o2);
+			o2.finish();
+		} catch (IOException e) {
+      		out.error(e.toString());
+      		e.printStackTrace();
+    	}			
+	}
+
 	
 	// --- ReturnStmt ---
 

@@ -1,8 +1,10 @@
 package com.greentube.javaconverter;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
 
 public class CodePrinter extends PrintStream {
@@ -11,17 +13,44 @@ public class CodePrinter extends PrintStream {
 	private HashSet<String> load;
 	private HashSet<String> complete;
 	
+	CodePrinter parent;
+	File outputfolder;
 	String filename;
 	int indent = 0;
+	int err = 0;
 	
-	public CodePrinter(OutputStream out, String filename) throws UnsupportedEncodingException {
-		super(out,false,"utf-8");
-		
+	private static OutputStream mkstream(File folder, String fname) throws IOException {
+		File f = new File(folder,fname+".js");
+		f.getParentFile().mkdirs();
+		return new FileOutputStream(f);
+	}
+	
+	public CodePrinter(File outputfolder, String filename) throws IOException {
+		super(mkstream(outputfolder,filename),false,"utf-8");
+					
+		this.parent = null;
 		this.filename = filename;
+		this.outputfolder = outputfolder;
+		
 		indent = 0;
 		reference = new HashSet();
 		load = new HashSet();
 		complete = new HashSet();
+	}
+	
+	public CodePrinter(CodePrinter p, String filename) throws IOException {
+		this(p.outputfolder,filename);
+		parent = p;
+	}
+	
+	public void finish() {
+		printExternals();
+		println();
+		close();
+	}
+	
+	public int getNumberOfErrors() {
+		return err;
 	}
 	
 	public void increaseIndent() {
@@ -39,10 +68,14 @@ public class CodePrinter extends PrintStream {
 		}
 	}
 	
+	public void countError() {
+		if (parent!=null) parent.countError();
+		err++;
+	}
 	public void error(String msg) {
+		countError();
 		System.out.print("\nERR in "+filename+": "+msg);
 		System.out.println();
-//		(new Throwable()).printStackTrace(System.out);
 	}	
 	
 	public void printLocalVariable(String name) {

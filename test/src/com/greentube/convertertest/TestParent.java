@@ -42,5 +42,8 @@ public class TestParent {
     	return 88;
     }
     
+    public int depth() {
+    	return 1;
+    }
 
 }
