@@ -87,9 +87,16 @@ public class TestJava5 extends Test {
 	
 	public static void varargstest() {
     	System.out.println("- var args");
-	
+    	// implicit use of varargs
+    	assertI(sum(), 0);
+    	assertI(sum(4), 4);
     	assertI(sum(1,2,3,4,5), 15);
+    	assertI(letters(1), 0);
+    	assertI(letters(3, "only"), 12);
     	assertI(letters(2,"some","more","advice"), 28);
+    	// explicit use
+    	int[] i = new int[]{5,6,7};
+    	assertI(sum(i), 18);
 	}
 	
 	

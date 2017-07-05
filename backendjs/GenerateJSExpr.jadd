@@ -96,8 +96,13 @@ aspect GenerateJS {
 		// check if this is a method with variable number of parameters - must 
 		// package last arguments into array
 		int pararraystart=-1;
-		if (m.isVariableArity()) {
-			pararraystart = m.getNumParameter()-1;
+		if (m.isVariableArity()) {		
+			if (getNumArg()==m.getNumParameter() 
+			 && getArg(getNumArg()-1).type()==m.getParameter(getNumArg()-1).type() ) {
+			 	// the call uses an explicit array already - no implicit array creation needed
+			} else {
+				pararraystart = m.getNumParameter()-1;
+			}
   		}
   		// generate parameters and inject one '[' in the correct position
   		for (int i=0; i<getNumArg(); i++) {
@@ -105,7 +110,10 @@ aspect GenerateJS {
   			if (pararraystart==i) out.print("[");
   			getArg(i).generateJS(out);
   		}
-  		if (pararraystart>=0) out.print("]");
+  		if (pararraystart>=0) {
+  			if (pararraystart>=getNumArg()) out.print(pararraystart>0 ? ",[" : "[");
+  			out.print("]");
+  		}
   		out.print(")");  	
  	}
 //  	public void PackageAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
