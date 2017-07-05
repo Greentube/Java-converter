@@ -184,6 +184,8 @@ aspect GenerateJS {
 	}  
   	
 	public void InterfaceDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {
+		String jsname = constantPoolName().replace('/','_');
+
 		out.println();		
     	out.print("var ");
     	out.print(constantPoolName().replace('/','_'));
@@ -202,6 +204,19 @@ aspect GenerateJS {
 			out.print("]");
 		}
 		out.print(");");
+		
+		for (BodyDecl bd:getBodyDeclList()) {
+			if (bd.isField()) {
+				for (FieldDeclarator fd:bd.fieldDeclarations()) {
+					if (fd.isStatic()) {
+						out.println();
+						out.print(jsname+".prototype."+fd.getID()+"_f = ");
+						fd.getInit().generateJS(out);
+						out.print(";");					}
+				}
+			}
+		}		
+		
 	}  
   	
 //  	public void TypeDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {

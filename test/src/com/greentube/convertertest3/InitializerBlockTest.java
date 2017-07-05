@@ -38,8 +38,5 @@ public class InitializerBlockTest extends InitializerBlockParent {
 	}
 
 	
-	static {
-		str.println("- static initializing done");		
-	}
 	
 }

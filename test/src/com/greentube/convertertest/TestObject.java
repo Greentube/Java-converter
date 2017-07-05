@@ -52,6 +52,7 @@ public class TestObject extends TestParentIntermediate {
     	return someparameter;
     }
     
+    @Override
     public int depth() {
     	return super.depth()+1;
     }

@@ -1,5 +1,6 @@
 package com.greentube.convertertestjava5;
 import com.greentube.convertertest.Test;
+import static com.greentube.convertertestjava5.StaticExporter.*;
 
 public class TestJava5 extends Test {
 
@@ -7,8 +8,10 @@ public class TestJava5 extends Test {
     public static void main(String[] args) {
     	Test.main(args);   
     	
-        System.out.println ("-- converter test suite for java 5" );
+        System.out.println ("-- converter test suite for java 1.5" );
         enumtest();
+        staticimportstest();
+        varargstest();
     }
         
 	public static void enumtest() {
@@ -70,5 +73,40 @@ public class TestJava5 extends Test {
 		Animal[] animals = Animal.values();
 		assertI(animals.length,5);
 		assertO(animals[1],Animal.GIRAFFE);
-	}	
+	}
+	
+	public static void staticimportstest() {
+    	System.out.println("- static imports");
+    	
+    	assertI(XXX, 3);
+    	assertI(YYY, 4);
+    	assertI(ZZZ, 5);
+    	ZZZ = 7;
+    	assertI(ZZZ, 7);    	
+	}
+	
+	public static void varargstest() {
+    	System.out.println("- var args");
+	
+    	assertI(sum(1,2,3,4,5), 15);
+    	assertI(letters(2,"some","more","advice"), 28);
+	}
+	
+	
+	private static int sum(int... a) {
+		int s=0;
+		for (int i=0; i<a.length; i++) {
+			s += a[i];
+		}
+		return s;
+	}
+	
+	private static int letters(int multiplier, String... a) {
+		int s=0;
+		for (int i=0; i<a.length; i++) {
+			s += multiplier*a[i].length();
+		}
+		return s;
+	}
+	
 }

@@ -36,7 +36,7 @@ public class Test {
     static String initialized = "hello".substring(2);
 
     public static void main(String[] args) {
-        System.out.println ("-- converter test suite for java 4" );
+        System.out.println ("-- converter test suite for java 1.4" );
         
         staticattributestest();
         constructortest();
@@ -91,6 +91,10 @@ public class Test {
         
         TestObject t = new TestObject();	       
         assertI(t.accessParentStatic(), 66);
+        
+        assertI(TestInterface.constant1, 6);
+        assertO(TestInterface.constant2, "Hi");
+        assertO(TestInterface.constant3, new Integer(44));
     }
     
     public static void constructortest()
@@ -649,6 +653,15 @@ public class Test {
         assertO (44 - 33 + "hi", "11hi");
         assertO (44 + "" + 33 + "hi", "4433hi");
         assertO ("" + 44 + 33 + "hi", "4433hi");
+        // doing weird stuff with characters and the string + operator
+        char c = '@';
+        a = ((String)null) + c;
+        assertO(a,"null@");
+        a = a + '!' + '2';
+        assertO(a,"null@!2");
+        a = a + ('3' + '1');
+        assertO(a,"null@!2100");
+        
         // some special characters
         a = "üäö € \000\003\7";
         assertI ((int) a.charAt(0), 252);
@@ -741,6 +754,11 @@ public class Test {
         String xx = "\ud8a1\ue681";
         assertI(xx.charAt(0), 55457);
         assertI(xx.charAt(1), 59009);
+        
+        xx = null;
+        assertO(xx + "second", "nullsecond");
+        assertO(xx + null, "nullnull");
+        assertO(null + xx, "nullnull");
     }
 
     public static void systemtest() {

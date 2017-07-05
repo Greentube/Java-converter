@@ -16,4 +16,7 @@ public interface TestInterface {
     int add(int a, int b);
     String hello();
     
+    public static int constant1 = 6;
+    public static String constant2 = "Hi";
+    public static Integer constant3 = Integer.valueOf(44);
 }

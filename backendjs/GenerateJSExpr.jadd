@@ -62,10 +62,11 @@ aspect GenerateJS {
 // 	}
   	public void MethodAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
   		MethodDecl m = decl();
+  		
   		if (m.isStatic()) {
   			String target = m.hostType().constantPoolName();
   			out.printAndMemorizeReference(target);
-  			out.print(".prototype."+name()+"_"+getNumArg()+"(");
+  			out.print(".prototype."+m.name()+"_"+m.getNumParameter()+"(");
 
 	  		// check if this is inside a static initializer - must force early loading of accessed class
 	  		BodyDecl bd = enclosingBodyDecl();
@@ -82,20 +83,29 @@ aspect GenerateJS {
 					t = t.enclosingType();
 				}
 			}  		
-  			out.print(name()+"_"+getNumArg()+"(");
+  			out.print(m.name()+"_"+m.getNumParameter()+"(");
   			
   		} else if (prevExpr().isSuperAccess()) {
-			out.print("."+name()+"_"+getNumArg()+".call(this");
-  			if (getNumArg()>0) out.print(",");
+			out.print("."+m.name()+"_"+m.getNumParameter()+".call(this");
+  			if (m.getNumParameter()>0) out.print(",");
   			
   		} else {
-  			out.print("."+name()+"_"+getNumArg()+"(");
+  			out.print("."+m.name()+"_"+m.getNumParameter()+"(");
   		}
-  		  		  		
+
+		// check if this is a method with variable number of parameters - must 
+		// package last arguments into array
+		int pararraystart=-1;
+		if (m.isVariableArity()) {
+			pararraystart = m.getNumParameter()-1;
+  		}
+  		// generate parameters and inject one '[' in the correct position
   		for (int i=0; i<getNumArg(); i++) {
   			if (i>0) out.print(",");
+  			if (pararraystart==i) out.print("[");
   			getArg(i).generateJS(out);
   		}
+  		if (pararraystart>=0) out.print("]");
   		out.print(")");  	
  	}
 //  	public void PackageAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
@@ -234,9 +244,30 @@ aspect GenerateJS {
   	// --- Binary ---
 
   	public void AddExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
-  		getLeftOperand().generateJS(out);
-  		out.print("+");
-  		getRightOperand().generateJS(out);
+  		// do some case discrimination if this is a string concatenation
+  		Expr l = getLeftOperand();
+  		Expr r = getRightOperand();
+  		if (type().isString()) {
+  			if (l.type().isChar()) {
+  				out.print("_c2s(");
+  				l.generateJS(out);
+  				out.print(")");
+  			} else {
+  				l.generateJS(out);
+  			}
+  			out.print("+\"\"+");
+  			if (r.type().isChar()) {
+  				out.print("_c2s(");
+  				r.generateJS(out);
+  				out.print(")");
+  			} else {
+  				r.generateJS(out);
+  			}
+  		} else {
+	  		l.generateJS(out);
+  			out.print("+");
+  			r.generateJS(out);
+  		}
   	}
   	public void SubExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
   		getLeftOperand().generateJS(out);

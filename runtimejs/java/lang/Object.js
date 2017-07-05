@@ -106,6 +106,10 @@ function _divideInteger(a, b) {
 	return (a - a % b) / b; 
 } 
 
+// convert a unicode code number to a string with the corresponding letter 
+function _c2s(c) {
+    return String.fromCharCode(c);
+}
 
 // do some numerical cast operations
 function _castTObyte(a) {

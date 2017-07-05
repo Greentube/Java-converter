@@ -1,7 +1,5 @@
 package com.greentube.convertertest3;
 
-import java.io.PrintStream;
-
 public class InitSequenceTestA {
 
 	public static int a = 47;
