@@ -2,6 +2,10 @@ package com.greentube.convertertestjava5;
 import com.greentube.convertertest.Test;
 import static com.greentube.convertertestjava5.StaticExporter.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
+
 public class TestJava5 extends Test {
 
 	
@@ -9,12 +13,75 @@ public class TestJava5 extends Test {
     	Test.main(args);   
     	
         System.out.println ("-- converter test suite for java 1.5" );
+        genericstest();
+        forinlooptest();
+//        autoboxingtest();
         enumtest();
-        staticimportstest();
         varargstest();
+        staticimportstest();
     }
         
-	public static void enumtest() {
+	public static void genericstest() {
+    	System.out.println("- generics");
+    	
+    	Entry<Integer,Integer> e = new Entry<Integer,Integer>(Integer.valueOf(12),Integer.valueOf(43));
+    	assertI(e.getKey().intValue(), 12);
+    	assertI(e.getValue().intValue(), 43);
+
+    	Entry<Integer,Integer> d = twice(Integer.valueOf(17));
+    	assertI(d.getKey().intValue(), 17);
+    	assertI(d.getValue().intValue(), 17);
+    	
+    	List<Byte> l = new ArrayList<Byte>();
+    	l.add(Byte.valueOf((byte)77));
+    	l.add(Byte.valueOf((byte)11));
+    	assertO(l.toString(), "[77, 11]");
+    	assertI(l.get(0).byteValue(), 77);
+    	assertI(l.get(1).byteValue(), 11);    	
+	}
+	private static <T> Entry<T, T> twice(T value) {
+	    return new Entry<T, T>(value, value);
+	}
+	
+	public static void forinlooptest() {
+    	System.out.println("- for in loop");
+    	
+    	ArrayList<Integer> l = new ArrayList<Integer>();
+    	for (int i:new int[]{7,4,1}) {
+    		l.add(Integer.valueOf(i));    		
+    	}
+    	assertO(l.toString(), "[7, 4, 1]");
+    	
+    	Vector v = new Vector();
+    	for (Integer x: l) {
+    		v.add(x);
+    	}
+    	assertO(v.toString(), "[7, 4, 1]");    
+    	
+	}
+	
+//	public static void autoboxingtest() {
+//    	System.out.println("- autoboxing");
+//    	
+//    	List<Integer> l = new ArrayList<Integer>();
+//    	l.add(4);
+//    	l.add(17);
+//    	l.add(99);
+//    	assertI(l.get(0), 4);
+//    	assertI(l.get(1), 17);
+//    	assertI(l.get(2), 99);
+//    	
+//    	assertI(inc(3),4);
+//    	assertI(shl(3),6);
+//	}
+//	private static Integer inc(Integer a) {
+//		return Integer.valueOf(a.intValue()+1);
+//	}
+//	private static Integer shl(Integer a) {
+//		return a << 2;
+//	}
+	
+    public static void enumtest() {
     	System.out.println("- enum");
 
 		Day day1 = Day.MONDAY;
@@ -75,16 +142,6 @@ public class TestJava5 extends Test {
 		assertO(animals[1],Animal.GIRAFFE);
 	}
 	
-	public static void staticimportstest() {
-    	System.out.println("- static imports");
-    	
-    	assertI(XXX, 3);
-    	assertI(YYY, 4);
-    	assertI(ZZZ, 5);
-    	ZZZ = 7;
-    	assertI(ZZZ, 7);    	
-	}
-	
 	public static void varargstest() {
     	System.out.println("- var args");
     	// implicit use of varargs
@@ -98,8 +155,7 @@ public class TestJava5 extends Test {
     	int[] i = new int[]{5,6,7};
     	assertI(sum(i), 18);
 	}
-	
-	
+		
 	private static int sum(int... a) {
 		int s=0;
 		for (int i=0; i<a.length; i++) {
@@ -114,6 +170,16 @@ public class TestJava5 extends Test {
 			s += multiplier*a[i].length();
 		}
 		return s;
+	}
+	
+	public static void staticimportstest() {
+    	System.out.println("- static imports");
+    	
+    	assertI(XXX, 3);
+    	assertI(YYY, 4);
+    	assertI(ZZZ, 5);
+    	ZZZ = 7;
+    	assertI(ZZZ, 7);    	
 	}
 	
 }

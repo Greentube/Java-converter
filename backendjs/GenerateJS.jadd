@@ -153,11 +153,11 @@ aspect GenerateJS {
 		out.print("};");
 		
 		if (needexternalinitialization) {
-			out.memorizeReference(cpname+"@init");
+			out.memorizeReference(cpname+"$init");
 			
     		try {    		
 				com.greentube.javaconverter.CodePrinter o2 = 
-					new com.greentube.javaconverter.CodePrinter(out, cpname+"@init");
+					new com.greentube.javaconverter.CodePrinter(out, cpname+"$init");
 
 				ordinal = 0;
 				for (EnumConstant ec:enumConstants()) {

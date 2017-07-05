@@ -225,7 +225,7 @@ aspect GenerateJS {
   	}
   	public void AssignMulExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
   		getDest().generateJS(out);
-  		out.print(" %= ");
+  		out.print(" *= ");
   		getSource().generateJS(out);
   	}
   	public void AssignLShiftExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
@@ -364,7 +364,8 @@ aspect GenerateJS {
   	public void LShiftExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
   		getLeftOperand().generateJS(out);
   		out.print("<<");
-  		getRightOperand().generateJS(out);  	
+  		getRightOperand().generateJS(out);
+
   	}
   	public void RShiftExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
   		getLeftOperand().generateJS(out);

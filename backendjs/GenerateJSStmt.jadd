@@ -26,11 +26,33 @@ aspect GenerateJS {
   	
 //	public void DoStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
 // 	}
-//	public void EnhancedForStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
-// 	}
+	public void EnhancedForStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+		String vname = getVariableDecl().name();
+		Expr e = getExpr();
+		if (e.type().isArrayDecl()) {
+			out.print("for (var " + vname + "_l, " + vname + "_i=0, " + vname + "_a=");
+			e.generateJS(out);
+			out.print("; ");
+			out.print("(" + vname + "_i<" + vname + "_a.length)&&");
+			out.print("((" + vname + "_l=" + vname +"_a[" + vname + "_i])||true); ");
+			out.print(vname + "_i++)");
+			getStmt().generateJS(out);
+		} else if (e.type().isIterable()) {
+			out.print("for (var " + vname + "_l, " + vname + "_i=");			
+			e.generateJS(out);
+			out.print(".iterator_0(); ");
+			out.print(vname + "_i.hasNext_0()&&((" + vname + "_l=" + vname + "_i.next_0())||true)");			
+			out.print(";)");   
+			getStmt().generateJS(out);				
+		} else {
+			out.error("Expression is neither an array or an Iterable");
+		}
+ 	}
+ 	
 	public void ForStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
 		out.print("for (");
 		for (int i=0; i<getNumInitStmt(); i++) {
+			if (i>0) out.print(",");
 			getInitStmt(i).generateJS(out);
 		}
 		out.print("; ");
@@ -39,6 +61,7 @@ aspect GenerateJS {
 		}
 		out.print("; ");
 		for (int i=0; i<getNumUpdateStmt(); i++) {
+			if (i>0) out.print(",");
 			getUpdateStmt(i).generateJS(out);
 		}
 		out.print(")");
@@ -154,13 +177,11 @@ aspect GenerateJS {
 	// --- VarDeclStmt ---
 	
 	public void VarDeclStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+		out.print("var ");
 		for (int i=0; i<getNumDeclarator(); i++) {
-			if (i>0) {
-				out.print(";");
-				out.println();
-			}
+			if (i>0) out.print(",");
 			VariableDeclarator d = getDeclarator(i);			
-			out.print("var " + d.name() + "_l = ");
+			out.print(d.name() + "_l = ");
 			Expr e = d.getInit();
 			if (e!=null) {
 				e.generateJS(out);
