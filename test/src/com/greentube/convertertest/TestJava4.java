@@ -25,7 +25,7 @@ import java.util.Vector;
 
 // A test class to test the conversion of various features from java to other languages
 
-public class Test {
+public class TestJava4 {
     
     // class attributes
     static int staticint = 4;           // static attribute with initializer 
@@ -36,7 +36,7 @@ public class Test {
     static String initialized = "hello".substring(2);
 
     public static void main(String[] args) {
-        System.out.println ("-- converter test suite for java 1.4" );
+        System.out.println ("-- converter test suite for java 4" );
         
         staticattributestest();
         constructortest();
@@ -483,6 +483,45 @@ public class Test {
     	}
     	assertI(v,31);
     	assertI(w,3);
+    	
+    	int x,y=1,z=4;
+    	while (z<10) {
+    		x=z;
+    		y+=x;
+    		z++;
+    	}
+    	assertI(y,40);
+    	
+    	do {
+    		y+=z;
+    		z++;
+    	} while(z<20);
+    	assertI(y,185);
+    	
+    	StringBuffer s = new StringBuffer();
+    	outer: for (int i=1; i<10; i++) {
+    		for (int j=1; j<10; j++) {
+    			s.append(",");
+    			s.append(i*j);
+    			if (i*j>20) break outer;    			
+    		}
+    	}
+    	assertO(s.toString(),",1,2,3,4,5,6,7,8,9,2,4,6,8,10,12,14,16,18,3,6,9,12,15,18,21");
+    	
+    	s = new StringBuffer();
+		y=0;
+    	l1: while (true) {
+    		l2: while (true) {
+    			y++;
+    			if (y>10) break l1;
+    			if (y>5) continue l1;
+    			if (y>2) break l2;
+    			s.append(",");
+    			s.append(y);
+    		}	
+			s.append("b");
+    	}
+		assertO(s.toString(), ",1,2bbb");
     	
     }
         

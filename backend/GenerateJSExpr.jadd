@@ -167,7 +167,7 @@ aspect GenerateJS {
   			if (v.hostType() == hostType()) {		
 				out.printLocalVariable(getID());
 			} else {
-				out.error("Can not access local variables of outer class method");
+				throw new RuntimeException("Can not access local variables of outer class method");
 			}
   		} else {
   			// this fits in no other category - maybe the 'length' attribute of arrays 
@@ -399,7 +399,7 @@ aspect GenerateJS {
 			} else if (t.isDouble()) {
 				getExpr().generateJS(out);
 			} else {
-				out.error("Type not supported:"+t.fullName());
+				throw new RuntimeException("Type not supported:"+t.fullName());
 			}
 		} else {
   			getExpr().generateJS(out);
@@ -427,8 +427,8 @@ aspect GenerateJS {
   			getExpr().generateJS(out);
   			out.print(")._is_Array)");
   	  	} else if (!t.isReferenceType()) {
-  	  		out.error("Can not create type check for primitive types");
   	  		out.print("false");
+  	  		throw new RuntimeException("Can not create type check for primitive types");
   	  	} else {
 	  		out.print("(_denullify(");
   			getExpr().generateJS(out);
@@ -473,14 +473,8 @@ aspect GenerateJS {
   	public void DoubleLiteral.generateJS(com.greentube.javaconverter.CodePrinter out) {
   		out.print(constant().doubleValue());	
   	}
-  	public void FloatingPointLiteral.generateJS(com.greentube.javaconverter.CodePrinter out) {
-  		out.error("Type 'float' not supported");
-  	}
   	public void IntegerLiteral.generateJS(com.greentube.javaconverter.CodePrinter out) {
   		out.print(constant().intValue());	
-  	}
-  	public void LongLiteral.generateJS(com.greentube.javaconverter.CodePrinter out) {
-  		out.error("Type 'long' not supported");
   	}
   	public void StringLiteral.generateJS(com.greentube.javaconverter.CodePrinter out) {
   		String v = constant().stringValue();

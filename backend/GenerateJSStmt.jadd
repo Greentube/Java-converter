@@ -24,8 +24,14 @@ aspect GenerateJS {
   
   	// --- BranchTargetStmt ---
   	
-//	public void DoStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
-// 	}
+	public void DoStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+		out.print("do ");
+		getStmt().generateJS(out);
+		out.print("while(");	
+		getCondition().generateJS(out);
+		out.print(")");	
+ 	}
+ 	
 	public void EnhancedForStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
 		String vname = getVariableDecl().name();
 		Expr e = getExpr();
@@ -45,7 +51,7 @@ aspect GenerateJS {
 			out.print(";)");   
 			getStmt().generateJS(out);				
 		} else {
-			out.error("Expression is neither an array or an Iterable");
+			throw new RuntimeException("Expression is neither an array or an Iterable");
 		}
  	}
  	
@@ -67,8 +73,12 @@ aspect GenerateJS {
 		out.print(")");
 		getStmt().generateJS(out);
  	}
-//	public void LabeledStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
-// 	}
+ 	
+	public void LabeledStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+		out.print(getLabel()+": ");
+		getStmt().generateJS(out);
+ 	}
+ 	
 	public void SwitchStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
 		out.print("switch (");
 		getExpr().generateJS(out);
@@ -87,6 +97,7 @@ aspect GenerateJS {
   	
 	public void BreakStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
 		out.print("break");
+		if (getLabel()!=null) out.print(" "+getLabel());		
 	}
   	
   	// --- Case ---
@@ -101,6 +112,11 @@ aspect GenerateJS {
 	}
   	
   	// --- ContinueStmt ---
+
+  	public void ContinueStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+		out.print("continue");
+		if (getLabel()!=null) out.print(" "+getLabel());
+	}
   
     // --- EmptyStmt ---
     
@@ -128,20 +144,20 @@ aspect GenerateJS {
 	// --- LocalClassDeclStmt ---
 	public void LocalClassDeclStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
 		ClassDecl cd = getClassDecl();
+		com.greentube.javaconverter.CodePrinter o2 = null; 
 		try {    				
-			com.greentube.javaconverter.CodePrinter o2 = 
-				new com.greentube.javaconverter.CodePrinter(out, cd.constantPoolName());
+			o2 = new com.greentube.javaconverter.CodePrinter(out, cd.constantPoolName());
 			cd.generateJS(o2);
-			o2.finish();
-		} catch (IOException e) {
-      		out.error(e.toString());
+		} catch (Exception e) {
       		e.printStackTrace();
-    	}			
+      		throw new RuntimeException(e.getMessage());
+    	} finally {
+    		if (o2!=null) o2.finish();
+    	}
 	}
-
 	
 	// --- ReturnStmt ---
-
+	
 	public void ReturnStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
 		if (enclosingBodyDecl() instanceof ConstructorDecl) {
 			out.print("return this");
@@ -158,22 +174,10 @@ aspect GenerateJS {
 	
 	// --- SynchronizedStmt ---
 	
-	public void SynchronizedStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
-		out.error("Threading is not supported");
-	}
-	
 	// --- ThrowStmt ---
-	
-	public void ThrowStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
-		out.error("Exceptions are not supported");
-	}
-	
+		
 	// --- TryStmt ---
-	
-	public void TryStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
-		out.error("Exceptions are not supported");
-	}
-	
+		
 	// --- VarDeclStmt ---
 	
 	public void VarDeclStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {

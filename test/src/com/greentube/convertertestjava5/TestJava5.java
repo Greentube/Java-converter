@@ -1,18 +1,18 @@
 package com.greentube.convertertestjava5;
-import com.greentube.convertertest.Test;
+import com.greentube.convertertest.TestJava4;
 import static com.greentube.convertertestjava5.StaticExporter.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-public class TestJava5 extends Test {
+public class TestJava5 extends TestJava4 {
 
 	
     public static void main(String[] args) {
-    	Test.main(args);   
+    	TestJava4.main(args);   
     	
-        System.out.println ("-- converter test suite for java 1.5" );
+        System.out.println ("-- converter test suite for java 5" );
         genericstest();
         forinlooptest();
 //        autoboxingtest();

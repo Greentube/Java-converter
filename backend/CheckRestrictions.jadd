@@ -1,0 +1,59 @@
+aspect CheckRestrictions {
+  	  	
+  	public void ASTNode.checkRestrictions(ArrayList<String> errorlist) {  	
+  		for (int i=0; i<getNumChild(); i++) {
+  			getChild(i).checkRestrictions(errorlist);
+  		}
+  	}
+
+	public void MethodDecl.checkRestrictions(ArrayList<String> errorlist) {
+		if (isSynchronized()) {		
+			errorlist.add("Threading is not supported");
+		}
+		super.checkRestrictions(errorlist);
+	}
+
+	public void SynchronizedStmt.checkRestrictions(ArrayList<String> errorlist) {
+		errorlist.add("Threading is not supported");
+		super.checkRestrictions(errorlist);
+	}
+
+	public void ThrowStmt.checkRestrictions(ArrayList<String> errorlist) {
+		errorlist.add("Exceptions are not supported");
+		super.checkRestrictions(errorlist);
+	}
+
+	public void TryStmt.checkRestrictions(ArrayList<String> errorlist) {
+		errorlist.add("Exceptions are not supported");
+		super.checkRestrictions(errorlist);
+	}
+
+	
+	public void TypeAccess.checkRestrictions(ArrayList<String> errorlist) {
+		TypeDecl t = type();
+		if (t.isLong())  errorlist.add("Type 'long' not supported");
+		if (t.isFloat()) errorlist.add("Type 'float' not supported");
+		if (t.isShort()) errorlist.add("Type 'short' not supported");		
+		super.checkRestrictions(errorlist);
+	}
+
+  	public void FloatingPointLiteral.checkRestrictions(ArrayList<String> errorlist) {
+  		errorlist.add("Type 'float' not supported");  		
+  	}
+  	public void FloatType.checkRestrictions(ArrayList<String> errorlist) {
+  		errorlist.add("Type 'float' not supported");  		
+  	}
+  	
+  	public void LongLiteral.checkRestrictions(ArrayList<String> errorlist) {
+  		errorlist.add("Type 'long' not supported");
+  	}
+  	public void LongType.checkRestrictions(ArrayList<String> errorlist) {
+  		errorlist.add("Type 'long' not supported");
+  	}
+  	
+  	public void ShortType.checkRestrictions(ArrayList<String> errorlist) {
+  		errorlist.add("Type 'short' not supported");
+  	}
+
+  	
+}

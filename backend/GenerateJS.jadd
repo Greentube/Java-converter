@@ -1,37 +1,36 @@
 aspect GenerateJS {
   	  	
   	public void ASTNode.generateJS(com.greentube.javaconverter.CodePrinter out) {
-  		out.error("Unexpected syntax element: "+this.getClass().getName()+" (internal compiler problem)");
-  		out.print("UNEXPECTED:"+this.getClass().getName());
-		this.dumpTree(System.out);
+  		System.err.print("UNEXPECTED:"+this.getClass().getName());
+		this.dumpTree(System.err);
   	}
 
-  	public int CompilationUnit.generateJS(File outputfolder) {
-	  int err=0;
+  	public void CompilationUnit.generateJS(File outputfolder) {
     	for (TypeDecl t:getTypeDecls()) {
+			com.greentube.javaconverter.CodePrinter out = null;
     		try {    		
-				com.greentube.javaconverter.CodePrinter out = 
-					new com.greentube.javaconverter.CodePrinter(outputfolder, t.constantPoolName());
+				out = new com.greentube.javaconverter.CodePrinter(outputfolder, t.constantPoolName());
 	    		t.generateJS(out);
-	    		out.finish();
-	    		err += out.getNumberOfErrors();    		
-    		} catch (IOException e) {
+    		} catch (Exception e) {
       			e.printStackTrace();
-    			err++;
-    		}
+      			throw new RuntimeException(e.getMessage());
+      		} finally {
+      			if (out!=null) out.finish();
+    		}    		
     	}
-    	return err;
   	}
     	
 	public void ClassDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {
 		for (TypeDecl t:nestedTypes()) {
+			com.greentube.javaconverter.CodePrinter o2 = null;
     		try {    		
-				com.greentube.javaconverter.CodePrinter o2 = 
-					new com.greentube.javaconverter.CodePrinter(out, t.constantPoolName());
+				o2 = new com.greentube.javaconverter.CodePrinter(out, t.constantPoolName());
 	    		t.generateJS(o2);
-	    		o2.finish();
-    		} catch (IOException e) {
+    		} catch (Exception e) {
       			e.printStackTrace();
+      			throw new RuntimeException(e.getMessage());      			
+    		} finally {
+    			if (o2!=null) o2.finish();
     		}
 		}
 	  
@@ -155,9 +154,9 @@ aspect GenerateJS {
 		if (needexternalinitialization) {
 			out.memorizeReference(cpname+"$init");
 			
+			com.greentube.javaconverter.CodePrinter o2 = null; 
     		try {    		
-				com.greentube.javaconverter.CodePrinter o2 = 
-					new com.greentube.javaconverter.CodePrinter(out, cpname+"$init");
+				o2 = new com.greentube.javaconverter.CodePrinter(out, cpname+"$init");
 
 				ordinal = 0;
 				for (EnumConstant ec:enumConstants()) {
@@ -176,9 +175,10 @@ aspect GenerateJS {
 					ordinal++;
 				}				
 	    		
-	    		o2.finish();
-    		} catch (IOException e) {
+    		} catch (Exception e) {
       			e.printStackTrace();
+      		} finally {
+	    		if (o2!=null) o2.finish();
     		}
 		}
 	}  
@@ -305,6 +305,7 @@ aspect GenerateJS {
 
 //	public void EnumConstant.generateJS(com.greentube.javaconverter.CodePrinter out) {
 //	}
+
 	public void InstanceInitializer.generateJS(com.greentube.javaconverter.CodePrinter out) {
 		getBlock().generateJS(out);	
 	}

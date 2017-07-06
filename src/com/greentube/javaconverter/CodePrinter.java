@@ -17,7 +17,6 @@ public class CodePrinter extends PrintStream {
 	File outputfolder;
 	String filename;
 	int indent = 0;
-	int err = 0;
 	
 	private static OutputStream mkstream(File folder, String fname) throws IOException {
 		File f = new File(folder,fname+".js");
@@ -49,10 +48,6 @@ public class CodePrinter extends PrintStream {
 		close();
 	}
 	
-	public int getNumberOfErrors() {
-		return err;
-	}
-	
 	public void increaseIndent() {
 		indent++;
 	}
@@ -68,15 +63,6 @@ public class CodePrinter extends PrintStream {
 		}
 	}
 	
-	public void countError() {
-		if (parent!=null) parent.countError();
-		err++;
-	}
-	public void error(String msg) {
-		countError();
-		System.out.print("\nERR in "+filename+": "+msg);
-		System.out.println();
-	}	
 	
 	public void printLocalVariable(String name) {
 		// check if this is a synthetic local variable name

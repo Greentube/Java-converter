@@ -1,7 +1,7 @@
 package com.greentube.javaconverter;
 
 import java.io.File;
-
+import java.util.ArrayList;
 
 import org.extendj.ast.CompilationUnit;
 import org.extendj.ast.Frontend;
@@ -20,6 +20,9 @@ public class Converter extends Frontend {
 	  
 	public int run(String args[]) {
 		run(args, Program.defaultBytecodeReader(), Program.defaultJavaParser());
+		if (err>0) {
+			System.out.println("Total conversion errors: "+err);
+		}
 	    return err;
 	}
 
@@ -27,7 +30,19 @@ public class Converter extends Frontend {
 	protected void processNoErrors(CompilationUnit unit) {
 //		  unit.generateClassfile();
 //		  System.out.println("Processing: "+unit.getClassSource().pathName());
-		err = unit.generateJS(destDir);
+		ArrayList<String> errorlist = new ArrayList<String>(0);
+		unit.checkRestrictions(errorlist);
+		if (errorlist.size()==0) {	
+			try {
+				unit.generateJS(destDir);
+			} catch (RuntimeException e) {
+				errorlist.add(e.getMessage());
+			}
+		}
+		for (String s:errorlist) {
+			System.out.println(unit.pathName()+": "+s);
+		}			
+		err += errorlist.size();
 	}
 
 	@Override
