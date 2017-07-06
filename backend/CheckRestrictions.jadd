@@ -37,23 +37,38 @@ aspect CheckRestrictions {
 		super.checkRestrictions(errorlist);
 	}
 
-  	public void FloatingPointLiteral.checkRestrictions(ArrayList<String> errorlist) {
-  		errorlist.add("Type 'float' not supported");  		
-  	}
   	public void FloatType.checkRestrictions(ArrayList<String> errorlist) {
   		errorlist.add("Type 'float' not supported");  		
-  	}
-  	
-  	public void LongLiteral.checkRestrictions(ArrayList<String> errorlist) {
-  		errorlist.add("Type 'long' not supported");
-  	}
+  	}  	
   	public void LongType.checkRestrictions(ArrayList<String> errorlist) {
   		errorlist.add("Type 'long' not supported");
-  	}
-  	
+  	}  	
   	public void ShortType.checkRestrictions(ArrayList<String> errorlist) {
   		errorlist.add("Type 'short' not supported");
   	}
 
+  	public void FloatingPointLiteral.checkRestrictions(ArrayList<String> errorlist) {
+  		errorlist.add("Type 'float' not supported");  		
+  	}
+  	public void LongLiteral.checkRestrictions(ArrayList<String> errorlist) {
+  		errorlist.add("Type 'long' not supported");
+  	}
+  	
+  	public void AssignDivExpr.checkRestrictions(ArrayList<String> errorlist) {
+  		if (getDest().type().isIntegralType() && getSource().type().isIntegralType()) {
+  			errorlist.add("Can not use /= for integer types");
+  		}
+		super.checkRestrictions(errorlist);
+	}
+	
+  	public void AssignExpr.checkRestrictions(ArrayList<String> errorlist) {
+  		TypeDecl t = getDest().type();
+  		if ((! (this instanceof AssignSimpleExpr)) && t.isIntegralType()) {  		
+  			if (!t.isInt() || !getSource().type().isIntegralType() ) {
+  				errorlist.add("Can not use compound assignment with implicit cast");
+	  		}
+  		}  		
+		super.checkRestrictions(errorlist);
+	}
   	
 }

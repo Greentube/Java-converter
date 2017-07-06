@@ -194,9 +194,24 @@ aspect GenerateJS {
   		getSource().generateJS(out);
   	}
   	public void AssignPlusExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
-  		getDest().generateJS(out);
-  		out.print(" += ");
-  		getSource().generateJS(out);
+  		// do some case discrimination if this is a string concatenation
+  		Expr d = getDest();
+  		Expr s = getSource();
+  		if (type().isString()) {
+  			d.generateJS(out);
+  			out.print("+=\"\"+");
+  			if (s.type().isChar()) {
+  				out.print("_c2s(");
+  				s.generateJS(out);
+  				out.print(")");
+  			} else {
+  				s.generateJS(out);
+  			}
+  		} else {
+	  		d.generateJS(out);
+  			out.print("+=");
+  			s.generateJS(out);
+  		}
   	}
   	public void AssignAndExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
   		getDest().generateJS(out);
@@ -535,11 +550,11 @@ aspect GenerateJS {
   		getOperand().generateJS(out);  	
   	}
   	public void MinusExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
-  		out.print("-");
+  		out.print(" - ");
   		getOperand().generateJS(out);  	
   	}
   	public void PlusExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
-  		out.print("+");    
+  		out.print(" + ");    
   		getOperand().generateJS(out);  	
   	}
   	public void PostDecExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {

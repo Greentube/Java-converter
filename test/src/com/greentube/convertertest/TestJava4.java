@@ -44,6 +44,7 @@ public class TestJava4 {
         shadowingtest();
         casttest();
         operatortest();
+        assignoperatortest();
         numbertest();
         numberconversiontest();
         controlstructurestest();
@@ -290,7 +291,6 @@ public class TestJava4 {
         assertB ( (c==true||b),  true);
         assertI ( (~(i ^ 4711)), -4708);
         assertI ( ((byte)j) , 18);
-//        assertI ( ((short)j) , -19182);
         assertI ( ((char)j) , 46354);
         assertI ( ((int)j), 423081234 );
         assertI ( ((int) 4.7), 4);
@@ -305,13 +305,7 @@ public class TestJava4 {
         assertI ( (byte) -2344444, 4);
         assertI ( (byte) -1234.1, 46);        
         assertI ( (byte) -1234.9, 46);        
-        assertI ( (byte) 434.9, -78);        
-//        assertI ( (short) 124, 124);
-//        assertI ( (short) 44444, -21092);
-//        assertI ( (short) -2344444, 14852);
-//        assertI ( (short) -1234.1, -1234);        
-//        assertI ( (short) -1234.9, -1234);        
-//        assertI ( (short) 434.9, 434);        
+        assertI ( (byte) 434.9, -78);            
         assertI ( (char) 1234.5, 1234);
         assertI ( (char) -1234, 64302);
         assertI ( (char) 0.2, 0);
@@ -330,7 +324,71 @@ public class TestJava4 {
         boolean f2=false;
         assertB ( (f && f2 || t), true);
         assertB ( (f && t || t), true);
-
+        assertB ( 3 < 4, true);
+        assertB ( - -3 > + + +4, false);
+    }
+    
+    public static void assignoperatortest() {
+    	System.out.println("- assign operator");
+    	
+    	int i = 0;
+    	int[] a = {7};
+    	a[i++] += 8;
+    	assertI(a[0], 15);
+    	assertI(i,1);
+    	
+    	String s = null;
+    	s += "hi";
+    	assertO(s, "nullhi");
+    	s = null;
+    	s += null;
+    	assertO(s, "nullnull");
+    	
+    	double d = 1.0;
+    	d += 7;
+    	d -= 4.5;
+    	d *= 3;
+    	d /= 3;
+    	assertD(d, 3.5);
+    	d++;
+    	++d;
+    	assertD(d, 5.5);
+    	d--;
+    	--d;
+    	assertD(d, 3.5);
+    	d %= 2.0;
+    	assertD(d, 1.5);
+    	
+    	i = 17;
+    	i += 3;
+    	i -= 3;
+    	i *= 2;
+    	assertI(i, 34);
+    	i = i/4;   // can not use i /= 4;
+    	assertI(i, 8);
+    	i &= 15;
+    	assertI(i, 8);
+    	i |= 3;
+    	assertI(i, 11);
+    	i ^= 0xff;
+    	assertI(i, 0xf4);
+    	i <<= 4;
+    	assertI(i, 0xf40);
+    	i >>= 4;
+    	assertI(i, 0xf4);
+    	i = 0xf0000000;
+    	assertI(i, 0xf0000000);
+    	assertI(i, -268435456);
+    	i >>= 4;
+    	assertI(i, 0xff000000);
+    	i >>>= 4;
+    	assertI(i, 0x0ff00000);   
+    	
+    	char c = 0;
+    	c = 544;
+    	assertI(c,544);
+    	i = (byte) 1;
+    	assertI(i,1);
     }
     
     public static void numbertest() {
