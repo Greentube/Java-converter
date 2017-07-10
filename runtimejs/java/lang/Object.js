@@ -143,19 +143,6 @@ function _castTOdouble(a) {
     return a;
 }
 
-// allocation of string objects can not use normal constructor
-function _newString() {
-  switch(arguments.length) {
-  case 1:   // allocate with character array
-    return String.fromCharCode.apply(String, arguments[0]);     
-  case 3:   // allocate with part of character array
-    var o = arguments[1];
-    var l = arguments[2];
-    return String.fromCharCode.apply(String, arguments[0].slice(o,o+l));
-  default: 
-    return "";   
-  }
-}
 
 // create a (possible multidimensional) array with a initialization value for
 // all elements.
@@ -203,7 +190,7 @@ Array.prototype.toString_0 = function () {
 };
 
 Array.prototype.hashCode_0 = function () {
-    return "2";
+    return 2;
 };
 
 Array.prototype.__defineGetter__('length_f', function() { return this.length; });

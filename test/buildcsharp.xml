@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Test project to csharp target" default="build">
+
+  <taskdef name="convertJava" classname="com.greentube.javaconverter.ConverterAntTask"/> 
+			
+  <target name="build">
+  	
+  	<delete dir="${basedir}/csharpproject/build"/>
+    <mkdir dir="${basedir}/csharpproject/build" />
+<!--  	
+    <convertJava dest="${basedir}/build/html5" external="${basedir}/runtime">
+        <fileset dir="${basedir}/src">
+            <include name="**/*.java"/>
+        </fileset>
+    </convertJava>
+-->  	
+    <copy todir="${basedir}/csharpproject/build" >
+        <fileset dir="${basedir}/../runtimecs"/>
+    </copy>
+  	  	
+  </target>
+  
+  <target name="clean">
+	<delete dir="${basedir}/csharpproject/build"/>  	
+  </target>
+
+  <target name="cleanbuild" depends="clean,build">
+  </target>
+  	
+</project>

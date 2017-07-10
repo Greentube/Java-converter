@@ -117,7 +117,7 @@ String.prototype.trim_0 = function() {
 
 // Make String object creation possible by providing a string factory. 
 // This object is not used by itself, but only to call one of the constructor
-// methods, which will in then return the proper string.
+// methods, which will then return the proper string.
 function java_lang_String()
 {
 };
