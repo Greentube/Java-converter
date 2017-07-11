@@ -3,8 +3,7 @@ namespace java.util
 
 	public interface Enumeration
 	{
-		bool hasMoreElements();
-		
+		bool hasMoreElements();		
 		System.Object nextElement();
 	}	
 }

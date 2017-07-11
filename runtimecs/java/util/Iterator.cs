@@ -3,8 +3,7 @@ namespace java.util
 
 	public interface Iterator
 	{
-		bool hasNext();
-		
+		bool hasNext();		
 		System.Object next();
 	}	
 }
