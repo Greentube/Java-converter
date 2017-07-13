@@ -4,48 +4,54 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.util.HashSet;
 
-public class CodePrinter extends PrintStream {
+public class CodePrinter {
 	
 	private HashSet<String> reference;
 	private HashSet<String> load;
 	private HashSet<String> complete;
 	
-	CodePrinter parent;
 	File outputfolder;
-	String filename;
-	int indent = 0;
+	OutputStreamWriter ow;
 	
-	private static OutputStream mkstream(File folder, String fname) throws IOException {
-		File f = new File(folder,fname+".js");
-		f.getParentFile().mkdirs();
-		return new FileOutputStream(f);
-	}
+	boolean linehasstarted;
+	int indent;
 	
-	public CodePrinter(File outputfolder, String filename) throws IOException {
-		super(mkstream(outputfolder,filename),false,"utf-8");
-					
-		this.parent = null;
-		this.filename = filename;
-		this.outputfolder = outputfolder;
+	
+	public CodePrinter(File outputfolder, String filename) {
+		try {
+			File f = new File(outputfolder,filename);
+			f.getParentFile().mkdirs();		
+			this.ow = new OutputStreamWriter(new FileOutputStream(f), "utf-8");
+		} catch (IOException e) {
+  			e.printStackTrace();
+  			throw new RuntimeException(e.getMessage());      			
+		}
 		
-		indent = 0;
+		this.outputfolder = outputfolder;		
+		this.indent = 0;
+		this.linehasstarted = false;
+		
 		reference = new HashSet();
 		load = new HashSet();
 		complete = new HashSet();
 	}
 	
-	public CodePrinter(CodePrinter p, String filename) throws IOException {
+	public CodePrinter(CodePrinter p, String filename) {
 		this(p.outputfolder,filename);
-		parent = p;
 	}
 	
-	public void finish() {
+	public void finish()  {
 		printExternals();
-		println();
-		close();
+		try {
+			ow.close();
+		} catch (IOException e) {
+  			e.printStackTrace();
+  			throw new RuntimeException(e.getMessage());      			
+		}
 	}
 	
 	public void increaseIndent() {
@@ -56,13 +62,28 @@ public class CodePrinter extends PrintStream {
 		indent--;
 	}
 	
-	public void println() {
-		super.println();
-		for (int i=0; i<indent; i++) {
-			super.print("    ");
+	public void print(String s) {
+		try {
+			if (!linehasstarted) {
+				for (int i=0; i<indent; i++) {
+					ow.write("    ",0,4);
+				}
+				linehasstarted=true;
+			}
+			ow.write(s,0,s.length());
+		} catch (IOException e) {
+  			e.printStackTrace();
+  			throw new RuntimeException(e.getMessage());      			
 		}
 	}
 	
+	public void println() {
+		print("\n");
+		linehasstarted=false;
+	}
+		
+	
+	// --- functionality specific for javascript generation ---  
 	
 	public void printLocalVariable(String name) {
 		// check if this is a synthetic local variable name
@@ -101,20 +122,38 @@ public class CodePrinter extends PrintStream {
 	public void printExternals() {
 		for (String s:reference) {
 			if (load.contains(s) || complete.contains(s)) continue;
-			println();
 			print("//reference// ");
 			print(s);
+			println();
 		}
 		for (String s:load) {
 			if (complete.contains(s)) continue;
-			println();
 			print("//load// ");
 			print(s);
+			println();
 		}
 		for (String s:complete) {
-			println();
 			print("//complete// ");
 			print(s);
+			println();
 		}
 	}
+	
+	// --- functionality specific for csharp code generation ---
+	
+	public void printCSUniqueName(String s) {
+		print(s.replace('$', '_'));
+	}
+	public void printCSName(String constantpoolname) {
+		if (constantpoolname.equals("java/lang/Object")) {
+			print("System.Object");
+		} else if (constantpoolname.equals("java/lang/String")) {
+			print("System.String");
+		} else if (constantpoolname.equals("java/lang/System")) {
+			print("java.lang.SYSTEM");
+		} else {
+			print(constantpoolname.replace('$', '_').replace('/','.'));
+		}
+	}
+	
 }

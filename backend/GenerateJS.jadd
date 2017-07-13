@@ -7,31 +7,20 @@ aspect GenerateJS {
 
   	public void CompilationUnit.generateJS(File outputfolder) {
     	for (TypeDecl t:getTypeDecls()) {
-			com.greentube.javaconverter.CodePrinter out = null;
-    		try {    		
-				out = new com.greentube.javaconverter.CodePrinter(outputfolder, t.constantPoolName());
-	    		t.generateJS(out);
-    		} catch (Exception e) {
-      			e.printStackTrace();
-      			throw new RuntimeException(e.getMessage());
-      		} finally {
-      			if (out!=null) out.finish();
-    		}    		
+			com.greentube.javaconverter.CodePrinter out = 
+				new com.greentube.javaconverter.CodePrinter(
+					outputfolder, t.constantPoolName()+".js");
+	    	t.generateJS(out);
+			out.finish();    		    	
     	}
   	}
     	
 	public void ClassDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {
 		for (TypeDecl t:nestedTypes()) {
-			com.greentube.javaconverter.CodePrinter o2 = null;
-    		try {    		
-				o2 = new com.greentube.javaconverter.CodePrinter(out, t.constantPoolName());
-	    		t.generateJS(o2);
-    		} catch (Exception e) {
-      			e.printStackTrace();
-      			throw new RuntimeException(e.getMessage());      			
-    		} finally {
-    			if (o2!=null) o2.finish();
-    		}
+			com.greentube.javaconverter.CodePrinter o2 = 
+			   new com.greentube.javaconverter.CodePrinter(out, t.constantPoolName()+".js");
+	    	t.generateJS(o2);
+    		o2.finish();    		
 		}
 	  
 		String jsname = constantPoolName().replace('/','_');
@@ -154,9 +143,8 @@ aspect GenerateJS {
 		if (needexternalinitialization) {
 			out.memorizeReference(cpname+"$init");
 			
-			com.greentube.javaconverter.CodePrinter o2 = null; 
-    		try {    		
-				o2 = new com.greentube.javaconverter.CodePrinter(out, cpname+"$init");
+			com.greentube.javaconverter.CodePrinter o2 = 
+				 new com.greentube.javaconverter.CodePrinter(out, cpname+"$init.js");
 
 				ordinal = 0;
 				for (EnumConstant ec:enumConstants()) {
@@ -175,11 +163,7 @@ aspect GenerateJS {
 					ordinal++;
 				}				
 	    		
-    		} catch (Exception e) {
-      			e.printStackTrace();
-      		} finally {
-	    		if (o2!=null) o2.finish();
-    		}
+			o2.finish();    		
 		}
 	}  
   	

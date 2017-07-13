@@ -23,32 +23,37 @@ public class ConverterAntTask extends Task {
         filesets.add(fs);
     }
 
-    private File destdir;
-    public void setDest(File destdir) {
-        this.destdir = destdir;
+    private File jsdir;
+    public void setJs(File destdir) {
+        this.jsdir = destdir;
+    }
+    
+    private File csdir=null;
+    public void setCs(File destdir) {
+        this.csdir = destdir;
     }
 
-    private File externaldir;
+    private File externaldir=null;
     public void setExternal(File extdir) {
         this.externaldir = extdir;
     }
     
     public void execute() throws BuildException {
 
-        if (destdir == null) {
-            throw new BuildException("No destination directory given in Convert task", getLocation());
-        }
-//        destdir.delete();
-//        destdir.mkdir();
-
-        Vector args = new Vector();
+    	Vector args = new Vector();
         args.add("-bootclasspath");
         args.add("C:/Users/rgraf/Documents/java-converter/rt.jar");
         args.add("-classpath");
         args.add("C:/Users/rgraf/Documents/java-converter/bin");
-        args.add("-d");
-        args.add("C:/Users/rgraf/Documents/java-converter/test/build/html5");
-
+        if (jsdir!=null) { 
+        	args.add("-js");
+        	args.add(jsdir.toString());
+        }
+        if (csdir!=null) { 
+        	args.add("-cs");
+        	args.add(csdir.toString());
+        }
+        
         for (int i=0; i<filesets.size(); i++) {
             FileSet fs = (FileSet)filesets.get(i);
             DirectoryScanner ds = fs.getDirectoryScanner(getProject());

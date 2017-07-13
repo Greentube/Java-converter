@@ -1,0 +1,397 @@
+aspect GenerateCS {
+  	  	
+  	public void ASTNode.generateCS(com.greentube.javaconverter.CodePrinter out) {
+  		System.err.print("UNEXPECTED:");
+		this.dumpTree(System.err);
+  	}
+
+  	public void CompilationUnit.generateCS(File outputfolder) {
+    	for (TypeDecl t:getTypeDecls()) {
+			com.greentube.javaconverter.CodePrinter out = 
+			   new com.greentube.javaconverter.CodePrinter(
+					outputfolder, t.constantPoolName()+".cs");
+	    	t.generateCS(out);
+			out.finish();    	
+    	}
+  	}
+    	
+	public void ClassDecl.generateCS(com.greentube.javaconverter.CodePrinter out) {
+		for (TypeDecl t:nestedTypes()) {
+			com.greentube.javaconverter.CodePrinter o2 = 
+				 new com.greentube.javaconverter.CodePrinter(out, t.constantPoolName()+".cs");
+	    	t.generateCS(o2);
+			o2.finish();    		
+		}
+	  
+		out.print("namespace "+packageName()+" {");
+		out.increaseIndent();
+		out.println();
+		out.print("public class ");
+		out.printCSUniqueName(uniqueName());
+		out.print(": ");
+
+    	if (hasSuperClass()) {
+    		out.printCSName(superclass().constantPoolName());
+    	} else {
+    		out.print("System.Object");
+    	}
+   		for (Iterator<TypeDecl> iter = interfacesIterator(); iter.hasNext(); ) {
+   			out.print(", ");
+      		out.printCSName(iter.next().constantPoolName());
+   		}			
+    	
+    	out.println();
+    	out.print ("{");
+    	out.println();
+    	out.increaseIndent(); 
+    	    	        	    	
+    	for (BodyDecl bd:getBodyDeclList()) {
+			if (bd.isField()) {
+				for (FieldDeclarator fd:bd.fieldDeclarations()) {
+					if (fd.isStatic()) {
+						out.print("public static ");
+						fd.fieldDecl().getTypeAccess().generateCS(out);
+						out.print(" ");
+						out.print(fd.getID()+"_f = ");						
+						out.print(fd.fieldDecl().type().isPrimitiveType() ? "0":"null");
+						out.print(";");
+					} else {
+						out.print("public ");
+						fd.fieldDecl().getTypeAccess().generateCS(out);
+						out.print(" ");
+						out.print(fd.getID()+"_f;");
+					}
+					out.println();
+				}
+			}
+		}		
+    	    	        	    	        	    	    
+      	for (BodyDecl b : methodsAndConstructors()) {
+      		// check if need to suppress auto-generated methods related to Enums
+			if (b instanceof MethodDecl) {
+      			MethodDecl md = (MethodDecl) b;
+      			if (this instanceof EnumDecl) {
+      				if (md.getID().equals("values") && md.getNumParameter()==0 ) continue;
+      				if (md.getID().equals("valueOf") && md.getNumParameter()==1 )  continue;
+      			}
+				if (md.getID().startsWith("$SwitchMap$") && md.getNumParameter()==0) continue;      		
+      		}
+      		else if (b instanceof ConstructorDecl) {
+      			ConstructorDecl cd = (ConstructorDecl) b;
+      			if (this instanceof EnumDecl) {
+      				if (cd.isSynthetic()) continue;
+      			}      		
+      		}
+	        b.generateCS(out);
+    	}    	    	    
+    	    	    	
+		out.decreaseIndent(); 
+		out.print("}");
+		out.println();
+		out.decreaseIndent(); 
+		out.print("}");
+		out.println();
+		
+/*
+		for (BodyDecl bd:getBodyDeclList()) {
+			if (bd.isField()) {
+				for (FieldDeclarator fd:bd.fieldDeclarations()) {
+					if (fd.isStatic()) {
+						out.println();
+						out.print(jsname+".prototype."+fd.getID()+"_f = ");
+						out.print(fd.fieldDecl().type().isPrimitiveType() ? "0":"null");
+						out.print(";");
+					}
+				}
+			}
+		}		
+		for (BodyDecl bd:getBodyDeclList()) {
+			if (bd.isField()) {
+				for (FieldDeclarator fd:bd.fieldDeclarations()) {
+					if (fd.isStatic() && fd.getInit()!=null) {
+						out.println();
+						out.print(jsname+".prototype."+fd.getID()+"_f = ");
+						fd.getInit().generateCS(out);
+						out.print(";");
+					}
+				}
+			} else if (bd instanceof StaticInitializer) {
+				bd.generateCS(out);
+			}
+		}
+*/		
+  	}
+/*  	
+	public void EnumDecl.generateCS(com.greentube.javaconverter.CodePrinter out) {
+		super.generateCS(out);
+
+		String cpname = constantPoolName();
+		String jsname = cpname.replace('/','_');
+		
+		StringBuffer values = new StringBuffer();
+		boolean needexternalinitialization = false;
+		
+		int ordinal = 0;
+		for (EnumConstant ec:enumConstants()) {
+			if (ec.getInit().type()!=this) {
+				needexternalinitialization = true;
+			} else {
+				out.println();
+				out.print(jsname+".prototype."+ec.getID()+"_f = ");
+				out.print("(new "+jsname+"())._"+(ec.getNumArg()+2)+"(\""+ec.getID()+"\","+ordinal);
+				for (int i=0; i<ec.getNumArg(); i++) {
+					out.print(",");
+					ec.getArg(i).generateCS(out);
+				}
+				out.print(");");				
+			}
+			
+			if (ordinal>0) values.append(",");
+			values.append(jsname+".prototype."+ec.getID()+"_f");
+			
+			ordinal++;			
+		}
+		
+		out.println();
+		out.print(jsname+".prototype.values_0 = function() {");
+		out.increaseIndent();
+		out.println();
+		out.print("return ["+values.toString()+"];");
+		out.decreaseIndent();
+		out.println();
+		out.print("};");
+		
+		if (needexternalinitialization) {
+			out.memorizeReference(cpname+"$init");
+			
+			com.greentube.javaconverter.CodePrinter o2 = 
+				 new com.greentube.javaconverter.CodePrinter(out, cpname+"$init");
+
+				ordinal = 0;
+				for (EnumConstant ec:enumConstants()) {
+					if (ec.getInit().type()!=this) {
+						o2.println();
+						o2.print(jsname+".prototype."+ec.getID()+"_f = ");
+						o2.print("(new ");
+						o2.printAndMemorizeComplete(ec.getInit().type().constantPoolName());
+						o2.print("())._"+(ec.getNumArg()+2)+"(\""+ec.getID()+"\","+ordinal);
+						for (int i=0; i<ec.getNumArg(); i++) {
+							o2.print(",");
+							ec.getArg(i).generateCS(o2);
+						}
+						o2.print(");");
+					}
+					ordinal++;
+				}				
+	    		
+			o2.finish();    		
+		}
+	}  
+*/
+  	
+	public void InterfaceDecl.generateCS(com.greentube.javaconverter.CodePrinter out) {
+		out.print("namespace "+packageName()+" {");
+		out.increaseIndent();
+		out.println();
+		out.print("public interface ");
+		out.printCSUniqueName(uniqueName());
+
+		if (hasSuperInterface()) {
+			out.print(": ");
+			int n=0;
+      		for (Iterator<TypeDecl> iter = interfacesIterator(); iter.hasNext(); n++) {
+      			if (n>0) out.print(",");
+        		out.printCSName(iter.next().constantPoolName());
+      		}			
+		}
+		out.print(" {");
+		out.increaseIndent();
+		out.println();
+		
+		boolean hasfields = false;
+		for (BodyDecl bd:getBodyDeclList()) {
+			if (bd.isField()) {
+				hasfields = true;
+			} else if (bd instanceof MethodDecl) {
+				bd.generateCS(out);
+			}
+		}		
+
+		out.decreaseIndent();
+		out.println();
+		out.print("}");
+		
+		if (hasfields) {
+			out.print("public static class ");
+			out.printCSUniqueName(uniqueName()+"_constants");
+			out.print(" { ");
+			out.increaseIndent();
+			
+			for (BodyDecl bd:getBodyDeclList()) {
+				if (bd.isField()) {
+					for (FieldDeclarator fd:bd.fieldDeclarations()) {
+						if (fd.isStatic()) {
+							out.println();
+							out.print("public const ");
+							fd.getTypeAccess().generateCS(out);
+							out.print(" "); 							
+							out.print(fd.getID()+"_f = ");
+							fd.getInit().generateCS(out);
+							out.print(";");					
+						}
+					}
+				}
+			}	
+			out.decreaseIndent();
+			out.println();
+			out.print("}");	
+			out.println();						
+		}		
+		
+		out.decreaseIndent();
+		out.println();
+		out.print("}");		
+		out.println();
+	}  
+  	
+
+//  	public void TypeDecl.generateCS(com.greentube.javaconverter.CodePrinter out) {
+//    	out.print(constantPoolName());
+//    }  
+  
+
+  	public void ConstructorDecl.generateCS(com.greentube.javaconverter.CodePrinter out) {
+
+		// decide if all the fields have to be initialized right here	
+		boolean needsInit = true;			
+		if (hasConstructorInvocation()) {
+	        Stmt stmt = getConstructorInvocation();
+        	if (stmt instanceof ExprStmt) {
+          		ExprStmt exprStmt = (ExprStmt) stmt;
+          		Expr expr = exprStmt.getExpr();
+          		if (!expr.isSuperConstructorAccess()) {
+            		needsInit = false;
+          		}
+        	}
+      	}		
+		
+  		int numpar = getNumParameter();  		
+  		out.print("public ");  		
+  		out.printCSUniqueName(hostType().uniqueName());
+  		out.print("(");
+  		for (int i=0; i<numpar; i++) {
+  			if (i>0) out.print(",");
+  			getParameter(i).getTypeAccess().generateCS(out);
+  			out.print(" ");
+  			out.print(getParameter(i).name());
+  			out.print("_l");
+  		}
+  		out.print(")");
+  		out.print(":");
+  		((ExprStmt)getConstructorInvocation()).getExpr().generateCS(out);		
+		out.println();
+  		out.print("{");  		
+		out.println();
+		out.increaseIndent();
+		
+		// if calling a constructor of this, do not initialize all variables twice		
+		if (! needsInit) {
+			// nothing to do 			
+		} else { 
+		// when a super-constructor is called, the initialization of everything else needs to be done here
+			// do all field initializations
+			for (BodyDecl bd:hostType().getBodyDeclList()) {
+				if (bd.isField()) {
+					for (FieldDeclarator fd:bd.fieldDeclarations()) {
+						if (!fd.isStatic() && fd.getInit()!=null) {
+							out.print("this."+fd.getID()+"_f = ");
+							fd.getInit().generateCS(out);
+							out.print(";");						
+							out.println();
+						}
+					}
+				} else if (bd instanceof InstanceInitializer) {
+					bd.generateCS(out);
+				}
+			}
+		}
+		
+		// build body of constructor
+		Block block = getBlock();
+  		int n = block.getNumStmt();
+  		for (int i=0; i<n; i++) {
+  			Stmt stmt = block.getStmt(i);
+  			stmt.generateCS(out);
+  		}
+		out.decreaseIndent();
+		out.print("}");
+  		out.println();		
+  	}
+
+//	public void EnumConstant.generateCS(com.greentube.javaconverter.CodePrinter out) {
+//	}
+
+	public void InstanceInitializer.generateCS(com.greentube.javaconverter.CodePrinter out) {
+		getBlock().generateCS(out);	
+	}
+//	public void FieldDecl.generateCS(com.greentube.javaconverter.CodePrinter out) {
+//	}
+//	public void MemberClassDecl.generateCS(com.greentube.javaconverter.CodePrinter out) {
+//	}
+//	public void MemberInterfaceDecl.generateCS(com.greentube.javaconverter.CodePrinter out) {
+//	}
+
+  	public void MethodDecl.generateCS(com.greentube.javaconverter.CodePrinter out) {
+
+  		int numpar = getNumParameter();  		
+  		if (!hostType().isInterfaceDecl()) {
+  			out.print("public ");
+  		}  		
+  		getTypeAccess().generateCS(out);
+  		out.print(" ");
+  		out.print(name());
+  		out.print("(");
+  		for (int i=0; i<numpar; i++) {
+  			if (i>0) out.print(",");
+  			getParameter(i).getTypeAccess().generateCS(out);
+  			out.print(" ");
+  			out.print(getParameter(i).name());
+  			out.print("_l");
+  		}
+  		out.print(")");
+  		out.println();
+  		
+  		if (getBlock()!=null) {
+  			getBlock().generateCS(out);
+  		} else {
+  			out.print(";");
+  			out.println();  		
+  		}
+  	}
+
+	public void StaticInitializer.generateCS(com.greentube.javaconverter.CodePrinter out) {
+		getBlock().generateCS(out);
+	}
+
+//	public void SubstitutedBodyDecl.generateCS(com.greentube.javaconverter.CodePrinter out) {
+//	}
+
+
+	public void TypeDecl.generateReferenceCS(com.greentube.javaconverter.CodePrinter out) {
+  		if (isInt()) {
+  			out.print("int");
+  		} else if (isByte()) {
+  			out.print("sbyte");  		
+  		} else if (isChar()) {  		
+  			out.print("char");
+  		} else if (isBoolean()) {
+  			out.print("bool");
+  		} else if (isDouble()) {
+  			out.print("double");
+  		} else if (isVoid()) {
+  			out.print("void");
+  		} else {
+  			out.printCSName(constantPoolName());
+		}
+	}  	
+}

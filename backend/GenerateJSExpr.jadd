@@ -478,7 +478,7 @@ aspect GenerateJS {
   		out.print(isTrue()?"true":"false");
   	}
   	public void CharacterLiteral.generateJS(com.greentube.javaconverter.CodePrinter out) {
-  		out.print(constant().intValue());	
+  		out.print(""+constant().intValue());	
   	}
 //  	public void IllegalLiteral.generateJS(com.greentube.javaconverter.CodePrinter out) {
 //  	}
@@ -486,10 +486,10 @@ aspect GenerateJS {
   		out.print("null");
   	}
   	public void DoubleLiteral.generateJS(com.greentube.javaconverter.CodePrinter out) {
-  		out.print(constant().doubleValue());	
+  		out.print(""+constant().doubleValue());	
   	}
   	public void IntegerLiteral.generateJS(com.greentube.javaconverter.CodePrinter out) {
-  		out.print(constant().intValue());	
+  		out.print(""+constant().intValue());	
   	}
   	public void StringLiteral.generateJS(com.greentube.javaconverter.CodePrinter out) {
   		String v = constant().stringValue();
@@ -513,7 +513,7 @@ aspect GenerateJS {
   			            break;  			
   			default: 
   				if (c>=32 && c<=126) {
-  				 	out.print(c);
+  				 	out.print(""+c);
   				} else {
   					String hx = Integer.toHexString((int)c);
   					out.print("\\u");

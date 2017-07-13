@@ -6,14 +6,16 @@
   <target name="build">
   	
   	<delete dir="${basedir}/csharpproject/build"/>
-    <mkdir dir="${basedir}/csharpproject/build" />
-<!--  	
-    <convertJava dest="${basedir}/build/html5" external="${basedir}/runtime">
+    <mkdir dir="${basedir}/csharpproject/build" />  	
+    <convertJava cs="${basedir}/csharpproject/build" external="${basedir}/runtime">
         <fileset dir="${basedir}/src">
-            <include name="**/*.java"/>
+<!--            <include name="**/*.java"/> -->
+        	<include name="**/convertertest/*.java"/> 
+    	    <include name="**/convertertest2/*.java"/>
+    	    <include name="**/convertertest3/*.java"/>
         </fileset>
     </convertJava>
--->  	
+
     <copy todir="${basedir}/csharpproject/build" >
         <fileset dir="${basedir}/../runtimecs"/>
     </copy>

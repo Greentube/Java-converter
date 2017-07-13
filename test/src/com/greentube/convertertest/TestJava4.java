@@ -35,7 +35,7 @@ public class TestJava4 {
     
     static String initialized = "hello".substring(2);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) {    	
         System.out.println ("-- converter test suite for java 4" );
         
         staticattributestest();
@@ -532,9 +532,9 @@ public class TestJava4 {
     
     public static void controlstructurestest()
     {
-    	System.out.println("- constrolstructures");
+    	System.out.println("- controlstructures");
     	
-    	int v=0,w=3;
+    	int v=0,w=3,o;
     	for (int i=0, j=1; i<5; i++,j*=2) {
     		assertI(j, 1<<i);
     		v=v+j;
@@ -550,9 +550,10 @@ public class TestJava4 {
     	}
     	assertI(y,40);
     	
-    	do {
+    	lab1: do {
     		y+=z;
     		z++;
+    		if (y>1000) break lab1;
     	} while(z<20);
     	assertI(y,185);
     	

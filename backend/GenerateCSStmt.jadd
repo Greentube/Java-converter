@@ -1,0 +1,233 @@
+aspect GenerateCS {
+ 
+ 	// --- AssertStmt ---
+ 	
+ 	// --- BasicTWR ---
+ 	
+ 	// --- Block ---
+ 	
+	public void Block.generateCS(com.greentube.javaconverter.CodePrinter out) {
+		out.print("{");
+		out.increaseIndent();
+		out.println();
+  		int n = getNumStmt();
+  		for (int i=0; i<n; i++) {
+  			getStmt(i).generateCS(out);
+  		}
+		out.decreaseIndent();
+		out.print("}");
+		out.println();
+  	}
+  
+  	// --- BranchTargetStmt ---
+
+	public void BranchTargetStmt.generateCS(com.greentube.javaconverter.CodePrinter out) {
+		generateCS(out,null);
+	}
+  	
+	public void BranchTargetStmt.generateCS(com.greentube.javaconverter.CodePrinter out, String label) {		
+	}
+  	
+	public void DoStmt.generateCS(com.greentube.javaconverter.CodePrinter out, String label) {			
+		if (label==null) {
+			out.print("do ");
+			getStmt().generateCS(out);
+			out.print("while(");	
+			getCondition().generateCS(out);
+			out.print(")");			
+		} else {
+			out.print("{ do { ");
+			getStmt().generateCS(out);
+			out.println();
+			out.print(label+"_c:");
+			out.println();
+			out.print("}");
+			out.print("while(");	
+			getCondition().generateCS(out);
+			out.print(")");
+			out.println();
+			out.print(label+"_b:");
+			out.println();
+			out.print("}");
+		}	
+		out.println();		
+ 	}
+ 	
+	public void EnhancedForStmt.generateCS(com.greentube.javaconverter.CodePrinter out, String label) {
+		String vname = getVariableDecl().name();
+		Expr e = getExpr();
+		if (e.type().isArrayDecl()) {
+			out.print("for (var " + vname + "_l, " + vname + "_i=0, " + vname + "_a=");
+			e.generateCS(out);
+			out.print("; ");
+			out.print("(" + vname + "_i<" + vname + "_a.length)&&");
+			out.print("((" + vname + "_l=" + vname +"_a[" + vname + "_i])||true); ");
+			out.print(vname + "_i++)");
+			getStmt().generateCS(out);
+		} else if (e.type().isIterable()) {
+			out.print("for (var " + vname + "_l, " + vname + "_i=");			
+			e.generateCS(out);
+			out.print(".iterator_0(); ");
+			out.print(vname + "_i.hasNext_0()&&((" + vname + "_l=" + vname + "_i.next_0())||true)");			
+			out.print(";)");   
+			getStmt().generateCS(out);				
+		} else {
+			throw new RuntimeException("Expression is neither an array or an Iterable");
+		}
+		out.println();		
+ 	}
+ 	
+	public void ForStmt.generateCS(com.greentube.javaconverter.CodePrinter out, String label) {
+		out.print("for (");
+		if (getNumInitStmt()==0) {
+			out.print("; ");
+		} else {			
+			for (int i=0; i<getNumInitStmt(); i++) {
+				if (i>0) out.print(", ");
+				getInitStmt(i).generateCS(out);
+			}
+			out.print(" ");
+		}
+		if (hasCondition()) {
+			getCondition().generateCS(out);
+		} 
+		out.print("; ");
+		
+		for (int i=0; i<getNumUpdateStmt(); i++) {
+			if (i>0) out.print(", ");
+			((ExprStmt)getUpdateStmt(i)).getExpr().generateCS(out);
+		}
+		out.print(") ");
+		getStmt().generateCS(out);	
+
+ 	}
+ 	
+	public void LabeledStmt.generateCS(com.greentube.javaconverter.CodePrinter out, String label) {
+		((BranchTargetStmt)getStmt()).generateCS(out, getLabel());
+ 	}
+ 	
+	public void SwitchStmt.generateCS(com.greentube.javaconverter.CodePrinter out, String label) {
+		out.print("switch (");
+		getExpr().generateCS(out);
+		out.print(")");
+		getBlock().generateCS(out);	
+		out.println();
+ 	}
+
+	public void WhileStmt.generateCS(com.greentube.javaconverter.CodePrinter out, String label) {
+		out.print("while (");
+		getCondition().generateCS(out);
+		out.print(") ");
+		getStmt().generateCS(out);	
+ 	}
+  	
+  	// --- BreakStmt ---
+  	
+	public void BreakStmt.generateCS(com.greentube.javaconverter.CodePrinter out) {
+		if (getLabel()==null) {
+			out.print("break;");
+		} else {
+			out.print("goto "+getLabel()+"_b;");
+		}		
+		out.println();
+	}
+  	
+  	// --- Case ---
+  	
+	public void ConstCase.generateCS(com.greentube.javaconverter.CodePrinter out) {
+		out.print("case ");
+		getValue().generateCS(out);
+		out.print(":");
+		out.println();
+	}
+	public void DefaultCase.generateCS(com.greentube.javaconverter.CodePrinter out) {
+		out.print("default:");
+		out.println();
+	}
+  	
+  	// --- ContinueStmt ---
+
+  	public void ContinueStmt.generateCS(com.greentube.javaconverter.CodePrinter out) {
+		if (getLabel()==null) {
+			out.print("continue;");
+		} else {
+			out.print("goto "+getLabel()+"_c;");
+		}
+		out.println();
+	}
+  
+    // --- EmptyStmt ---
+    
+    // --- ExprStmt ---
+  
+	public void ExprStmt.generateCS(com.greentube.javaconverter.CodePrinter out) {
+		getExpr().generateCS(out);
+		out.print(";");
+		out.println();		
+	}  	
+	
+	// --- IfStmt ---
+	
+	public void IfStmt.generateCS(com.greentube.javaconverter.CodePrinter out) {
+		out.print("if (");
+		getCondition().generateCS(out);
+		out.print(") ");
+		getThen().generateCS(out);
+		Stmt e = getElse();
+		if (e!=null) {
+			out.print("else ");
+			e.generateCS(out);
+		}
+	}  	
+	
+	// --- LocalClassDeclStmt ---
+	public void LocalClassDeclStmt.generateCS(com.greentube.javaconverter.CodePrinter out) {
+		// class was already generated 
+	}
+	
+	// --- ReturnStmt ---
+	
+	public void ReturnStmt.generateCS(com.greentube.javaconverter.CodePrinter out) {
+		Expr r = getResult();
+		if (r==null) {
+			out.print("return;");
+		} else {
+			out.print("return ");
+			r.generateCS(out);
+			out.print(";");
+		}
+		out.println();		
+	}  	
+	
+	// --- SynchronizedStmt ---
+	
+	// --- ThrowStmt ---
+		
+	// --- TryStmt ---
+		
+	// --- VarDeclStmt ---
+	
+	public void VarDeclStmt.generateCS(com.greentube.javaconverter.CodePrinter out) {
+		getTypeAccess().generateCS(out);		
+		for (int i=0; i<getNumDeclarator(); i++) {
+			VariableDeclarator d = getDeclarator(i);
+			if (i>0) out.print(",");
+			out.print(" ");			
+			out.print(d.name() + "_l");
+			for (int j=0; j<d.getNumDims(); j++) {
+				out.print("[]");
+			}
+			out.print(" = ");						
+			Expr e = d.getInit();
+			if (e!=null) {
+				e.generateCS(out);
+			} else {
+				out.print(d.getTypeAccess().type().isPrimitiveType() ? "0" : "null");
+			}
+		}
+		out.print(";");
+		if (! (getParent().getParent() instanceof ForStmt)) out.println();
+	}
+
+}
+
