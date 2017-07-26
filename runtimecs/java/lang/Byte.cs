@@ -29,16 +29,21 @@ namespace java.lang
 
         public override System.String ToString()
         {
-            return Byte.ToString(value);
+            return Byte.toString(value);
         }
         
-        public static System.String ToString(sbyte b)
+        public static System.String toString(sbyte b)
         {
             return b.ToString();
         }
+
+        public static java.lang.Byte valueOf(sbyte b)
+        {
+            return new java.lang.Byte(b);
+        }
+
         
-        
-        public const sbyte MIN_VALUE = -128;
-        public const sbyte MAX_VALUE = 127;
+        public const sbyte MIN_VALUE_f = -128;
+        public const sbyte MAX_VALUE_f = 127;
     }
 }

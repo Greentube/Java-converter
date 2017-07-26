@@ -23,7 +23,7 @@ namespace java.util
         // bool Equals(System.Object o);
         // int GetHashCode();
         
-        public bool isEmpty() {
+        public virtual bool isEmpty() {
             return size() <= 0;
         }
         
@@ -38,7 +38,7 @@ namespace java.util
             return num;
         }
         
-        public System.Object[] toArray() {
+        public virtual System.Object[] toArray() {
             System.Object[] a = new System.Object[size()];
             int cursor=0;
             for (Iterator i=this.iterator(); i.hasNext(); ) {

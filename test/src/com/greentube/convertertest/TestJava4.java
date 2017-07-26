@@ -789,7 +789,7 @@ public class TestJava4 {
         
         // construct strings from characters 
         byte[] raw = { 65, 109, 101, 108, 105, 101 };   
-        String sr = new String();
+        String sr = new String(new char[0]);
         assertO( sr, "");
         sr = new String(raw);
         assertO( sr, "Amelie");

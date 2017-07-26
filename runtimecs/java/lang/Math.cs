@@ -85,8 +85,8 @@ namespace java.lang {
 			return System.Math.Tan(a);
 		}
 
-		public static readonly double E  = System.Math.E;
-		public static readonly double PI = System.Math.PI;
+		public static readonly double E_f  = System.Math.E;
+		public static readonly double PI_f = System.Math.PI;
         
 	}
 }

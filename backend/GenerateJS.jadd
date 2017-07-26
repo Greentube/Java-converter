@@ -25,7 +25,6 @@ aspect GenerateJS {
 	  
 		String jsname = constantPoolName().replace('/','_');
 
-		out.println();		
     	out.print("var ");
     	out.print(jsname);
     	out.print(" = _extendClass(");
@@ -36,9 +35,9 @@ aspect GenerateJS {
     		out.printAndMemorizeLoad("java/lang/Object");
     	} 
     	out.print (",{ ");
+    	out.println();
     	out.increaseIndent(); 
-    	    	    
-    	    	        	    	    
+    	    	        	    	        	    	    
       	for (BodyDecl b : methodsAndConstructors()) {
       		// check if need to suppress auto-generated methods related to Enums
 			if (b instanceof MethodDecl) {
@@ -58,8 +57,10 @@ aspect GenerateJS {
 	        b.generateJS(out);
     	}    	    	    
     	    	    	
-		out.decreaseIndent(); out.println();
+		out.decreaseIndent(); 
+		out.println();
 		out.print("},\"" + jsname + "\",");
+		
 		if (!hasImplements()) {
 			out.print("null");
 		} else {
@@ -72,27 +73,28 @@ aspect GenerateJS {
 			out.print("]");
 		} 
 		out.print(");");
+		out.println();
 
 		for (BodyDecl bd:getBodyDeclList()) {
 			if (bd.isField()) {
 				for (FieldDeclarator fd:bd.fieldDeclarations()) {
 					if (fd.isStatic()) {
-						out.println();
 						out.print(jsname+".prototype."+fd.getID()+"_f = ");
 						out.print(fd.fieldDecl().type().isPrimitiveType() ? "0":"null");
 						out.print(";");
+						out.println();
 					}
-				}
+			 	}
 			}
 		}		
 		for (BodyDecl bd:getBodyDeclList()) {
 			if (bd.isField()) {
 				for (FieldDeclarator fd:bd.fieldDeclarations()) {
 					if (fd.isStatic() && fd.getInit()!=null) {
-						out.println();
 						out.print(jsname+".prototype."+fd.getID()+"_f = ");
 						fd.getInit().generateJS(out);
 						out.print(";");
+						out.println();
 					}
 				}
 			} else if (bd instanceof StaticInitializer) {
@@ -115,7 +117,6 @@ aspect GenerateJS {
 			if (ec.getInit().type()!=this) {
 				needexternalinitialization = true;
 			} else {
-				out.println();
 				out.print(jsname+".prototype."+ec.getID()+"_f = ");
 				out.print("(new "+jsname+"())._"+(ec.getNumArg()+2)+"(\""+ec.getID()+"\","+ordinal);
 				for (int i=0; i<ec.getNumArg(); i++) {
@@ -123,6 +124,7 @@ aspect GenerateJS {
 					ec.getArg(i).generateJS(out);
 				}
 				out.print(");");				
+				out.println();
 			}
 			
 			if (ordinal>0) values.append(",");
@@ -131,14 +133,14 @@ aspect GenerateJS {
 			ordinal++;			
 		}
 		
-		out.println();
 		out.print(jsname+".prototype.values_0 = function() {");
+		out.println();
 		out.increaseIndent();
-		out.println();
 		out.print("return ["+values.toString()+"];");
-		out.decreaseIndent();
 		out.println();
+		out.decreaseIndent();
 		out.print("};");
+		out.println();
 		
 		if (needexternalinitialization) {
 			out.memorizeReference(cpname+"$init");
@@ -149,7 +151,6 @@ aspect GenerateJS {
 				ordinal = 0;
 				for (EnumConstant ec:enumConstants()) {
 					if (ec.getInit().type()!=this) {
-						o2.println();
 						o2.print(jsname+".prototype."+ec.getID()+"_f = ");
 						o2.print("(new ");
 						o2.printAndMemorizeComplete(ec.getInit().type().constantPoolName());
@@ -159,6 +160,7 @@ aspect GenerateJS {
 							ec.getArg(i).generateJS(o2);
 						}
 						o2.print(");");
+						o2.println();
 					}
 					ordinal++;
 				}				
@@ -170,7 +172,6 @@ aspect GenerateJS {
 	public void InterfaceDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {
 		String jsname = constantPoolName().replace('/','_');
 
-		out.println();		
     	out.print("var ");
     	out.print(constantPoolName().replace('/','_'));
     	out.print(" = _defineInterface(");
@@ -188,39 +189,34 @@ aspect GenerateJS {
 			out.print("]");
 		}
 		out.print(");");
+		out.println();
 		
 		for (BodyDecl bd:getBodyDeclList()) {
 			if (bd.isField()) {
 				for (FieldDeclarator fd:bd.fieldDeclarations()) {
 					if (fd.isStatic()) {
-						out.println();
 						out.print(jsname+".prototype."+fd.getID()+"_f = ");
 						fd.getInit().generateJS(out);
 						out.print(";");					}
+						out.println();
 				}
 			}
 		}		
 		
 	}  
   	
-//  	public void TypeDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {
-//    	out.print(constantPoolName());
-//    }  
-  
 
   	public void ConstructorDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {
 		Block block = getBlock();
 		
   		int numpar = getNumParameter();  		
-  		out.println();
   		out.print("_"+numpar+": function(");
   		for (int i=0; i<numpar; i++) {
   			if (i>0) out.print(",");
   			out.printLocalVariable(getParameter(i).name());
   		}
-  		out.print(")");
-		out.println();
-  		out.print("{");  		
+  		out.print(") {");  		
+  		out.println();
 		out.increaseIndent();
 
 		// decide if all the fields have to be initialized right here	
@@ -246,10 +242,10 @@ aspect GenerateJS {
 				if (bd.isField()) {
 					for (FieldDeclarator fd:bd.fieldDeclarations()) {
 						if (!fd.isStatic()) {
-							out.println();
 							out.print("this."+fd.getID()+"_f = ");
 							out.print(fd.fieldDecl().type().isPrimitiveType() ? "0":"null");
 							out.print(";");
+							out.println();
 						}
 					}
 				}
@@ -261,10 +257,10 @@ aspect GenerateJS {
 				if (bd.isField()) {
 					for (FieldDeclarator fd:bd.fieldDeclarations()) {
 						if (!fd.isStatic() && fd.getInit()!=null) {
-							out.println();
 							out.print("this."+fd.getID()+"_f = ");
 							fd.getInit().generateJS(out);
 							out.print(";");						
+							out.println();
 						}
 					}
 				} else if (bd instanceof InstanceInitializer) {
@@ -275,16 +271,16 @@ aspect GenerateJS {
 		// execute constructor
   		int n = block.getNumStmt();
   		for (int i=0; i<n; i++) {
-  			out.println();
   			Stmt stmt = block.getStmt(i);
   			stmt.generateJS(out);
 			out.print(";");  			
+  			out.println();
   		}
-  		out.println();
   		out.print("return this;");
 		out.decreaseIndent();
 		out.println();  		  		
 		out.print("},");
+  		out.println();
   	}
 
 //	public void EnumConstant.generateJS(com.greentube.javaconverter.CodePrinter out) {
@@ -305,17 +301,18 @@ aspect GenerateJS {
 		if (block==null) return;
 
   		int numpar = getNumParameter();  		
-  		out.println();
   		out.print(name()+"_"+numpar+": function(");
   		for (int i=0; i<numpar; i++) {
   			if (i>0) out.print(",");
   			out.printLocalVariable(getParameter(i).name());
   		}
   		out.print(")");
+  		out.println();
   		
   		block.generateJS(out);
   		
   		out.print(",");
+  		out.println();
   	}
 
 	public void StaticInitializer.generateJS(com.greentube.javaconverter.CodePrinter out) {

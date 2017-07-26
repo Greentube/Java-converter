@@ -7,19 +7,16 @@ aspect GenerateJS {
  	// --- Block ---
  	
 	public void Block.generateJS(com.greentube.javaconverter.CodePrinter out) {
-		out.println();
 		out.print("{");
 		out.increaseIndent();
+		out.println();
   		int n = getNumStmt();
   		for (int i=0; i<n; i++) {
-  			out.println();
-  			Stmt stmt = getStmt(i);
-  			stmt.generateJS(out);
-  			if (!(stmt instanceof Case)) out.print(";");
+  			getStmt(i).generateJS(out);
   		}
 		out.decreaseIndent();
-		out.println();  		  		
 		out.print("}");
+		out.println();		  		
   	}
   
   	// --- BranchTargetStmt ---
@@ -27,9 +24,10 @@ aspect GenerateJS {
 	public void DoStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
 		out.print("do ");
 		getStmt().generateJS(out);
-		out.print("while(");	
+		out.print("while (");	
 		getCondition().generateJS(out);
-		out.print(")");	
+		out.print(");");	
+		out.println();
  	}
  	
 	public void EnhancedForStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
@@ -53,24 +51,28 @@ aspect GenerateJS {
 		} else {
 			throw new RuntimeException("Expression is neither an array or an Iterable");
 		}
+		out.println();
  	}
  	
 	public void ForStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
 		out.print("for (");
-		for (int i=0; i<getNumInitStmt(); i++) {
-			if (i>0) out.print(",");
-			getInitStmt(i).generateJS(out);
+		if (getNumInitStmt()==0) {
+			out.print("; ");
+		} else {					
+			for (int i=0; i<getNumInitStmt(); i++) {
+				if (i>0) out.print(",");
+				getInitStmt(i).generateJS(out);
+			}
 		}
-		out.print("; ");
 		if (hasCondition()) {
 			getCondition().generateJS(out);
 		}
 		out.print("; ");
 		for (int i=0; i<getNumUpdateStmt(); i++) {
 			if (i>0) out.print(",");
-			getUpdateStmt(i).generateJS(out);
+			((ExprStmt)getUpdateStmt(i)).getExpr().generateJS(out);
 		}
-		out.print(")");
+		out.print(") ");
 		getStmt().generateJS(out);
  	}
  	
@@ -89,7 +91,7 @@ aspect GenerateJS {
 	public void WhileStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
 		out.print("while (");
 		getCondition().generateJS(out);
-		out.print(")");
+		out.print(") ");
 		getStmt().generateJS(out);	
  	}
   	
@@ -97,7 +99,9 @@ aspect GenerateJS {
   	
 	public void BreakStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
 		out.print("break");
-		if (getLabel()!=null) out.print(" "+getLabel());		
+		if (getLabel()!=null) out.print(" "+getLabel());
+		out.print(";");	
+		out.println();			
 	}
   	
   	// --- Case ---
@@ -106,9 +110,11 @@ aspect GenerateJS {
 		out.print("case ");
 		getValue().generateJS(out);
 		out.print(":");
+		out.println();
 	}
 	public void DefaultCase.generateJS(com.greentube.javaconverter.CodePrinter out) {
 		out.print("default:");
+		out.println();
 	}
   	
   	// --- ContinueStmt ---
@@ -116,6 +122,8 @@ aspect GenerateJS {
   	public void ContinueStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
 		out.print("continue");
 		if (getLabel()!=null) out.print(" "+getLabel());
+		out.print(";");
+		out.println();		
 	}
   
     // --- EmptyStmt ---
@@ -124,6 +132,8 @@ aspect GenerateJS {
   
 	public void ExprStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
 		getExpr().generateJS(out);
+		out.print(";");
+		out.println();
 	}  	
 	
 	// --- IfStmt ---
@@ -150,16 +160,18 @@ aspect GenerateJS {
 	
 	public void ReturnStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
 		if (enclosingBodyDecl() instanceof ConstructorDecl) {
-			out.print("return this");
+			out.print("return this;");
 		} else {
 			Expr r = getResult();
 			if (r==null) {
-				out.print("return");
+				out.print("return;");
 			} else {
 				out.print("return ");
 				r.generateJS(out);
+				out.print(";");
 			}
 		}
+		out.println();
 	}  	
 	
 	// --- SynchronizedStmt ---
@@ -173,7 +185,7 @@ aspect GenerateJS {
 	public void VarDeclStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
 		out.print("var ");
 		for (int i=0; i<getNumDeclarator(); i++) {
-			if (i>0) out.print(",");
+			if (i>0) out.print(", ");
 			VariableDeclarator d = getDeclarator(i);			
 			out.print(d.name() + "_l = ");
 			Expr e = d.getInit();
@@ -182,6 +194,12 @@ aspect GenerateJS {
 			} else {
 				out.print(type().isPrimitiveType() ? "0" : "null");
 			}
+		}
+		out.print(";");
+		if (! (getParent().getParent() instanceof ForStmt)) {
+			out.println();
+		} else {
+			out.print(" ");
 		}
 	}
 	

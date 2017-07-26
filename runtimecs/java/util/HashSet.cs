@@ -15,11 +15,11 @@
             }            
         }
         
-        public bool add(System.Object e) {
+        public virtual bool add(System.Object e) {
             return this.map.put(e,this)==null;
         }
     
-        public bool addAll(Collection collection) {
+        public virtual bool addAll(Collection collection) {
             Iterator i = collection.iterator();
             bool didappend = false;
             while (i.hasNext()) {
@@ -30,7 +30,7 @@
             return didappend;
         }
     
-        public void clear() {
+        public virtual void clear() {
             this.map.clear();
         }
     
@@ -40,7 +40,7 @@
     
         // containsAll    implemented by AbstractCollection
     
-        public bool Equals_1(Set s) {
+        public virtual bool Equals_1(Set s) {
             return this.map.keySet().Equals(s);
         }
     
@@ -54,7 +54,7 @@
             return this.map.keySet().iterator();
         }
     
-        public bool remove(System.Object e) {
+        public virtual bool remove(System.Object e) {
             return this.map.remove(e)!=null;
         }
         

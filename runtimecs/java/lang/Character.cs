@@ -29,15 +29,21 @@ namespace java.lang
 
         public override System.String ToString()
         {
-            return Character.ToString(value);
+            return Character.toString(value);
         }
 
-        public static System.String ToString(char c)
+        public static System.String toString(char c)
         {
             return c.ToString();
         }
+
+        public static java.lang.Character valueOf(char c)
+        {
+            return new java.lang.Character(c);
+        }
+
         
-        public const char MIN_VALUE = (char) 0;
-        public const char MAX_VALUE = (char) 0xffff;        
+        public const char MIN_VALUE_f = (char) 0;
+        public const char MAX_VALUE_f = (char) 0xffff;        
     }
 }

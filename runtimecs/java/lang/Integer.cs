@@ -34,10 +34,15 @@ namespace java.lang
         {
             return i.ToString("d");
         }
+        
+        public static java.lang.Integer valueOf(int i)
+        {
+            return new java.lang.Integer(i);
+        }
 
         
-        public const int MIN_VALUE = -2147483648;
-        public const int MAX_VALUE =  2147483647;
+        public const int MIN_VALUE_f = -2147483648;
+        public const int MAX_VALUE_f =  2147483647;
         
     }
 }

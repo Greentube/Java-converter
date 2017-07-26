@@ -8,19 +8,19 @@ namespace java.util
         public Hashtable(Map m) : base(m) {
         }
         
-        public Hashtable clone() {
+        public virtual Hashtable clone() {
             return new Hashtable(this);
         }
     
-        public bool contains(System.Object value) {
+        public virtual bool contains(System.Object value) {
             return this.containsValue(value);
         }
         
-        public Enumeration elements() {
+        public virtual Enumeration elements() {
             return new IteratorEnumeration(this.values().iterator());
         }
     
-        public Enumeration keys() {
+        public virtual Enumeration keys() {
             return new IteratorEnumeration(this.keySet().iterator());
         }        
 	}	

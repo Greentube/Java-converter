@@ -24,13 +24,13 @@ aspect GenerateCS {
 // 	}
   	public void ClassInstanceExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
 		int n = getNumArg();
-		if (isRightChildOfDot()) {
-			prevExpr().generateCS(out);
-			out.print(".");
-		}
   		out.print("new ");
   		out.printCSName(type().constantPoolName());
 		out.print("(");  		
+		if (isRightChildOfDot()) {
+			prevExpr().generateCS(out);
+			if (n>0) out.print(",");
+		}
   		for (int i=0; i<n; i++) {
 			if (i>0) out.print(",");
 			getArg(i).generateCS(out);  		
@@ -58,22 +58,26 @@ aspect GenerateCS {
   				out.printCSName(m.hostType().constantPoolName());
   			}
 			out.print(".");
-  			out.print(m.name());
+  			out.print(renameMethod(m.name(),true));
   			
   		} else if (!isRightChildOfDot()) {
 			out.print("this.");
 			TypeDecl t = hostType();
 			if (t!=m.hostType() && t.isInnerTypeOf(m.hostType())) {
 				while (t!=m.hostType()) {			
-					out.print("outer.");
+					out.print("outer_o.");
 					t = t.enclosingType();
 				}
 			}  		
-  			out.print(m.name());
-  			
+  			out.print(renameMethod(m.name(),false));
+		
+		} else if (m.hostType().isString()) {
+			generateCSForString(out);
+			return;
+					  			
   		} else {
   			out.print(".");
-  			out.print(m.name());
+  			out.print(renameMethod(m.name(),false));
   		}
 
   		out.print("(");  	
@@ -83,6 +87,104 @@ aspect GenerateCS {
   		}
   		out.print(")");  	
  	}
+  	public void MethodAccess.generateCSForString(com.greentube.javaconverter.CodePrinter out) {
+  		String n = decl().name();
+  		int numarg = getNumArg();
+  		
+  		if (n.equals("charAt") && numarg==1) {
+			out.print("[");
+			getArg(0).generateCS(out);
+			out.print("]");
+			return;
+  		} else if (n.equals("compareTo")) {
+  			n = "CompareTo";
+  		} else if (n.equals("concat") && numarg==1) {
+  			out.print(".ToString()");
+  			return;
+  		} else if (n.equals("endsWith") && numarg==1) {
+  			n = "EndsWith";  			
+  		} else if (n.equals("indexOf") && numarg==1) {
+  			if (getArg(0).type().isString()) {
+  				n = "IndexOf";
+  			} else {
+  				out.print(".IndexOf((char)(");
+  				getArg(0).generateCS(out);
+  				out.print("))");
+  				return;
+  			}  		
+  		} else if (n.equals("indexOf") && numarg==2) {
+  			if (getArg(0).type().isString()) {
+  				n = "IndexOf";
+  			} else {
+  				out.print(".IndexOf((char)(");
+  				getArg(0).generateCS(out);
+  				out.print("),");
+  				getArg(1).generateCS(out);
+  				out.print(")");
+  				return;
+  			}  		
+  		} else if (n.equals("isEmpty") && numarg==0) {
+  			out.print(".Empty");
+  			return;
+  		} else if (n.equals("lastIndexOf") && numarg==1) {
+  			if (getArg(0).type().isString()) {
+  				n = "LastIndexOf";
+  			} else {
+  				out.print(".LastIndexOf((char)(");
+  				getArg(0).generateCS(out);
+  				out.print("))");
+  				return;
+  			}  		
+  		} else if (n.equals("lastIndexOf") && numarg==2) {
+  			if (getArg(0).type().isString()) {
+  				n = "LastIndexOf";
+  			} else {
+  				out.print(".LastIndexOf((char)(");
+  				getArg(0).generateCS(out);
+  				out.print("),");
+  				getArg(1).generateCS(out);
+  				out.print(")");
+  				return;
+  			}  		
+  		} else if (n.equals("length") && numarg==0) {
+  			out.print(".Length");
+  			return;
+  		} else if (n.equals("replace") && numarg==2) {  		
+  			out.print(".Replace((char)(");
+  			getArg(0).generateCS(out);
+  			out.print("),(char)(");
+  			getArg(1).generateCS(out);
+  			out.print("))");
+  			return;
+  		} else if (n.equals("startsWith") && numarg==1) {  		
+  			n = "StartsWith";
+  		} else if (n.equals("substring") && numarg==1) {  		
+  			n = "Substring";
+  		} else if (n.equals("substring") && numarg==2) {
+  			out.print(".Substring(");
+  			getArg(0).generateCS(out);
+  			out.print(").Substring(0,");
+  			getArg(1).generateCS(out);
+  			out.print(")");  		
+  			return;
+  		} else if (n.equals("toCharArray") && numarg==0) {
+  			n = "ToCharArray";
+  		} else if (n.equals("trim") && numarg==0) {
+  			n = "Trim";  			
+  		} else {
+  			n = renameMethod(n,false);
+  		}
+  		
+  		out.print(".");
+  		out.print(n);
+  		out.print("(");  	
+  		for (int i=0; i<getNumArg(); i++) {
+  			if (i>0) out.print(",");
+  			getArg(i).generateCS(out);
+  		}
+  		out.print(")");  	  		
+  	}
+ 	
 //  	public void PackageAccess.generateCS(com.greentube.javaconverter.CodePrinter out) {
 // 	}
 //  	public void ParseName.generateCS(com.greentube.javaconverter.CodePrinter out) {
@@ -105,14 +207,24 @@ aspect GenerateCS {
  	
   	public void ArrayTypeAccess.generateCS(com.greentube.javaconverter.CodePrinter out) {
   		getAccess().generateCS(out);
+  		// test if inside an ArrayCreationExpr - may need to construct proper call parameter for dim()
+  		ASTNode p = this;
+  		while ( (p=p.getParent()) != null) {
+  			if (p instanceof ArrayCreationExpr && !((ArrayCreationExpr)p).hasArrayInit()) {
+  				out.print(",-1");
+  				return;
+  			}
+  		}
   		out.print("[]");
 	}
 	
   	public void ArrayTypeWithSizeAccess.generateCS(com.greentube.javaconverter.CodePrinter out) {
-  		getAccess().generateCS(out);
-  		out.print("[");
+  		Access a = getAccess();
+  		if (a instanceof ArrayTypeWithSizeAccess) {
+  			a.generateCS(out);
+  			out.print(",");
+  		}  		
   		getExpr().generateCS(out);
-  		out.print("]");
 	}   	
 
   	public void VarAccess.generateCS(com.greentube.javaconverter.CodePrinter out) {
@@ -120,6 +232,8 @@ aspect GenerateCS {
   		if (v.isClassVariable()) {
   			if (!isRightChildOfDot()) {
   				out.printCSName(v.hostType().constantPoolName());
+  			} else if (v.hostType().isInterfaceDecl()) {
+  				out.print("_constants");
   			}
   			out.print(".");
   			out.print(getID());
@@ -132,7 +246,7 @@ aspect GenerateCS {
 				TypeDecl t = hostType();
 				if (t!=v.hostType() && t.isInnerTypeOf(v.hostType())) {
 					while (t!=v.hostType()) {			
-						out.print("outer.");
+						out.print("outer_o.");
 						t = t.enclosingType();
 					}
 				}  		
@@ -146,7 +260,11 @@ aspect GenerateCS {
 			}
   		} else {
   			// this fits in no other category - maybe the 'length' attribute of arrays 
-			out.print("."+getID());
+  			if (getID().equals("length")) {
+  				out.print(".Length");
+  			} else {
+				out.print("."+getID());
+			}
   		}  		
  	}
   	
@@ -174,7 +292,7 @@ aspect GenerateCS {
   		Expr s = getSource();
   		if (type().isString()) {
   			d.generateCS(out);
-  			out.print("+=\"\"+");
+  			out.print(" += \"\"+");
   			if (s.type().isChar()) {
   				out.print("_c2s(");
   				s.generateCS(out);
@@ -184,7 +302,7 @@ aspect GenerateCS {
   			}
   		} else {
 	  		d.generateCS(out);
-  			out.print("+=");
+  			out.print(" += ");
   			s.generateCS(out);
   		}
   	}
@@ -275,17 +393,9 @@ aspect GenerateCS {
   	}
   	public void DivExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
 		TypeDecl t = type();
-		if (t.isFloat() || t.isDouble()) {
-	  		getLeftOperand().generateCS(out);
-  			out.print("/");
-  			getRightOperand().generateCS(out);
-  		} else {  	
-			out.print("_divideInteger(");
-	  		getLeftOperand().generateCS(out);
-  			out.print(",");
-  			getRightOperand().generateCS(out);
-			out.print(")");
-  		}
+		getLeftOperand().generateCS(out);
+  		out.print("/");
+  		getRightOperand().generateCS(out);
   	}
   	public void ModExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
   		getLeftOperand().generateCS(out);
@@ -374,11 +484,37 @@ aspect GenerateCS {
   	// --- CastExpr ---
   	
   	public void CastExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
-  		out.print("((");
-  		getTypeAccess().generateCS(out);
-  		out.print(")");
-		getExpr().generateCS(out);
-		out.print(")");
+		TypeDecl t = type();
+		Expr e = getExpr();
+		if (t.isPrimitiveType()) {
+			if (t.isBoolean()) {
+				e.generateCS(out);			
+			} else if (t.isByte()) {
+				out.print("(java.lang.SYSTEM.castToByte(");
+				e.generateCS(out);
+				out.print("))");				
+			} else if (t.isChar()) {
+				out.print("(java.lang.SYSTEM.castToChar(");
+				e.generateCS(out);
+				out.print("))");
+			} else if (t.isInt()) {
+				out.print("(java.lang.SYSTEM.castToInt(");
+				e.generateCS(out);
+				out.print("))");
+			} else if (t.isDouble()) {
+				out.print("(java.lang.SYSTEM.castToDouble(");
+				e.generateCS(out);
+				out.print("))");
+			} else {
+				throw new RuntimeException("Type not supported:"+t.fullName());
+			}
+		} else {
+	  		out.print("((");
+  			getTypeAccess().generateCS(out);
+	  		out.print(")");
+			e.generateCS(out);
+			out.print(")");
+		}
   	}
   	
   	// --- ConditionalExpr ---
@@ -408,11 +544,15 @@ aspect GenerateCS {
   			getArrayInit().generateCS(out);
   			out.print(")");
   		} else {
-  			out.print("null");
-		// TODO  			
-  		//	out.print("(new ");
-  		//	getTypeAccess().generateCS(out);  		
-		//	out.print(")");
+  			TypeDecl leaf = type();
+  			while (leaf.isArrayDecl()) {
+  				leaf=leaf.elementType();
+  			}
+  			out.print("(java.lang.SYSTEM.dim<");
+  			leaf.generateReferenceCS(out);
+  			out.print(">(");
+  			getTypeAccess().generateCS(out);
+			out.print("))");
   		}
   	}
   	public void BooleanLiteral.generateCS(com.greentube.javaconverter.CodePrinter out) {

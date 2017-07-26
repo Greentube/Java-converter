@@ -9,12 +9,12 @@ namespace java.util
             addAll(collection);
         }
         
-        public bool add(System.Object obj) {
+        public virtual bool add(System.Object obj) {
             this.addLast(obj);
             return true;
         }
    
-        public bool addAll(Collection collection) {
+        public virtual bool addAll(Collection collection) {
             bool didappend = false;
             for (Iterator i = collection.iterator(); i.hasNext(); ) {
                 this.addLast(i.next());
@@ -23,36 +23,36 @@ namespace java.util
             return didappend;
         }
     
-        public void addFirst(System.Object obj) {
+        public virtual void addFirst(System.Object obj) {
         }
    
-        public void addLast(System.Object obj) {
+        public virtual void addLast(System.Object obj) {
         }
 
-        public void clear() {
+        public virtual void clear() {
         }
     
         // contains_1:    implemented by AbstractCollection
         // containsAll_1: implemented by AbstractCollection
     
-        public Iterator descendingIterator() {
+        public virtual Iterator descendingIterator() {
 //            return (new java_util_JSArrayIteratorDescending())
 //                ._3(this.storage, this.firstindex, this.storage.length);
             return null;
         }
     
-        public System.Object element() {
+        public virtual System.Object element() {
             return this.getFirst();
         }
     
         // equals:  implemented by Object
         // hashCode: implemented by Object
     
-        public System.Object getFirst() {
+        public virtual System.Object getFirst() {
             return null; 
         }
     
-        public System.Object getLast() {
+        public virtual System.Object getLast() {
             return null;
         }
     
@@ -64,72 +64,72 @@ namespace java.util
 //            ._3(this.storage, this.firstindex, this.storage.length);
         }
     
-        public bool offer(System.Object obj) {
+        public virtual bool offer(System.Object obj) {
             this.addLast(obj);
             return true;
         }
     
-        public bool offerFirst(System.Object obj) {
+        public virtual bool offerFirst(System.Object obj) {
             this.addFirst(obj);
             return true;
         }
     
-        public bool offerLast(System.Object obj) {
+        public virtual bool offerLast(System.Object obj) {
             this.addLast(obj);
             return true;
         }
     
-        public System.Object peek() {
+        public virtual System.Object peek() {
             return this.peekFirst();
         }
     
-        public System.Object peekFirst() {
+        public virtual System.Object peekFirst() {
             return null;
 //            if (this.firstindex>=this.storage.length) return null;
 //            return this.storage[this.firstindex];
         }
     
-        public System.Object peekLast() {
+        public virtual System.Object peekLast() {
             return null;
 //        if (this.firstindex>=this.storage.length) return null;
 //        return this.storage[this.storage.length-1];
         }
     
-        public System.Object poll() {
+        public virtual System.Object poll() {
             return this.pollFirst();
         }
     
-        public System.Object pollFirst() {
+        public virtual System.Object pollFirst() {
             return null;
 //            if (this.firstindex>=this.storage.length) return null;
 //            return this.removeFirst_0();
         }
     
-        public System.Object pollLast() {
+        public virtual System.Object pollLast() {
             return null;
 //            if (this.firstindex>=this.storage.length) return null;
 //            return this.removeLast_0();
         }
     
-        public System.Object pop() {
+        public virtual System.Object pop() {
             return this.removeFirst();
         }
     
-        public void push(System.Object obj) {
+        public virtual void push(System.Object obj) {
             this.addFirst(obj);
         }
     
-        public System.Object remove() {
+        public virtual System.Object remove() {
             return this.removeFirst();
         }
 
         //    remove_1:    not implemented
     
-        public System.Object removeFirst() {
+        public virtual System.Object removeFirst() {
             return null;
         }        
     
-        public System.Object removeLast() {
+        public virtual System.Object removeLast() {
             return null;
         } 
         

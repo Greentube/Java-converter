@@ -6,7 +6,7 @@ namespace testcsharp
     {
         static void Main(string[] args)
         {
-            java.lang.SYSTEM._out.println("Hello CSHARP!");
+            java.lang.SYSTEM.out_f.println("Hello CSHARP!");
         }
     }
 }

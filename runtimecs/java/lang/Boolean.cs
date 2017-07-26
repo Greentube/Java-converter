@@ -28,10 +28,10 @@ namespace java.lang
 
         public override System.String ToString()
         {
-            return Boolean.ToString(value);
+            return Boolean.toString(value);
         }
         
-        public static System.String ToString(bool b)
+        public static System.String toString(bool b)
         {
             return b ? "true" : "false";
         }
@@ -42,7 +42,7 @@ namespace java.lang
 		}
 
 		
-		public static readonly Boolean FALSE = new Boolean(false);
-		public static readonly Boolean TRUE = new Boolean(true);
+		public static readonly Boolean FALSE_f = new Boolean(false);
+		public static readonly Boolean TRUE_f = new Boolean(true);
     }
 }

@@ -121,10 +121,7 @@ String.prototype.trim_0 = function() {
 function java_lang_String()
 {
 };
-java_lang_String.prototype._0 = function()
-{
-    return "";
-};
+
 java_lang_String.prototype._1 = function(chararray)
 {
     return String.fromCharCode.apply(String, chararray);     

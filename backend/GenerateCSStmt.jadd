@@ -37,23 +37,29 @@ aspect GenerateCS {
 			out.print(")");			
 		} else {
 			out.print("{ do { ");
-			getStmt().generateCS(out);
 			out.println();
-			out.print(label+"_c:");
+			out.increaseIndent();
+			getStmt().generateCS(out);
+			out.print(label+"_c:;");
 			out.println();
 			out.print("}");
 			out.print("while(");	
 			getCondition().generateCS(out);
-			out.print(")");
+			out.print(");");
 			out.println();
-			out.print(label+"_b:");
+			out.print(label+"_b:;");
 			out.println();
+			out.decreaseIndent();
 			out.print("}");
 		}	
 		out.println();		
  	}
  	
 	public void EnhancedForStmt.generateCS(com.greentube.javaconverter.CodePrinter out, String label) {
+		if (label!=null) {
+			out.print("{ ");
+		}
+
 		String vname = getVariableDecl().name();
 		Expr e = getExpr();
 		if (e.type().isArrayDecl()) {
@@ -63,22 +69,38 @@ aspect GenerateCS {
 			out.print("(" + vname + "_i<" + vname + "_a.length)&&");
 			out.print("((" + vname + "_l=" + vname +"_a[" + vname + "_i])||true); ");
 			out.print(vname + "_i++)");
-			getStmt().generateCS(out);
 		} else if (e.type().isIterable()) {
 			out.print("for (var " + vname + "_l, " + vname + "_i=");			
 			e.generateCS(out);
 			out.print(".iterator_0(); ");
 			out.print(vname + "_i.hasNext_0()&&((" + vname + "_l=" + vname + "_i.next_0())||true)");			
 			out.print(";)");   
-			getStmt().generateCS(out);				
 		} else {
 			throw new RuntimeException("Expression is neither an array or an Iterable");
 		}
-		out.println();		
+		
+		if (label!=null) {
+			out.print("{");
+			out.println();
+			out.increaseIndent();
+		}
+		
+		getStmt().generateCS(out);
+
+		if (label!=null) {
+			out.decreaseIndent();
+			out.print(label+"_c:; } "+label+"_b:; }");
+			out.println(); 
+		}							
  	}
  	
 	public void ForStmt.generateCS(com.greentube.javaconverter.CodePrinter out, String label) {
+		if (label!=null) {
+			out.print("{ ");
+		}
+
 		out.print("for (");
+		
 		if (getNumInitStmt()==0) {
 			out.print("; ");
 		} else {			
@@ -98,8 +120,20 @@ aspect GenerateCS {
 			((ExprStmt)getUpdateStmt(i)).getExpr().generateCS(out);
 		}
 		out.print(") ");
+		
+		if (label!=null) {
+			out.print("{");
+			out.println();
+			out.increaseIndent();
+		}
+		
 		getStmt().generateCS(out);	
 
+		if (label!=null) {
+			out.decreaseIndent();
+			out.print(label+"_c:; } "+label+"_b:; }");
+			out.println(); 
+		}					
  	}
  	
 	public void LabeledStmt.generateCS(com.greentube.javaconverter.CodePrinter out, String label) {
@@ -115,19 +149,37 @@ aspect GenerateCS {
  	}
 
 	public void WhileStmt.generateCS(com.greentube.javaconverter.CodePrinter out, String label) {
+		if (label!=null) {
+			out.print("{ ");
+		}
+		
 		out.print("while (");
 		getCondition().generateCS(out);
 		out.print(") ");
-		getStmt().generateCS(out);	
+
+		if (label!=null) {
+			out.print("{");
+			out.println();
+			out.increaseIndent();
+		}
+		
+		getStmt().generateCS(out);
+
+		if (label!=null) {
+			out.decreaseIndent();
+			out.print(label+"_c:; } "+label+"_b:; }");
+			out.println(); 
+		}			
  	}
   	
   	// --- BreakStmt ---
   	
 	public void BreakStmt.generateCS(com.greentube.javaconverter.CodePrinter out) {
-		if (getLabel()==null) {
+		String l = getLabel();
+		if (l==null || l.length()==0) {
 			out.print("break;");
 		} else {
-			out.print("goto "+getLabel()+"_b;");
+			out.print("goto "+l+"_b;");
 		}		
 		out.println();
 	}
@@ -208,15 +260,20 @@ aspect GenerateCS {
 	// --- VarDeclStmt ---
 	
 	public void VarDeclStmt.generateCS(com.greentube.javaconverter.CodePrinter out) {
-		getTypeAccess().generateCS(out);		
+		int extradims = 0;
+		for (int i=0; i<getNumDeclarator(); i++) {
+			extradims = Math.max(extradims, getDeclarator(i).getNumDims());
+		}
+	
+		getTypeAccess().generateCS(out);
+		for (int i=0; i<extradims; i++) {
+			out.print("[]");
+		}				
 		for (int i=0; i<getNumDeclarator(); i++) {
 			VariableDeclarator d = getDeclarator(i);
 			if (i>0) out.print(",");
 			out.print(" ");			
 			out.print(d.name() + "_l");
-			for (int j=0; j<d.getNumDims(); j++) {
-				out.print("[]");
-			}
 			out.print(" = ");						
 			Expr e = d.getInit();
 			if (e!=null) {

@@ -4,6 +4,17 @@ aspect GenerateCS {
   		System.err.print("UNEXPECTED:");
 		this.dumpTree(System.err);
   	}
+  	
+  	public String ASTNode.renameMethod(String n, boolean isstatic) {
+  		if (isstatic) {
+			return n;
+		} else {
+			if (n.equals("toString")) return "ToString";
+			if (n.equals("equals")) return "Equals";
+			if (n.equals("hashCode")) return "GetHashCode";
+			return n;			
+		}  	
+  	}  	
 
   	public void CompilationUnit.generateCS(File outputfolder) {
     	for (TypeDecl t:getTypeDecls()) {
@@ -44,6 +55,13 @@ aspect GenerateCS {
     	out.print ("{");
     	out.println();
     	out.increaseIndent(); 
+
+		if (isNestedType() && superclass().isObject()) {
+			out.print("public ");
+			enclosingType().generateReferenceCS(out);
+			out.print(" outer_o;");
+			out.println(); 
+		}
     	    	        	    	
     	for (BodyDecl bd:getBodyDeclList()) {
 			if (bd.isField()) {
@@ -205,8 +223,8 @@ aspect GenerateCS {
       		}			
 		}
 		out.print(" {");
-		out.increaseIndent();
 		out.println();
+		out.increaseIndent();
 		
 		boolean hasfields = false;
 		for (BodyDecl bd:getBodyDeclList()) {
@@ -218,38 +236,37 @@ aspect GenerateCS {
 		}		
 
 		out.decreaseIndent();
-		out.println();
 		out.print("}");
+		out.println();
 		
 		if (hasfields) {
 			out.print("public static class ");
 			out.printCSUniqueName(uniqueName()+"_constants");
 			out.print(" { ");
+			out.println();
 			out.increaseIndent();
 			
 			for (BodyDecl bd:getBodyDeclList()) {
 				if (bd.isField()) {
 					for (FieldDeclarator fd:bd.fieldDeclarations()) {
 						if (fd.isStatic()) {
-							out.println();
-							out.print("public const ");
+							out.print("public static ");
 							fd.getTypeAccess().generateCS(out);
 							out.print(" "); 							
 							out.print(fd.getID()+"_f = ");
 							fd.getInit().generateCS(out);
-							out.print(";");					
+							out.print(";");		
+							out.println();			
 						}
 					}
 				}
 			}	
 			out.decreaseIndent();
-			out.println();
 			out.print("}");	
 			out.println();						
 		}		
 		
 		out.decreaseIndent();
-		out.println();
 		out.print("}");		
 		out.println();
 	}  
@@ -342,15 +359,30 @@ aspect GenerateCS {
 //	}
 
   	public void MethodDecl.generateCS(com.greentube.javaconverter.CodePrinter out) {
-
-  		int numpar = getNumParameter();  		
-  		if (!hostType().isInterfaceDecl()) {
+		if (isStatic()) {
+			out.print("public static ");				
+		} else if (hostType().isClassDecl()) {  			
+  			// test if this method overrides a super method
+  			boolean isoverriding = false;
+  			ClassDecl c = (ClassDecl)(hostType());
+  			while (!c.isObject()) {
+  				c = (ClassDecl) (c.superclass());
+				for (BodyDecl b : c.methodsAndConstructors()) {
+					if (b instanceof MethodDecl && overrides((MethodDecl)b) ) { 
+						isoverriding = true;
+					}
+		    	}    	    	      				
+  			} 			 		
   			out.print("public ");
+  			out.print(isoverriding ? "override " : "virtual ");  			
   		}  		
+  		
+		String n = renameMethod(name(), isStatic());
   		getTypeAccess().generateCS(out);
   		out.print(" ");
-  		out.print(name());
+  		out.print(n);
   		out.print("(");
+  		int numpar = getNumParameter();
   		for (int i=0; i<numpar; i++) {
   			if (i>0) out.print(",");
   			getParameter(i).getTypeAccess().generateCS(out);
@@ -359,9 +391,9 @@ aspect GenerateCS {
   			out.print("_l");
   		}
   		out.print(")");
-  		out.println();
   		
   		if (getBlock()!=null) {
+	  		out.println();
   			getBlock().generateCS(out);
   		} else {
   			out.print(";");
@@ -390,6 +422,9 @@ aspect GenerateCS {
   			out.print("double");
   		} else if (isVoid()) {
   			out.print("void");
+  		} else if (isArrayDecl()) {
+  			elementType().generateReferenceCS(out);
+  			out.print("[]");
   		} else {
   			out.printCSName(constantPoolName());
 		}

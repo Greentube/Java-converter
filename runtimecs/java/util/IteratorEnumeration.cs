@@ -8,11 +8,11 @@ namespace java.util
             iterator = i;
         }
         
-        public bool hasMoreElements() {
+        public virtual bool hasMoreElements() {
             return iterator.hasNext();
         }
         
-        public System.Object nextElement() {
+        public virtual System.Object nextElement() {
             return iterator.next();
         }
     }        

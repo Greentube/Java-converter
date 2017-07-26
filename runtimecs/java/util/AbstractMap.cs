@@ -7,22 +7,22 @@ namespace java.util
         public AbstractMap(Map m) {
         }
         
-        public void clear() {}
-        public bool containsKey(System.Object key) { return false; }
-        public bool containsValue(System.Object value) { return false; }
+        public virtual void clear() {}
+        public virtual bool containsKey(System.Object key) { return false; }
+        public virtual bool containsValue(System.Object value) { return false; }
         public override bool Equals(System.Object o) { return false; }
-        public System.Object get(System.Object key) { return null; }
+        public virtual System.Object get(System.Object key) { return null; }
         public override int GetHashCode() { return 0; }
         
-        public bool isEmpty() {
+        public virtual bool isEmpty() {
             return size()<=0; 
         }
         
-        public Set keySet() { return null; }
-        public System.Object put(System.Object key, System.Object value) { return null; }
-        public void putAll(Map m) {}
-        public System.Object remove(System.Object key) { return null; }
-        public int size() { return 0; }
-        public Collection values() { return null; }
+        public virtual Set keySet() { return null; }
+        public virtual System.Object put(System.Object key, System.Object value) { return null; }
+        public virtual void putAll(Map m) {}
+        public virtual System.Object remove(System.Object key) { return null; }
+        public virtual int size() { return 0; }
+        public virtual Collection values() { return null; }
 	}	
 }
