@@ -4,7 +4,8 @@ aspect GenerateCS {
  	
   	public void AbstractDot.generateCS(com.greentube.javaconverter.CodePrinter out) {
   		Access a = getRight();
-  		if (! (a instanceof ClassInstanceExpr)) {
+  		if (! (a instanceof ClassInstanceExpr)
+  		&&  ! (a instanceof TypeAccess) ) {
   			getLeft().generateCS(out);
   		}
   		a.generateCS(out);
@@ -30,7 +31,11 @@ aspect GenerateCS {
 		if (isRightChildOfDot()) {
 			prevExpr().generateCS(out);
 			if (n>0) out.print(",");
+		} else if (type().isInnerClass()) {
+			out.print("this");
+			if (n>0) out.print(",");
 		}
+		
   		for (int i=0; i<n; i++) {
 			if (i>0) out.print(",");
 			getArg(i).generateCS(out);  		
@@ -39,10 +44,22 @@ aspect GenerateCS {
  	}
  	
   	public void ConstructorAccess.generateCS(com.greentube.javaconverter.CodePrinter out) {
-  			out.print((this instanceof SuperConstructorAccess) ? "base" : "this");
+  			boolean passouter = false;
+  			if (this instanceof SuperConstructorAccess) {
+  				out.print("base");
+  				passouter = hostType().isInnerClass() 
+  				        && !((ClassDecl)hostType()).superclass().isObject();
+  			} else {
+  				out.print("this");
+  				passouter = hostType().isInnerClass();
+  			}
+  	
 			out.print("(");
+			if (passouter) {
+				out.print("outer_o");
+			}
 			for (int i=0; i<getNumArg(); i++) {
-  				if (i>0) out.print(",");
+  				if (i>0 || passouter) out.print(",");
  				getArg(i).generateCS(out);  			
 			}
 			out.print(")");
@@ -124,7 +141,7 @@ aspect GenerateCS {
   				return;
   			}  		
   		} else if (n.equals("isEmpty") && numarg==0) {
-  			out.print(".Empty");
+  			out.print(".Equals(\"\")");
   			return;
   		} else if (n.equals("lastIndexOf") && numarg==1) {
   			if (getArg(0).type().isString()) {
@@ -271,6 +288,8 @@ aspect GenerateCS {
   	// --- ArrayInit ---
   	
   	public void ArrayInit.generateCS(com.greentube.javaconverter.CodePrinter out) {
+  		out.print("new ");
+  		type().generateReferenceCS(out);
   		out.print("{");
   		for (int i=0; i<getNumInit(); i++) {
   			if (i>0) out.print(",");
@@ -293,13 +312,7 @@ aspect GenerateCS {
   		if (type().isString()) {
   			d.generateCS(out);
   			out.print(" += \"\"+");
-  			if (s.type().isChar()) {
-  				out.print("_c2s(");
-  				s.generateCS(out);
-  				out.print(")");
-  			} else {
-  				s.generateCS(out);
-  			}
+			s.generateCS(out);
   		} else {
 	  		d.generateCS(out);
   			out.print(" += ");
@@ -353,11 +366,21 @@ aspect GenerateCS {
   		getSource().generateCS(out);
   	}
   	public void AssignSimpleExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
-  		getDest().generateCS(out);
+  		Expr d = getDest();
+  		Expr s = getSource();
+
+  		d.generateCS(out);
   		out.print(" = ");
-  		getSource().generateCS(out);
+
+		if (d.type().isChar() && s.type().isInt()) {
+			out.print("java.lang.SYSTEM.castToChar(");
+  			s.generateCS(out);
+  			out.print(")");		
+		} else {
+  			s.generateCS(out);
+		}
   	}
-  	  	
+
   	// --- Binary ---
 
   	public void AddExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
@@ -365,21 +388,9 @@ aspect GenerateCS {
   		Expr l = getLeftOperand();
   		Expr r = getRightOperand();
   		if (type().isString()) {
-  			if (l.type().isChar()) {
-  				out.print("_c2s(");
-  				l.generateCS(out);
-  				out.print(")");
-  			} else {
-  				l.generateCS(out);
-  			}
+			l.generateCS(out);
   			out.print("+\"\"+");
-  			if (r.type().isChar()) {
-  				out.print("_c2s(");
-  				r.generateCS(out);
-  				out.print(")");
-  			} else {
-  				r.generateCS(out);
-  			}
+			r.generateCS(out);
   		} else {
 	  		l.generateCS(out);
   			out.print("+");
@@ -539,10 +550,7 @@ aspect GenerateCS {
   	
   	public void ArrayCreationExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
   		if (hasArrayInit()) {
-  			out.print("(new ");
-  			getTypeAccess().generateCS(out);  		
   			getArrayInit().generateCS(out);
-  			out.print(")");
   		} else {
   			TypeDecl leaf = type();
   			while (leaf.isArrayDecl()) {
@@ -555,11 +563,46 @@ aspect GenerateCS {
 			out.print("))");
   		}
   	}
+  	
+  	public void Literal.generateCharacterCS(com.greentube.javaconverter.CodePrinter out, char c) {
+  			switch(c) {
+  			case '\b': 	out.print("\\b");
+  						break;
+  			case '\f':  out.print("\\f");	
+  			            break;
+  			case '\n':  out.print("\\n"); 
+  			            break;
+  			case '\r':  out.print("\\r");
+  			            break;
+  			case '\t':  out.print("\\t");
+  			            break;
+  			case '\\':  out.print("\\\\");
+  			            break;
+  			case '"':   out.print("\\\"");
+  			            break;  			
+  			case '\'':  out.print("\\'");
+  			            break;  			
+  			default: 
+  				if (c>=32 && c<=126) {
+  				 	out.print(""+c);
+  				} else {
+  					String hx = Integer.toHexString((int)c);
+  					out.print("\\u");
+  					for (int j=hx.length(); j<4; j++) {
+  						out.print("0");
+  					} 
+  					out.print(hx);
+  				}
+  				break;
+  			}  	
+  	}  	
   	public void BooleanLiteral.generateCS(com.greentube.javaconverter.CodePrinter out) {
   		out.print(isTrue()?"true":"false");
   	}
   	public void CharacterLiteral.generateCS(com.greentube.javaconverter.CodePrinter out) {
-  		out.print(""+constant().intValue());	
+  		out.print("'");
+  		generateCharacterCS(out, (char) (constant().intValue()));	
+  		out.print("'");
   	}
 //  	public void IllegalLiteral.generateCS(com.greentube.javaconverter.CodePrinter out) {
 //  	}
@@ -576,35 +619,7 @@ aspect GenerateCS {
   		String v = constant().stringValue();
   		out.print("\"");
   		for (int i=0; i<v.length(); i++) {
-  			char c = v.charAt(i);
-  			switch(c) {
-  			case '\b': 	out.print("\\b");
-  						break;
-  			case '\f':  out.print("\\f");	
-  			            break;
-  			case '\n':  out.print("\\n"); 
-  			            break;
-  			case '\r':  out.print("\\r");
-  			            break;
-  			case '\t':  out.print("\\t");
-  			            break;
-  			case '\\':  out.print("\\\\");
-  			            break;
-  			case '"':   out.print("\\\"");
-  			            break;  			
-  			default: 
-  				if (c>=32 && c<=126) {
-  				 	out.print(""+c);
-  				} else {
-  					String hx = Integer.toHexString((int)c);
-  					out.print("\\u");
-  					for (int j=hx.length(); j<4; j++) {
-  						out.print("0");
-  					} 
-  					out.print(hx);
-  				}
-  				break;
-  			}
+  			generateCharacterCS(out,v.charAt(i));
   		}
   		out.print("\"");	
   	}

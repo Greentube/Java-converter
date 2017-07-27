@@ -27,10 +27,10 @@ namespace java.lang
 		
         public override System.String ToString()
         {
-            return Integer.ToString(value);
+            return Integer.toString(value);
         }
 
-        public static System.String ToString(int i)
+        public static System.String toString(int i)
         {
             return i.ToString("d");
         }

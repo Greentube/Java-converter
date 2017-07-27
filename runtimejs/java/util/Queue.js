@@ -3,6 +3,7 @@ var java_util_Queue = _defineInterface("java_util_Queue",[java_util_Collection])
 
 // -- methods:
 // boolean	add(E e)
+// void clear()
 // boolean	contains(Object o)                   inherited from Collection
 // boolean	containsAll(Collection<?> c)         inherited from Collection
 // E	element()

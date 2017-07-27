@@ -1,6 +1,6 @@
 namespace java.util 
 {
-	public abstract class AbstractList : AbstractCollection
+	public abstract class AbstractList : AbstractCollection, List
 	{
         private System.Object[] buffer;
         private int len;

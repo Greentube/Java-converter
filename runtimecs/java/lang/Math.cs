@@ -23,22 +23,48 @@ namespace java.lang {
 		{
 			return System.Math.Atan2(x,y);
 		}
+//		public static double cbrt(double a) 
+//		{
+//		}        
 		public static double ceil(double a) 
 		{
 			return System.Math.Ceiling(a);
 		}
+        public static double copySign(double magnitude, double sign) 
+        {
+            return System.Math.Abs(magnitude) * System.Math.Sign(sign);
+        }
 		public static double cos(double a) 
 		{
 			return System.Math.Cos(a);
+		}   
+		public static double cosh(double a) 
+		{
+			return System.Math.Cosh(a);
 		}   
 		public static double exp(double a) 
 		{
 			return System.Math.Exp(a);
 		}   
+//		public static double expm1(double a) 
+//		{
+//			return System.Math.Exp(a)-1.0;
+//		}   
 		public static double floor(double a) 
 		{
 			return System.Math.Floor(a);
 		}   
+//        public static int getExponent(double a) 
+//        {
+//        }
+        public static double hypot(double x, double y)
+        {
+            return sqrt(x*x+y*y);
+        }
+        public static double IEEERemainder(double f1, double f2)
+        {
+            return System.Math.IEEERemainder(f1,f2);
+        }
 		public static double log(double a) 
 		{
 			return System.Math.Log(a);
@@ -47,6 +73,10 @@ namespace java.lang {
 		{
 			return System.Math.Log10(a);
 		}
+//        public static double log1p(double x)
+//        {
+//            return System.Math.Log(x + 1.0);
+//        }
 		public static double max(double a, double b) 
 		{
 			return (a>b) ? a : b;
@@ -55,14 +85,16 @@ namespace java.lang {
 		{
 			return (a<b) ? a : b;
 		}
+//        public static double nextAfter(double start, double direction)
+//        {
+//        }
+//        public static double nextUp(double d)
+//        {
+//        }
 		public static double pow(double a, double b) 
 		{
 			return System.Math.Pow(a,b);
 		}
-//		public static long round(double a) 
-//		{
-//			return (long) System.Math.Round(a);
-//		}
         public static double rint(double x) 
         {
             if (x % 0.5 != 0) {        
@@ -72,9 +104,20 @@ namespace java.lang {
                  ? System.Math.Floor(x) : System.Math.Round(x);
             }            
         }
+//        public static double scalb(double d, int scaleFactor)
+//        {
+//        }
+        public static double signum(double a)
+        {
+            return System.Math.Sign(a);
+        }
 		public static double sin(double a) 
 		{
 			return System.Math.Sin(a);
+		}
+		public static double sinh(double a) 
+		{
+			return System.Math.Sinh(a);
 		}
 		public static double sqrt(double a) 
 		{
@@ -84,6 +127,21 @@ namespace java.lang {
 		{
 			return System.Math.Tan(a);
 		}
+		public static double tanh(double a) 
+		{
+			return System.Math.Tan(a);
+		}
+        public static double toDegrees(double angrad)
+        {
+            return angrad * (180.0/System.Math.PI);
+        }
+        public static double toRadians(double angdeg)
+        {
+            return angdeg * (System.Math.PI/180.0);
+        }
+//        public static double ulp(double d)
+//        {
+//        }
 
 		public static readonly double E_f  = System.Math.E;
 		public static readonly double PI_f = System.Math.PI;

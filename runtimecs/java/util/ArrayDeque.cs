@@ -1,6 +1,6 @@
 namespace java.util 
 {
-	public abstract class ArrayDeque : AbstractCollection, Deque
+	public class ArrayDeque : AbstractCollection, Deque
 	{        
         public ArrayDeque() {
         }

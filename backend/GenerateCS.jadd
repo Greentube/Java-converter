@@ -56,7 +56,7 @@ aspect GenerateCS {
     	out.println();
     	out.increaseIndent(); 
 
-		if (isNestedType() && superclass().isObject()) {
+		if (isInnerClass() && superclass().isObject()) {
 			out.print("public ");
 			enclosingType().generateReferenceCS(out);
 			out.print(" outer_o;");
@@ -66,19 +66,10 @@ aspect GenerateCS {
     	for (BodyDecl bd:getBodyDeclList()) {
 			if (bd.isField()) {
 				for (FieldDeclarator fd:bd.fieldDeclarations()) {
-					if (fd.isStatic()) {
-						out.print("public static ");
-						fd.fieldDecl().getTypeAccess().generateCS(out);
-						out.print(" ");
-						out.print(fd.getID()+"_f = ");						
-						out.print(fd.fieldDecl().type().isPrimitiveType() ? "0":"null");
-						out.print(";");
-					} else {
-						out.print("public ");
-						fd.fieldDecl().getTypeAccess().generateCS(out);
-						out.print(" ");
-						out.print(fd.getID()+"_f;");
-					}
+					out.print(fd.isStatic() ? "public static " : "public ");
+					fd.fieldDecl().getTypeAccess().generateCS(out);
+					out.print(" ");
+					out.print(fd.getID()+"_f;");						
 					out.println();
 				}
 			}
@@ -103,41 +94,49 @@ aspect GenerateCS {
 	        b.generateCS(out);
     	}    	    	    
     	    	    	
-		out.decreaseIndent(); 
-		out.print("}");
-		out.println();
-		out.decreaseIndent(); 
-		out.print("}");
-		out.println();
-		
-/*
-		for (BodyDecl bd:getBodyDeclList()) {
-			if (bd.isField()) {
-				for (FieldDeclarator fd:bd.fieldDeclarations()) {
-					if (fd.isStatic()) {
-						out.println();
-						out.print(jsname+".prototype."+fd.getID()+"_f = ");
-						out.print(fd.fieldDecl().type().isPrimitiveType() ? "0":"null");
-						out.print(";");
-					}
-				}
-			}
-		}		
+		boolean havestaticconstructor = false;		
 		for (BodyDecl bd:getBodyDeclList()) {
 			if (bd.isField()) {
 				for (FieldDeclarator fd:bd.fieldDeclarations()) {
 					if (fd.isStatic() && fd.getInit()!=null) {
-						out.println();
-						out.print(jsname+".prototype."+fd.getID()+"_f = ");
+						if (!havestaticconstructor) {
+							out.print("static ");
+							out.printCSUniqueName(uniqueName());
+							out.print("() {");
+							out.println();
+							out.increaseIndent();
+							havestaticconstructor=true;
+						}							
+						out.print(fd.getID()+"_f = ");
 						fd.getInit().generateCS(out);
 						out.print(";");
+						out.println();
 					}
 				}
 			} else if (bd instanceof StaticInitializer) {
+				if (!havestaticconstructor) {
+					out.print("static ");
+					out.printCSUniqueName(uniqueName());
+					out.print("() {");
+					out.println();
+					out.increaseIndent();
+					havestaticconstructor=true;
+				}							
 				bd.generateCS(out);
 			}
+		}		
+		if (havestaticconstructor) {
+			out.decreaseIndent();
+			out.print("}");
+			out.println();
 		}
-*/		
+
+		out.decreaseIndent(); 
+		out.print("}");
+		out.println();
+		out.decreaseIndent(); 
+		out.print("}");
+		out.println();
   	}
 /*  	
 	public void EnumDecl.generateCS(com.greentube.javaconverter.CodePrinter out) {
@@ -278,7 +277,6 @@ aspect GenerateCS {
   
 
   	public void ConstructorDecl.generateCS(com.greentube.javaconverter.CodePrinter out) {
-
 		// decide if all the fields have to be initialized right here	
 		boolean needsInit = true;			
 		if (hasConstructorInvocation()) {
@@ -296,8 +294,13 @@ aspect GenerateCS {
   		out.print("public ");  		
   		out.printCSUniqueName(hostType().uniqueName());
   		out.print("(");
+  		// pass reference to the enclosing object 
+  		if (hostType().isInnerClass()) {
+  			hostType().enclosingType().generateReferenceCS(out);
+  			out.print(" outer_o");
+  		}
   		for (int i=0; i<numpar; i++) {
-  			if (i>0) out.print(",");
+  			if (i>0 || hostType().isInnerClass()) out.print(",");
   			getParameter(i).getTypeAccess().generateCS(out);
   			out.print(" ");
   			out.print(getParameter(i).name());
@@ -315,7 +318,12 @@ aspect GenerateCS {
 		if (! needsInit) {
 			// nothing to do 			
 		} else { 
-		// when a super-constructor is called, the initialization of everything else needs to be done here
+			// when a super-constructor is called, the initialization of everything else needs to be done here
+			if (hostType().isInnerClass() && ((ClassDecl)hostType()).superclass().isObject()) {
+				out.print("this.outer_o = outer_o;");
+				out.println();
+			}			
+			
 			// do all field initializations
 			for (BodyDecl bd:hostType().getBodyDeclList()) {
 				if (bd.isField()) {
@@ -410,21 +418,27 @@ aspect GenerateCS {
 
 
 	public void TypeDecl.generateReferenceCS(com.greentube.javaconverter.CodePrinter out) {
-  		if (isInt()) {
-  			out.print("int");
-  		} else if (isByte()) {
-  			out.print("sbyte");  		
-  		} else if (isChar()) {  		
-  			out.print("char");
-  		} else if (isBoolean()) {
-  			out.print("bool");
-  		} else if (isDouble()) {
-  			out.print("double");
+		if (isPrimitiveType()) {
+  			if (isInt()) {
+  				out.print("int");
+  			} else if (isByte()) {
+  				out.print("sbyte");  		
+  			} else if (isChar()) {  		
+  				out.print("char");
+  			} else if (isBoolean()) {
+  				out.print("bool");
+  			} else if (isDouble()) {
+  				out.print("double");
+  			} else {
+  				throw new RuntimeException("Type not supported:"+fullName());
+  			}
   		} else if (isVoid()) {
   			out.print("void");
   		} else if (isArrayDecl()) {
   			elementType().generateReferenceCS(out);
-  			out.print("[]");
+  			for (int i=dimension(); i>0; i--) {
+  				out.print("[]");
+  			}
   		} else {
   			out.printCSName(constantPoolName());
 		}

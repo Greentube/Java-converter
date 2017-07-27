@@ -4,7 +4,10 @@ namespace java.io {
 
 public class PrintStream {
 
-    public PrintStream() : base() {        
+    private bool iserr;
+    
+    public PrintStream(bool iserr) : base() {        
+        this.iserr = iserr;
     }
 
     public void println() {
@@ -34,7 +37,12 @@ public class PrintStream {
     }
 
     public void printString(System.String s) {
-        System.Console.Write(s + "\n");
+        if (iserr) {
+            System.Console.Error.Write(s + "\n"); 
+            System.Console.Error.Write(System.Environment.StackTrace);
+        } else {
+            System.Console.Write(s + "\n");            
+        }
 	}
 
 }

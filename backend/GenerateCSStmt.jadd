@@ -7,15 +7,31 @@ aspect GenerateCS {
  	// --- Block ---
  	
 	public void Block.generateCS(com.greentube.javaconverter.CodePrinter out) {
+		boolean hadNonDeclStatements=false;
+		int extraBraces = 0;
+		
 		out.print("{");
 		out.increaseIndent();
 		out.println();
   		int n = getNumStmt();
   		for (int i=0; i<n; i++) {
-  			getStmt(i).generateCS(out);
+  			Stmt s = getStmt(i);
+  			if (s instanceof VarDeclStmt) {
+  				if (hadNonDeclStatements) {
+  					out.print("{ ");
+  					extraBraces++;
+  					hadNonDeclStatements = false;
+  				}
+  			} else {
+  				hadNonDeclStatements = true;
+  			}
+  			s.generateCS(out);
   		}
 		out.decreaseIndent();
 		out.print("}");
+		for (int i=0; i<extraBraces; i++) {
+			out.print(" }");
+		}
 		out.println();
   	}
   
@@ -266,20 +282,32 @@ aspect GenerateCS {
 		}
 	
 		getTypeAccess().generateCS(out);
+
 		for (int i=0; i<extradims; i++) {
 			out.print("[]");
 		}				
 		for (int i=0; i<getNumDeclarator(); i++) {
 			VariableDeclarator d = getDeclarator(i);
+			TypeDecl t = d.getTypeAccess().type();
 			if (i>0) out.print(",");
 			out.print(" ");			
 			out.print(d.name() + "_l");
-			out.print(" = ");						
+			out.print(" = ");								
 			Expr e = d.getInit();
 			if (e!=null) {
-				e.generateCS(out);
+				if (t.isChar() && e.type().isInt()) {
+					out.print("java.lang.SYSTEM.castToChar(");
+					e.generateCS(out);
+					out.print(")");
+				} else {
+					e.generateCS(out);
+				}
+			} else if (t.isChar()) {
+				out.print("'\\u0000'");
+			} else if (t.isPrimitiveType()) {
+				out.print("0");
 			} else {
-				out.print(d.getTypeAccess().type().isPrimitiveType() ? "0" : "null");
+				out.print("null");
 			}
 		}
 		out.print(";");

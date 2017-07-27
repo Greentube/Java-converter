@@ -2,8 +2,8 @@ namespace java.lang {
 
 public class SYSTEM {
 
-    public static readonly java.io.PrintStream out_f = new java.io.PrintStream();
-	public static readonly java.io.PrintStream err_f = new java.io.PrintStream();
+    public static readonly java.io.PrintStream out_f = new java.io.PrintStream(false);
+	public static readonly java.io.PrintStream err_f = new java.io.PrintStream(true);
    
     public static void arraycopy(System.Object src, int srcPos, System.Object dest, int destPos, int length) {
         System.Array.Copy((System.Array)src, srcPos, (System.Array)dest, destPos, length);
@@ -104,7 +104,7 @@ public class SYSTEM {
     public static char castToChar(int x) {
         return (char) x;
     }
-    public static sbyte castToChar(double x) {
+    public static char castToChar(double x) {
         return (char) x;
     }
     
@@ -121,16 +121,16 @@ public class SYSTEM {
         return (int) x;
     }
     
-    public static int castToDouble(sbyte x) {
+    public static double castToDouble(sbyte x) {
         return (double) x;
     }
-    public static int castToDouble(char x) {
+    public static double castToDouble(char x) {
         return (double) x;
     }
-    public static int castToDouble(int x) {
+    public static double castToDouble(int x) {
         return (double) x;
     }
-    public static int castToDouble(double x) {
+    public static double castToDouble(double x) {
         return x;
     }
     

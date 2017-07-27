@@ -29,7 +29,7 @@ aspect GenerateJS {
 		out.print("(");  		
 		if (isRightChildOfDot()) {
 			prevExpr().generateJS(out);
-  		} else if (type().isNestedType()) {
+  		} else if (type().isInnerClass()) {
   			out.print("this");
   		}
   		out.print("))._"+n+"(");

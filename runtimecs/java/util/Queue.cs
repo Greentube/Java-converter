@@ -3,6 +3,7 @@ namespace java.util
 	public interface Queue: Collection
 	{
         bool add(System.Object e);
+        void clear();
         // bool contains(System.Object o);
         // bool containsAll(Collection c);
         System.Object element();

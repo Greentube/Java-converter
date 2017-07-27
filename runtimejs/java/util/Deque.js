@@ -5,6 +5,7 @@ var java_util_Deque = _defineInterface("java_util_Deque",[java_util_Queue]);
 // boolean	add(E e)                         // inherited from Queue
 // void	addFirst(E e)
 // void	addLast(E e)
+// void clear()                              // inherited from Queue
 // boolean	contains(Object o)               // inherited from Queue
 // boolean	containsAll(Collection<?> c)     // inherited from Queue
 // Iterator<E>	descendingIterator()

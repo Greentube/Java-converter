@@ -6,7 +6,7 @@ namespace testcsharp
     {
         static void Main(string[] args)
         {
-            java.lang.SYSTEM.out_f.println("Hello CSHARP!");
+            com.greentube.convertertest.TestJava4.main(args);
         }
     }
 }
