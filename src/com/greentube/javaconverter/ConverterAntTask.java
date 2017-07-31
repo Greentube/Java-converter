@@ -33,10 +33,10 @@ public class ConverterAntTask extends Task {
         this.csdir = destdir;
     }
 
-    private File externaldir=null;
-    public void setExternal(File extdir) {
-        this.externaldir = extdir;
-    }
+//    private File externaldir=null;
+//    public void setExternal(File extdir) {
+//        this.externaldir = extdir;
+//    }
     
     public void execute() throws BuildException {
 

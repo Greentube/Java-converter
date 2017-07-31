@@ -30,14 +30,12 @@ namespace java.lang
 
 		public override System.String ToString() 
 		{
-			return Double.toString(value);
+            return java.lang.SYSTEM.str(value);
 		}
         
 		public static System.String toString(double d)
 		{
-//			if (culture==null) culture = System.Globalization.CultureInfo.CreateSpecificCulture("en-US");
-//			return d.ToString(culture);
-            return d.ToString();
+            return java.lang.SYSTEM.str(d);
 		}
         
         public static java.lang.Double valueOf(double d)

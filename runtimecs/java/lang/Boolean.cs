@@ -23,7 +23,7 @@ namespace java.lang
 		
 		public override int GetHashCode()
 		{
-			return value ? 0 : 1;
+			return value ? 1231 : 1237;
 		}
 
         public override System.String ToString()
@@ -38,7 +38,7 @@ namespace java.lang
         
 		public static Boolean valueOf(bool b)
 		{
-			return new Boolean(b);
+			return b ? TRUE_f : FALSE_f;
 		}
 
 		

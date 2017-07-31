@@ -5,7 +5,7 @@ aspect CheckRestrictions {
   			getChild(i).checkRestrictions(errorlist);
   		}
   	}
-
+  	
 	public void MethodDecl.checkRestrictions(ArrayList<String> errorlist) {
 		if (isSynchronized()) {		
 			errorlist.add("Threading is not supported");
@@ -54,21 +54,38 @@ aspect CheckRestrictions {
   		errorlist.add("Type 'long' not supported");
   	}
   	
-  	public void AssignDivExpr.checkRestrictions(ArrayList<String> errorlist) {
-  		if (getDest().type().isIntegralType() && getSource().type().isIntegralType()) {
-  			errorlist.add("Can not use /= for integer types");
+  	public void AssignExpr.checkRestrictions(ArrayList<String> errorlist) {
+  		if (! (this instanceof AssignSimpleExpr)) {
+  			if (getDest().expressionHasPotentialSideEffects()) {
+  				errorlist.add("Can not use compound assignment '"+printOp()+"' with side effects in target operand");
+  			}  		
   		}
 		super.checkRestrictions(errorlist);
-	}
-	
-  	public void AssignExpr.checkRestrictions(ArrayList<String> errorlist) {
-  		TypeDecl t = getDest().type();
-  		if ((! (this instanceof AssignSimpleExpr)) && t.isIntegralType()) {  		
-  			if (!t.isInt() || !getSource().type().isIntegralType() ) {
-  				errorlist.add("Can not use compound assignment with implicit cast");
-	  		}
-  		}  		
-		super.checkRestrictions(errorlist);
-	}
+	}		
+		
+	public boolean ASTNode.expressionHasPotentialSideEffects() {
+  		for (int i=0; i<getNumChild(); i++) {
+  			if (getChild(i).expressionHasPotentialSideEffects()) return true;
+  		}
+  		return false;
+	}  	
+  	public boolean ConstructorAccess.expressionHasPotentialSideEffects() {
+  		return true;
+  	}
+  	public boolean MethodAccess.expressionHasPotentialSideEffects() {
+  		return true;
+  	}  	  	
+  	public boolean AssignExpr.expressionHasPotentialSideEffects() {
+  		return true;
+  	}
+  	public boolean PostfixExpr.expressionHasPotentialSideEffects() {
+  		return true;
+  	}
+  	public boolean PreDecExpr.expressionHasPotentialSideEffects() {
+  		return true;
+  	}
+  	public boolean PreIncExpr.expressionHasPotentialSideEffects() {
+  		return true;
+  	}
   	
 }

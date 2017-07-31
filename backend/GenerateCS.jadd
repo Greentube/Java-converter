@@ -37,6 +37,8 @@ aspect GenerateCS {
 		out.print("namespace "+packageName()+" {");
 		out.increaseIndent();
 		out.println();
+		out.print("using java.lang;");  
+		out.println();
 		out.print("public class ");
 		out.printCSUniqueName(uniqueName());
 		out.print(": ");

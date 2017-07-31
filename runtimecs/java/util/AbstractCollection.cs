@@ -1,5 +1,6 @@
-namespace java.util 
-{
+namespace java.util {
+    using java.lang;
+    
 	public abstract class AbstractCollection : Collection
 	{
         public virtual bool contains(System.Object obj)
@@ -20,8 +21,8 @@ namespace java.util
             return true;            
         }
         
-        // bool Equals(System.Object o);
-        // int GetHashCode();
+        // bool Equals(System.Object o);     implemented by Object
+        // int GetHashCode();                implemented by Object
         
         public virtual bool isEmpty() {
             return size() <= 0;
@@ -49,10 +50,12 @@ namespace java.util
                 
         public override System.String ToString() {
             System.Text.StringBuilder b = new System.Text.StringBuilder("[");
+            bool first=true;
             for (Iterator i=this.iterator(); i.hasNext(); ) {
-                if (b.Length<1) b.Append(", ");
+                if (!first) b.Append(", ");
+                first=false;
                 System.Object o = i.next();
-                b.Append((o==null) ? "null" : o.ToString());
+                b.Append((o==null) ? "null" : o.toString());
             }
             b.Append("]");
             return b.ToString();

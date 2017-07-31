@@ -2,7 +2,6 @@ package com.greentube.convertertestjava7;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.greentube.convertertest.TestJava4;
 import com.greentube.convertertestjava5.TestJava5;
 
 

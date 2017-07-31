@@ -75,7 +75,7 @@ aspect GenerateCS {
   				out.printCSName(m.hostType().constantPoolName());
   			}
 			out.print(".");
-  			out.print(renameMethod(m.name(),true));
+  			out.print(m.name()); // renameMethod(m.name(),true));
   			
   		} else if (!isRightChildOfDot()) {
 			out.print("this.");
@@ -86,15 +86,15 @@ aspect GenerateCS {
 					t = t.enclosingType();
 				}
 			}  		
-  			out.print(renameMethod(m.name(),false));
-		
-		} else if (m.hostType().isString()) {
-			generateCSForString(out);
-			return;
-					  			
-  		} else {
+  			out.print(m.name()); // renameMethod(m.name(),false));
+
+		} else if (getParent().getChild(0) instanceof SuperAccess) {
   			out.print(".");
   			out.print(renameMethod(m.name(),false));
+		
+  		} else {
+  			out.print(".");
+  			out.print(m.name()); // renameMethod(m.name(),false));
   		}
 
   		out.print("(");  	
@@ -104,103 +104,6 @@ aspect GenerateCS {
   		}
   		out.print(")");  	
  	}
-  	public void MethodAccess.generateCSForString(com.greentube.javaconverter.CodePrinter out) {
-  		String n = decl().name();
-  		int numarg = getNumArg();
-  		
-  		if (n.equals("charAt") && numarg==1) {
-			out.print("[");
-			getArg(0).generateCS(out);
-			out.print("]");
-			return;
-  		} else if (n.equals("compareTo")) {
-  			n = "CompareTo";
-  		} else if (n.equals("concat") && numarg==1) {
-  			out.print(".ToString()");
-  			return;
-  		} else if (n.equals("endsWith") && numarg==1) {
-  			n = "EndsWith";  			
-  		} else if (n.equals("indexOf") && numarg==1) {
-  			if (getArg(0).type().isString()) {
-  				n = "IndexOf";
-  			} else {
-  				out.print(".IndexOf((char)(");
-  				getArg(0).generateCS(out);
-  				out.print("))");
-  				return;
-  			}  		
-  		} else if (n.equals("indexOf") && numarg==2) {
-  			if (getArg(0).type().isString()) {
-  				n = "IndexOf";
-  			} else {
-  				out.print(".IndexOf((char)(");
-  				getArg(0).generateCS(out);
-  				out.print("),");
-  				getArg(1).generateCS(out);
-  				out.print(")");
-  				return;
-  			}  		
-  		} else if (n.equals("isEmpty") && numarg==0) {
-  			out.print(".Equals(\"\")");
-  			return;
-  		} else if (n.equals("lastIndexOf") && numarg==1) {
-  			if (getArg(0).type().isString()) {
-  				n = "LastIndexOf";
-  			} else {
-  				out.print(".LastIndexOf((char)(");
-  				getArg(0).generateCS(out);
-  				out.print("))");
-  				return;
-  			}  		
-  		} else if (n.equals("lastIndexOf") && numarg==2) {
-  			if (getArg(0).type().isString()) {
-  				n = "LastIndexOf";
-  			} else {
-  				out.print(".LastIndexOf((char)(");
-  				getArg(0).generateCS(out);
-  				out.print("),");
-  				getArg(1).generateCS(out);
-  				out.print(")");
-  				return;
-  			}  		
-  		} else if (n.equals("length") && numarg==0) {
-  			out.print(".Length");
-  			return;
-  		} else if (n.equals("replace") && numarg==2) {  		
-  			out.print(".Replace((char)(");
-  			getArg(0).generateCS(out);
-  			out.print("),(char)(");
-  			getArg(1).generateCS(out);
-  			out.print("))");
-  			return;
-  		} else if (n.equals("startsWith") && numarg==1) {  		
-  			n = "StartsWith";
-  		} else if (n.equals("substring") && numarg==1) {  		
-  			n = "Substring";
-  		} else if (n.equals("substring") && numarg==2) {
-  			out.print(".Substring(");
-  			getArg(0).generateCS(out);
-  			out.print(").Substring(0,");
-  			getArg(1).generateCS(out);
-  			out.print(")");  		
-  			return;
-  		} else if (n.equals("toCharArray") && numarg==0) {
-  			n = "ToCharArray";
-  		} else if (n.equals("trim") && numarg==0) {
-  			n = "Trim";  			
-  		} else {
-  			n = renameMethod(n,false);
-  		}
-  		
-  		out.print(".");
-  		out.print(n);
-  		out.print("(");  	
-  		for (int i=0; i<getNumArg(); i++) {
-  			if (i>0) out.print(",");
-  			getArg(i).generateCS(out);
-  		}
-  		out.print(")");  	  		
-  	}
  	
 //  	public void PackageAccess.generateCS(com.greentube.javaconverter.CodePrinter out) {
 // 	}
@@ -311,8 +214,12 @@ aspect GenerateCS {
   		Expr s = getSource();
   		if (type().isString()) {
   			d.generateCS(out);
-  			out.print(" += \"\"+");
+  			out.print (" = ");
+  			out.print("System.String.Join(\"\",java.lang.SYSTEM.str(");
+  			d.generateCS(out);
+  			out.print("),java.lang.SYSTEM.str(");
 			s.generateCS(out);
+			out.print("))");
   		} else {
 	  		d.generateCS(out);
   			out.print(" += ");
@@ -361,9 +268,12 @@ aspect GenerateCS {
   	}
   	public void AssignURShiftExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
   		getDest().generateCS(out);
-//  		out.print(" >>>= ");
-  		out.print(" >>= ");
+  		out.print(" = (int) (");
+  		out.print("((uint)(");
+  		getDest().generateCS(out);
+  		out.print(")) >> ");
   		getSource().generateCS(out);
+  		out.print(")");
   	}
   	public void AssignSimpleExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
   		Expr d = getDest();
@@ -385,16 +295,28 @@ aspect GenerateCS {
 
   	public void AddExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
   		// do some case discrimination if this is a string concatenation
-  		Expr l = getLeftOperand();
-  		Expr r = getRightOperand();
   		if (type().isString()) {
-			l.generateCS(out);
-  			out.print("+\"\"+");
-			r.generateCS(out);
+  			AddExpr e = this;
+  			out.print("System.String.Join(\"\",");
+  			params: for (;;) {
+ 				out.print("java.lang.SYSTEM.str(");
+  				e.getLeftOperand().generateCS(out);
+  				out.print(")");
+				out.print(",");
+  				if (e.getRightOperand() instanceof AddExpr) {
+  					e = (AddExpr) e.getRightOperand();
+  				} else {
+ 					out.print("java.lang.SYSTEM.str(");
+ 					e.getRightOperand().generateCS(out);
+	  				out.print(")");  	
+	  				break params;				
+  				}
+  			}
+  			out.print(")");
   		} else {
-	  		l.generateCS(out);
+	  		getLeftOperand().generateCS(out);
   			out.print("+");
-  			r.generateCS(out);
+  			getRightOperand().generateCS(out);
   		}
   	}
   	public void SubExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
@@ -485,10 +407,12 @@ aspect GenerateCS {
   		getRightOperand().generateCS(out);  	
   	}
   	public void URShiftExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
+  		out.print("((int)(");
+  		out.print("java.lang.SYSTEM.makeUnsigned(");
   		getLeftOperand().generateCS(out);
-//  		out.print(">>>");
-  		out.print(">>");
-  		getRightOperand().generateCS(out);  	
+  		out.print(")>>");
+  		getRightOperand().generateCS(out);
+  		out.print("))");  	
   	}
   	
   	

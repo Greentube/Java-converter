@@ -14,7 +14,16 @@ String.prototype.charAt_1 = function(x) {
 };
 
 String.prototype.compareTo_1 = function (str) {
-    return this < str ? -1 : this > str ? 1 : 0;
+    var l1 = this.length;
+    var l2 = str.length;    
+    for (var i=0; i<l1 && i<l2; i++) {
+        var c1 = this.charCodeAt(i);
+        var c2 = str.charCodeAt(i);
+        if (c1!=c2) {
+            return c1-c2;
+        }
+    }
+    return l1-l2;
 };
 
 String.prototype.concat_1 = function (str) {

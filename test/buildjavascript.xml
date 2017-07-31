@@ -8,7 +8,7 @@
   	
   	<delete dir="${basedir}/build/javascript"/>
     <mkdir dir="${basedir}/build/javascript" />
-    <convertJava js="${basedir}/build/javascript" external="${basedir}/runtime">
+    <convertJava js="${basedir}/build/javascript">  <!-- external="${basedir}/runtime"> -->
         <fileset dir="${basedir}/src">
             <include name="**/*.java"/>
         </fileset>

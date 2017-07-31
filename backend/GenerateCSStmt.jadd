@@ -56,14 +56,14 @@ aspect GenerateCS {
 			out.println();
 			out.increaseIndent();
 			getStmt().generateCS(out);
-			out.print(label+"_c:;");
+			out.printAndForgetLabel(label+"_c");
 			out.println();
 			out.print("}");
 			out.print("while(");	
 			getCondition().generateCS(out);
 			out.print(");");
 			out.println();
-			out.print(label+"_b:;");
+			out.printAndForgetLabel(label+"_b");
 			out.println();
 			out.decreaseIndent();
 			out.print("}");
@@ -105,7 +105,10 @@ aspect GenerateCS {
 
 		if (label!=null) {
 			out.decreaseIndent();
-			out.print(label+"_c:; } "+label+"_b:; }");
+			out.printAndForgetLabel(label+"_c");
+			out.print(" } ");
+			out.printAndForgetLabel(label+"_b");
+			out.print(" }");
 			out.println(); 
 		}							
  	}
@@ -147,12 +150,15 @@ aspect GenerateCS {
 
 		if (label!=null) {
 			out.decreaseIndent();
-			out.print(label+"_c:; } "+label+"_b:; }");
+			out.printAndForgetLabel(label+"_c");
+			out.print(" } ");
+			out.printAndForgetLabel(label+"_b");
+			out.print(" }");
 			out.println(); 
 		}					
  	}
  	
-	public void LabeledStmt.generateCS(com.greentube.javaconverter.CodePrinter out, String label) {
+	public void LabeledStmt.generateCS(com.greentube.javaconverter.CodePrinter out) {
 		((BranchTargetStmt)getStmt()).generateCS(out, getLabel());
  	}
  	
@@ -183,7 +189,10 @@ aspect GenerateCS {
 
 		if (label!=null) {
 			out.decreaseIndent();
-			out.print(label+"_c:; } "+label+"_b:; }");
+			out.printAndForgetLabel(label+"_c");
+			out.print(" } ");
+			out.printAndForgetLabel(label+"_b");
+			out.print(" }");
 			out.println(); 
 		}			
  	}
@@ -195,7 +204,7 @@ aspect GenerateCS {
 		if (l==null || l.length()==0) {
 			out.print("break;");
 		} else {
-			out.print("goto "+l+"_b;");
+			out.printJumpToLabel(l+"_b");
 		}		
 		out.println();
 	}
@@ -216,10 +225,11 @@ aspect GenerateCS {
   	// --- ContinueStmt ---
 
   	public void ContinueStmt.generateCS(com.greentube.javaconverter.CodePrinter out) {
-		if (getLabel()==null) {
+		String l = getLabel();
+		if (l==null || l.length()==0) {
 			out.print("continue;");
 		} else {
-			out.print("goto "+getLabel()+"_c;");
+			out.printJumpToLabel(l+"_c");
 		}
 		out.println();
 	}

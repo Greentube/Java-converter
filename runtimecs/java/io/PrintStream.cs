@@ -40,6 +40,7 @@ public class PrintStream {
         if (iserr) {
             System.Console.Error.Write(s + "\n"); 
             System.Console.Error.Write(System.Environment.StackTrace);
+            System.Console.Error.Write("\n");
         } else {
             System.Console.Write(s + "\n");            
         }

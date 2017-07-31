@@ -3,23 +3,24 @@ package com.greentube.javaconverter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.PrintStream;
 import java.util.HashSet;
 
 public class CodePrinter {
-	
-	private HashSet<String> reference;
-	private HashSet<String> load;
-	private HashSet<String> complete;
-	
+	// general code generation
 	File outputfolder;
 	OutputStreamWriter ow;
 	
 	boolean linehasstarted;
 	int indent;
 	
+	// for javascript code
+	private HashSet<String> reference;
+	private HashSet<String> load;
+	private HashSet<String> complete;
+	
+	// for c# code
+	private HashSet<String> pendingLabels;	
 	
 	public CodePrinter(File outputfolder, String filename) {
 		try {
@@ -38,6 +39,8 @@ public class CodePrinter {
 		reference = new HashSet();
 		load = new HashSet();
 		complete = new HashSet();
+		
+		pendingLabels = new HashSet();
 	}
 	
 	public CodePrinter(CodePrinter p, String filename) {
@@ -51,6 +54,9 @@ public class CodePrinter {
 		} catch (IOException e) {
   			e.printStackTrace();
   			throw new RuntimeException(e.getMessage());      			
+		}
+		if (pendingLabels.size()>0) {
+			throw new RuntimeException("Unresolved label definitions: "+pendingLabels);
 		}
 	}
 	
@@ -153,6 +159,17 @@ public class CodePrinter {
 			print("java.lang.SYSTEM");
 		} else {
 			print(constantpoolname.replace('$', '_').replace('/','.'));
+		}
+	}
+	
+	public void printJumpToLabel(String l) {
+		print("goto "+l+";");
+		pendingLabels.add(l);
+	}
+	public void printAndForgetLabel(String l) {
+		if (pendingLabels.contains(l)) {
+			print(l+":;");
+			pendingLabels.remove(l);
 		}
 	}
 	

@@ -120,11 +120,11 @@ var java_util_AbstractList = _extendClass( java_util_AbstractCollection, {
     },
 
     removeAll_1: function (collection) {
-        this._filter(collection,false);
+        return this._filter(collection,false);
     },
     
     retainAll_1: function (collection) {
-        this._filter(collection,true);
+        return this._filter(collection,true);
     },
     
     _filter: function(collection, keep) {
@@ -136,7 +136,12 @@ var java_util_AbstractList = _extendClass( java_util_AbstractCollection, {
                 s.push(o);
             }
         }
-        this.storage = s;
+        if (this.storage.length!=s.length) {
+            this.storage = s;
+            return true;
+        } else {
+            return false;
+        }
     },
     
 	set_2: function(index, obj) {
