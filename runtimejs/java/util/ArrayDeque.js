@@ -54,11 +54,6 @@ var java_util_ArrayDeque = _extendClass( java_util_AbstractCollection, {
     // contains_1:    implemented by AbstractCollection
     // containsAll_1: implemented by AbstractCollection
     
-    descendingIterator_0: function() {
-        return (new java_util_JSArrayIteratorDescending())
-            ._3(this.storage, this.firstindex, this.storage.length);
-    },
-    
     element_0: function() {
         return this.getFirst_0();
     },
@@ -163,23 +158,3 @@ var java_util_ArrayDeque = _extendClass( java_util_AbstractCollection, {
 	
 },"java_util_ArrayDeque", [java_util_Deque]);
 
-
-var java_util_JSArrayIteratorDescending = _extendClass( java_lang_Object, {
-
-	_3: function(storage,from,to) {
-        this.storage = storage;
-        this.from = from;
-        this.to = to;
-        this.next = to-1;
-        return this;
-    },
-    
-    hasNext_0: function() {
-        return this.next >= this.from;
-    },
-    
-    next_0: function() {
-        return this.storage[this.next--];
-    },
-        
-},"java_util_JSArrayIteratorDescending", [java_util_Iterator]);

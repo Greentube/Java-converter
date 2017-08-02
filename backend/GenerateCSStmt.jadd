@@ -75,22 +75,23 @@ aspect GenerateCS {
 		if (label!=null) {
 			out.print("{ ");
 		}
-
-		String vname = getVariableDecl().name();
+		
+		boolean isiterator=false;
 		Expr e = getExpr();
+		String vname = getVariableDecl().name();
 		if (e.type().isArrayDecl()) {
-			out.print("for (var " + vname + "_l, " + vname + "_i=0, " + vname + "_a=");
+			out.print("foreach (");
+			getVariableDecl().getTypeAccess().generateCS(out);
+			out.print(" ");
+			out.print(vname);
+			out.print("_l in ");
 			e.generateCS(out);
-			out.print("; ");
-			out.print("(" + vname + "_i<" + vname + "_a.length)&&");
-			out.print("((" + vname + "_l=" + vname +"_a[" + vname + "_i])||true); ");
-			out.print(vname + "_i++)");
+			out.print(") ");
 		} else if (e.type().isIterable()) {
-			out.print("for (var " + vname + "_l, " + vname + "_i=");			
+			out.print("for (java.util.Iterator "+vname+"_i = ");
 			e.generateCS(out);
-			out.print(".iterator_0(); ");
-			out.print(vname + "_i.hasNext_0()&&((" + vname + "_l=" + vname + "_i.next_0())||true)");			
-			out.print(";)");   
+			out.print(".iterator(); "+vname+"_i.hasNext(); ) ");	
+			isiterator = true;		
 		} else {
 			throw new RuntimeException("Expression is neither an array or an Iterable");
 		}
@@ -101,8 +102,24 @@ aspect GenerateCS {
 			out.increaseIndent();
 		}
 		
-		getStmt().generateCS(out);
-
+		if (isiterator) {
+			out.print("{ ");
+			out.println();
+			out.increaseIndent();
+			getVariableDecl().getTypeAccess().generateCS(out);
+			out.print(" "+vname+"_l = ");
+			out.print("(");
+			getVariableDecl().getTypeAccess().generateCS(out);
+			out.print(") ");
+			out.print(vname+"_i.next();");
+			out.println();
+			getStmt().generateCS(out);
+			out.decreaseIndent();
+			out.print("}");
+			out.println();
+		} else {
+			getStmt().generateCS(out);
+		}
 		if (label!=null) {
 			out.decreaseIndent();
 			out.printAndForgetLabel(label+"_c");

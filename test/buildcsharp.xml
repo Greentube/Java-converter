@@ -9,10 +9,12 @@
     <mkdir dir="${basedir}/csharpproject/build" />  	
     <convertJava cs="${basedir}/csharpproject/build"> <!-- external="${basedir}/runtime"> -->
         <fileset dir="${basedir}/src">
-<!--            <include name="**/*.java"/> -->
+            <include name="**/*.java"/> 
+<!--        	
         	<include name="**/convertertest/*.java"/> 
     	    <include name="**/convertertest2/*.java"/>
     	    <include name="**/convertertest3/*.java"/>
+-->    	    
         </fileset>
     </convertJava>
 

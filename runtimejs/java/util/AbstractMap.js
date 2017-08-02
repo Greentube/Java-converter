@@ -7,7 +7,6 @@
 //load// java/lang/Object
 //load// java/util/Map
 //load// java/util/AbstractCollection
-//load// java/util/Set
 //load// java/util/JSArrayIterator
 
 var java_util_AbstractMap = _extendClass( java_lang_Object, {
@@ -49,7 +48,27 @@ var java_util_AbstractMap = _extendClass( java_lang_Object, {
 	},
     
 	containsValue_1: function(value) {
-        return this.values_0().contains_1(value);
+        // search through all string keys
+        for (var s in this.stringtable) {
+            if (this.stringtable.hasOwnProperty(s)) {
+                var v = this.stringtable[s];
+                if (value==null ? v==null : value.equals_1(v)) {
+                    return true;
+                }
+            }
+        }
+        // search through all hashcode-buckets        
+        for (var hc in this.commontable) { 
+            if (this.commontable.hasOwnProperty(hc)) {
+                for (var kv of this.commontable[hc]) { 
+                    var  v = kv[1];
+                    if (value==null ? v==null : value.equals_1(v)) {
+                        return true;
+                    }   
+                }
+            }
+        }
+        return false;
 	},
 	
     equals_1: function(h) {
@@ -173,10 +192,6 @@ var java_util_AbstractMap = _extendClass( java_lang_Object, {
 		return this.totalelements;
 	},
 	
-    values_0: function() {
-        return (new java_util_MapValueView())._1(this);
-    },
-    
 	toString_0: function(){
 		var parts = ["{"];
         for (var it=this.keySet_0().iterator_0(); it.hasNext_0(); ) {
@@ -193,7 +208,10 @@ var java_util_AbstractMap = _extendClass( java_lang_Object, {
 		return parts.join("");
 	},
 	  
-    
+    values_0: function() {
+        return (new java_util_MapValueView())._1(this);
+    },
+        
 },"java_util_AbstractMap", [java_util_Map]);
 
 
@@ -215,24 +233,25 @@ var java_util_MapKeyView = _extendClass( java_util_AbstractCollection, {
     
 // containsAll_1                   // implemented by AbstractCollection
 
-    equals_1: function(b) {
-        if (b==null || !(b._is_java_util_Set) || this.size_0() != b.size_0()) {
+    equals_1: function(o) {
+        if (o==null || !(o._is_java_util_MapKeyView) || this.size_0()!=o.size_0()) {
             return false;
         }
         for (var it=this.iterator_0(); it.hasNext_0(); ) {
-            if ( ! b.contains_1(it.next_0()) ) return false;
-        }        
-        return true;
-    },
-    
-    hashCode_0: function() {
-        var sum = 0;
-        for (var it = this.iterator_0(); it.hasNext_0(); ) {
-            var e = it.next_0();
-            if (e!=null) sum = (sum + e.hashCode_0()) & 0xffffffff;
+            var e = it1.next_0();
+            if (! o.map.containsKey_1(e)) return false;
         }
-        return sum;
+        return true;          
     },
+
+    hashCode_0: function() {
+        var hashCode = 0;
+        for (var it=this.iterator_0(); it.hasNext_0(); ) {
+            var e = it.next_0();
+            hashCode = ( hashCode + (e==null ? 0 : e.hashCode_0()) ) & 0xffffffff;
+        }
+        return hashCode;
+    },       
 
 // boolean	isEmpty()              // implemented by AbstractCollection
 
@@ -262,7 +281,7 @@ var java_util_MapKeyView = _extendClass( java_util_AbstractCollection, {
     
 // Object[]	toArray()              // implemented by AbstractCollection
    	
-},"java_util_MapKeyView", [java_util_Set]);
+},"java_util_MapKeyView", [java_util_Collection]);
 
 
 var java_util_MapValueView = _extendClass( java_util_AbstractCollection, {
@@ -272,12 +291,13 @@ var java_util_MapValueView = _extendClass( java_util_AbstractCollection, {
         return this;
 	},
 
-// contains_1:                     // implemented by AbstractCollection
-// containsAll_1                   // implemented by AbstractCollection
+    contains_1: function(o) {
+        return this.map.containsValue_1(o);
+    },        
 
+// containsAll_1                   // implemented by AbstractCollection
 // boolean	equals(Object o)       // implemented by Object
 // int	hashCode()                 // implemented by Object
-
 // boolean	isEmpty()              // implemented by AbstractCollection
 
     iterator_0: function() {

@@ -25,9 +25,9 @@ var java_util_AbstractCollection = _extendClass( java_lang_Object, {
         }
         return true;
 	}, 
-    
-    //equals          implemented by Object
-    //hashCode        implemented by Object
+        
+    // equals_1     // default object behaviour
+    // hashCode_0   // default object behaviour
 
 	isEmpty_0: function () {
         return this.size_0()<=0;

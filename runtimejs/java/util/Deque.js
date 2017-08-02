@@ -8,7 +8,6 @@ var java_util_Deque = _defineInterface("java_util_Deque",[java_util_Queue]);
 // void clear()                              // inherited from Queue
 // boolean	contains(Object o)               // inherited from Queue
 // boolean	containsAll(Collection<?> c)     // inherited from Queue
-// Iterator<E>	descendingIterator()
 // E	element()                            // inherited from Queue
 // boolean	equals(Object o)                 // inherited from Queue
 // int	hashCode()                           // inherited from Queue

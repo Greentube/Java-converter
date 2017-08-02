@@ -2,43 +2,25 @@ namespace java.util
 {
 	public abstract class AbstractList : AbstractCollection, List
 	{
-        private System.Object[] buffer;
-        private int len;
         
         public AbstractList() {
-            buffer = new System.Object[8];
-            len = 0;
         }
         
-        public AbstractList(Collection collection) {
-            buffer = new System.Object[8];
-            len = 0;            
-            addAll(collection);
-        }
-        
+        // must be implemented by a modifiable subclass
+        public abstract System.Object get(int index);
+        public abstract System.Object set(int index, System.Object element);        
+        public abstract void add(int index, System.Object element);
+        public abstract System.Object remove(int index);        
+        // int size() 
+
+        // add functionality on top of the subclass implementation        
         public virtual bool add(System.Object e) { 
-            ensureCapacity(len+1);
-            buffer[len] = e;
-            len++;
-            return true; 
-        }
-        
-        public virtual void add(int index, System.Object element) {
-            ensureCapacity(len+1);            
-            if (index<len) {
-                System.Array.Copy(buffer, index, buffer, index+1, len-index);
-            }
-            buffer[index] = element;
-            len++;
-        }
+            add(size(), e);
+            return true;
+        }           
         
         public virtual bool addAll(Collection c) {
-            bool didadd=false;
-            for (Iterator i=c.iterator(); i.hasNext();) {
-                add(i.next());
-                didadd=true;
-            }
-            return didadd;
+            return addAll(size(), c);
         }
         
         public virtual bool addAll(int index, Collection c) { 
@@ -52,9 +34,10 @@ namespace java.util
             return didappend;
         }               
         
-        public virtual void clear() {
-            len = 0;
-            if (buffer.Length>100) buffer = new System.Object[8];
+        public virtual void clear() {           
+            for (int i=size()-1; i>=0; i--) {
+                remove(i);
+            }
         }
         
         public override bool Equals(System.Object b) {
@@ -65,51 +48,40 @@ namespace java.util
                 return false;
             }
             for (int i=0; i<s; i++) {
-                System.Object e1 = buffer[i];
+                System.Object e1 = this.get(i);
                 System.Object e2 = l.get(i);
                 if (! (e1==null ? e2==null : e1.Equals(e2))) return false;
             }
             return true;  
         }
-        
-        public virtual System.Object get(int index) { 
-            return buffer[index];
-        }
-        
+                
         public override int GetHashCode() {
             int hashCode = 1;
-            for (Iterator it=this.iterator(); it.hasNext(); ) {
-                System.Object e = it.next();
+            int s = size();
+            for (int i=0; i<s; i++) {
+                System.Object e = get(i);
                 hashCode = ( 31*hashCode + (e==null ? 0 : e.GetHashCode()) ) & (-1);
             }
             return hashCode;            
         }
         
         public virtual int indexOf(System.Object o) { 
-            for (int i=0; i<buffer.Length; i++) {
-                if (o==null ? (buffer[i]==null) : o.Equals(buffer[i])) return i;
+            int s = size();
+            for (int i=0; i<s; i++) {
+                if (o==null ? (get(i)==null) : o.Equals(get(i))) return i;
             }
             return -1;
         }
         
         public override Iterator iterator() { 
-            return new CSArrayIterator(buffer,0,len); 
+            return new AbstractListIterator(this); 
         }
         
         public virtual int lastIndexOf(System.Object o) { 
-            for (int i=buffer.Length-1; i>=0; i--) {
-                if (o==null ? (buffer[i]==null) : o.Equals(buffer[i])) return i;
+            for (int i=size()-1; i>=0; i--) {
+                if (o==null ? (get(i)==null) : o.Equals(get(i))) return i;
             }
             return -1;
-        }
-        
-        public virtual System.Object remove(int index) { 
-            System.Object prev = buffer[index];
-            if (index<len-1) {
-                System.Array.Copy(buffer, index+1, buffer, index, len-1-index);
-            }
-            len--;
-            return prev;
         }
         
         public virtual bool remove(System.Object o) { 
@@ -126,43 +98,43 @@ namespace java.util
         public virtual bool retainAll(Collection c) {
             return filter(c,true); 
         }
-        
-        public virtual System.Object set(int index, System.Object element) { 
-            System.Object prev = buffer[index];
-            buffer[index] = element;
-            return prev; 
-        }
-        
-        public override int size() {
-            return len;
-        }
  
         private bool filter(Collection collection, bool keep) {
-            int fill = 0;
-            for (int i=0; i<buffer.Length; i++) {
-                System.Object o = buffer[i];
+            bool modified=false;
+            for (int i=size()-1; i>=0; i--) {
+                System.Object o = get(i);
                 bool c = collection.contains(o);
-                if ((c && keep) || (!c && !keep)) {
-                    buffer[fill] = 0;
-                    fill++;
+                if ((c && !keep) || (!c && keep)) {
+                    remove(i);
+                    modified = true;
                 }
             }
-            if (fill!=len) {
-                len = fill;
-                return true;
-            } else {
-                return false;
+            return modified;
+        }   
+
+
+        class AbstractListIterator : Iterator 
+        {
+            AbstractList list;
+            int n;
+            
+            public AbstractListIterator(AbstractList list) {
+                this.list = list;
+                this.n = 0;
             }
-        }                
-                
-        private void ensureCapacity(int c) {
-            if (buffer.Length<c) {                 
-                int newc = buffer.Length;
-                while (newc<c) newc=newc*2;
-                System.Object[] newbuffer = new System.Object[newc];
-                System.Array.Copy(buffer,0, newbuffer,0, len);
-                buffer = newbuffer;
+            
+            public bool hasNext() {
+                return n < list.size();
             }
-        }
+        
+            public System.Object next() {
+                return list.get(n++);
+            }
+            
+            public void remove() {
+                list.remove(n-1);
+                n--;
+            }
+        }        
 	}	
 }

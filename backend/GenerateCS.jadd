@@ -87,12 +87,12 @@ aspect GenerateCS {
       			}
 				if (md.getID().startsWith("$SwitchMap$") && md.getNumParameter()==0) continue;      		
       		}
-      		else if (b instanceof ConstructorDecl) {
-      			ConstructorDecl cd = (ConstructorDecl) b;
-      			if (this instanceof EnumDecl) {
-      				if (cd.isSynthetic()) continue;
-      			}      		
-      		}
+//      		else if (b instanceof ConstructorDecl) {
+//      			ConstructorDecl cd = (ConstructorDecl) b;
+//      			if (this instanceof EnumDecl) {
+//      				if (cd.isSynthetic()) continue;
+//      			}      		
+//      		}
 	        b.generateCS(out);
     	}    	    	    
     	    	    	
@@ -133,6 +133,26 @@ aspect GenerateCS {
 			out.println();
 		}
 
+		if (this instanceof EnumDecl) {
+			EnumDecl ed = (EnumDecl) this;
+			int ordinal = 0;
+			for (EnumConstant ec:ed.enumConstants()) {
+				out.print("public static ");
+				out.printCSUniqueName(uniqueName());			
+				out.print(" "+ec.getID()+"_f = ");
+				out.print("new "); 								
+				out.printCSUniqueName(ec.getInit().type().uniqueName());
+				out.print("(\""+ec.getID()+"\","+ordinal);
+				for (int i=0; i<ec.getNumArg(); i++) {
+					out.print(",");
+					ec.getArg(i).generateCS(out);
+				}
+				out.print(");");	
+				out.println();				
+				ordinal++;			
+			}					
+		}
+
 		out.decreaseIndent(); 
 		out.print("}");
 		out.println();
@@ -140,74 +160,7 @@ aspect GenerateCS {
 		out.print("}");
 		out.println();
   	}
-/*  	
-	public void EnumDecl.generateCS(com.greentube.javaconverter.CodePrinter out) {
-		super.generateCS(out);
-
-		String cpname = constantPoolName();
-		String jsname = cpname.replace('/','_');
-		
-		StringBuffer values = new StringBuffer();
-		boolean needexternalinitialization = false;
-		
-		int ordinal = 0;
-		for (EnumConstant ec:enumConstants()) {
-			if (ec.getInit().type()!=this) {
-				needexternalinitialization = true;
-			} else {
-				out.println();
-				out.print(jsname+".prototype."+ec.getID()+"_f = ");
-				out.print("(new "+jsname+"())._"+(ec.getNumArg()+2)+"(\""+ec.getID()+"\","+ordinal);
-				for (int i=0; i<ec.getNumArg(); i++) {
-					out.print(",");
-					ec.getArg(i).generateCS(out);
-				}
-				out.print(");");				
-			}
-			
-			if (ordinal>0) values.append(",");
-			values.append(jsname+".prototype."+ec.getID()+"_f");
-			
-			ordinal++;			
-		}
-		
-		out.println();
-		out.print(jsname+".prototype.values_0 = function() {");
-		out.increaseIndent();
-		out.println();
-		out.print("return ["+values.toString()+"];");
-		out.decreaseIndent();
-		out.println();
-		out.print("};");
-		
-		if (needexternalinitialization) {
-			out.memorizeReference(cpname+"$init");
-			
-			com.greentube.javaconverter.CodePrinter o2 = 
-				 new com.greentube.javaconverter.CodePrinter(out, cpname+"$init");
-
-				ordinal = 0;
-				for (EnumConstant ec:enumConstants()) {
-					if (ec.getInit().type()!=this) {
-						o2.println();
-						o2.print(jsname+".prototype."+ec.getID()+"_f = ");
-						o2.print("(new ");
-						o2.printAndMemorizeComplete(ec.getInit().type().constantPoolName());
-						o2.print("())._"+(ec.getNumArg()+2)+"(\""+ec.getID()+"\","+ordinal);
-						for (int i=0; i<ec.getNumArg(); i++) {
-							o2.print(",");
-							ec.getArg(i).generateCS(o2);
-						}
-						o2.print(");");
-					}
-					ordinal++;
-				}				
-	    		
-			o2.finish();    		
-		}
-	}  
-*/
-  	
+  	  	
 	public void InterfaceDecl.generateCS(com.greentube.javaconverter.CodePrinter out) {
 		out.print("namespace "+packageName()+" {");
 		out.increaseIndent();
@@ -297,13 +250,17 @@ aspect GenerateCS {
   		out.printCSUniqueName(hostType().uniqueName());
   		out.print("(");
   		// pass reference to the enclosing object 
-  		if (hostType().isInnerClass()) {
+  		boolean needouter = hostType().isInnerClass() && !hostType().isSubclassingEnum();
+  		if (needouter) {
   			hostType().enclosingType().generateReferenceCS(out);
   			out.print(" outer_o");
   		}
   		for (int i=0; i<numpar; i++) {
-  			if (i>0 || hostType().isInnerClass()) out.print(",");
+  			if (i>0 || needouter) out.print(",");
   			getParameter(i).getTypeAccess().generateCS(out);
+  			if (i==numpar-1 && isVariableArity()) {
+  				out.print("[]");
+  			} 
   			out.print(" ");
   			out.print(getParameter(i).name());
   			out.print("_l");
@@ -370,7 +327,21 @@ aspect GenerateCS {
 
   	public void MethodDecl.generateCS(com.greentube.javaconverter.CodePrinter out) {
 		if (isStatic()) {
-			out.print("public static ");				
+  			// test if this method shadows a static super method
+  			boolean isoverriding = false;
+  			ClassDecl c = (ClassDecl)(hostType());
+  			while (!c.isObject()) {
+  				c = (ClassDecl) (c.superclass());
+				for (BodyDecl b : c.methodsAndConstructors()) {
+					if (b instanceof MethodDecl && ((MethodDecl)b).isStatic() 
+				    && signature().equals(((MethodDecl)b).signature()) ) { 
+						isoverriding = true;
+					}
+		    	}    	    	      				
+  			} 			 		
+			out.print("public static ");		
+			if (isoverriding) out.print("new ");
+			  								
 		} else if (hostType().isClassDecl()) {  			
   			// test if this method overrides a super method
   			boolean isoverriding = false;
@@ -396,6 +367,9 @@ aspect GenerateCS {
   		for (int i=0; i<numpar; i++) {
   			if (i>0) out.print(",");
   			getParameter(i).getTypeAccess().generateCS(out);
+  			if (i==numpar-1 && isVariableArity()) {
+  				out.print("[]");
+  			} 
   			out.print(" ");
   			out.print(getParameter(i).name());
   			out.print("_l");
@@ -445,4 +419,11 @@ aspect GenerateCS {
   			out.printCSName(constantPoolName());
 		}
 	}  	
+	
+	public boolean TypeDecl.isSubclassingEnum() {
+		if (isEnumDecl()) return true;
+		if (!isClassDecl()) return false;
+		ClassDecl cd = (ClassDecl) this;
+		return cd.hasSuperclass() && cd.superclass().isSubclassingEnum();
+	}
 }

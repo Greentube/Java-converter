@@ -15,7 +15,10 @@ namespace java.util
         System.Object pollLast();
         System.Object pop();
         void push(System.Object e);
+        bool remove(System.Object e);
         System.Object removeFirst();
-        System.Object removeLast();
+        bool removeFirstOccurence(System.Object e);
+        System.Object removeLast();            
+        bool removeLastOccurence(System.Object e);        
     }
 }

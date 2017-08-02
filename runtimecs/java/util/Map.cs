@@ -9,7 +9,7 @@ namespace java.util
         System.Object get(System.Object key);
         int GetHashCode();
         bool isEmpty();
-        Set keySet();
+        Collection keySet();
         System.Object put(System.Object key, System.Object value);
         void putAll(Map m);
         System.Object remove(System.Object key);

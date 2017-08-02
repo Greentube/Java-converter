@@ -56,20 +56,20 @@ var java_util_AbstractList = _extendClass( java_util_AbstractCollection, {
     
     //contains       implemented by AbstractCollection
     //containsAll    implemented by AbstractCollection
-    
-    equals_1: function(b) {
-        var s = this.storage.length;
-        if (b==null || !(b._is_java_util_List) || s != b.size_0()) {
+
+    equals_1: function(o) {
+        var s = this.size_0();
+        if (o==null || !(o._is_java_util_Collection) || s!=o.size_0()) {
             return false;
         }
-        for (var i=0; i<s; i++) {
-            var e1 = this.storage[i];
-            var e2 = b.get_1(i);
+        for (var it1=this.iterator_0(), it2=o.iterator_0(); it1.hasNext_0(); ) {           
+            var e1 = it1.next_0();
+            var e2 = it2.next_0();
             if (! (e1==null ? e2==null : e1.equals_1(e2))) return false;
         }
         return true;  
     },
-
+    
     get_1: function(index) {
         return this.storage[index];	
 	},
@@ -156,6 +156,7 @@ var java_util_AbstractList = _extendClass( java_util_AbstractCollection, {
         return this.storage.slice();
 	},
     
+    // toString_0      implemented by AbstractCollection
   	            
 },"java_util_AbstractList", [java_util_List]);
 

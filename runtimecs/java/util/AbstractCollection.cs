@@ -20,24 +20,16 @@ namespace java.util {
             }
             return true;            
         }
-        
-        // bool Equals(System.Object o);     implemented by Object
-        // int GetHashCode();                implemented by Object
+
+        // Equals        // default object behaviour
+        // GetHashCode   // default object behaviour        
         
         public virtual bool isEmpty() {
             return size() <= 0;
         }
         
-        public abstract Iterator iterator();
-        
-        public virtual int size() {
-            int num = 0;
-            for (Iterator i=this.iterator(); i.hasNext(); ) {
-                i.next();
-                num++;            
-            }        
-            return num;
-        }
+        public abstract Iterator iterator();        
+        public abstract int size();
         
         public virtual System.Object[] toArray() {
             System.Object[] a = new System.Object[size()];
@@ -55,10 +47,11 @@ namespace java.util {
                 if (!first) b.Append(", ");
                 first=false;
                 System.Object o = i.next();
-                b.Append((o==null) ? "null" : o.toString());
+                b.Append((o==null) ? "null" : o.ToString());
             }
             b.Append("]");
             return b.ToString();
         }
 	}	
+    
 }

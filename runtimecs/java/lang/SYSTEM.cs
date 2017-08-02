@@ -177,30 +177,6 @@ namespace java.lang {
         }
     }
 
-    public static class ObjectExtensions
-    {        
-        public static int hashCode(this System.Object o) {
-            if (o is System.String) {
-                System.String s = (System.String) o;
-                int h = 0;
-                for (int i=0; i<s.Length; i++) {
-                    h = (h*31 + (int)s[i]) & -1;
-                }
-                return h;
-            }    
-            return o.GetHashCode();
-        }
-        public static bool equals(this System.Object o, System.Object b) {
-            return o.Equals(b);
-        }        
-        public static System.String toString(this System.Object o) {            
-            if (o is System.Array) {
-                return "[";
-            } else {
-                return o.ToString();
-            }
-        }       
-    }
 
     public static class StringExtensions
     {        

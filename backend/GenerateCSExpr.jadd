@@ -47,11 +47,11 @@ aspect GenerateCS {
   			boolean passouter = false;
   			if (this instanceof SuperConstructorAccess) {
   				out.print("base");
-  				passouter = hostType().isInnerClass() 
+  				passouter = hostType().isInnerClass() && !hostType().isSubclassingEnum()
   				        && !((ClassDecl)hostType()).superclass().isObject();
   			} else {
   				out.print("this");
-  				passouter = hostType().isInnerClass();
+  				passouter = hostType().isInnerClass() && !hostType().isSubclassingEnum();
   			}
   	
 			out.print("(");
@@ -75,7 +75,7 @@ aspect GenerateCS {
   				out.printCSName(m.hostType().constantPoolName());
   			}
 			out.print(".");
-  			out.print(m.name()); // renameMethod(m.name(),true));
+  			out.print(renameMethod(m.name(),true));
   			
   		} else if (!isRightChildOfDot()) {
 			out.print("this.");
@@ -86,15 +86,11 @@ aspect GenerateCS {
 					t = t.enclosingType();
 				}
 			}  		
-  			out.print(m.name()); // renameMethod(m.name(),false));
-
-		} else if (getParent().getChild(0) instanceof SuperAccess) {
-  			out.print(".");
   			out.print(renameMethod(m.name(),false));
-		
+
   		} else {
   			out.print(".");
-  			out.print(m.name()); // renameMethod(m.name(),false));
+  			out.print(renameMethod(m.name(),false));
   		}
 
   		out.print("(");  	
@@ -174,7 +170,8 @@ aspect GenerateCS {
 			out.print(getID()+"_f");
   		} else if (v.isLocalVariable() || v.isParameter()) {  
   			if (v.hostType() == hostType()) {		
-				out.printLocalVariable(getID());
+				out.print(getID());
+				out.print("_l");
 			} else {
 				throw new RuntimeException("Can not access local variables of outer class method");
 			}
