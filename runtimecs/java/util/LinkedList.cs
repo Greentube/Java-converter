@@ -1,6 +1,6 @@
 namespace java.util 
 {
-	public class LinkedList : AbstractList, Deque
+	public class LinkedList : AbstractList
 	{           
         // head and tail of doubly linked list and number of elements
         private Node first;
@@ -152,27 +152,8 @@ namespace java.util
             System.Console.Write("\n");
         }
         
-        // methods of the Queue interface that are not already part of the List
-        public System.Object element() {
-            return get(0);
-        }
-        public bool offer(System.Object e) {
-            add(size(), e);
-            return true;
-        }
-        public System.Object peek() {
-            if (size()<1) return null;
-            return get(0);
-        }
-        public System.Object poll() {
-            if (size()<1) return null;
-            return remove(0);
-        }
-        public System.Object remove() {
-            return remove(0);
-        }
                        
-        // methods to implement the Deque interface            
+        // convenience methods of LinkedList
         public virtual void addFirst(System.Object obj) {
             add(0,obj);
         }
@@ -181,10 +162,6 @@ namespace java.util
             add(size(),obj);
         }
         
-        public Iterator descendingIterator() {
-            return new DescendingIterator(this);
-        }
-
         public virtual System.Object getFirst() {
             return get(0);
         }
@@ -192,68 +169,16 @@ namespace java.util
         public virtual System.Object getLast() {
             return get(size()-1);
         }
-
-        public virtual bool offerFirst(System.Object obj) {
-            add(0,obj);
-            return true;
-        }
-    
-        public virtual bool offerLast(System.Object obj) {
-            add(size(),obj);
-            return true;
-        }
-
-        public virtual System.Object peekFirst() {
-            if (size()<1) return null;
-            return get(0);
-        }
-    
-        public virtual System.Object peekLast() {
-            if (size()<1) return null;
-            return get(size()-1);
-        }
-        
-        public virtual System.Object pollFirst() {
-            if (size()<1) return null;
-            return remove(0);
-        }
-    
-        public virtual System.Object pollLast() {
-            if (size()<1) return null;
-            return remove(size()-1);
-        }
-    
-        public virtual System.Object pop() {
-            return remove(size()-1);
-        }
-    
-        public virtual void push(System.Object obj) {
-            add(size(), obj);
-        }
         
         public virtual System.Object removeFirst() {
             return remove(0);
         }        
-        
-        public bool removeFirstOccurence(System.Object e) {
-            int i = indexOf(e);
-            if (i<0) return false;
-            remove(i);
-            return true;
-        }
-    
+            
         public virtual System.Object removeLast() {
             return remove(size()-1);
         } 
         
-        public bool removeLastOccurence(System.Object e) {
-            int i = lastIndexOf(e);
-            if (i<0) return false;
-            remove(i);
-            return true;            
-        }     
-
-
+        
         class Node {            
             public System.Object element;
             public Node prev;
@@ -265,29 +190,6 @@ namespace java.util
                 next = null;
             }
         }
-        
-        class DescendingIterator : Iterator 
-        {
-            LinkedList list;
-            int n;
-            
-            public DescendingIterator(LinkedList list) {
-                this.list = list;
-                this.n = list.size()-1;
-            }
-            
-            public bool hasNext() {
-                return n >= 0;
-            }
-        
-            public System.Object next() {
-                return list.get(n--);
-            }
-            
-            public void remove() {
-                list.remove(n+1);
-            }
-        }        
         
 	}	
 }

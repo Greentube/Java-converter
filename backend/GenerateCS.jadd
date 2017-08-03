@@ -87,12 +87,13 @@ aspect GenerateCS {
       			}
 				if (md.getID().startsWith("$SwitchMap$") && md.getNumParameter()==0) continue;      		
       		}
-//      		else if (b instanceof ConstructorDecl) {
-//      			ConstructorDecl cd = (ConstructorDecl) b;
-//      			if (this instanceof EnumDecl) {
-//      				if (cd.isSynthetic()) continue;
-//      			}      		
-//      		}
+      		else if (b instanceof ConstructorDecl) {
+      			ConstructorDecl cd = (ConstructorDecl) b;
+      			if (this instanceof EnumDecl) {
+      				if (cd.isSynthetic() && cd.getNumParameter()==2 
+      				&&  cd.getParameter(1).type()==this) continue;
+      			}      		
+      		}
 	        b.generateCS(out);
     	}    	    	    
     	    	    	
@@ -110,7 +111,7 @@ aspect GenerateCS {
 							havestaticconstructor=true;
 						}							
 						out.print(fd.getID()+"_f = ");
-						fd.getInit().generateCS(out);
+						fd.getInit().generateOrUseConstantCS(out);
 						out.print(";");
 						out.println();
 					}
@@ -150,7 +151,26 @@ aspect GenerateCS {
 				out.print(");");	
 				out.println();				
 				ordinal++;			
-			}					
+			}	
+			out.print("public static ");
+			out.printCSUniqueName(uniqueName());
+			out.print("[] values() {");
+			out.println();
+			out.increaseIndent();
+			out.print("return new ");
+			out.printCSUniqueName(uniqueName());
+			out.print("[]{");
+			boolean hasfirst=false;
+			for (EnumConstant ec:ed.enumConstants()) {
+				if (hasfirst) out.print(",");  
+				out.print(ec.getID()+"_f");
+				hasfirst=true;
+			}
+			out.print("};");
+			out.println();
+			out.decreaseIndent();
+			out.print("}");
+			out.println();
 		}
 
 		out.decreaseIndent(); 
@@ -160,6 +180,8 @@ aspect GenerateCS {
 		out.print("}");
 		out.println();
   	}
+  	  	
+  	  	
   	  	
 	public void InterfaceDecl.generateCS(com.greentube.javaconverter.CodePrinter out) {
 		out.print("namespace "+packageName()+" {");
@@ -208,7 +230,7 @@ aspect GenerateCS {
 							fd.getTypeAccess().generateCS(out);
 							out.print(" "); 							
 							out.print(fd.getID()+"_f = ");
-							fd.getInit().generateCS(out);
+							fd.getInit().generateOrUseConstantCS(out);
 							out.print(";");		
 							out.println();			
 						}
@@ -426,4 +448,74 @@ aspect GenerateCS {
 		ClassDecl cd = (ClassDecl) this;
 		return cd.hasSuperclass() && cd.superclass().isSubclassingEnum();
 	}
+	
+	public int EnumDecl.determineOrdinal(String name) {
+		int ordinal = 0;
+		for (EnumConstant ec:enumConstants()) {
+			if (ec.getID().equals(name)) return ordinal;
+			ordinal++;
+		}
+		return 0;
+	}
+	
+  	public void Constant.generateCharacterCS(com.greentube.javaconverter.CodePrinter out, char c) {
+  			switch(c) {
+  			case '\b': 	out.print("\\b");
+  						break;
+  			case '\f':  out.print("\\f");	
+  			            break;
+  			case '\n':  out.print("\\n"); 
+  			            break;
+  			case '\r':  out.print("\\r");
+  			            break;
+  			case '\t':  out.print("\\t");
+  			            break;
+  			case '\\':  out.print("\\\\");
+  			            break;
+  			case '"':   out.print("\\\"");
+  			            break;  			
+  			case '\'':  out.print("\\'");
+  			            break;  			
+  			default: 
+  				if (c>=32 && c<=126) {
+  				 	out.print(""+c);
+  				} else {
+  					String hx = Integer.toHexString((int)c);
+  					out.print("\\u");
+  					for (int j=hx.length(); j<4; j++) {
+  						out.print("0");
+  					} 
+  					out.print(hx);
+  				}
+  				break;
+  			}  	
+  	}  	
+  	public void Constant.generateCS(com.greentube.javaconverter.CodePrinter out) {
+		if (this instanceof	ConstantBoolean) {
+			out.print(booleanValue()?"true":"false");
+		} else if (this instanceof ConstantChar) {
+			out.print("'");
+			generateCharacterCS(out, (char) intValue());
+			out.print("'");
+		} else if (this instanceof ConstantDouble) {
+			double d = doubleValue();
+			if (Double.isNaN(d)) {
+				out.print("System.Double.NaN");
+			} else if (Double.isInfinite(d)) {
+				if (d>0) out.print("System.Double.PositiveInfinity");
+				else     out.print("System.Double.NegativeInfinity");
+			} else {
+				out.print(""+d);
+			}
+		} else if (this instanceof ConstantInt) {
+			out.print(""+intValue());
+		} else if (this instanceof ConstantString) {
+	  		String v = stringValue();
+	  		out.print("\"");
+	  		for (int i=0; i<v.length(); i++) {
+	  			generateCharacterCS(out,v.charAt(i));
+	  		}
+	  		out.print("\"");	
+		}
+  	}		
 }

@@ -12,7 +12,6 @@ import com.greentube.convertertest3.OuterClass.InnerStatic;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Deque;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -86,6 +85,7 @@ public class TestJava4 {
         assertB(StaticClass.d instanceof DummyClass);   
         assertO(StaticClass.e, null);
         assertI(StaticClass.f, 0);    
+        assertO(StaticClass.nostring, null);
         
         TestObject t = new TestObject();	       
         assertI(t.accessParentStatic(), 66);
@@ -578,7 +578,37 @@ public class TestJava4 {
     	}
 		assertO(s.toString(), ",1,2bbb");
     	
+		assertO(swtst(0),"?");
+		assertO(swtst(1),"V3");
+		assertO(swtst(2),"V2");
+		assertO(swtst(3),"V1");
+		assertO(swtst(4),"FOUR");
+		assertO(swtst(5),"MUCH");
+		assertO(swtst(6),"MUCH");
+		assertO(swtst(7),"?");
     }
+    private static String swtst(int i) {
+    	int n=0;
+    	switch (i) {
+    	case 1: 
+    		n++; 
+    	case 2: 
+    		n++;
+    	case 3: 
+    	{
+    		n++;
+    		return "V"+n;
+    	}
+    	case 4:
+    		return "FOUR";
+    	default:
+    		return "?";			
+    	case 5:
+    	case 6:
+    		return "MUCH";
+    	}
+    }
+    
         
     public static void booleantest() {
     	System.out.println("- boolean");
@@ -1397,7 +1427,7 @@ public class TestJava4 {
     
     public static void linkedlisttest() {
     	System.out.println("- linked list");
-    	Deque d = new LinkedList();
+    	LinkedList d = new LinkedList();
     	d.add("p1");
     	d.add("p2");
     	d.addFirst("p0");
@@ -1408,54 +1438,44 @@ public class TestJava4 {
     	assertB(!d.contains("px"));
     	assertO(d.toString(),"[p0, p1, p2, p3, p4]");
     	
-    	assertO(d.poll(),  "p0");
+    	assertO(d.removeFirst(),  "p0");
     	assertO(d.toString(),"[p1, p2, p3, p4]");
     	for (int i=0; i<20; i++) d.addFirst("p0");
     	for (int i=0; i<19; i++) assertO(d.removeFirst(),"p0");
     	assertO(d.toString(),"[p0, p1, p2, p3, p4]");
     	
-    	assertO(d.element(), "p0");
-    	assertO(d.peek(), "p0");
-    	assertO(d.peekFirst(), "p0");
     	assertO(d.getFirst(), "p0");
-    	assertO(d.peekLast(), "p4");
     	assertO(d.getLast(), "p4");
-    	assertO(d.poll(), "p0");
-    	assertO(d.poll(), "p1");
-    	assertO(d.pollFirst(), "p2");
-    	assertO(d.pollLast(), "p4");
-    	assertO(d.pollLast(), "p3");
-    	assertO(d.poll(), null);
-    	assertO(d.pollFirst(), null);
-    	assertO(d.pollLast(), null);
+    	assertO(d.removeFirst(), "p0");
+    	assertO(d.removeFirst(), "p1");
+    	assertO(d.removeFirst(), "p2");
+    	assertO(d.removeLast(), "p4");
+    	assertO(d.removeLast(), "p3");
+    	assertB(d.isEmpty());
     	
     	d.clear();
-    	assertO(d.peek(),null);
+    	assertB(d.isEmpty());
     	for (int i=0; i<100; i++) d.add(Integer.valueOf(i));
     	for (int i=0; i<1000; i++) {
-    		assertO(d.poll(), Integer.valueOf(i));
-    		d.offer(Integer.valueOf(100+i));
+    		assertO(d.removeFirst(), Integer.valueOf(i));
+    		d.add(Integer.valueOf(100+i));
     	}
     	
     	d.clear();
     	for (int i=0; i<100; i++) d.addFirst(Integer.valueOf(i));
     	for (int i=0; i<1000; i++) {
-    		assertO(d.pollLast(), Integer.valueOf(i));
-    		d.offerFirst(Integer.valueOf(100+i));
+    		assertO(d.removeLast(), Integer.valueOf(i));
+    		d.addFirst(Integer.valueOf(100+i));
     	}
     	
     	LinkedList a = new LinkedList(d);
     	for (int i=0; i<100; i++) {
-    		assertO(a.pollLast(), Integer.valueOf(1000+i));
+    		assertO(a.removeLast(), Integer.valueOf(1000+i));
     	}
     	
     	int i = 1100;
     	for (Iterator it = d.iterator(); it.hasNext(); ) {
     		assertO(it.next(), Integer.valueOf(--i));
-    	}
-    	i = 1000;
-    	for (Iterator it = d.descendingIterator(); it.hasNext(); ) {
-    		assertO(it.next(), Integer.valueOf(i++));
     	}
     	assertI(d.size(),100);
     	
@@ -1463,22 +1483,22 @@ public class TestJava4 {
     	assertB(b.addAll(d));
     	assertB(!b.addAll(new ArrayList()));
     	
-    	assertO(d.remove(), Integer.valueOf(1099));
+    	assertO(d.remove(0), Integer.valueOf(1099));
     	assertO(d.removeFirst(), Integer.valueOf(1098));
     	assertO(d.removeLast(), Integer.valueOf(1000));
     	
     	assertI(b.size(), 100);
     	assertB(b.contains(Integer.valueOf(1050)));
     	assertB(!b.contains(Integer.valueOf(10)));
-    	b.offerLast("end");
+    	b.addLast("end");
     	assertB(b.contains("end"));
     	assertO(b.removeLast(), "end");
-    	b.push("stacktop");
-    	b.push("stacktop2");
+    	b.add("stacktop");
+    	b.add("stacktop2");
     	assertB(b.contains("stacktop2"));
     	assertB(!b.contains("wrzlbrmpft"));
-    	assertO(b.pop(), "stacktop2");
-    	assertO(b.pop(), "stacktop");
+    	assertO(b.remove(b.size()-1), "stacktop2");
+    	assertO(b.remove(b.size()-1), "stacktop");
     	
     }
     

@@ -10,5 +10,6 @@ namespace java.util
         Iterator iterator();
         int	size();
         System.Object[] toArray();
+        System.String ToString();
 	}	
 }

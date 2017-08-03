@@ -1,5 +1,13 @@
 aspect GenerateCS {
 
+	public void Expr.generateOrUseConstantCS(com.greentube.javaconverter.CodePrinter out) {
+		if (isConstant() && !type().isEnumDecl()) {
+			constant().generateCS(out);  		
+  		} else {
+  			generateCS(out);
+  		}
+  	} 
+
  	// --- Access --- 
  	
   	public void AbstractDot.generateCS(com.greentube.javaconverter.CodePrinter out) {
@@ -18,7 +26,7 @@ aspect GenerateCS {
 // 	}
   	public void ArrayAccess.generateCS(com.greentube.javaconverter.CodePrinter out) {
   		out.print("[");
-  		getExpr().generateCS(out);
+  		getExpr().generateOrUseConstantCS(out);
   		out.print("]");
  	}
 //  	public void ClassAccess.generateCS(com.greentube.javaconverter.CodePrinter out) {
@@ -29,18 +37,42 @@ aspect GenerateCS {
   		out.printCSName(type().constantPoolName());
 		out.print("(");  		
 		if (isRightChildOfDot()) {
-			prevExpr().generateCS(out);
+			prevExpr().generateOrUseConstantCS(out);
 			if (n>0) out.print(",");
 		} else if (type().isInnerClass()) {
 			out.print("this");
 			if (n>0) out.print(",");
 		}
 		
-  		for (int i=0; i<n; i++) {
-			if (i>0) out.print(",");
-			getArg(i).generateCS(out);  		
+  		ConstructorDecl m = decl();
+  		// check if must create a temporary array to package the var args   	
+		if (!m.isVariableArity() 
+		|| (getNumArg()==m.getNumParameter() && getArg(getNumArg()-1).type()==m.getParameter(getNumArg()-1).type()) ) 
+		// can leave parameters as they are
+		{
+	  		for (int i=0; i<getNumArg(); i++) {
+  				if (i>0) out.print(",");
+  				getArg(i).generateOrUseConstantCS(out);
+  			}
+  		// need to package last parameters (may be zero) into array		
+  		} else {
+  			// non-varargs parameters
+	  		for (int i=0; i<m.getNumParameter()-1; i++) {
+  				if (i>0) out.print(",");
+  				getArg(i).generateOrUseConstantCS(out);
+  			}  		
+  			// create array for the rest
+  			if (m.getNumParameter()>1) out.print(",");
+  			out.print("new ");
+  			m.getParameter(m.getNumParameter()-1).type().generateReferenceCS(out);
+  			out.print("{");
+  			for (int i=m.getNumParameter()-1; i<getNumArg(); i++) {
+  				if (i>m.getNumParameter()-1) out.print(",");
+  				getArg(i).generateOrUseConstantCS(out);
+  			}
+  			out.print("}");  			
   		}
-  		out.print(")");
+  		out.print(")");  	
  	}
  	
   	public void ConstructorAccess.generateCS(com.greentube.javaconverter.CodePrinter out) {
@@ -60,7 +92,7 @@ aspect GenerateCS {
 			}
 			for (int i=0; i<getNumArg(); i++) {
   				if (i>0 || passouter) out.print(",");
- 				getArg(i).generateCS(out);  			
+ 				getArg(i).generateOrUseConstantCS(out);  			
 			}
 			out.print(")");
  	}
@@ -93,10 +125,33 @@ aspect GenerateCS {
   			out.print(renameMethod(m.name(),false));
   		}
 
-  		out.print("(");  	
-  		for (int i=0; i<getNumArg(); i++) {
-  			if (i>0) out.print(",");
-  			getArg(i).generateCS(out);
+  		out.print("(");
+  		// check if must create a temporary array to package the var args   	
+		if (!m.isVariableArity() 
+		|| (getNumArg()==m.getNumParameter() && getArg(getNumArg()-1).type()==m.getParameter(getNumArg()-1).type()) ) 
+		// can leave parameters as they are
+		{
+	  		for (int i=0; i<getNumArg(); i++) {
+  				if (i>0) out.print(",");
+  				getArg(i).generateOrUseConstantCS(out);
+  			}
+  		// need to package last parameters (may be zero) into array		
+  		} else {
+  			// non-varargs parameters
+	  		for (int i=0; i<m.getNumParameter()-1; i++) {
+  				if (i>0) out.print(",");
+  				getArg(i).generateOrUseConstantCS(out);
+  			}  		
+  			// create array for the rest
+  			if (m.getNumParameter()>1) out.print(",");
+  			out.print("new ");
+  			m.getParameter(m.getNumParameter()-1).type().generateReferenceCS(out);
+  			out.print("{");
+  			for (int i=m.getNumParameter()-1; i<getNumArg(); i++) {
+  				if (i>m.getNumParameter()-1) out.print(",");
+  				getArg(i).generateOrUseConstantCS(out);
+  			}
+  			out.print("}");  			
   		}
   		out.print(")");  	
  	}
@@ -193,7 +248,7 @@ aspect GenerateCS {
   		out.print("{");
   		for (int i=0; i<getNumInit(); i++) {
   			if (i>0) out.print(",");
-  			getInit(i).generateCS(out);
+  			getInit(i).generateOrUseConstantCS(out);
   		}
   		out.print("}");
   	}
@@ -203,7 +258,7 @@ aspect GenerateCS {
   	public void AssignMinusExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
   		getDest().generateCS(out);
   		out.print(" -= ");
-  		getSource().generateCS(out);
+  		getSource().generateOrUseConstantCS(out);
   	}
   	public void AssignPlusExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
   		// do some case discrimination if this is a string concatenation
@@ -215,53 +270,53 @@ aspect GenerateCS {
   			out.print("System.String.Join(\"\",java.lang.SYSTEM.str(");
   			d.generateCS(out);
   			out.print("),java.lang.SYSTEM.str(");
-			s.generateCS(out);
+			s.generateOrUseConstantCS(out);
 			out.print("))");
   		} else {
 	  		d.generateCS(out);
   			out.print(" += ");
-  			s.generateCS(out);
+  			s.generateOrUseConstantCS(out);
   		}
   	}
   	public void AssignAndExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
   		getDest().generateCS(out);
   		out.print(" &= ");
-  		getSource().generateCS(out);
+  		getSource().generateOrUseConstantCS(out);
   	}
   	public void AssignOrExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
   		getDest().generateCS(out);
   		out.print(" |= ");
-  		getSource().generateCS(out);
+  		getSource().generateOrUseConstantCS(out);
   	}
   	public void AssignXorExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
   		getDest().generateCS(out);
   		out.print(" ^= ");
-  		getSource().generateCS(out);
+  		getSource().generateOrUseConstantCS(out);
   	}
   	public void AssignDivExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
   		getDest().generateCS(out);
   		out.print(" /= ");
-  		getSource().generateCS(out);
+  		getSource().generateOrUseConstantCS(out);
   	}
   	public void AssignModExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
   		getDest().generateCS(out);
   		out.print(" %= ");
-  		getSource().generateCS(out);
+  		getSource().generateOrUseConstantCS(out);
   	}
   	public void AssignMulExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
   		getDest().generateCS(out);
   		out.print(" *= ");
-  		getSource().generateCS(out);
+  		getSource().generateOrUseConstantCS(out);
   	}
   	public void AssignLShiftExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
   		getDest().generateCS(out);
   		out.print(" <<= ");
-  		getSource().generateCS(out);
+  		getSource().generateOrUseConstantCS(out);
   	}
   	public void AssignRShiftExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
   		getDest().generateCS(out);
   		out.print(" >>= ");
-  		getSource().generateCS(out);
+  		getSource().generateOrUseConstantCS(out);
   	}
   	public void AssignURShiftExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
   		getDest().generateCS(out);
@@ -269,7 +324,7 @@ aspect GenerateCS {
   		out.print("((uint)(");
   		getDest().generateCS(out);
   		out.print(")) >> ");
-  		getSource().generateCS(out);
+  		getSource().generateOrUseConstantCS(out);
   		out.print(")");
   	}
   	public void AssignSimpleExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
@@ -281,10 +336,10 @@ aspect GenerateCS {
 
 		if (d.type().isChar() && s.type().isInt()) {
 			out.print("java.lang.SYSTEM.castToChar(");
-  			s.generateCS(out);
+  			s.generateOrUseConstantCS(out);
   			out.print(")");		
 		} else {
-  			s.generateCS(out);
+  			s.generateOrUseConstantCS(out);
 		}
   	}
 
@@ -297,118 +352,118 @@ aspect GenerateCS {
   			out.print("System.String.Join(\"\",");
   			params: for (;;) {
  				out.print("java.lang.SYSTEM.str(");
-  				e.getLeftOperand().generateCS(out);
+  				e.getLeftOperand().generateOrUseConstantCS(out);
   				out.print(")");
 				out.print(",");
   				if (e.getRightOperand() instanceof AddExpr) {
   					e = (AddExpr) e.getRightOperand();
   				} else {
  					out.print("java.lang.SYSTEM.str(");
- 					e.getRightOperand().generateCS(out);
+ 					e.getRightOperand().generateOrUseConstantCS(out);
 	  				out.print(")");  	
 	  				break params;				
   				}
   			}
   			out.print(")");
   		} else {
-	  		getLeftOperand().generateCS(out);
+	  		getLeftOperand().generateOrUseConstantCS(out);
   			out.print("+");
-  			getRightOperand().generateCS(out);
+  			getRightOperand().generateOrUseConstantCS(out);
   		}
   	}
   	public void SubExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
-  		getLeftOperand().generateCS(out);
+  		getLeftOperand().generateOrUseConstantCS(out);
   		out.print("-");
-  		getRightOperand().generateCS(out);  	
+  		getRightOperand().generateOrUseConstantCS(out);  	
   	}
   	public void DivExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
 		TypeDecl t = type();
-		getLeftOperand().generateCS(out);
+		getLeftOperand().generateOrUseConstantCS(out);
   		out.print("/");
-  		getRightOperand().generateCS(out);
+  		getRightOperand().generateOrUseConstantCS(out);
   	}
   	public void ModExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
-  		getLeftOperand().generateCS(out);
+  		getLeftOperand().generateOrUseConstantCS(out);
   		out.print("%");
-  		getRightOperand().generateCS(out);  	
+  		getRightOperand().generateOrUseConstantCS(out);  	
   	}
   	public void MulExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
-  		getLeftOperand().generateCS(out);
+  		getLeftOperand().generateOrUseConstantCS(out);
   		out.print("*");
-  		getRightOperand().generateCS(out);  	
+  		getRightOperand().generateOrUseConstantCS(out);  	
   	}
   	public void AndBitwiseExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
-  		getLeftOperand().generateCS(out);
+  		getLeftOperand().generateOrUseConstantCS(out);
   		out.print("&");
-  		getRightOperand().generateCS(out);  	
+  		getRightOperand().generateOrUseConstantCS(out);  	
   	}
   	public void OrBitwiseExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
-  		getLeftOperand().generateCS(out);
+  		getLeftOperand().generateOrUseConstantCS(out);
   		out.print("|");
-  		getRightOperand().generateCS(out);  	
+  		getRightOperand().generateOrUseConstantCS(out);  	
   	}
   	public void XorBitwiseExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
-  		getLeftOperand().generateCS(out);
+  		getLeftOperand().generateOrUseConstantCS(out);
   		out.print("^");
-  		getRightOperand().generateCS(out);  	
+  		getRightOperand().generateOrUseConstantCS(out);  	
   	}
   	public void AndLogicalExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
-  		getLeftOperand().generateCS(out);
+  		getLeftOperand().generateOrUseConstantCS(out);
   		out.print("&&");
-  		getRightOperand().generateCS(out);  	
+  		getRightOperand().generateOrUseConstantCS(out);  	
   	}
   	public void OrLogicalExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
-  		getLeftOperand().generateCS(out);
+  		getLeftOperand().generateOrUseConstantCS(out);
   		out.print("||");
-  		getRightOperand().generateCS(out);  	
+  		getRightOperand().generateOrUseConstantCS(out);  	
   	}
   	public void EQExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
-  		getLeftOperand().generateCS(out);
+  		getLeftOperand().generateOrUseConstantCS(out);
   		out.print("==");
-  		getRightOperand().generateCS(out);  	
+  		getRightOperand().generateOrUseConstantCS(out);  	
   	}
   	public void NEExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
-  		getLeftOperand().generateCS(out);
+  		getLeftOperand().generateOrUseConstantCS(out);
   		out.print("!=");
-  		getRightOperand().generateCS(out);  	
+  		getRightOperand().generateOrUseConstantCS(out);  	
   	}
   	public void GEExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
-  		getLeftOperand().generateCS(out);
+  		getLeftOperand().generateOrUseConstantCS(out);
   		out.print(">=");
-  		getRightOperand().generateCS(out);  	
+  		getRightOperand().generateOrUseConstantCS(out);  	
   	}
   	public void GTExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
-  		getLeftOperand().generateCS(out);
+  		getLeftOperand().generateOrUseConstantCS(out);
   		out.print(">");
-  		getRightOperand().generateCS(out);  	
+  		getRightOperand().generateOrUseConstantCS(out);  	
   	}
   	public void LEExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
-  		getLeftOperand().generateCS(out);
+  		getLeftOperand().generateOrUseConstantCS(out);
   		out.print("<=");
-  		getRightOperand().generateCS(out);  	
+  		getRightOperand().generateOrUseConstantCS(out);  	
   	}
   	public void LTExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
-  		getLeftOperand().generateCS(out);
+  		getLeftOperand().generateOrUseConstantCS(out);
   		out.print("<");
-  		getRightOperand().generateCS(out);  	
+  		getRightOperand().generateOrUseConstantCS(out);  	
   	}
   	public void LShiftExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
-  		getLeftOperand().generateCS(out);
+  		getLeftOperand().generateOrUseConstantCS(out);
   		out.print("<<");
-  		getRightOperand().generateCS(out);
+  		getRightOperand().generateOrUseConstantCS(out);
 
   	}
   	public void RShiftExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
-  		getLeftOperand().generateCS(out);
+  		getLeftOperand().generateOrUseConstantCS(out);
   		out.print(">>");
-  		getRightOperand().generateCS(out);  	
+  		getRightOperand().generateOrUseConstantCS(out);  	
   	}
   	public void URShiftExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
   		out.print("((int)(");
   		out.print("java.lang.SYSTEM.makeUnsigned(");
-  		getLeftOperand().generateCS(out);
+  		getLeftOperand().generateOrUseConstantCS(out);
   		out.print(")>>");
-  		getRightOperand().generateCS(out);
+  		getRightOperand().generateOrUseConstantCS(out);
   		out.print("))");  	
   	}
   	
@@ -420,22 +475,22 @@ aspect GenerateCS {
 		Expr e = getExpr();
 		if (t.isPrimitiveType()) {
 			if (t.isBoolean()) {
-				e.generateCS(out);			
+				e.generateOrUseConstantCS(out);			
 			} else if (t.isByte()) {
 				out.print("(java.lang.SYSTEM.castToByte(");
-				e.generateCS(out);
+				e.generateOrUseConstantCS(out);
 				out.print("))");				
 			} else if (t.isChar()) {
 				out.print("(java.lang.SYSTEM.castToChar(");
-				e.generateCS(out);
+				e.generateOrUseConstantCS(out);
 				out.print("))");
 			} else if (t.isInt()) {
 				out.print("(java.lang.SYSTEM.castToInt(");
-				e.generateCS(out);
+				e.generateOrUseConstantCS(out);
 				out.print("))");
 			} else if (t.isDouble()) {
 				out.print("(java.lang.SYSTEM.castToDouble(");
-				e.generateCS(out);
+				e.generateOrUseConstantCS(out);
 				out.print("))");
 			} else {
 				throw new RuntimeException("Type not supported:"+t.fullName());
@@ -444,7 +499,7 @@ aspect GenerateCS {
 	  		out.print("((");
   			getTypeAccess().generateCS(out);
 	  		out.print(")");
-			e.generateCS(out);
+			e.generateOrUseConstantCS(out);
 			out.print(")");
 		}
   	}
@@ -452,17 +507,17 @@ aspect GenerateCS {
   	// --- ConditionalExpr ---
   	
   	public void ConditionalExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
-  		getCondition().generateCS(out);
+  		getCondition().generateOrUseConstantCS(out);
   		out.print("?");
-  		getTrueExpr().generateCS(out);
+  		getTrueExpr().generateOrUseConstantCS(out);
   		out.print(":");
-  		getFalseExpr().generateCS(out);
+  		getFalseExpr().generateOrUseConstantCS(out);
   	}
   	
   	// --- InstanceOfExpr ---
 
   	public void InstanceOfExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
-  		getExpr().generateCS(out);
+  		getExpr().generateOrUseConstantCS(out);
   		out.print(" is ");
   		getTypeAccess().generateCS(out);
   	}
@@ -485,88 +540,36 @@ aspect GenerateCS {
   		}
   	}
   	
-  	public void Literal.generateCharacterCS(com.greentube.javaconverter.CodePrinter out, char c) {
-  			switch(c) {
-  			case '\b': 	out.print("\\b");
-  						break;
-  			case '\f':  out.print("\\f");	
-  			            break;
-  			case '\n':  out.print("\\n"); 
-  			            break;
-  			case '\r':  out.print("\\r");
-  			            break;
-  			case '\t':  out.print("\\t");
-  			            break;
-  			case '\\':  out.print("\\\\");
-  			            break;
-  			case '"':   out.print("\\\"");
-  			            break;  			
-  			case '\'':  out.print("\\'");
-  			            break;  			
-  			default: 
-  				if (c>=32 && c<=126) {
-  				 	out.print(""+c);
-  				} else {
-  					String hx = Integer.toHexString((int)c);
-  					out.print("\\u");
-  					for (int j=hx.length(); j<4; j++) {
-  						out.print("0");
-  					} 
-  					out.print(hx);
-  				}
-  				break;
-  			}  	
-  	}  	
-  	public void BooleanLiteral.generateCS(com.greentube.javaconverter.CodePrinter out) {
-  		out.print(isTrue()?"true":"false");
-  	}
-  	public void CharacterLiteral.generateCS(com.greentube.javaconverter.CodePrinter out) {
-  		out.print("'");
-  		generateCharacterCS(out, (char) (constant().intValue()));	
-  		out.print("'");
+  	public void Literal.generateCS(com.greentube.javaconverter.CodePrinter out) {
+  		constant().generateCS(out);
   	}
 //  	public void IllegalLiteral.generateCS(com.greentube.javaconverter.CodePrinter out) {
 //  	}
   	public void NullLiteral.generateCS(com.greentube.javaconverter.CodePrinter out) {
   		out.print("null");
   	}
-  	public void DoubleLiteral.generateCS(com.greentube.javaconverter.CodePrinter out) {
-  		out.print(""+constant().doubleValue());	
-  	}
-  	public void IntegerLiteral.generateCS(com.greentube.javaconverter.CodePrinter out) {
-  		out.print(""+constant().intValue());	
-  	}
-  	public void StringLiteral.generateCS(com.greentube.javaconverter.CodePrinter out) {
-  		String v = constant().stringValue();
-  		out.print("\"");
-  		for (int i=0; i<v.length(); i++) {
-  			generateCharacterCS(out,v.charAt(i));
-  		}
-  		out.print("\"");	
-  	}
   	public void ParExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
   		out.print("(");
   		getExpr().generateCS(out);
   		out.print(")");
   	}
-
   	
   	// --- Unary ---
   	public void BitNotExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
   		out.print("~");
-  		getOperand().generateCS(out);  	
+  		getOperand().generateOrUseConstantCS(out);  	
   	}
   	public void LogNotExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
   		out.print("!");
-  		getOperand().generateCS(out);  	
+  		getOperand().generateOrUseConstantCS(out);  	
   	}
   	public void MinusExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
   		out.print(" - ");
-  		getOperand().generateCS(out);  	
+  		getOperand().generateOrUseConstantCS(out);  	
   	}
   	public void PlusExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
   		out.print(" + ");    
-  		getOperand().generateCS(out);  	
+  		getOperand().generateOrUseConstantCS(out);  	
   	}
   	public void PostDecExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
   		getOperand().generateCS(out);  	

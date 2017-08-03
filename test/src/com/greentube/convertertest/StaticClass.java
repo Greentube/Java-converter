@@ -22,6 +22,7 @@ public class StaticClass {
     static DummyClass d = new DummyClass();
     static DummyClass e;
     static int f;
+    static final String nostring = null;
     
     static int[][][] ia = { { { 4, 4 } ,
                               { 6, 7 }

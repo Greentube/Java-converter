@@ -16,20 +16,19 @@ namespace java.lang {
 
         public StringBuffer append(System.Object o)
 		{
-            if (o!=null) content.Append(o).ToString();
-            else         content.Append("null");
+            content.Append(SYSTEM.str(o));
             return this;
 		}
         
 	    public StringBuffer append(bool b)
 		{
-            content.Append(b);
+            content.Append(SYSTEM.str(b));
             return this;
 		}
 
 	    public StringBuffer append(sbyte b)
 		{
-            content.Append(b);
+            content.Append((int)b);
             return this;
 		}
 
@@ -47,7 +46,7 @@ namespace java.lang {
         
 	    public StringBuffer append(double d)
 		{
-            content.Append(d);
+            content.Append(SYSTEM.str(d));
             return this;
 		}
         		

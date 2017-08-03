@@ -9,7 +9,7 @@ namespace java.util
         void clear();
 //        bool contains(System.Object o);
 //        bool containsAll(Collection c);
-//        bool equals(System.Object o);
+//        bool Equals(System.Object o);
         System.Object get(int index);
 //        int GetHashCode();
         int indexOf(System.Object o);
@@ -22,6 +22,7 @@ namespace java.util
         bool retainAll(Collection c);
         System.Object set(int index, System.Object element);
 //        int size();
-//        System.Object[]	toArray();        
+//        System.Object[]	toArray();    
+//        System.String ToString();    
     }
 }

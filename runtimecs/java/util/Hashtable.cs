@@ -22,6 +22,6 @@ namespace java.util
     
         public virtual Enumeration keys() {
             return new IteratorEnumeration(this.keySet().iterator());
-        }        
+        }          
 	}	
 }

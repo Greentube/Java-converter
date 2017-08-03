@@ -95,11 +95,20 @@ public class TestJava5 extends TestJava4 {
 		switch (day1) {
 			case MONDAY:  
 				break;
+			case TUESDAY:  
+				assertB(false);
+				break;
+			case WEDNESDAY:  
+				assertB(false);
+				break;
 			default:      
 				assertB(false);
 		}
 		switch (day2) {
 		case MONDAY:  
+			assertB(false); 
+			break;
+		case TUESDAY:  
 			assertB(false); 
 			break;
 		default:      
@@ -156,6 +165,11 @@ public class TestJava5 extends TestJava4 {
     	// explicit use
     	int[] i = new int[]{5,6,7};
     	assertI(sum(i), 18);
+    	// constructor with variable arguments
+    	assertI((new VarArgConstructor(2)).sum(), 2);
+    	assertI((new VarArgConstructor(1,2,3)).sum(), 6);
+    	assertI((new VarArgConstructor("hoho",2)).sum(), 6);
+    	assertI((new VarArgConstructor("hoho",2,19)).sum(), 25);    	
 	}
 		
 	private static int sum(int... a) {
@@ -184,4 +198,27 @@ public class TestJava5 extends TestJava4 {
     	assertI(ZZZ, 7);    	
 	}
 	
+	
+	static class VarArgConstructor {
+		
+		int[] data;
+		public VarArgConstructor(int... par) {
+			data = new int[par.length];
+			System.arraycopy(par, 0, data,0, par.length);
+		}
+		
+		public VarArgConstructor(String x, int... par) {
+			data = new int[par.length+1];
+			data[0] = x.length();
+			System.arraycopy(par, 0, data,1, par.length);			
+		}
+		
+		public int sum() {
+			int s=0;
+			for (int i=0; i<data.length; i++) {
+				s += data[i];
+			}
+			return s;
+		}
+	}
 }

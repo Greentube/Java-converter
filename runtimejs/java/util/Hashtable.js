@@ -1,7 +1,6 @@
 //reference// java/util/IteratorEnumeration
-//load// java/lang/Object
-//load// java/util/AbstractMap
-var java_util_Hashtable = _extendClass( java_util_AbstractMap, {
+//load// java/util/HashMap
+var java_util_Hashtable = _extendClass( java_util_HashMap, {
     
     // legacy methods only supported by Hashtable, but not the Map interface 
     // everything can be easily implemented by just using the methods of the

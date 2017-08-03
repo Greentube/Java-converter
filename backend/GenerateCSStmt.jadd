@@ -27,6 +27,10 @@ aspect GenerateCS {
   			}
   			s.generateCS(out);
   		}
+  		if ((getParent() instanceof SwitchStmt) && executionCanReachBottom()) {
+  			out.print("break;");
+  			out.println();
+  		}
 		out.decreaseIndent();
 		out.print("}");
 		for (int i=0; i<extraBraces; i++) {
@@ -34,6 +38,18 @@ aspect GenerateCS {
 		}
 		out.println();
   	}
+  
+  	public boolean Block.executionCanReachBottom() {
+  		if (getNumStmt()<1) return true;
+  		Stmt stmt = getStmt(getNumStmt()-1);
+  		if (stmt instanceof Block) {
+  			return ((Block) stmt).executionCanReachBottom();
+  		} 
+  		if (stmt instanceof ReturnStmt 
+  		||  stmt instanceof BreakStmt
+  		||  stmt instanceof ContinueStmt) return false;
+  		return true;
+  	} 
   
   	// --- BranchTargetStmt ---
 
@@ -49,7 +65,7 @@ aspect GenerateCS {
 			out.print("do ");
 			getStmt().generateCS(out);
 			out.print("while(");	
-			getCondition().generateCS(out);
+			getCondition().generateOrUseConstantCS(out);
 			out.print(")");			
 		} else {
 			out.print("{ do { ");
@@ -60,7 +76,7 @@ aspect GenerateCS {
 			out.println();
 			out.print("}");
 			out.print("while(");	
-			getCondition().generateCS(out);
+			getCondition().generateOrUseConstantCS(out);
 			out.print(");");
 			out.println();
 			out.printAndForgetLabel(label+"_b");
@@ -85,11 +101,11 @@ aspect GenerateCS {
 			out.print(" ");
 			out.print(vname);
 			out.print("_l in ");
-			e.generateCS(out);
+			e.generateOrUseConstantCS(out);
 			out.print(") ");
 		} else if (e.type().isIterable()) {
 			out.print("for (java.util.Iterator "+vname+"_i = ");
-			e.generateCS(out);
+			e.generateOrUseConstantCS(out);
 			out.print(".iterator(); "+vname+"_i.hasNext(); ) ");	
 			isiterator = true;		
 		} else {
@@ -147,13 +163,13 @@ aspect GenerateCS {
 			out.print(" ");
 		}
 		if (hasCondition()) {
-			getCondition().generateCS(out);
+			getCondition().generateOrUseConstantCS(out);
 		} 
 		out.print("; ");
 		
 		for (int i=0; i<getNumUpdateStmt(); i++) {
 			if (i>0) out.print(", ");
-			((ExprStmt)getUpdateStmt(i)).getExpr().generateCS(out);
+			((ExprStmt)getUpdateStmt(i)).getExpr().generateOrUseConstantCS(out);
 		}
 		out.print(") ");
 		
@@ -179,10 +195,15 @@ aspect GenerateCS {
 		((BranchTargetStmt)getStmt()).generateCS(out, getLabel());
  	}
  	
-	public void SwitchStmt.generateCS(com.greentube.javaconverter.CodePrinter out, String label) {
+	public void SwitchStmt.generateCS(com.greentube.javaconverter.CodePrinter out, String label) {	
 		out.print("switch (");
-		getExpr().generateCS(out);
-		out.print(")");
+		
+		Expr e = getExpr();
+		e.generateOrUseConstantCS(out);
+		if (e.type().isEnumDecl()) {
+			out.print(".ordinal()");
+		} 
+		out.print(") ");
 		getBlock().generateCS(out);	
 		out.println();
  	}
@@ -193,7 +214,7 @@ aspect GenerateCS {
 		}
 		
 		out.print("while (");
-		getCondition().generateCS(out);
+		getCondition().generateOrUseConstantCS(out);
 		out.print(") ");
 
 		if (label!=null) {
@@ -228,15 +249,54 @@ aspect GenerateCS {
   	
   	// --- Case ---
   	
+  	public boolean Case.canBeReachedByFallThrough() {
+  		ASTNode b = getParent();
+  		int idx = b.getIndexOfChild(this);
+  		if (idx<1) return false;
+  		ASTNode prev = b.getChild(idx-1);
+  		 
+  		if (prev instanceof Block && ! ((Block) prev).executionCanReachBottom()) return false; 
+  		if (prev instanceof ReturnStmt 
+  		||  prev instanceof BreakStmt
+  		||  prev instanceof ContinueStmt
+  		||  prev instanceof Case) return false;
+  		 
+  		return true;
+  	}
+  	
 	public void ConstCase.generateCS(com.greentube.javaconverter.CodePrinter out) {
+		Expr e = getValue();				
+		if (canBeReachedByFallThrough()) {
+			out.print("goto case ");
+			if (e.isEnumConstant()) {
+				out.print("" + ((EnumDecl)e.type()).determineOrdinal(((VarAccess)e).name()) );
+			} else {
+				e.generateOrUseConstantCS(out);
+			}
+			out.print(";");
+			out.println();
+		}
+		out.decreaseIndent();
 		out.print("case ");
-		getValue().generateCS(out);
+		if (e.isEnumConstant()) {
+			out.print("" + ((EnumDecl)e.type()).determineOrdinal(((VarAccess)e).name()) );
+		} else {
+			e.generateOrUseConstantCS(out);
+		}
 		out.print(":");
 		out.println();
+		out.increaseIndent();
 	}
+	
 	public void DefaultCase.generateCS(com.greentube.javaconverter.CodePrinter out) {
+		if (canBeReachedByFallThrough()) {
+			out.print("goto default;");
+			out.println();
+		}
+		out.decreaseIndent();
 		out.print("default:");
 		out.println();
+		out.increaseIndent();
 	}
   	
   	// --- ContinueStmt ---
@@ -256,7 +316,7 @@ aspect GenerateCS {
     // --- ExprStmt ---
   
 	public void ExprStmt.generateCS(com.greentube.javaconverter.CodePrinter out) {
-		getExpr().generateCS(out);
+		getExpr().generateOrUseConstantCS(out);
 		out.print(";");
 		out.println();		
 	}  	
@@ -265,7 +325,7 @@ aspect GenerateCS {
 	
 	public void IfStmt.generateCS(com.greentube.javaconverter.CodePrinter out) {
 		out.print("if (");
-		getCondition().generateCS(out);
+		getCondition().generateOrUseConstantCS(out);
 		out.print(") ");
 		getThen().generateCS(out);
 		Stmt e = getElse();
@@ -288,7 +348,7 @@ aspect GenerateCS {
 			out.print("return;");
 		} else {
 			out.print("return ");
-			r.generateCS(out);
+			r.generateOrUseConstantCS(out);
 			out.print(";");
 		}
 		out.println();		
@@ -324,10 +384,10 @@ aspect GenerateCS {
 			if (e!=null) {
 				if (t.isChar() && e.type().isInt()) {
 					out.print("java.lang.SYSTEM.castToChar(");
-					e.generateCS(out);
+					e.generateOrUseConstantCS(out);
 					out.print(")");
 				} else {
-					e.generateCS(out);
+					e.generateOrUseConstantCS(out);
 				}
 			} else if (t.isChar()) {
 				out.print("'\\u0000'");
