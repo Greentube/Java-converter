@@ -15,5 +15,6 @@ namespace java.util
         System.Object remove(System.Object key);
         int size();
         Collection values();
+        System.String ToString();
     }
 }

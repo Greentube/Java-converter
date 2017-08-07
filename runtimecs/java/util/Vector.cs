@@ -61,7 +61,13 @@ namespace java.util
         }
   
         public virtual bool removeElement(System.Object o) {
-            return this.remove(o);
+            int idx = indexOf(o);
+            if (idx>=0) {            
+                this.remove(idx);
+                return true;
+            } else {
+                return false;
+            }
         }
 
         public virtual void removeElementAt(int index) {

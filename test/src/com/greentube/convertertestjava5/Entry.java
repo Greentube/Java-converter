@@ -2,8 +2,8 @@ package com.greentube.convertertestjava5;
 
 public class Entry<KeyType, ValueType> {
 	  
-    private final KeyType key;
-    private final ValueType value;
+    public final KeyType key;
+    public final ValueType value;
 
     public Entry(KeyType key, ValueType value) {  
         this.key = key;
@@ -21,5 +21,5 @@ public class Entry<KeyType, ValueType> {
     public String toString() { 
         return "(" + key + ", " + value + ")";  
     }
-
 }
+

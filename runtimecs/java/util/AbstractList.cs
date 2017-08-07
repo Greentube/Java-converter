@@ -20,7 +20,13 @@ namespace java.util
         }           
         
         public virtual bool addAll(Collection c) {
-            return addAll(size(), c);
+            Iterator i = c.iterator();
+            bool didappend = false;
+            while (i.hasNext()) {
+                this.add(i.next());
+                didappend = true;
+            }        
+            return didappend;
         }
         
         public virtual bool addAll(int index, Collection c) { 
@@ -82,14 +88,7 @@ namespace java.util
                 if (o==null ? (get(i)==null) : o.Equals(get(i))) return i;
             }
             return -1;
-        }
-        
-        public virtual bool remove(System.Object o) { 
-            int idx = indexOf(o);
-            if (idx<0) return false;
-            remove(idx);
-            return true; 
-        }
+        }       
         
         public virtual bool removeAll(Collection c) { 
             return filter(c,false); 
@@ -132,8 +131,7 @@ namespace java.util
             }
             
             public void remove() {
-                list.remove(n-1);
-                n--;
+                list.remove(--n);
             }
         }        
 	}	

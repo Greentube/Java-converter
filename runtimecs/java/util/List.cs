@@ -17,7 +17,6 @@ namespace java.util
 //        Iterator iterator();
         int lastIndexOf(System.Object o);
         System.Object remove(int index);
-        bool remove(System.Object o);
         bool removeAll(Collection c);
         bool retainAll(Collection c);
         System.Object set(int index, System.Object element);

@@ -1,24 +1,35 @@
 namespace java.util 
 {
+    // Implementation of a doubly linked list.
+    // Because the list will be used with random access methods (get,set,etc.) when using Iterators,
+    // an internal "currentNode" will be maintained to quickly find elements that are near
+    // previously accessed nodes. 
+    // In the java implementation this problem was solved by having a special Iterator implementation instead.
+    
 	public class LinkedList : AbstractList
 	{           
-        // head and tail of doubly linked list and number of elements
-        private Node first;
-        private Node last;
+        // head and tail of doubly linked list. this element is itself not
+        // part of the list, but is needed to complete the circle. 
+        private Node head;
+        // number of elements currently in the list
         private int len;
         
-        // cursor into the list 
-        // (is always valid if there are _any_ elements, otherwise don't care)
+        // cursor into the list for fast sequential access. since there is
+        // always at least the "head" node present, currentNode is 
+        // never null
         private Node currentNode;
+        // the position of the currentNode in the list. possible range is -1
+        // to size()-1. in the case of -1, the currentNode will point to the "head" element.
         private int currentIndex;
         
         public LinkedList() {
-            first = null;
-            last = null;
-            len = 0;
-            
-            currentNode = null;
-            currentIndex = 0;
+            var h = new Node(null);
+            h.next = h;
+            h.prev = h;
+            this.head = h;
+            this.len = 0;
+            this.currentNode = h;
+            this.currentIndex = -1;
         }
         
         public LinkedList(Collection collection) : this() {
@@ -27,130 +38,126 @@ namespace java.util
         
         // implement to satisfy AbstractList requirements
         public override System.Object get(int index) {
-            seek(index);
-            return currentNode.element;
+            return seek(index).element;
         }
         
         public override System.Object set(int index, System.Object element) {
-            seek(index);
-            return currentNode.element = element;
+            Node n = seek(index);
+            System.Object prev = n.element;
+            n.element = element;
+            return prev;
         }
         
         public override void add(int index, System.Object element) {
-            Node n = new Node(element);            
-            // try to insert after the last
+            Node n = new Node(element);
+            Node y;
             if (index==len) {
-                if (len==0) {  // the list was empty, so insert first element
-                    first = n;
-                    last = n;
-                    currentNode = n;
-                    currentIndex = 0;
-                    len = 1;
-                } else {       // append to end of non-empty list
-                    n.prev = last;
-                    last.next = n;
-                    last = n;
-                    len++;
-                }
-            // insert before the first (list was _not_ empty here) 
-            } else if (index==0) {
-                n.next = first;
-                first.prev = n;
-                first = n;
-                currentIndex++;
-                len++;                
-            // insert somewhere in the middle
-            } else {   
-                seek(index);  // throws exception if there is no node at the index
-                // there must be a a node before the currentNode
-                n.next = currentNode;
-                n.prev = currentNode.prev;
-                currentNode.prev.next = n;
-                currentNode.prev = n;
-                currentIndex++;
-                len++;
+                y = head;
+            } else {
+                y = seek(index); 
+                if (currentIndex>=index) currentIndex++;
             }
-//            dump();
+            Node x = y.prev;
+            n.prev = x;
+            n.next = y;
+            x.next = n;
+            y.prev = n;
+            len++;            
+            return;
         }
-        
+               
         public override System.Object remove(int index) {
-            // try to remove the very first element (could be the only one)
-            if (index==0) {
-                Node n = first;
-                if (len==1) {  // the list gets completely empty
-                    first = null;
-                    last = null;
-                    len = 0;   
-                    currentNode = null;
-                } else if (len<1) {
-                    throw new System.IndexOutOfRangeException(); // attempt to remove from empty list
-                } else { // remove only the first node
-                    first = n.next;
-                    first.prev = null; 
-                    if (currentIndex==0) currentNode=first;
-                    else currentIndex--;
-                    len--;
-                }
-                return n.element;                
-            // try to remove the very last element of a list with at least 2 elements
-            } else if (index>0 && index==len-1) {
-                Node n = last;
-                last = n.prev;
-                last.next = null;
-                len--;
-                if (currentIndex==len) {
-                    currentNode=last;
-                    currentIndex=len-1;            
-                }
-                return n.element;
-            // remove some arbitrary element 
-            // (but not the first or last one, so the list had at least 3 elements)
-            } else {                
-                seek(index);            
-                Node n = currentNode;
-                n.prev.next = n.next;
-                n.next.prev = n.prev;
-                len--;
-                currentNode = n.next;
-                return n.element;
+            Node n = seek(index);
+            Node x = n.prev;
+            Node y = n.next;
+            x.next = y;
+            y.prev = x;
+            len--;
+            if (currentIndex>=index) {
+                if (currentIndex==index) {
+                    currentNode = x;
+                }    
+                currentIndex--;
             }
+            return n.element;
         }
         
         public override int size() {  
             return len;
         }
         
-        private void seek(int index) {
-            if (index<0 || index>=len) throw new System.IndexOutOfRangeException();
-            if (currentIndex>index) {
-                do {
-                    currentNode = currentNode.prev;
-                    currentIndex--;
-                } while (currentIndex>index);
-            } else if (currentIndex<index) {
-                do {
-                    currentNode = currentNode.next;
-                    currentIndex++;
-                } while (currentIndex<index);
-            }            
+        // Find the node in the list given by its index.
+        // when the node is somewhere in the middle (not first or last), the 
+        // pointer to this node will be memorized to quickly find nearby nodes 
+        // in later requests.
+        // To save retrieval time, the node will be searched from either the start,
+        // the end or from the currentNode - whichever is nearer.
+        // Even the special "head" object can be retrieved by given len as index.
+        private Node seek(int index) {
+            if (index<0 || index>=len) throw new System.IndexOutOfRangeException();            
+            if (index==0) return head.next;
+            if (index==len-1) return head.prev;
+            
+            // decide in which direction to traverse the list
+            int ci = currentIndex;
+            // the target node is already found
+            if (index==ci) return currentNode;
+            
+            Node n = null;
+            // the target node is before the current one
+            if (index<ci) {
+                // it is nearer to search from start
+                if (index <= ci-index) {
+                    n = head.next;
+                    for (int i=0; i<index; i++) {
+                        n = n.next;
+                    }
+                // it is nearer to search from the current
+                } else {
+                    n = currentNode;
+                    for (int i=currentIndex; i>index; i--) {
+                        n = n.prev;
+                    }                    
+                }
+            // the target node is after the current one
+            } else {
+                // it is nearer to search from the current
+                if (index-ci <= len-index) {
+                    n = currentNode;
+                    for (int i=ci; i<index; i++) {
+                        n = n.next;
+                    }
+                // it is nearer to search from the end
+                } else {
+                    n = head.prev;
+                    for (int i=len-1; i>index; i--) {
+                        n = n.prev;
+                    }                    
+                }
+            }
+            
+            // memorize for later access
+            currentNode = n;
+            currentIndex = index;
+            return n;
         }
         
-        private void dump() {
-            System.Console.Write("LEN: "+len+" CURRENTINDEX: "+currentIndex+ " CURRENT: "
-                + (currentNode==null?"null":currentNode.element) + "\n");
-            System.Console.Write("FWD:");
-            for (Node n=first; n!=null; n=n.next) {
-                System.Console.Write(" ");
-                System.Console.Write(n.element);
-            }
-            System.Console.Write("\n");
-            System.Console.Write("BCK:");
-            for (Node n=last; n!=null; n=n.prev) {
-                System.Console.Write(" ");
-                System.Console.Write(n.element);
-            }
-            System.Console.Write("\n");
-        }
+//        private void dump() {
+//            System.Console.Write("LEN: "+len+" CURRENTINDEX: "+currentIndex+ " CURRENT: "
+//                + (currentNode==null?"null":currentNode.element) + "\n");
+//            System.Console.Write("FWD:");
+//            for (Node n=head.next; n!=head; n=n.next) {
+//                System.Console.Write(" ");
+//                System.Console.Write(n.element);
+//            }
+//            System.Console.Write("\n");
+//            System.Console.Write("BCK:");
+//            for (Node n=head.prev; n!=head; n=n.prev) {
+//                System.Console.Write(" ");
+//                System.Console.Write(n.element);
+//            }
+//            System.Console.Write("\n");
+//        }
         
                        
         // convenience methods of LinkedList
@@ -189,7 +196,6 @@ namespace java.util
                 prev = null;
                 next = null;
             }
-        }
-        
+        }        
 	}	
 }

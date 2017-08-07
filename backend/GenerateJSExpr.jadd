@@ -23,7 +23,6 @@ aspect GenerateJS {
 //  	public void ClassAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {
 // 	}
   	public void ClassInstanceExpr.generateJS(com.greentube.javaconverter.CodePrinter out) {
-		int n = getNumArg();
   		out.print("(new ");
   		out.printAndMemorizeReference(type().constantPoolName());
 		out.print("(");  		
@@ -31,12 +30,37 @@ aspect GenerateJS {
 			prevExpr().generateJS(out);
   		} else if (type().isInnerClass()) {
   			out.print("this");
+  		}  		
+
+  		ConstructorDecl m = decl();
+  		out.print("))._"+m.getNumParameter()+"(");
+  		
+  		// check if must create a temporary array to package the var args   	
+		if (!m.isVariableArity() 
+		|| (getNumArg()==m.getNumParameter() && getArg(getNumArg()-1).type()==m.getParameter(getNumArg()-1).type()) ) 
+		// can leave parameters as they are
+		{
+	  		for (int i=0; i<getNumArg(); i++) {
+  				if (i>0) out.print(",");
+  				getArg(i).generateJS(out);
+  			}
+  		// need to package last parameters (may be zero) into array		
+  		} else {
+  			// non-varargs parameters
+	  		for (int i=0; i<m.getNumParameter()-1; i++) {
+  				if (i>0) out.print(",");
+  				getArg(i).generateJS(out);
+  			}  		
+  			// create array for the rest
+  			if (m.getNumParameter()>1) out.print(",");
+  			out.print("[");
+  			for (int i=m.getNumParameter()-1; i<getNumArg(); i++) {
+  				if (i>m.getNumParameter()-1) out.print(",");
+  				getArg(i).generateJS(out);
+  			}
+  			out.print("]");  			
   		}
-  		out.print("))._"+n+"(");
-  		for (int i=0; i<n; i++) {
-			if (i>0) out.print(",");
-			getArg(i).generateJS(out);  		
-  		}
+  		
   		out.print(")");
   		
   		// check if this is inside a static initializer - must force early loading of created class
@@ -49,13 +73,38 @@ aspect GenerateJS {
   		if (!target.equals("java/lang/Object")) {
 			out.println();
 			out.printAndMemorizeReference(target);
-			out.print(".prototype._" + getNumArg() + ".call(this");
-			for (int i=0; i<getNumArg(); i++) {
-  				out.print(",");
- 				getArg(i).generateJS(out);  			
-			}
+
+	  		ConstructorDecl m = decl();
+			out.print(".prototype._" + m.getNumParameter() + ".call(this");
+	  		
+	  		// check if must create a temporary array to package the var args   	
+			if (!m.isVariableArity() 
+			|| (getNumArg()==m.getNumParameter() && getArg(getNumArg()-1).type()==m.getParameter(getNumArg()-1).type()) ) 
+			// can leave parameters as they are
+			{
+		  		for (int i=0; i<getNumArg(); i++) {
+	  				out.print(",");
+	  				getArg(i).generateJS(out);
+	  			}
+	  		// need to package last parameters (may be zero) into array		
+	  		} else {
+	  			// non-varargs parameters
+		  		for (int i=0; i<m.getNumParameter()-1; i++) {
+	  				out.print(",");
+	  				getArg(i).generateJS(out);
+	  			}  		
+	  			// create array for the rest
+	  			if (m.getNumParameter()>1) out.print(",");
+	  			out.print("[");
+	  			for (int i=m.getNumParameter()-1; i<getNumArg(); i++) {
+	  				if (i>m.getNumParameter()-1) out.print(",");
+	  				getArg(i).generateJS(out);
+	  			}
+	  			out.print("]");  			
+	  		}
+	
 			out.print(");");
-		}
+		}		
  	}
  	
 //  	public void DiamondAccess.generateJS(com.greentube.javaconverter.CodePrinter out) {

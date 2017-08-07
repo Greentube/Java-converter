@@ -81,7 +81,7 @@ namespace java.util
         }
         
         public virtual Collection keySet() { 
-            return new MapKeyView(this);
+            return new HashMapKeyView(this);
         }
         
         public virtual System.Object put(System.Object key, System.Object value) 
@@ -149,14 +149,14 @@ namespace java.util
         }
 
         public virtual Collection values() { 
-            return new MapValueView(this);
+            return new HashMapValueView(this);
         }        
 		
         
-        class MapKeyView : AbstractCollection {        
+        class HashMapKeyView : AbstractCollection {        
             private HashMap map;
              
-            public MapKeyView(HashMap m) 
+            public HashMapKeyView(HashMap m) 
             {
                 this.map = m;
             }     
@@ -168,8 +168,8 @@ namespace java.util
             // containsAll_1                   // implemented by AbstractCollection
 
             public override bool Equals(System.Object o) {
-                if (o==null || !(o is MapKeyView)) return false;
-                MapKeyView c = (MapKeyView) o;
+                if (o==null || !(o is HashMapKeyView)) return false;
+                HashMapKeyView c = (HashMapKeyView) o;
                 if (size() != c.size()) return false;
                 for (Iterator it=iterator(); it.hasNext(); ) {
                     if (!c.map.containsKey(it.next())) return false;
@@ -189,10 +189,7 @@ namespace java.util
             // boolean	isEmpty()              // implemented by AbstractCollection
             
             public override Iterator iterator() {
-                int s = map.size();
-                System.Object[] keys = new System.Object[s];
-                map.data.Keys.CopyTo(keys,0);
-                return new MapIterator(map, keys, true);
+                return new HashMapIterator(map,true);
             }
             
             public override int size() {
@@ -202,10 +199,10 @@ namespace java.util
             // Object[]	toArray()              // implemented by AbstractCollection        
         }
         
-        class MapValueView : AbstractCollection {
+        class HashMapValueView : AbstractCollection {
             private HashMap map;
 
-            public MapValueView(HashMap m) 
+            public HashMapValueView(HashMap m) 
             {
                 this.map = m;
             }        
@@ -220,10 +217,7 @@ namespace java.util
             // boolean	isEmpty()              // implemented by AbstractCollection
             
             public override Iterator iterator() {
-                int s = map.size();
-                System.Object[] keys = new System.Object[s];
-                map.data.Keys.CopyTo(keys,0);
-                return new MapIterator(map, keys, false);
+                return new HashMapIterator(map, false);
             }
             
             public override int size() {
@@ -233,16 +227,19 @@ namespace java.util
             // Object[]	toArray()              // implemented by AbstractCollection        
         }
         
-        class MapIterator : Iterator {
-            Map map;
-            System.Object[] keys;
+        class HashMapIterator : Iterator {
+            HashMap map;
             bool deliverKeys;
+            System.Object[] keys;
             int n;
             
-            public MapIterator(Map map, System.Object[] keys, bool deliverKeys) {
+            public HashMapIterator(HashMap map, bool deliverKeys) {                
                 this.map = map;
-                this.keys = keys;
                 this.deliverKeys = deliverKeys;
+                
+                this.keys = new System.Object[map.size()]; 
+                // when having a null key, the last array element will not be overwritten here
+                map.data.Keys.CopyTo(this.keys,0); 
                 this.n = 0;
             }
             

@@ -6,7 +6,7 @@ namespace java.util
         private int len;
     
         public ArrayList() : base() {
-            buffer = new System.Object[8];
+            buffer = new System.Object[10];
             len = 0;            
         }
         
@@ -53,6 +53,14 @@ namespace java.util
         
         public override int size() {
             return len;
+        }
+        
+        public virtual void trimToSize() {
+            if (len < buffer.Length) {
+                System.Object[] newbuffer = new System.Object[len];
+                System.Array.Copy(buffer,0, newbuffer,0, len);
+                buffer = newbuffer;
+            }            
         }
         
 	}	

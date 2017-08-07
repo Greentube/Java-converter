@@ -18,6 +18,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 // A test class to test the conversion of various features from java to other languages
@@ -33,7 +34,8 @@ public class TestJava4 {
     static String initialized = "hello".substring(2);
 
     public static void main(String[] args) {    	
-        System.out.println ("-- converter test suite for java 4" );
+        System.out.print ("--");
+        System.out.println(" converter test suite for java 4" );
         
         staticattributestest();
         constructortest();
@@ -1145,11 +1147,11 @@ public class TestJava4 {
         assertB(!l.contains(null));
         l.add(null);
         assertB(l.contains(null));
-        l.remove(null);
+        l.remove(l.indexOf(null));
         assertB(l.containsAll(l2));
         l2.add("hugo");
         assertB(!l.containsAll(l2));
-        l2.remove("hugo");
+        l2.remove(l2.indexOf("hugo"));
         
         Vector v = new Vector();
         v.add("corbin");
@@ -1188,7 +1190,7 @@ public class TestJava4 {
         assertI(l.lastIndexOf("carl"), 6);        
         l.remove(2);
         assertO(l.toString(),"[alice, bob, corbin, doris, xavier, carl]");
-        l.remove("doris");
+        l.remove(l.indexOf("doris"));
         assertO(l.toString(),"[alice, bob, corbin, xavier, carl]");
         
         l2.clear();
@@ -1202,7 +1204,7 @@ public class TestJava4 {
         l.add("elvis");
         l.add(null);
         assertO(l.toString(),"[alice, corbin, carl, dodo, null, elvis, null]");
-        l.remove(null);       
+        l.remove(l.indexOf(null));       
         assertO(l.toString(),"[alice, corbin, carl, dodo, elvis, null]");
         l.add(1,null);
         assertO(l.toString(),"[alice, null, corbin, carl, dodo, elvis, null]");        
@@ -1229,11 +1231,26 @@ public class TestJava4 {
         l.set(1, "more");
         assertO(l.toString(),"[corbin, more]");
         assertI(l.size(),2);
+        l.add(0,"first");
         
         Object[] oa = new ArrayList(l).toArray();
-        assertI(oa.length,2);
-        assertO(oa[0],"corbin");
-        assertO(oa[1],"more");
+        assertI(oa.length,3);
+        assertO(oa[0],"first");
+        assertO(oa[1],"corbin");
+        assertO(oa[2],"more");
+        
+        List itt = new ArrayList();
+        itt.add(Integer.valueOf(5));
+        itt.add(Integer.valueOf(8));
+        itt.add(Integer.valueOf(11));
+        itt.add(Integer.valueOf(14));
+        itt.add(Integer.valueOf(17));
+        assertO(itt.toString(), "[5, 8, 11, 14, 17]");
+        for (Iterator iti=itt.iterator(); iti.hasNext(); ) {
+        	Integer e = (Integer) iti.next();
+        	if (e.intValue()%2==1) iti.remove();
+        }
+        assertO(itt.toString(), "[8, 14]");        
     }
     
     
@@ -1398,17 +1415,17 @@ public class TestJava4 {
     	vals.add("eleven");
     	Iterator it =  c.iterator();
     	assertB(it.hasNext());
-    	assertB(vals.remove(it.next()));
+    	assertB(vals.contains(it.next()));
     	assertB(it.hasNext());
-    	assertB(vals.remove(it.next()));
+    	assertB(vals.contains(it.next()));
     	assertB(it.hasNext());
-    	assertB(vals.remove(it.next()));
+    	assertB(vals.contains(it.next()));
     	assertB(it.hasNext());
-    	assertB(vals.remove(it.next()));
+    	assertB(vals.contains(it.next()));
     	assertB(it.hasNext());
-    	assertB(vals.remove(it.next()));
+    	assertB(vals.contains(it.next()));
     	assertB(it.hasNext());
-    	assertB(vals.remove(it.next()));
+    	assertB(vals.contains(it.next()));
     	assertB(!it.hasNext());
     			
     	Collection s = hm.keySet();
@@ -1422,6 +1439,25 @@ public class TestJava4 {
     	assertI(s.size(),6);
     	assertI(s2.size(),6);
     	assertB(s2.toString().indexOf("0=?")>=0);
+    	
+    	
+    	Map m2 = new HashMap();
+    	m2.put(Integer.valueOf(1), "ONE");
+    	m2.put(Integer.valueOf(2), "TWO");
+    	m2.put(Integer.valueOf(3), "THREE");
+    	m2.put(Integer.valueOf(4), "FOUR");
+    	Map m3 = new HashMap(m2);
+    	for (Iterator i2 = m2.keySet().iterator(); i2.hasNext(); ) {
+    		Object k2 = i2.next();
+    		if ( ((Integer)k2).intValue()%2==1) i2.remove();
+    	}
+    	assertI(m2.size(),2);
+    	for (Iterator i2 = m3.values().iterator(); i2.hasNext(); ) {
+    		Object k2 = i2.next();
+    		if ( ((String)k2).indexOf('E')>=0) i2.remove();
+    	}
+    	assertI(m3.size(),2);
+    	assertO(m2,m3);
     }
     
     
@@ -1430,14 +1466,17 @@ public class TestJava4 {
     	LinkedList d = new LinkedList();
     	d.add("p1");
     	d.add("p2");
+    	assertO(d.toString(), "[p1, p2]");
     	d.addFirst("p0");
+    	assertO(d.toString(), "[p0, p1, p2]");
     	d.addLast("p3");
+    	assertO(d.toString(), "[p0, p1, p2, p3]");
     	d.addLast("p4");
-    	assertO(d.size(), 5);
+    	assertO(d.toString(), "[p0, p1, p2, p3, p4]");
+    	assertI(d.size(), 5);
     	assertB(d.contains("p2"));
     	assertB(!d.contains("px"));
     	assertO(d.toString(),"[p0, p1, p2, p3, p4]");
-    	
     	assertO(d.removeFirst(),  "p0");
     	assertO(d.toString(),"[p1, p2, p3, p4]");
     	for (int i=0; i<20; i++) d.addFirst("p0");
@@ -1500,6 +1539,18 @@ public class TestJava4 {
     	assertO(b.remove(b.size()-1), "stacktop2");
     	assertO(b.remove(b.size()-1), "stacktop");
     	
+        List itt = new LinkedList();
+        itt.add(Integer.valueOf(5));
+        itt.add(Integer.valueOf(8));
+        itt.add(Integer.valueOf(11));
+        itt.add(Integer.valueOf(14));
+        itt.add(Integer.valueOf(17));
+        assertO(itt.toString(), "[5, 8, 11, 14, 17]");
+        for (Iterator iti=itt.iterator(); iti.hasNext(); ) {
+        	Integer e = (Integer) iti.next();
+        	if (e.intValue()%2==1) iti.remove();
+        }
+        assertO(itt.toString(), "[8, 14]");            	
     }
     
     

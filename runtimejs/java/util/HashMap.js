@@ -7,11 +7,9 @@
 //load// java/lang/Object
 //load// java/util/Map
 //load// java/util/AbstractCollection
-//load// java/util/JSArrayIterator
+//load// java/util/Iterator
 
-//load// java/lang/Object
-//load// java/util/AbstractMap
-var java_util_HashMap = _extendClass( java_util_AbstractMap, {
+var java_util_HashMap = _extendClass( java_lang_Object, {
     
    	_0: function() {
         this.stringtable = {};
@@ -22,11 +20,7 @@ var java_util_HashMap = _extendClass( java_util_AbstractMap, {
 
    	_1: function(map) {
         this._0();
-        var it = map.keySet_0().iterator_0();
-        while (it.hasNext_0()) {
-            var k = it.next_0();
-            this.put_2(k,map.get_1(k));
-        }
+        this.putAll_1(map);
         return this;
 	},
     
@@ -119,7 +113,7 @@ var java_util_HashMap = _extendClass( java_util_AbstractMap, {
 	},
 
 	keySet_0: function() {
-        return (new java_util_MapKeyView())._1(this);
+        return (new java_util_HashMapKeyView())._1(this);
     }, 
 
 	put_2: function(key, value) {
@@ -151,6 +145,7 @@ var java_util_HashMap = _extendClass( java_util_AbstractMap, {
 	},
     
     putAll_1: function(map) {
+        if (map==null) throw new TypeError("NullPointerException");
         for (var it=map.keySet_0().iterator_0(); it.hasNext_0(); ) {
             var k = it.next_0();
             var v = map.get_1(k);
@@ -211,7 +206,7 @@ var java_util_HashMap = _extendClass( java_util_AbstractMap, {
 	},
 	  
     values_0: function() {
-        return (new java_util_MapValueView())._1(this);
+        return (new java_util_HashMapValueView())._1(this);
     },
         
 },"java_util_HashMap", [java_util_Map]);
@@ -222,7 +217,7 @@ function _isValidStringKey(s) {
 }
 
 
-var java_util_MapKeyView = _extendClass( java_util_AbstractCollection, {
+var java_util_HashMapKeyView = _extendClass( java_util_AbstractCollection, {
 
     _1: function(map) {   
         this.map = map;
@@ -258,23 +253,7 @@ var java_util_MapKeyView = _extendClass( java_util_AbstractCollection, {
 // boolean	isEmpty()              // implemented by AbstractCollection
 
     iterator_0: function() {
-        var mi = this.map;
-        var k = [];
-        // search through all string keys
-        for (var s in mi.stringtable) {
-            if (mi.stringtable.hasOwnProperty(s)) {
-                k.push(s);
-            }
-        }
-        // search through all hashcode-buckets        
-        for (var hc in mi.commontable) { 
-            if (mi.commontable.hasOwnProperty(hc)) {
-                for (var kv of mi.commontable[hc]) { 
-                    k.push(kv[0]);
-                }
-            }
-        }
-        return (new java_util_JSArrayIterator())._3(k,0,k.length);     
+        return (new java_util_HashMapIterator())._2(this.map, true);
     },
 
     size_0: function() {
@@ -283,10 +262,10 @@ var java_util_MapKeyView = _extendClass( java_util_AbstractCollection, {
     
 // Object[]	toArray()              // implemented by AbstractCollection
    	
-},"java_util_MapKeyView", [java_util_Collection]);
+},"java_util_HashMapKeyView", [java_util_Collection]);
 
 
-var java_util_MapValueView = _extendClass( java_util_AbstractCollection, {
+var java_util_HashMapValueView = _extendClass( java_util_AbstractCollection, {
 
    	_1: function(map) {
         this.map = map;
@@ -303,23 +282,7 @@ var java_util_MapValueView = _extendClass( java_util_AbstractCollection, {
 // boolean	isEmpty()              // implemented by AbstractCollection
 
     iterator_0: function() {
-        var mi = this.map;
-        var v = [];
-        // search through all string keys
-        for (var s in mi.stringtable) {
-            if (mi.stringtable.hasOwnProperty(s)) {
-                v.push(mi.stringtable[s]);
-            }
-        }
-        // search through all hashcode-buckets        
-        for (var hc in mi.commontable) { 
-            if (mi.commontable.hasOwnProperty(hc)) {
-                for (var kv of mi.commontable[hc]) { 
-                    v.push(kv[1]);
-                }
-            }
-        }
-        return (new java_util_JSArrayIterator())._3(v,0,v.length);     
+        return (new java_util_HashMapIterator())._2(this.map, false);     
     },
 
     size_0: function() {
@@ -328,6 +291,48 @@ var java_util_MapValueView = _extendClass( java_util_AbstractCollection, {
     
 // Object[]	toArray()              // implemented by AbstractCollection
 
+},"java_util_HashMapValueView", [java_util_Collection]);
 
-},"java_util_MapValueView", [java_util_Collection]);
 
+var java_util_HashMapIterator = _extendClass( java_lang_Object, {
+            
+    _2: function(map, deliverKeys) {
+        this.map = map;
+        this.deliverKeys = deliverKeys;
+        
+        var k = [];
+        // search through all string keys
+        for (var s in map.stringtable) {
+            if (map.stringtable.hasOwnProperty(s)) {
+                k.push(s);
+            }
+        }
+        // search through all hashcode-buckets        
+        for (var hc in map.commontable) { 
+            if (map.commontable.hasOwnProperty(hc)) {
+                for (var kv of map.commontable[hc]) { 
+                    k.push(kv[0]);
+                }
+            }
+        }
+        
+        this.keys = k;
+        this.n = 0; 
+        
+        return this;
+    },
+            
+    hasNext_0: function() {
+        return this.n<this.keys.length;
+    },
+            
+    next_0: function() {
+        var k = this.keys[this.n++];
+        return this.deliverKeys ? k : this.map.get_1(k);
+    },
+            
+    remove_0: function() {
+        this.map.remove_1(this.keys[this.n-1]);
+    },
+    
+}, "java_util_MapValueView", [java_util_Iterator]);

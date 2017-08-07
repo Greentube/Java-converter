@@ -1,6 +1,6 @@
-//reference// java/util/IteratorEnumeration
+//reference// java/util/Enumeration
 //load// java/util/AbstractList
-var java_util_Vector = _extendClass( java_util_AbstractList, {
+var java_util_Vector = _extendClass( java_util_ArrayList, {
     
     // legacy methods only supported by Vector (but not the List interface )
     // everything can be easily implemented by just using the methods of the
@@ -59,7 +59,13 @@ var java_util_Vector = _extendClass( java_util_AbstractList, {
 	},
   
 	removeElement_1: function (o) {
-        return this.remove_1(o);
+        var idx = this.indexOf_1(o);
+        if (idx>=0) {            
+            this.remove_1(idx);
+            return true;
+        } else {
+            return false;
+        }
     },
 
 	removeElementAt_1: function(index) {

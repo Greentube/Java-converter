@@ -1,4 +1,4 @@
-//reference// java/util/IteratorEnumeration
+//reference// java/util/Enumeration
 //load// java/util/HashMap
 var java_util_Hashtable = _extendClass( java_util_HashMap, {
     

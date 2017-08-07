@@ -1,160 +1,71 @@
-//load// java/util/AbstractCollection
-//load// java/util/Deque
-//reference// java/util/JSArrayIterator
-//reference// java/util/Iterator
-
-var java_util_ArrayDeque = _extendClass( java_util_AbstractCollection, {
-
-	_0: function() {
+//load// java/util/AbstractList
+var java_util_LinkedList = _extendClass( java_util_AbstractList, {
+  
+    _0: function() {
         this.storage = [];
-        this.firstindex = 0;
         return this;
+    },
+    
+    _1: function(collection) {
+        this._0();
+        this.addAll_1(collection);
+        return this;
+    },
+  
+    get_1: function(index) {
+        return this.storage[index];	
 	},
     
-	_1: function(collection) {
-        this.storage = collection.toArray_0();
-        this.firstindex = 0;
-        return this;
+	set_2: function(index, obj) {
+		this.storage[index] = obj;
+	},
+	    
+	add_2: function(index, obj) {
+        if(index==this.storage.length) {
+            this.storage.push(obj);
+        } else if (index==0) {
+            this.storage.unshift(obj);
+        } else {
+            this.storage.splice (index,0, obj);
+        }
+    },
+
+    remove_1: function (idx) {   
+        var obj = this.storage[idx];
+        if (idx==0) this.storage.shift();
+        else        this.storage.splice(idx,1);
+        return obj;                    
+    },
+
+	size_0: function() {
+		return this.storage.length;
 	},
     
-    add_1: function (obj) {
-        this.addLast_1(obj);
-        return true;
+    
+    // convenience methods
+    addFirst_1: function(obj) {
+        this.add_2(0,obj);
     },
    
-    addAll_1: function(collection) {
-        var didappend = false;
-        for (var i = collection.iterator_0(); i.hasNext_0(); ) {
-            this.addLast_1(i.next_0());
-            didappend = true;
-        }
-        return didappend;
+    addLast_1: function(obj) {
+        this.add_1(obj);
     },
-    
-    addFirst_1: function (obj) {
-        // when it is still possible to store something before the block of valid data
-        if (this.firstindex>0) {
-            this.storage[--this.firstindex] = obj;
-        // otherwise increase leading space in buffer by 10 elements 
-        } else {
-            this.storage.splice(0,0, null,null,null,null,null,null,null,null,null, obj);  
-            this.firstindex=9;
-        }
-    },   
-    
-    addLast_1: function (obj) {
-        this.storage.push(obj);
-    },
-
-    clear_0: function () {
-        this.storage = [];
-        this.firstindex = 0;
-    },
-    
-    // contains_1:    implemented by AbstractCollection
-    // containsAll_1: implemented by AbstractCollection
-    
-    element_0: function() {
-        return this.getFirst_0();
-    },
-    
-    // equals:  implemented by Object
-    // hashCode: implemented by Object
-    
+        
     getFirst_0: function() {
-        return this.storage[this.firstindex];
+        return this.get_1(0);
     },
     
     getLast_0: function() {
-        return this.storage[this.storage.length-1];
+        return this.get_1(this.size_0()-1);
     },
-    
-    // isEmpty_0:  implemented by AbstractCollection
-
-    iterator_0: function() {
-        return (new java_util_JSArrayIterator())
-            ._3(this.storage, this.firstindex, this.storage.length);
-    },    
-    
-    offer_1: function(obj) {
-        return this.addLast_1(obj);
-    },
-    
-    offerFirst_1: function(obj) {
-        return this.addFirst_1(obj);
-    },
-    
-    offerLast_1: function(obj) {
-        return this.addLast_1(obj);
-    },
-    
-    peek_0: function() {
-        return this.peekFirst_0();
-    },
-    
-    peekFirst_0: function() {
-        if (this.firstindex>=this.storage.length) return null;
-        return this.storage[this.firstindex];
-    },
-    
-    peekLast_0: function() {
-        if (this.firstindex>=this.storage.length) return null;
-        return this.storage[this.storage.length-1];
-    },
-    
-    poll_0: function() {
-        return this.pollFirst_0();
-    },
-    
-    pollFirst_0: function() {
-        if (this.firstindex>=this.storage.length) return null;
-        return this.removeFirst_0();
-    },
-    
-    pollLast_0: function() {
-        if (this.firstindex>=this.storage.length) return null;
-        return this.removeLast_0();
-    },
-    
-    pop_0: function() {
-        return this.removeFirst_0();
-    },
-    
-    push_1: function(obj) {
-        this.addFirst_1(obj);
-    },
-    
-    remove_0: function() {
-        return this.removeFirst_0();
-    },
-
-//    remove_1:    not implemented
-    
-    removeFirst_0: function() {
-        var e = this.storage[this.firstindex++];
-        // check if need to do compaction 
-        if (this.firstindex*2 >= this.storage.length) {
-            this.storage.splice(0,this.firstindex);
-            this.firstindex = 0;
-        }        
-        return e;
-    },     
-    
-    removeLast_0: function() {
-        return this.storage.pop();
-    },     
         
-//    removeFirstOccurence_1:   not implemented 
-//    removeLastOccurence_1:    not implemented
-//    removeAll_1:              not implemented
-//    retainAll_1:              not implemented
+    removeFirst_0: function() {
+        return this.remove_1(0);
+    },        
             
-    size_0: function() {
-        return this.storage.length - this.firstindex;
+    removeLast_0: function() {
+        return this.remove_1(this.size_0()-1);
     },
- 
-    // toArray_0   implemented by AbstractCollection
     
-	
-},"java_util_ArrayDeque", [java_util_Deque]);
+}, "java_util_LinkedList", null);
 

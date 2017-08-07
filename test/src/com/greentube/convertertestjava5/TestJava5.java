@@ -15,14 +15,12 @@ public class TestJava5 extends TestJava4 {
         System.out.println ("-- converter test suite for java 5" );
         genericstest();
         forinlooptest();
-//        autoboxingtest();
         enumtest();
         varargstest();
         staticimportstest();
     }
         
-	public static void genericstest() {
-/*		
+	public static void genericstest() {		
     	System.out.println("- generics");
     	
     	Entry<Integer,Integer> e = new Entry<Integer,Integer>(Integer.valueOf(12),Integer.valueOf(43));
@@ -33,15 +31,29 @@ public class TestJava5 extends TestJava4 {
     	assertI(d.getKey().intValue(), 17);
     	assertI(d.getValue().intValue(), 17);
     	
+    	Entry<TimeStamp,TimeStamp> twostamps = twoStamps(new TimeStamp(4));
+    	assertI(twostamps.getKey().time, 4);
+    	assertI(twostamps.getValue().time, 4);
+    	
     	List<Byte> l = new ArrayList<Byte>();
     	l.add(Byte.valueOf((byte)77));
     	l.add(Byte.valueOf((byte)11));
     	assertO(l.toString(), "[77, 11]");
     	assertI(l.get(0).byteValue(), 77);
     	assertI(l.get(1).byteValue(), 11);   
-*/    	 	
+    	
+    	Entry<TimeStamp,String> e2 = new Entry<TimeStamp,String>(new TimeStamp(99),"hi");
+    	assertO(e2.getValue(), "hi");
+    	Runnable r = new Runnable() { public void run() {} public String toString() { return "work";}  };
+    	ToDoEntry<TimeStamp,Runnable> e3 = new ToDoEntry<TimeStamp,Runnable>(new TimeStamp(101),r);
+    	assertO(e3.toString(), "TS101-work");    	
+    	ToDoEntry<TimeStamp,Runnable> e4 = new ToDoEntry<TimeStamp,Runnable>(new TimeStamp2(47),r);
+    	assertO(e4.toString(), "TS47:00-work");    	    	
 	}
 	private static <T> Entry<T, T> twice(T value) {
+	    return new Entry<T, T>(value, value);
+	}
+	private static <T extends TimeStamp> Entry<T, T> twoStamps(T value) {
 	    return new Entry<T, T>(value, value);
 	}
 	
@@ -62,26 +74,6 @@ public class TestJava5 extends TestJava4 {
     	
 	}
 	
-//	public static void autoboxingtest() {
-//    	System.out.println("- autoboxing");
-//    	
-//    	List<Integer> l = new ArrayList<Integer>();
-//    	l.add(4);
-//    	l.add(17);
-//    	l.add(99);
-//    	assertI(l.get(0), 4);
-//    	assertI(l.get(1), 17);
-//    	assertI(l.get(2), 99);
-//    	
-//    	assertI(inc(3),4);
-//    	assertI(shl(3),6);
-//	}
-//	private static Integer inc(Integer a) {
-//		return Integer.valueOf(a.intValue()+1);
-//	}
-//	private static Integer shl(Integer a) {
-//		return a << 2;
-//	}
 	
     public static void enumtest() {
     	System.out.println("- enum");
@@ -166,10 +158,11 @@ public class TestJava5 extends TestJava4 {
     	int[] i = new int[]{5,6,7};
     	assertI(sum(i), 18);
     	// constructor with variable arguments
+    	assertI((new VarArgConstructor()).sum(), 17);
     	assertI((new VarArgConstructor(2)).sum(), 2);
     	assertI((new VarArgConstructor(1,2,3)).sum(), 6);
     	assertI((new VarArgConstructor("hoho",2)).sum(), 6);
-    	assertI((new VarArgConstructor("hoho",2,19)).sum(), 25);    	
+    	assertI((new VarArgConstructor("hoho",2,19)).sum(), 25);    
 	}
 		
 	private static int sum(int... a) {
@@ -211,6 +204,10 @@ public class TestJava5 extends TestJava4 {
 			data = new int[par.length+1];
 			data[0] = x.length();
 			System.arraycopy(par, 0, data,1, par.length);			
+		}
+		
+		public VarArgConstructor() {
+			this("???",2,3,4,5);
 		}
 		
 		public int sum() {

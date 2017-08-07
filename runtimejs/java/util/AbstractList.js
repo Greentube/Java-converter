@@ -1,35 +1,23 @@
-//reference// java/util/JSArrayIterator
 //reference// java/util/Iterator
 //load// java/util/List
 //load// java/util/AbstractCollection
 var java_util_AbstractList = _extendClass( java_util_AbstractCollection, {
-
-	_0: function() {
-        this.storage = [];
-        return this;
-    },
+   
+    // must be implemented by a modifiable subclass
+    // public abstract System.Object get(int index);
+    // public abstract System.Object set(int index, System.Object element);        
+    // public abstract void add(int index, System.Object element);
+    // public abstract System.Object remove(int index);        
+    // int size() 
     
-	_1: function(collection) {
-        this.storage = collection.toArray_0();
-        return this;
-    },
 
     add_1: function (obj) {
-		this.storage.push(obj);  
+        this.add_2(this.size_0(), obj);
         return true;
     },   
    
-	add_2: function(index, obj) {
-        if(index==this.storage.length) {
-            this.storage.push(obj);
-        } else if (index==0) {
-            this.storage.shift(obj);
-        } else {
-            this.storage.splice (index,0, obj);
-        }
-    },
-
     addAll_1: function(collection) {
+        if (collection==null) throw new TypeError("NullPointerException");        
         var i = collection.iterator_0();
         var didappend = false;
         while (i.hasNext_0()) {
@@ -40,6 +28,7 @@ var java_util_AbstractList = _extendClass( java_util_AbstractCollection, {
     },
     
     addAll_2: function(index, collection) {
+        if (collection==null) throw new TypeError("NullPointerException");        
         var i = collection.iterator_0();
         var pos = index;
         var didappend = false;
@@ -50,8 +39,10 @@ var java_util_AbstractList = _extendClass( java_util_AbstractCollection, {
         return didappend;
     },          
     
-	clear_0: function(){
-        this.storage = [];
+	clear_0: function() {
+        for (var i=this.size_0()-1; i>=0; i--) {
+               this.remove_1(i);
+        }
 	},      
     
     //contains       implemented by AbstractCollection
@@ -70,10 +61,6 @@ var java_util_AbstractList = _extendClass( java_util_AbstractCollection, {
         return true;  
     },
     
-    get_1: function(index) {
-        return this.storage[index];	
-	},
-    
     hashCode_0: function() {
         var hashCode = 1;
         for (var it=this.iterator_0(); it.hasNext_0(); ) {
@@ -84,79 +71,70 @@ var java_util_AbstractList = _extendClass( java_util_AbstractCollection, {
     },       
     
 	indexOf_1: function (o) {
-        for (var i=0; i<this.storage.length; i++) {
-            if (o==null ? (this.storage[i]==null) : o.equals_1(this.storage[i])) return i;
+        var s = this.size_0();
+        for (var i=0; i<s; i++) {
+            if (o==null ? (this.get_1(i)==null) : o.equals_1(this.get_1(i))) return i;
         }
         return -1;
     },
 	        
-    // isEmpty             implemented by AbstractCollection
-   
     iterator_0: function() {
-        return (new java_util_JSArrayIterator())._3(this.storage,0,this.storage.length);
+        return (new java_util_AbstractListIterator())._1(this);
     },
    
 	lastIndexOf_1: function (o) {
-        for (var i=this.storage.length-1; i>=0; i--) {
-            if (o==null ? (this.storage[i]==null) : o.equals_1(this.storage[i])) return i;
+        for (var i=this.size_0()-1; i>=0; i--) {
+            if (o==null ? (this.get_1(i)==null) : o.equals_1(this.get_1(i))) return i;
         }
         return -1;
     },
 	  
-    remove_1: function (obj_or_index) {   
-        if  (obj_or_index==null || obj_or_index._is_java_lang_Object) {
-            var idx = this.indexOf_1(obj_or_index);
-            if (idx<0) return false;
-            if (idx==0) this.storage.shift();
-            else        this.storage.splice(idx,1);
-            return true;
-        } else {
-            var idx = obj_or_index;
-            var obj = this.storage[idx];
-            if (idx==0) this.storage.shift();
-            else        this.storage.splice(idx,1);
-            return obj;            
-        }
-    },
-
     removeAll_1: function (collection) {
-        return this._filter(collection,false);
+        return this.filter(collection,false);
     },
     
     retainAll_1: function (collection) {
-        return this._filter(collection,true);
+        return this.filter(collection,true);
     },
     
-    _filter: function(collection, keep) {
-        var s = [];
-        for (var i=0; i<this.storage.length; i++) {
-            var o = this.storage[i];
+    filter: function(collection, keep) {
+        if (collection==null) throw new TypeError("NullPointerException");                
+        var modified=false;
+        for (var i=this.size_0()-1; i>=0; i--) {
+            var o = this.get_1(i);
             var c = collection.contains_1(o);
-            if ((c && keep) || (!c && !keep)) {
-                s.push(o);
+            if ((c && !keep) || (!c && keep)) {
+                this.remove_1(i);
+                modified = true;
             }
         }
-        if (this.storage.length!=s.length) {
-            this.storage = s;
-            return true;
-        } else {
-            return false;
-        }
+        return modified;
     },
-    
-	set_2: function(index, obj) {
-		this.storage[index] = obj;
-	},
-	
-	size_0: function() {
-		return this.storage.length;
-	},
-
-	toArray_0: function () {
-        return this.storage.slice();
-	},
-    
+        
     // toString_0      implemented by AbstractCollection
   	            
 },"java_util_AbstractList", [java_util_List]);
+
+
+var java_util_AbstractListIterator = _extendClass( java_lang_Object, {
+
+	_1: function(list) {
+        this.list = list;
+        this.n = 0;
+        return this;
+    },
+    
+    hasNext_0: function() {
+        return this.n < this.list.size_0();
+    },
+    
+    next_0: function() {
+        return this.list.get_1(this.n++);
+    },
+        
+    remove_0: function() {
+        this.list.remove_1(--this.n);
+    },
+        
+},"java_util_AbstractListIterator", [java_util_Iterator]);
 

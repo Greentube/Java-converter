@@ -17,9 +17,9 @@ var java_util_List = _defineInterface("java_util_List",[java_util_Collection]);
 // Iterator<E>	iterator()                             // inherited from Collection
 // int	lastIndexOf(Object o)
 // E remove(int index)
-// boolean	remove(Object o)
 // boolean	removeAll(Collection<?> c)
 // boolean	retainAll(Collection<?> c)
 // E	set(int index, E element)
 // int	size()                                         // inherited from Collection
 // Object[]	toArray()                                  // inherited from Collection
+// String	toString()                                 // inherited from Collection
