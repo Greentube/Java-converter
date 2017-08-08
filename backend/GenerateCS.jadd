@@ -58,7 +58,7 @@ aspect GenerateCS {
     	out.println();
     	out.increaseIndent(); 
 
-		if (isInnerClass() && superclass().isObject()) {
+		if (needsEnclosing() && superclass().isObject()) {
 			out.print("public ");
 			enclosingType().generateReferenceCS(out);
 			out.print(" outer_o;");
@@ -111,7 +111,7 @@ aspect GenerateCS {
 							havestaticconstructor=true;
 						}							
 						out.print(fd.getID()+"_f = ");
-						fd.getInit().generateOrUseConstantCS(out);
+						fd.getInit().generateUsingResultCS(out);
 						out.print(";");
 						out.println();
 					}
@@ -230,7 +230,7 @@ aspect GenerateCS {
 							fd.getTypeAccess().generateCS(out);
 							out.print(" "); 							
 							out.print(fd.getID()+"_f = ");
-							fd.getInit().generateOrUseConstantCS(out);
+							fd.getInit().generateUsingResultCS(out);
 							out.print(";");		
 							out.println();			
 						}
@@ -272,7 +272,7 @@ aspect GenerateCS {
   		out.printCSUniqueName(hostType().uniqueName());
   		out.print("(");
   		// pass reference to the enclosing object 
-  		boolean needouter = hostType().isInnerClass() && !hostType().isSubclassingEnum();
+  		boolean needouter = hostType().needsEnclosing() && !hostType().isSubclassingEnum();
   		if (needouter) {
   			hostType().enclosingType().generateReferenceCS(out);
   			out.print(" outer_o");
@@ -289,7 +289,7 @@ aspect GenerateCS {
   		}
   		out.print(")");
   		out.print(":");
-  		((ExprStmt)getConstructorInvocation()).getExpr().generateCS(out);		
+  		((ExprStmt)getConstructorInvocation()).getExpr().generateCS(out);	// intentionally no post-processing	
 		out.println();
   		out.print("{");  		
 		out.println();
@@ -300,7 +300,7 @@ aspect GenerateCS {
 			// nothing to do 			
 		} else { 
 			// when a super-constructor is called, the initialization of everything else needs to be done here
-			if (hostType().isInnerClass() && ((ClassDecl)hostType()).superclass().isObject()) {
+			if (needouter && ((ClassDecl)hostType()).superclass().isObject()) {
 				out.print("this.outer_o = outer_o;");
 				out.println();
 			}			
@@ -311,7 +311,7 @@ aspect GenerateCS {
 					for (FieldDeclarator fd:bd.fieldDeclarations()) {
 						if (!fd.isStatic() && fd.getInit()!=null) {
 							out.print("this."+fd.getID()+"_f = ");
-							fd.getInit().generateCS(out);
+							fd.getInit().generateUsingResultCS(out);
 							out.print(";");						
 							out.println();
 						}
@@ -427,6 +427,12 @@ aspect GenerateCS {
   				out.print("bool");
   			} else if (isDouble()) {
   				out.print("double");
+//  			} else if (isLong()) {
+//  				out.print("long");
+//  			} else if (isFloat()) {
+//  				out.print("float");
+//  			} else if (isShort()) {
+//  				out.print("short");
   			} else {
   				throw new RuntimeException("Type not supported:"+fullName());
   			}

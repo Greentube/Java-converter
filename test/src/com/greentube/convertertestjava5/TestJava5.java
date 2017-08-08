@@ -34,13 +34,16 @@ public class TestJava5 extends TestJava4 {
     	Entry<TimeStamp,TimeStamp> twostamps = twoStamps(new TimeStamp(4));
     	assertI(twostamps.getKey().time, 4);
     	assertI(twostamps.getValue().time, 4);
+    	assertI(selector(Integer.valueOf(47),Integer.valueOf(11),0).intValue(), 47);
+    	assertI(selector(Integer.valueOf(47),Integer.valueOf(11),1).intValue(), 11);
     	
     	List<Byte> l = new ArrayList<Byte>();
     	l.add(Byte.valueOf((byte)77));
     	l.add(Byte.valueOf((byte)11));
     	assertO(l.toString(), "[77, 11]");
-    	assertI(l.get(0).byteValue(), 77);
-    	assertI(l.get(1).byteValue(), 11);   
+    	Byte b = l.get(0);
+    	assertI(b.byteValue(), 77);
+    	assertI(l.get(1).byteValue(), 11);
     	
     	Entry<TimeStamp,String> e2 = new Entry<TimeStamp,String>(new TimeStamp(99),"hi");
     	assertO(e2.getValue(), "hi");
@@ -55,6 +58,9 @@ public class TestJava5 extends TestJava4 {
 	}
 	private static <T extends TimeStamp> Entry<T, T> twoStamps(T value) {
 	    return new Entry<T, T>(value, value);
+	}
+	private static <T> T selector(T a, T b, int n) {
+		return n==0 ? a : b;
 	}
 	
 	public static void forinlooptest() {

@@ -65,7 +65,7 @@ aspect GenerateCS {
 			out.print("do ");
 			getStmt().generateCS(out);
 			out.print("while(");	
-			getCondition().generateOrUseConstantCS(out);
+			getCondition().generateUsingResultCS(out);
 			out.print(")");			
 		} else {
 			out.print("{ do { ");
@@ -76,7 +76,7 @@ aspect GenerateCS {
 			out.println();
 			out.print("}");
 			out.print("while(");	
-			getCondition().generateOrUseConstantCS(out);
+			getCondition().generateUsingResultCS(out);
 			out.print(");");
 			out.println();
 			out.printAndForgetLabel(label+"_b");
@@ -101,11 +101,11 @@ aspect GenerateCS {
 			out.print(" ");
 			out.print(vname);
 			out.print("_l in ");
-			e.generateOrUseConstantCS(out);
+			e.generateUsingResultCS(out);
 			out.print(") ");
 		} else if (e.type().isIterable()) {
 			out.print("for (java.util.Iterator "+vname+"_i = ");
-			e.generateOrUseConstantCS(out);
+			e.generateUsingResultCS(out);
 			out.print(".iterator(); "+vname+"_i.hasNext(); ) ");	
 			isiterator = true;		
 		} else {
@@ -163,13 +163,13 @@ aspect GenerateCS {
 			out.print(" ");
 		}
 		if (hasCondition()) {
-			getCondition().generateOrUseConstantCS(out);
+			getCondition().generateUsingResultCS(out);
 		} 
 		out.print("; ");
 		
 		for (int i=0; i<getNumUpdateStmt(); i++) {
 			if (i>0) out.print(", ");
-			((ExprStmt)getUpdateStmt(i)).getExpr().generateOrUseConstantCS(out);
+			((ExprStmt)getUpdateStmt(i)).getExpr().generateUsingResultCS(out);
 		}
 		out.print(") ");
 		
@@ -199,7 +199,7 @@ aspect GenerateCS {
 		out.print("switch (");
 		
 		Expr e = getExpr();
-		e.generateOrUseConstantCS(out);
+		e.generateUsingResultCS(out);
 		if (e.type().isEnumDecl()) {
 			out.print(".ordinal()");
 		} 
@@ -214,7 +214,7 @@ aspect GenerateCS {
 		}
 		
 		out.print("while (");
-		getCondition().generateOrUseConstantCS(out);
+		getCondition().generateUsingResultCS(out);
 		out.print(") ");
 
 		if (label!=null) {
@@ -271,7 +271,7 @@ aspect GenerateCS {
 			if (e.isEnumConstant()) {
 				out.print("" + ((EnumDecl)e.type()).determineOrdinal(((VarAccess)e).name()) );
 			} else {
-				e.generateOrUseConstantCS(out);
+				e.generateUsingResultCS(out);
 			}
 			out.print(";");
 			out.println();
@@ -281,7 +281,7 @@ aspect GenerateCS {
 		if (e.isEnumConstant()) {
 			out.print("" + ((EnumDecl)e.type()).determineOrdinal(((VarAccess)e).name()) );
 		} else {
-			e.generateOrUseConstantCS(out);
+			e.generateUsingResultCS(out);
 		}
 		out.print(":");
 		out.println();
@@ -316,7 +316,7 @@ aspect GenerateCS {
     // --- ExprStmt ---
   
 	public void ExprStmt.generateCS(com.greentube.javaconverter.CodePrinter out) {
-		getExpr().generateOrUseConstantCS(out);
+		getExpr().generateCS(out);   // intentionally do no post-processing
 		out.print(";");
 		out.println();		
 	}  	
@@ -325,7 +325,7 @@ aspect GenerateCS {
 	
 	public void IfStmt.generateCS(com.greentube.javaconverter.CodePrinter out) {
 		out.print("if (");
-		getCondition().generateOrUseConstantCS(out);
+		getCondition().generateUsingResultCS(out);
 		out.print(") ");
 		getThen().generateCS(out);
 		Stmt e = getElse();
@@ -348,7 +348,7 @@ aspect GenerateCS {
 			out.print("return;");
 		} else {
 			out.print("return ");
-			r.generateOrUseConstantCS(out);
+			r.generateUsingResultCS(out);
 			out.print(";");
 		}
 		out.println();		
@@ -384,10 +384,10 @@ aspect GenerateCS {
 			if (e!=null) {
 				if (t.isChar() && e.type().isInt()) {
 					out.print("java.lang.SYSTEM.castToChar(");
-					e.generateOrUseConstantCS(out);
+					e.generateUsingResultCS(out);
 					out.print(")");
 				} else {
-					e.generateOrUseConstantCS(out);
+					e.generateUsingResultCS(out);
 				}
 			} else if (t.isChar()) {
 				out.print("'\\u0000'");

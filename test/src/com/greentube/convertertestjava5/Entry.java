@@ -1,7 +1,7 @@
 package com.greentube.convertertestjava5;
 
 public class Entry<KeyType, ValueType> {
-	  
+
     public final KeyType key;
     public final ValueType value;
 

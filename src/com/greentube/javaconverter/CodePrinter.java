@@ -157,6 +157,8 @@ public class CodePrinter {
 			print("System.String");
 		} else if (constantpoolname.equals("java/lang/System")) {
 			print("java.lang.SYSTEM");
+		} else if (constantpoolname.equals("java/util/Set")) {
+			print("java.util.Collection");			
 		} else {
 			print(constantpoolname.replace('$', '_').replace('/','.'));
 		}

@@ -6,7 +6,7 @@ namespace testcsharp
     {
         static void Main(string[] args)
         {
-            com.greentube.convertertest.TestJava4.main(args);
+            com.greentube.convertertestjava7.TestJava7.main(args);
         }
     }
 }
