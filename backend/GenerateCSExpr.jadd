@@ -446,29 +446,30 @@ aspect GenerateCS {
 
   	public void AddExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
   		// do some case discrimination if this is a string concatenation
+  		Expr l = getLeftOperand();
+  		Expr r = getRightOperand();
+  		
   		if (type().isString()) {
-  			AddExpr e = this;
-  			out.print("System.String.Join(\"\",");
-  			params: for (;;) {
- 				out.print("java.lang.SYSTEM.str(");
-  				e.getLeftOperand().generateUsingResultCS(out);
-  				out.print(")");
-				out.print(",");
-  				if (e.getRightOperand() instanceof AddExpr) {
-  					e = (AddExpr) e.getRightOperand();
-  				} else {
- 					out.print("java.lang.SYSTEM.str(");
- 					e.getRightOperand().generateUsingResultCS(out);
-	  				out.print(")");  	
-	  				break params;				
-  				}
-  			}
-  			out.print(")");
-  		} else {
-	  		getLeftOperand().generateUsingResultCS(out);
-  			out.print("+");
-  			getRightOperand().generateUsingResultCS(out);
-  		}
+			if ((l.type().isString() && l.isConstant()) || (l instanceof AddExpr)) {
+				l.generateUsingResultCS(out);
+			} else {
+				out.print("java.lang.SYSTEM.str(");
+  				l.generateUsingResultCS(out);
+				out.print(")");
+			}			
+	  		out.print("+");
+			if ((r.type().isString() && r.isConstant()) || (r instanceof AddExpr)) {
+				r.generateUsingResultCS(out);
+			} else {
+				out.print("java.lang.SYSTEM.str(");
+  				r.generateUsingResultCS(out);
+				out.print(")");
+			}
+		} else {
+  			l.generateUsingResultCS(out);
+	  		out.print("+");
+			r.generateUsingResultCS(out);	
+		}		
   	}
   	public void SubExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
   		getLeftOperand().generateUsingResultCS(out);
@@ -625,18 +626,26 @@ aspect GenerateCS {
   	// --- PrimaryExpr ---
   	
   	public void ArrayCreationExpr.generateCS(com.greentube.javaconverter.CodePrinter out) {
+  		// array with initialization data
   		if (hasArrayInit()) {
   			getArrayInit().generateCS(out);
   		} else {
-  			TypeDecl leaf = type();
-  			while (leaf.isArrayDecl()) {
-  				leaf=leaf.elementType();
-  			}
-  			out.print("(java.lang.SYSTEM.dim<");
-  			leaf.generateReferenceCS(out);
-  			out.print(">(");
-  			getTypeAccess().generateCS(out);
-			out.print("))");
+  			TypeDecl t = type();
+  			// one-dimensional array
+  			if (t.dimension()==1) {
+  				out.print("new ");
+  				t.elementType().generateReferenceCS(out);
+  				out.print("[");
+  				getTypeAccess().generateCS(out);
+  				out.print("]");
+  			// multi-dimensional array
+  			} else {
+	  			out.print("(java.lang.SYSTEM.dim<");
+  				t.elementType().generateReferenceCS(out);
+  				out.print(">(");
+  				getTypeAccess().generateCS(out);
+				out.print("))");
+			}
   		}
   	}
   	

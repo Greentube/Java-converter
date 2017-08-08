@@ -15,9 +15,6 @@ namespace java.lang {
         }
             
             
-        public static T[] dim<T>(int n0) {
-            return new T[n0];
-        }
         public static T[][] dim<T>(int n0, int n1) {
             T[][] a = new T[n0][];
             for (int i0=0; n1>=0 && i0<n0; i0++) {
@@ -170,7 +167,6 @@ namespace java.lang {
         public static System.String str(System.Object o) {
             return (o==null) ? "null" : o.ToString();
         }
-
         
         public static uint makeUnsigned(int x) {
             return (uint) x;
