@@ -148,7 +148,7 @@ public class CodePrinter {
 	// --- functionality specific for csharp code generation ---
 	
 	public void printCSUniqueName(String s) {
-		print(s.replace('$', '_'));
+		print(s.replace('$', '\u00b5'));
 	}
 	public void printCSName(String constantpoolname) {
 		if (constantpoolname.equals("java/lang/Object")) {
@@ -160,7 +160,7 @@ public class CodePrinter {
 		} else if (constantpoolname.equals("java/util/Set")) {
 			print("java.util.Collection");			
 		} else {
-			print(constantpoolname.replace('$', '_').replace('/','.'));
+			print(constantpoolname.replace('$', '\u00b5').replace('/','.'));
 		}
 	}
 	

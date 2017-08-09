@@ -57,14 +57,12 @@ public class TestJava4 {
         stringtest();
         stringbuffertest();
         stringbuildertest();
-        systemtest();
-        
+        systemtest();        
         vectortest();
         arraylisttest();
         hashtabletest();        
         hashmaptest();        
-        linkedlisttest();
-        
+        linkedlisttest();        
         secondaryclassestest();
         complexoperationtest();
         initsequencetest();

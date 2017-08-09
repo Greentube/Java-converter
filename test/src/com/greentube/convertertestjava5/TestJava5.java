@@ -169,6 +169,11 @@ public class TestJava5 extends TestJava4 {
     	assertI((new VarArgConstructor(1,2,3)).sum(), 6);
     	assertI((new VarArgConstructor("hoho",2)).sum(), 6);
     	assertI((new VarArgConstructor("hoho",2,19)).sum(), 25);    
+    	assertI((new VarArgConstructor2()).sum(), 37);
+    	assertI((new VarArgConstructor2(2)).sum(), 2);
+    	assertI((new VarArgConstructor2(1,2,3)).sum(), 6);
+    	assertI((new VarArgConstructor2("hoho",2)).sum(), 6);
+    	assertI((new VarArgConstructor2("hoho",2,19)).sum(), 25);    
 	}
 		
 	private static int sum(int... a) {
@@ -207,9 +212,7 @@ public class TestJava5 extends TestJava4 {
 		}
 		
 		public VarArgConstructor(String x, int... par) {
-			data = new int[par.length+1];
-			data[0] = x.length();
-			System.arraycopy(par, 0, data,1, par.length);			
+			this(join(x.length(),par));
 		}
 		
 		public VarArgConstructor() {
@@ -222,6 +225,25 @@ public class TestJava5 extends TestJava4 {
 				s += data[i];
 			}
 			return s;
+		}
+		
+		private static int[] join (int x, int[] more) {
+			int[] d = new int[more.length+1];
+			d[0]=x;
+			System.arraycopy(more, 0, d, 1, more.length);
+			return d;
+		}
+	}
+	
+	static class VarArgConstructor2 extends VarArgConstructor {
+		public VarArgConstructor2(int... par) {
+			super(par);
+		}
+		public VarArgConstructor2(String x, int... par) {
+			super(x,par);
+		}
+		public VarArgConstructor2() {
+			super("!!!", 7,8,9,10);
 		}
 	}
 }
