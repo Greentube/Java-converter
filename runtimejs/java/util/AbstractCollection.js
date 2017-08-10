@@ -6,7 +6,7 @@
 //load// java/lang/Object
 //load// java/util/Collection
 //reference// java/util/Iterator
-var java_util_AbstractCollection = _extendClass( java_lang_Object, {
+var java_util_AbstractCollection = _defineClass("java_util_AbstractCollection", java_lang_Object, [java_util_Collection], {
 
 	contains_1: function(obj) {
         var i = this.iterator_0();
@@ -57,6 +57,6 @@ var java_util_AbstractCollection = _extendClass( java_lang_Object, {
 		return parts.join("");    
 	}, 
     
-},"java_util_AbstractCollection", [java_util_Collection]);
+});
 
 

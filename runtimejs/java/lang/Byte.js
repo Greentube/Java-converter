@@ -1,5 +1,5 @@
 //load// java/lang/Object
-var java_lang_Byte = _extendClass( java_lang_Object, {
+var java_lang_Byte = _defineClass("java_lang_Byte", java_lang_Object, null, {
 	_1: function(b) {
 		this.b_f = b;
         return this;
@@ -27,7 +27,7 @@ var java_lang_Byte = _extendClass( java_lang_Object, {
         return (new java_lang_Byte())._1(b);
     },    
     
-},"java_lang_Byte", null);
+});
 
 
 java_lang_Byte.prototype.MIN__VALUE_f = -128;

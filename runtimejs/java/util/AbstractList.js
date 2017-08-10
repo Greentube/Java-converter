@@ -1,7 +1,7 @@
 //reference// java/util/Iterator
 //load// java/util/List
 //load// java/util/AbstractCollection
-var java_util_AbstractList = _extendClass( java_util_AbstractCollection, {
+var java_util_AbstractList = _defineClass("java_util_AbstractList", java_util_AbstractCollection, [java_util_List], {
    
     // must be implemented by a modifiable subclass
     // public abstract System.Object get(int index);
@@ -113,10 +113,10 @@ var java_util_AbstractList = _extendClass( java_util_AbstractCollection, {
         
     // toString_0      implemented by AbstractCollection
   	            
-},"java_util_AbstractList", [java_util_List]);
+});
 
 
-var java_util_AbstractListIterator = _extendClass( java_lang_Object, {
+var java_util_AbstractListIterator = _defineClass("java_util_AbstractListIterator", java_lang_Object, [java_util_Iterator], {
 
 	_1: function(list) {
         this.list = list;
@@ -136,5 +136,5 @@ var java_util_AbstractListIterator = _extendClass( java_lang_Object, {
         this.list.remove_1(--this.n);
     },
         
-},"java_util_AbstractListIterator", [java_util_Iterator]);
+});
 

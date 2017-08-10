@@ -1,5 +1,5 @@
 //load// java/lang/Object
-var java_lang_Enum = _extendClass (java_lang_Object, {
+var java_lang_Enum = _defineClass ("java_lang_Enum", java_lang_Object, null, {
 	_2: function(name,ordinal) {
         this.name = name;
         this.ordinal = ordinal;
@@ -26,6 +26,6 @@ var java_lang_Enum = _extendClass (java_lang_Object, {
         return this.name;
     }
     
- },"java_lang_Enum", null);
+});
 
  

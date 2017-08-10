@@ -1,5 +1,5 @@
 //load// java/lang/Object
-var java_lang_Math = _extendClass( java_lang_Object, {
+var java_lang_Math = _defineClass("java_lang_Math", java_lang_Object, null, {
 
     abs_1: Math.abs,
     acos_1: Math.acos,
@@ -38,7 +38,7 @@ var java_lang_Math = _extendClass( java_lang_Object, {
                             return result;
                 },
                 
-}, "java_lang_Math", null );
+});
 
 
 java_lang_Math.prototype.E_f =  2.718281828459045; 

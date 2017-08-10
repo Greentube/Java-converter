@@ -1,5 +1,5 @@
 //load// java/util/AbstractList
-var java_util_ArrayList = _extendClass( java_util_AbstractList, {
+var java_util_ArrayList = _defineClass("java_util_ArrayList", java_util_AbstractList, null, {
   
     _0: function() {
         this.storage = [];
@@ -45,4 +45,4 @@ var java_util_ArrayList = _extendClass( java_util_AbstractList, {
         // no operation. the underlying array is always trimmed.
     },
         
-},  "java_util_ArrayList", null);
+});

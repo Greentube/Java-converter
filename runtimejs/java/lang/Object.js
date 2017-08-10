@@ -42,7 +42,7 @@ java_lang_Object.prototype._classNameString = "java.lang.Object";
 // create a new class (that means, its constructor function) and
 // copy existing members to the new prototype. this keeps the protoyping
 // chain flat and maybe also fast.
-function _extendClass (base, methods, classname, interfaces)
+function _defineClass (classname, base, interfaces, methods)
 {  
   // the constructor function which will be used with new 
   var f = function(optionalOuter) 

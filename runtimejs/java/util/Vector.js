@@ -1,6 +1,6 @@
 //reference// java/util/Enumeration
 //load// java/util/AbstractList
-var java_util_Vector = _extendClass( java_util_ArrayList, {
+var java_util_Vector = _defineClass("java_util_Vector", java_util_ArrayList, null, {
     
     // legacy methods only supported by Vector (but not the List interface )
     // everything can be easily implemented by just using the methods of the
@@ -89,4 +89,4 @@ var java_util_Vector = _extendClass( java_util_ArrayList, {
         }
 	},
     
-}, "java_util_Vector", null);
+});

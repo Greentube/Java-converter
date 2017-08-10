@@ -2,7 +2,7 @@
 //reference// java/lang/String
 
 //load// java/lang/Object
-var java_io_PrintStream = _extendClass (java_lang_Object, {
+var java_io_PrintStream = _defineClass ("java_io_PrintStream", java_lang_Object, null, {
 
 	_1: function(iserr) {
         this.iserr_f = iserr;
@@ -29,5 +29,5 @@ var java_io_PrintStream = _extendClass (java_lang_Object, {
     },
     
     
-},"java_io_PrintStream", []);
+});
 

@@ -10,7 +10,7 @@
 //load// java/util/AbstractCollection
 //load// java/util/Iterator
 
-var java_util_HashMap = _extendClass( java_lang_Object, {
+var java_util_HashMap = _defineClass("java_util_HashMap", java_lang_Object, [java_util_Map], {
     
    	_0: function() {
         this.stringtable = {};
@@ -210,15 +210,14 @@ var java_util_HashMap = _extendClass( java_lang_Object, {
         return (new java_util_HashMapValueView())._1(this);
     },
         
-},"java_util_HashMap", [java_util_Map]);
-
+});
 
 function _isValidStringKey(s) {
     return s!=null && s._is_java_lang_String;
 }
 
 
-var java_util_HashMapKeyView = _extendClass( java_util_AbstractCollection, {
+var java_util_HashMapKeyView = _defineClass("java_util_HashMapKeyView", java_util_AbstractCollection, [java_util_Set], {
 
     _1: function(map) {   
         this.map = map;
@@ -263,10 +262,10 @@ var java_util_HashMapKeyView = _extendClass( java_util_AbstractCollection, {
     
 // Object[]	toArray()              // implemented by AbstractCollection
    	
-},"java_util_HashMapKeyView", [java_util_Set]);
+});
 
 
-var java_util_HashMapValueView = _extendClass( java_util_AbstractCollection, {
+var java_util_HashMapValueView = _defineClass("java_util_HashMapValueView", java_util_AbstractCollection, [java_util_Collection], {
 
    	_1: function(map) {
         this.map = map;
@@ -292,10 +291,10 @@ var java_util_HashMapValueView = _extendClass( java_util_AbstractCollection, {
     
 // Object[]	toArray()              // implemented by AbstractCollection
 
-},"java_util_HashMapValueView", [java_util_Collection]);
+});
 
 
-var java_util_HashMapIterator = _extendClass( java_lang_Object, {
+var java_util_HashMapIterator = _defineClass("java_util_MapValueView", java_lang_Object, [java_util_Iterator], {
             
     _2: function(map, deliverKeys) {
         this.map = map;
@@ -336,4 +335,4 @@ var java_util_HashMapIterator = _extendClass( java_lang_Object, {
         this.map.remove_1(this.keys[this.n-1]);
     },
     
-}, "java_util_MapValueView", [java_util_Iterator]);
+});

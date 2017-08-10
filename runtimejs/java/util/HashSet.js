@@ -3,7 +3,7 @@
 //load// java/util/AbstractCollection
 //load// java/util/Iterator
 
-var java_util_HashSet = _extendClass( java_util_AbstractCollection, {
+var java_util_HashSet = _defineClass("java_util_HashSet", java_util_AbstractCollection, [java_util_Set], {
 
         _0: function() {
             this.map = (new java_util_HashMap())._0();
@@ -96,6 +96,6 @@ var java_util_HashSet = _extendClass( java_util_AbstractCollection, {
         // toArray   implemented by AbstractCollection 
         // toString  implemented by AbstractCollection
     
-},  "java_util_HashSet", [java_util_Set]);
+});
 
 java_util_HashSet.prototype.PRESENT_f = (new java_lang_Object())._0();

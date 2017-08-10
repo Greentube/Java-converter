@@ -1,5 +1,5 @@
 //load// java/lang/Object
-var java_lang_Boolean = _extendClass (java_lang_Object, {
+var java_lang_Boolean = _defineClass ("java_lang_Boolean", java_lang_Object, null, {
 	_1: function(b) {
 		this.b_f = b;
         return this;
@@ -27,7 +27,7 @@ var java_lang_Boolean = _extendClass (java_lang_Object, {
       return b ? java_lang_Boolean.prototype.TRUE_f : java_lang_Boolean.prototype.FALSE_f;
     },
         
- },"java_lang_Boolean", null);
+});
 
 java_lang_Boolean.prototype.TRUE_f = (new java_lang_Boolean)._1(true);
 java_lang_Boolean.prototype.FALSE_f = (new java_lang_Boolean)._1(false);

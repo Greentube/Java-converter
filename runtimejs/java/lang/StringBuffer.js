@@ -1,5 +1,5 @@
 //load// java/lang/Object
-var java_lang_StringBuilder = _extendClass( java_lang_Object, {
+var java_lang_StringBuilder = _defineClass("java_lang_StringBuilder", java_lang_Object, null, {
 
     _0: function() {
         this.parts = [];
@@ -27,5 +27,5 @@ var java_lang_StringBuilder = _extendClass( java_lang_Object, {
         return this.parts.join("");
     }
       
- },"java_lang_StringBuilder", []);
+ });
  

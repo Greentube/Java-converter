@@ -1,5 +1,5 @@
 //load// java/util/AbstractList
-var java_util_LinkedList = _extendClass( java_util_AbstractList, {
+var java_util_LinkedList = _defineClass("java_util_LinkedList", java_util_AbstractList, null, {
   
     _0: function() {
         this.storage = [];
@@ -67,5 +67,5 @@ var java_util_LinkedList = _extendClass( java_util_AbstractList, {
         return this.remove_1(this.size_0()-1);
     },
     
-}, "java_util_LinkedList", null);
+});
 

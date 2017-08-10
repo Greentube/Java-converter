@@ -1,6 +1,6 @@
 //complete// java/io/PrintStream
 //load// java/lang/Object
-var java_lang_System = _extendClass( java_lang_Object, {
+var java_lang_System = _defineClass("java_lang_System", java_lang_Object, null, {
     
     arraycopy_5 : function(src, srcPos, dest, destPos, length) {
         if (destPos<=srcPos) {
@@ -17,7 +17,7 @@ var java_lang_System = _extendClass( java_lang_Object, {
     exit_1: function(status) {
     }
         
-}, "java_lang_System", null);
+});
 
 java_lang_System.prototype.out_f = (new java_io_PrintStream())._1(false);
 java_lang_System.prototype.err_f = (new java_io_PrintStream())._1(true);

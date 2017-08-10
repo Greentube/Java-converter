@@ -1,5 +1,5 @@
 //load// java/lang/Object
-var java_lang_Integer = _extendClass( java_lang_Object, {
+var java_lang_Integer = _defineClass("java_lang_Integer", java_lang_Object, null, {
 	_1: function(i) {
 		this.i_f = i;
         return this;
@@ -28,8 +28,7 @@ var java_lang_Integer = _extendClass( java_lang_Object, {
         return (new java_lang_Integer())._1(i);
     },
     
- },"java_lang_Integer",  null);
- 
+});
  
 java_lang_Integer.prototype.MAX__VALUE_f = 2147483647;
 java_lang_Integer.prototype.MIN__VALUE_f = -2147483648;
