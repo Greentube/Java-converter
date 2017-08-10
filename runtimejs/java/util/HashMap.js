@@ -6,6 +6,7 @@
 
 //load// java/lang/Object
 //load// java/util/Map
+//load// java/util/Set
 //load// java/util/AbstractCollection
 //load// java/util/Iterator
 
@@ -262,7 +263,7 @@ var java_util_HashMapKeyView = _extendClass( java_util_AbstractCollection, {
     
 // Object[]	toArray()              // implemented by AbstractCollection
    	
-},"java_util_HashMapKeyView", [java_util_Collection]);
+},"java_util_HashMapKeyView", [java_util_Set]);
 
 
 var java_util_HashMapValueView = _extendClass( java_util_AbstractCollection, {

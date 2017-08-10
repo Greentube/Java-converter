@@ -35,8 +35,8 @@ var java_lang_Double = _extendClass ( java_lang_Object, {
 
 },"java_lang_Double", null);
 
-java_lang_Double.prototype.MIN_VALUE_f = 4.9E-324;
-java_lang_Double.prototype.MAX_VALUE_f = 1.7976931348623157E308;
-java_lang_Double.prototype.POSITIVE_INFINITY_f = 1.0/0.0;
-java_lang_Double.prototype.NEGATIVE_INFINITY_f = -1.0/0.0;
+java_lang_Double.prototype.MIN__VALUE_f = 4.9E-324;
+java_lang_Double.prototype.MAX__VALUE_f = 1.7976931348623157E308;
+java_lang_Double.prototype.POSITIVE__INFINITY_f = 1.0/0.0;
+java_lang_Double.prototype.NEGATIVE__INFINITY_f = -1.0/0.0;
 

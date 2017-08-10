@@ -271,10 +271,6 @@ aspect GenerateCS {
 	}  
   	
 
-//  	public void TypeDecl.generateCS(com.greentube.javaconverter.CodePrinter out) {
-//    	out.print(constantPoolName());
-//    }  
-  
 
   	public void ConstructorDecl.generateCS(CodePrinter out) {
 		// decide if all the fields have to be initialized right here	
@@ -482,7 +478,7 @@ aspect GenerateCS {
 		return 0;
 	}
 	
-  	public void Constant.generateCharacterCS(CodePrinter out, char c) {
+  	public static void Constant.generateCharacterCS(CodePrinter out, char c) {
   			switch(c) {
   			case '\b': 	out.print("\\b");
   						break;

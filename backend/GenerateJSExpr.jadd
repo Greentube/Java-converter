@@ -71,7 +71,7 @@ aspect GenerateJS {
  	}
   	public void ConstructorAccess.generateJS(CodePrinter out) {
   		TypeDecl ht = decl().hostType();
-  		if (!ht.constantPoolName().equals("java/lang/Object")) {
+  		if (!(ht.packageName().equals("java.lang.") && ht.uniqueName().equals("Object")) ) {
 			out.println();
 			out.printAndMemorizeReference(ht.packageName(), ht.uniqueName());
 
@@ -114,9 +114,11 @@ aspect GenerateJS {
   		MethodDecl m = decl();
   		
   		if (m.isStatic()) {
-			TypeDecl t = hostType();
+			TypeDecl t = m.hostType();
   			out.printAndMemorizeReference(t.packageName(),t.uniqueName());
-  			out.print(".prototype."+m.name()+"_"+m.getNumParameter()+"(");
+  			out.print(".prototype.");
+  			out.printJSIdentifier(m.name(),"_"+m.getNumParameter());
+  			out.print("(");
 
 	  		// check if this is inside a static initializer - must force early loading of accessed class
 	  		BodyDecl bd = enclosingBodyDecl();
@@ -129,18 +131,23 @@ aspect GenerateJS {
 			TypeDecl t = hostType();
 			if (t!=m.hostType() && t.isInnerTypeOf(m.hostType())) {
 				while (t!=m.hostType()) {			
-					out.print("outer.");
+					out.print("_o.");
 					t = t.enclosingType();
 				}
 			}  		
-  			out.print(m.name()+"_"+m.getNumParameter()+"(");
+  			out.printJSIdentifier(m.name(),"_"+m.getNumParameter());
+  			out.print("(");
   			
   		} else if (prevExpr().isSuperAccess()) {
-			out.print("."+m.name()+"_"+m.getNumParameter()+".call(this");
+			out.print(".");
+			out.printJSIdentifier(m.name(),"_"+m.getNumParameter());
+			out.print(".call(this");
   			if (m.getNumParameter()>0) out.print(",");
   			
   		} else {
-  			out.print("."+m.name()+"_"+m.getNumParameter()+"(");
+  			out.print(".");
+  			out.printJSIdentifier(m.name(),"_"+m.getNumParameter());
+  			out.print("(");
   		}
 
 		// check if this is a method with variable number of parameters - must 
@@ -193,7 +200,8 @@ aspect GenerateJS {
   		if (v.isClassVariable()) {
   			TypeDecl t = v.hostType();
   			out.printAndMemorizeReference(t.packageName(),t.uniqueName());  		
-  			out.print(".prototype."+getID()+"_f");  
+  			out.print(".prototype.");
+  			out.printJSIdentifier(getID(),"_f");  
   			// check if this is inside a static initializer - must force early loading of accessed class
 	  		BodyDecl bd = enclosingBodyDecl();
   			if (bd.isField() || (bd instanceof StaticInitializer)) {
@@ -207,21 +215,22 @@ aspect GenerateJS {
 				TypeDecl t = hostType();
 				if (t!=v.hostType() && t.isInnerTypeOf(v.hostType())) {
 					while (t!=v.hostType()) {			
-						out.print("outer.");
+						out.print("_o.");
 						t = t.enclosingType();
 					}
 				}  		
   			}  		
-			out.print(getID()+"_f");
+			out.printJSIdentifier(getID(),"_f");
   		} else if (v.isLocalVariable() || v.isParameter()) {  
   			if (v.hostType() == hostType()) {		
-				out.printLocalVariable(getID());
+				out.printJSIdentifier(getID(), "");
 			} else {
 				throw new RuntimeException("Can not access local variables of outer class method");
 			}
   		} else {
   			// this fits in no other category - maybe the 'length' attribute of arrays 
-			out.print("."+getID());
+			out.print(".");
+			out.printJSIdentifier(getID(), "");
   		}  		
  	}
   	
@@ -542,37 +551,9 @@ aspect GenerateJS {
   	}
   	public void StringLiteral.generateJS(CodePrinter out) {
   		String v = constant().stringValue();
-  		out.print("\"");
+  		out.print("\"");  		
   		for (int i=0; i<v.length(); i++) {
-  			char c = v.charAt(i);
-  			switch(c) {
-  			case '\b': 	out.print("\\b");
-  						break;
-  			case '\f':  out.print("\\f");	
-  			            break;
-  			case '\n':  out.print("\\n"); 
-  			            break;
-  			case '\r':  out.print("\\r");
-  			            break;
-  			case '\t':  out.print("\\t");
-  			            break;
-  			case '\\':  out.print("\\\\");
-  			            break;
-  			case '"':   out.print("\\\"");
-  			            break;  			
-  			default: 
-  				if (c>=32 && c<=126) {
-  				 	out.print(""+c);
-  				} else {
-  					String hx = Integer.toHexString((int)c);
-  					out.print("\\u");
-  					for (int j=hx.length(); j<4; j++) {
-  						out.print("0");
-  					} 
-  					out.print(hx);
-  				}
-  				break;
-  			}
+  			Constant.generateCharacterJS(out, v.charAt(i));
   		}
   		out.print("\"");
   		

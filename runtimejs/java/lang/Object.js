@@ -49,7 +49,7 @@ function _extendClass (base, methods, classname, interfaces)
   {
       // if provided set up the link to the outer object
       if (optionalOuter) { 
-            this.outer = optionalOuter;
+            this._o = optionalOuter;
       }
   }
   

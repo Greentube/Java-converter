@@ -30,5 +30,5 @@ var java_lang_Byte = _extendClass( java_lang_Object, {
 },"java_lang_Byte", null);
 
 
-java_lang_Byte.prototype.MIN_VALUE_f = -128;
-java_lang_Byte.prototype.MAX_VALUE_f = 127;
+java_lang_Byte.prototype.MIN__VALUE_f = -128;
+java_lang_Byte.prototype.MAX__VALUE_f = 127;

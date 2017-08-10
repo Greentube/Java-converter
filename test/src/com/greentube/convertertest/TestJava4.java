@@ -16,11 +16,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 // A test class to test the conversion of various features from java to other languages
@@ -64,6 +66,7 @@ public class TestJava4 {
         arraylisttest();
         hashtabletest();        
         hashmaptest();        
+        hashsettest();        
         linkedlisttest();        
         secondaryclassestest();
         complexoperationtest();
@@ -1461,7 +1464,20 @@ public class TestJava4 {
     	assertO(m2,m3);
     }
     
-    
+    public static void hashsettest() {
+    	System.out.println("- hashset");
+    	
+    	HashSet s = new HashSet();
+    	assertB(! s.contains(Byte.valueOf((byte)4)));
+    	s.add(Byte.valueOf((byte)4));
+    	assertB(s.contains(Byte.valueOf((byte)4)));
+    	s.add(Integer.valueOf(44));
+    	s.add(Integer.valueOf(43));
+    	assertB(s.contains(new Integer(44)));
+    	assertB(s.contains(Integer.valueOf(43)));
+    	assertI(s.hashCode(), 91);
+    }
+        
     public static void linkedlisttest() {
     	System.out.println("- linked list");
     	LinkedList d = new LinkedList();

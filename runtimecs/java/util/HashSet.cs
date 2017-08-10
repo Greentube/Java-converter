@@ -3,7 +3,7 @@ namespace java.util
 	public class HashSet : AbstractCollection, Set
 	{
         private static System.Object PRESENT = new System.Object();
-        private HashMap map;
+        private readonly HashMap map;
         
         public HashSet() {
             map = new HashMap();

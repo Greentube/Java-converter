@@ -133,31 +133,46 @@ public class CodePrinter {
 	
 	// --- functionality specific for javascript generation ---  
 	
-	public void printLocalVariable(String name) {
-		// check if this is a synthetic local variable name
-		if (name.startsWith("@")) {
-			print(name.substring(1));
-			print("_s");
-		} else {
-			print(name);
-			print("_l");
+	private static Set<String> javascriptreserved = new HashSet<String>(Arrays.asList(
+			"abstract", "arguments", "await", "boolean", "break", "byte", "case", "catch",
+			"char", "class", "const", "continue", "debugger", "default", "delete", "do",
+			"double", "else", "enum", "eval", "export", "extends", "false", "final",
+			"finally", "float", "for", "function", "goto", "if", "implements", "import",
+			"in", "instanceof", "int", "interface", "let", "long", "native", "new",
+			"null", "package", "private", "protected", "public", "return", "short", "static",
+			"super", "switch", "synchronized", "this", "throw", "throws", "transient", "true",
+			"try", "typeof", "var" ,"void", "volatile", "while", "with", "yield"
+	));
+	
+	public void printJSIdentifier(String id, String suffix) {
+		String escaped = escapeIdentifier(id,false) + suffix;
+		if (javascriptreserved.contains(escaped)) {
+			print("$");
 		}
+		print(escaped);
+	}
+	
+	public void printJSName(String packagename, String uniquename) {
+		if (packagename.length()==1) packagename = "default";
+		StringTokenizer t = new StringTokenizer(packagename,".");
+		for (int i=0; t.hasMoreElements(); i++) {
+			print(escapeIdentifier(t.nextToken(),false).replace('_', '$'));
+			print("_");
+		}		
+		print(escapeIdentifier(uniquename,false).replace('_', '$'));
 	}
 	
 	public void printAndMemorizeReference(String packagename, String uniquename) {
 		memorizeReference(packagename,uniquename);
-		String filename = packagename+"_"+uniquename;
-		print (filename.replace('/', '_'));
+		printJSName(packagename,uniquename);
 	}
 	public void printAndMemorizeLoad(String packagename, String uniquename) {
 		memorizeLoad(packagename,uniquename);
-		String filename = packagename+"_"+uniquename;
-		print (filename.replace('/', '_'));
+		printJSName(packagename,uniquename);
 	}
 	public void printAndMemorizeComplete(String packagename, String uniquename) {
 		memorizeComplete(packagename,uniquename);
-		String filename = packagename+"_"+uniquename;
-		print (filename.replace('/', '_'));
+		printJSName(packagename,uniquename);
 	}
 	
 	public void memorizeReference(String packagename, String uniquename) {

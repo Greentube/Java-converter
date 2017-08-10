@@ -31,5 +31,5 @@ var java_lang_Character = _extendClass( java_lang_Object, {
  },"java_lang_Character",  null);
  
  
-java_lang_Character.prototype.MAX_VALUE_f = 0xffff;
-java_lang_Character.prototype.MIN_VALUE_f = 0;
+java_lang_Character.prototype.MAX__VALUE_f = 0xffff;
+java_lang_Character.prototype.MIN__VALUE_f = 0;
