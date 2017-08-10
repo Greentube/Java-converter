@@ -154,24 +154,6 @@ namespace java.util
             }
         }        
 
-        
-//        private void dump() {
-//            System.Console.Write("LEN: "+len+" CURRENTINDEX: "+currentIndex+ " CURRENT: "
-//                + (currentNode==null?"null":currentNode.element) + "\n");
-//            System.Console.Write("FWD:");
-//            for (Node n=head.next; n!=head; n=n.next) {
-//                System.Console.Write(" ");
-//                System.Console.Write(n.element);
-//            }
-//            System.Console.Write("\n");
-//            System.Console.Write("BCK:");
-//            for (Node n=head.prev; n!=head; n=n.prev) {
-//                System.Console.Write(" ");
-//                System.Console.Write(n.element);
-//            }
-//            System.Console.Write("\n");
-//        }
-        
                        
         // extra convenience methods of LinkedList
         public virtual void addFirst(System.Object obj) {
