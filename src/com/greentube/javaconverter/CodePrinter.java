@@ -4,7 +4,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Set;
+import java.util.StringTokenizer;
 
 public class CodePrinter {
 	// general code generation
@@ -87,7 +90,46 @@ public class CodePrinter {
 		print("\n");
 		linehasstarted=false;
 	}
-		
+
+	public static String escapeIdentifier(String id, boolean allowDollarSign) {
+		// escape special characters, so the output will never have characters >127
+		StringBuffer b = new StringBuffer();
+		for (int i=0; i<id.length(); i++) {
+			char c = id.charAt(i);
+			if ( (c>='a' && c<='z')
+			||	 (c>='A' && c<='Z')
+			||   (c>='0' && c<='9')
+			||   (allowDollarSign && c=='$')) {
+				b.append(c);
+			} else {
+				b.append("_");
+				if (c=='_') { 
+					// nothing
+				} else if (c>='!' && c<='/') {
+					b.append( (char) (c-'!'+'A'));
+				} else if (c>=':' && c<='@') {
+					b.append( (char) (c-':'+'P'));
+				} else if (c>='[' && c<='^') {
+					b.append( (char) (c-'['+'W'));
+				} else {
+					b.append(Integer.toHexString(c));
+				}	
+				b.append("_");
+			}
+		}
+		return b.toString();
+	}
+	
+	public static String escapePackagePath(String packagename) {
+		StringBuffer b = new StringBuffer();
+		StringTokenizer t = new StringTokenizer(packagename,".");
+		for (int i=0; t.hasMoreElements(); i++) {
+			b.append(escapeIdentifier(t.nextToken(), true));
+			b.append("/");
+		}
+		return b.toString();
+	}
+
 	
 	// --- functionality specific for javascript generation ---  
 	
@@ -102,27 +144,30 @@ public class CodePrinter {
 		}
 	}
 	
-	public void printAndMemorizeReference(String filename) {
+	public void printAndMemorizeReference(String packagename, String uniquename) {
+		memorizeReference(packagename,uniquename);
+		String filename = packagename+"_"+uniquename;
 		print (filename.replace('/', '_'));
-		reference.add(filename);
 	}
-	public void printAndMemorizeLoad(String filename) {
+	public void printAndMemorizeLoad(String packagename, String uniquename) {
+		memorizeLoad(packagename,uniquename);
+		String filename = packagename+"_"+uniquename;
 		print (filename.replace('/', '_'));
-		load.add(filename);
 	}
-	public void printAndMemorizeComplete(String filename) {
+	public void printAndMemorizeComplete(String packagename, String uniquename) {
+		memorizeComplete(packagename,uniquename);
+		String filename = packagename+"_"+uniquename;
 		print (filename.replace('/', '_'));
-		complete.add(filename);
 	}
 	
-	public void memorizeReference(String filename) {
-		reference.add(filename);
+	public void memorizeReference(String packagename, String uniquename) {
+		reference.add(escapePackagePath(packagename) + escapeIdentifier(uniquename,true));
 	}
-	public void memorizeLoad(String filename) {
-		load.add(filename);		
+	public void memorizeLoad(String packagename, String uniquename) {
+		load.add(escapePackagePath(packagename) + escapeIdentifier(uniquename,true));		
 	}
-	public void memorizeComplete(String filename) {
-		complete.add(filename);	
+	public void memorizeComplete(String packagename, String uniquename) {
+		complete.add(escapePackagePath(packagename) + escapeIdentifier(uniquename,true));	
 	}
 	
 	public void printExternals() {
@@ -147,30 +192,64 @@ public class CodePrinter {
 	
 	// --- functionality specific for csharp code generation ---
 	
-	public void printCSUniqueName(String s) {
-		print(s.replace('$', '\u00b5'));
+	private static Set<String> csharpreserved = new HashSet<String>(Arrays.asList(
+			"abstract", "as", "base", "bool", "break", "byte", "case", "catch",
+			"char", "checked", "class", "const", "continue", "decimal", "default", "delegate",
+			"do", "double", "else", "enum", "event", "explicit", "extern", "false",
+			"finally", "fixed", "float", "for", "foreach", "goto", "if", "implicit",
+			"in", "int", "interface", "internal", "is", "lock", "long",
+			"namespace", "new", "null", "object", "operator", 	"out", "override",
+			"params", "private", "protected", "public", "readonly", "ref", "return" ,"sbyte",
+			"sealed", "short", "sizeof", "stackalloc", "static", "string", "struct", "switch",
+			"this", "throw", "true", "try", "typeof", "uint", "ulong", "unchecked",
+			"unsafe", "ushort", "using", "using", "static", "virtual", "void", "volatile", "while"						
+	));
+	
+	public void printCSIdentifier(String id, String suffix) {
+		String escaped = escapeIdentifier(id,false) + suffix;
+		if (csharpreserved.contains(escaped)) {
+			print("@");
+		}
+		print(escaped);
 	}
-	public void printCSName(String constantpoolname) {
-		if (constantpoolname.equals("java/lang/Object")) {
+	
+	public void printCSUniqueName(String s) {		
+		printCSIdentifier(s,"");
+	}
+	public void printCSPackageName(String s) {
+		StringTokenizer t = new StringTokenizer(s,".");
+		for (int i=0; t.hasMoreElements(); i++) {
+			if (i>0) print(".");
+			printCSIdentifier(t.nextToken(),"");
+		}		
+	}
+	public void printCSName(String packagename, String uniquename) {
+		if (packagename.equals("java.lang") && uniquename.equals("Object")) {
 			print("System.Object");
-		} else if (constantpoolname.equals("java/lang/String")) {
+		} else if (packagename.equals("java.lang") && uniquename.equals("String")) {
 			print("System.String");
-		} else if (constantpoolname.equals("java/lang/System")) {
+		} else if (packagename.equals("java.lang") && uniquename.equals("System")) {
 			print("java.lang.SYSTEM");
-		} else if (constantpoolname.equals("java/util/Set")) {
-			print("java.util.Collection");			
 		} else {
-			print(constantpoolname.replace('$', '\u00b5').replace('/','.'));
+			StringTokenizer t = new StringTokenizer(packagename,".");
+			for (int i=0; t.hasMoreElements(); i++) {
+				printCSIdentifier(t.nextToken(),"");
+				print(".");
+			}
+			printCSIdentifier(uniquename, "");
 		}
 	}
 	
 	public void printJumpToLabel(String l) {
-		print("goto "+l+";");
+		print("goto ");
+		print(l);
+		print(";");
 		pendingLabels.add(l);
 	}
 	public void printAndForgetLabel(String l) {
 		if (pendingLabels.contains(l)) {
-			print(l+":;");
+			print(l);
+			print(":;");
 			pendingLabels.remove(l);
 		}
 	}

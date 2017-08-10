@@ -80,7 +80,7 @@ namespace java.util
             return size()<=0; 
         }
         
-        public virtual Collection keySet() { 
+        public virtual Set keySet() { 
             return new HashMapKeyView(this);
         }
         
@@ -153,7 +153,7 @@ namespace java.util
         }        
 		
         
-        class HashMapKeyView : AbstractCollection {        
+        class HashMapKeyView : AbstractCollection, Set {        
             private HashMap map;
              
             public HashMapKeyView(HashMap m) 

@@ -66,6 +66,12 @@ public class TestJava5 extends TestJava4 {
 	public static void forinlooptest() {
     	System.out.println("- for in loop");
     	
+    	int s = 0;
+    	for (int i=0; i<5; i++) {  // test also normal loop
+    		s += i;
+    	}
+    	assertI(s,10);
+    	
     	ArrayList<Integer> l = new ArrayList<Integer>();
     	for (int i:new int[]{7,4,1}) {
     		l.add(Integer.valueOf(i));    		

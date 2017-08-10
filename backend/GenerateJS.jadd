@@ -1,24 +1,29 @@
+import com.greentube.javaconverter.CodePrinter;
+
 aspect GenerateJS {
   	  	
-  	public void ASTNode.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  	public void ASTNode.generateJS(CodePrinter out) {
   		System.err.print("UNEXPECTED:"+this.getClass().getName());
 		this.dumpTree(System.err);
   	}
 
   	public void CompilationUnit.generateJS(File outputfolder) {
     	for (TypeDecl t:getTypeDecls()) {
-			com.greentube.javaconverter.CodePrinter out = 
-				new com.greentube.javaconverter.CodePrinter(
-					outputfolder, t.constantPoolName()+".js");
+			CodePrinter out = new CodePrinter(outputfolder,
+					CodePrinter.escapePackagePath(t.packageName()) 
+				    + CodePrinter.escapeIdentifier(t.uniqueName(), true) + ".js"
+				);
 	    	t.generateJS(out);
 			out.finish();    		    	
     	}
   	}
     	
-	public void ClassDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {
+	public void ClassDecl.generateJS(CodePrinter out) {
 		for (TypeDecl t:nestedTypes()) {
-			com.greentube.javaconverter.CodePrinter o2 = 
-			   new com.greentube.javaconverter.CodePrinter(out, t.constantPoolName()+".js");
+			CodePrinter o2 = new CodePrinter(out, 
+					CodePrinter.escapePackagePath(t.packageName()) 
+				    + CodePrinter.escapeIdentifier(t.uniqueName(), true) + ".js"
+			);
 	    	t.generateJS(o2);
     		o2.finish();    		
 		}
@@ -30,9 +35,9 @@ aspect GenerateJS {
     	out.print(" = _extendClass(");
     	
     	if (hasSuperClass()) {
-      		out.printAndMemorizeLoad(superclass().constantPoolName());
+      		out.printAndMemorizeLoad(superclass().packageName(),superclass().uniqueName());
     	} else {
-    		out.printAndMemorizeLoad("java/lang/Object");
+    		out.printAndMemorizeLoad("java.lang", "Object");
     	} 
     	out.print (",{ ");
     	out.println();
@@ -68,7 +73,8 @@ aspect GenerateJS {
 			int n=0;
       		for (Iterator<TypeDecl> iter = interfacesIterator(); iter.hasNext(); n++) {
       			if (n>0) out.print(",");
-        		out.printAndMemorizeLoad(iter.next().constantPoolName());
+      			TypeDecl t = iter.next();
+        		out.printAndMemorizeLoad(t.packageName(), t.uniqueName());
       		}			
 			out.print("]");
 		} 
@@ -103,7 +109,7 @@ aspect GenerateJS {
 		}
   	}
   	
-	public void EnumDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {
+	public void EnumDecl.generateJS(CodePrinter out) {
 		super.generateJS(out);
 
 		String cpname = constantPoolName();
@@ -143,17 +149,20 @@ aspect GenerateJS {
 		out.println();
 		
 		if (needexternalinitialization) {
-			out.memorizeReference(cpname+"$init");
+			out.memorizeReference(packageName(),uniqueName()+"$init");
 			
-			com.greentube.javaconverter.CodePrinter o2 = 
-				 new com.greentube.javaconverter.CodePrinter(out, cpname+"$init.js");
+			CodePrinter o2 = new CodePrinter(out,
+					CodePrinter.escapePackagePath(packageName()) 
+				    + CodePrinter.escapeIdentifier(uniqueName()+"$init", true) + ".js"
+			);
 
 				ordinal = 0;
 				for (EnumConstant ec:enumConstants()) {
 					if (ec.getInit().type()!=this) {
 						o2.print(jsname+".prototype."+ec.getID()+"_f = ");
 						o2.print("(new ");
-						o2.printAndMemorizeComplete(ec.getInit().type().constantPoolName());
+						TypeDecl t = ec.getInit().type();
+						o2.printAndMemorizeComplete(t.packageName(),t.uniqueName());
 						o2.print("())._"+(ec.getNumArg()+2)+"(\""+ec.getID()+"\","+ordinal);
 						for (int i=0; i<ec.getNumArg(); i++) {
 							o2.print(",");
@@ -169,7 +178,7 @@ aspect GenerateJS {
 		}
 	}  
   	
-	public void InterfaceDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {
+	public void InterfaceDecl.generateJS(CodePrinter out) {
 		String jsname = constantPoolName().replace('/','_');
 
     	out.print("var ");
@@ -178,13 +187,14 @@ aspect GenerateJS {
 		out.print("\""+constantPoolName().replace('/','_')+"\",");
 		if (!hasSuperInterface()) {
 			out.print("null");
-    		out.memorizeLoad("java/lang/Object");
+    		out.memorizeLoad("java.lang","Object");
 		} else {
 			out.print("[");
 			int n=0;
       		for (Iterator<TypeDecl> iter = interfacesIterator(); iter.hasNext(); n++) {
       			if (n>0) out.print(",");
-        		out.printAndMemorizeLoad(iter.next().constantPoolName());
+      			TypeDecl t = iter.next();
+        		out.printAndMemorizeLoad(t.packageName(),t.uniqueName());
       		}			
 			out.print("]");
 		}
@@ -206,7 +216,7 @@ aspect GenerateJS {
 	}  
   	
 
-  	public void ConstructorDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  	public void ConstructorDecl.generateJS(CodePrinter out) {
 		Block block = getBlock();
 		
   		int numpar = getNumParameter();  		
@@ -281,20 +291,20 @@ aspect GenerateJS {
   		out.println();
   	}
 
-//	public void EnumConstant.generateJS(com.greentube.javaconverter.CodePrinter out) {
+//	public void EnumConstant.generateJS(CodePrinter out) {
 //	}
 
-	public void InstanceInitializer.generateJS(com.greentube.javaconverter.CodePrinter out) {
+	public void InstanceInitializer.generateJS(CodePrinter out) {
 		getBlock().generateJS(out);	
 	}
-//	public void FieldDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {
+//	public void FieldDecl.generateJS(CodePrinter out) {
 //	}
-//	public void MemberClassDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {
+//	public void MemberClassDecl.generateJS(CodePrinter out) {
 //	}
-//	public void MemberInterfaceDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {
+//	public void MemberInterfaceDecl.generateJS(CodePrinter out) {
 //	}
 
-  	public void MethodDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  	public void MethodDecl.generateJS(CodePrinter out) {
 		Block block = getBlock();
 		if (block==null) return;
 
@@ -313,11 +323,11 @@ aspect GenerateJS {
   		out.println();
   	}
 
-	public void StaticInitializer.generateJS(com.greentube.javaconverter.CodePrinter out) {
+	public void StaticInitializer.generateJS(CodePrinter out) {
 		getBlock().generateJS(out);
 	}
 
-//	public void SubstitutedBodyDecl.generateJS(com.greentube.javaconverter.CodePrinter out) {
+//	public void SubstitutedBodyDecl.generateJS(CodePrinter out) {
 //	}
   	
 }

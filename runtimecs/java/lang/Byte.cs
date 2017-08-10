@@ -43,7 +43,7 @@ namespace java.lang
         }
 
         
-        public const sbyte MIN_VALUE_f = -128;
-        public const sbyte MAX_VALUE_f = 127;
+        public const sbyte MIN__VALUE_f = -128;
+        public const sbyte MAX__VALUE_f = 127;
     }
 }

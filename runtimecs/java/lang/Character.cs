@@ -43,7 +43,7 @@ namespace java.lang
         }
 
         
-        public const char MIN_VALUE_f = (char) 0;
-        public const char MAX_VALUE_f = (char) 0xffff;        
+        public const char MIN__VALUE_f = (char) 0;
+        public const char MAX__VALUE_f = (char) 0xffff;        
     }
 }

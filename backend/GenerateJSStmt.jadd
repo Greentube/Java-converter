@@ -1,3 +1,4 @@
+import com.greentube.javaconverter.CodePrinter;
 aspect GenerateJS {
  
  	// --- AssertStmt ---
@@ -6,7 +7,7 @@ aspect GenerateJS {
  	
  	// --- Block ---
  	
-	public void Block.generateJS(com.greentube.javaconverter.CodePrinter out) {
+	public void Block.generateJS(CodePrinter out) {
 		out.print("{");
 		out.increaseIndent();
 		out.println();
@@ -21,7 +22,7 @@ aspect GenerateJS {
   
   	// --- BranchTargetStmt ---
   	
-	public void DoStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+	public void DoStmt.generateJS(CodePrinter out) {
 		out.print("do ");
 		getStmt().generateJS(out);
 		out.print("while (");	
@@ -30,7 +31,7 @@ aspect GenerateJS {
 		out.println();
  	}
  	
-	public void EnhancedForStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+	public void EnhancedForStmt.generateJS(CodePrinter out) {
 		String vname = getVariableDecl().name();
 		Expr e = getExpr();
 		if (e.type().isArrayDecl()) {
@@ -54,7 +55,7 @@ aspect GenerateJS {
 		out.println();
  	}
  	
-	public void ForStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+	public void ForStmt.generateJS(CodePrinter out) {
 		out.print("for (");
 		if (getNumInitStmt()==0) {
 			out.print("; ");
@@ -76,19 +77,19 @@ aspect GenerateJS {
 		getStmt().generateJS(out);
  	}
  	
-	public void LabeledStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+	public void LabeledStmt.generateJS(CodePrinter out) {
 		out.print(getLabel()+": ");
 		getStmt().generateJS(out);
  	}
  	
-	public void SwitchStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+	public void SwitchStmt.generateJS(CodePrinter out) {
 		out.print("switch (");
 		getExpr().generateJS(out);
 		out.print(")");
 		getBlock().generateJS(out);	
  	}
 
-	public void WhileStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+	public void WhileStmt.generateJS(CodePrinter out) {
 		out.print("while (");
 		getCondition().generateJS(out);
 		out.print(") ");
@@ -97,7 +98,7 @@ aspect GenerateJS {
   	
   	// --- BreakStmt ---
   	
-	public void BreakStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+	public void BreakStmt.generateJS(CodePrinter out) {
 		out.print("break");
 		if (getLabel()!=null) out.print(" "+getLabel());
 		out.print(";");	
@@ -106,20 +107,20 @@ aspect GenerateJS {
   	
   	// --- Case ---
   	
-	public void ConstCase.generateJS(com.greentube.javaconverter.CodePrinter out) {
+	public void ConstCase.generateJS(CodePrinter out) {
 		out.print("case ");
 		getValue().generateJS(out);
 		out.print(":");
 		out.println();
 	}
-	public void DefaultCase.generateJS(com.greentube.javaconverter.CodePrinter out) {
+	public void DefaultCase.generateJS(CodePrinter out) {
 		out.print("default:");
 		out.println();
 	}
   	
   	// --- ContinueStmt ---
 
-  	public void ContinueStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+  	public void ContinueStmt.generateJS(CodePrinter out) {
 		out.print("continue");
 		if (getLabel()!=null) out.print(" "+getLabel());
 		out.print(";");
@@ -130,7 +131,7 @@ aspect GenerateJS {
     
     // --- ExprStmt ---
   
-	public void ExprStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+	public void ExprStmt.generateJS(CodePrinter out) {
 		getExpr().generateJS(out);
 		out.print(";");
 		out.println();
@@ -138,7 +139,7 @@ aspect GenerateJS {
 	
 	// --- IfStmt ---
 	
-	public void IfStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+	public void IfStmt.generateJS(CodePrinter out) {
 		out.print("if (");
 		getCondition().generateJS(out);
 		out.print(") ");
@@ -152,13 +153,13 @@ aspect GenerateJS {
 	}  	
 	
 	// --- LocalClassDeclStmt ---
-	public void LocalClassDeclStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+	public void LocalClassDeclStmt.generateJS(CodePrinter out) {
 		// class was already generated 
 	}
 	
 	// --- ReturnStmt ---
 	
-	public void ReturnStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+	public void ReturnStmt.generateJS(CodePrinter out) {
 		if (enclosingBodyDecl() instanceof ConstructorDecl) {
 			out.print("return this;");
 		} else {
@@ -182,7 +183,7 @@ aspect GenerateJS {
 		
 	// --- VarDeclStmt ---
 	
-	public void VarDeclStmt.generateJS(com.greentube.javaconverter.CodePrinter out) {
+	public void VarDeclStmt.generateJS(CodePrinter out) {
 		out.print("var ");
 		for (int i=0; i<getNumDeclarator(); i++) {
 			if (i>0) out.print(", ");

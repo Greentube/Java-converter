@@ -14,6 +14,7 @@ namespace java.util
             addAll(collection);
         }
         
+        // implement to satisfy AbstractList requirements
         public override System.Object get(int index) { 
             if (index<0 || index>=len) throw new System.IndexOutOfRangeException();
             return buffer[index];
@@ -46,8 +47,7 @@ namespace java.util
             if (index<len-1) {
                 System.Array.Copy(buffer, index+1, buffer, index, len-1-index);
             }
-            len--;
-            buffer[len] = null;
+            buffer[--len] = null;  // remove garbage reference
             return prev;
         }
         
@@ -55,6 +55,7 @@ namespace java.util
             return len;
         }
         
+        // extra operations on ArrayList
         public virtual void trimToSize() {
             if (len < buffer.Length) {
                 System.Object[] newbuffer = new System.Object[len];
@@ -63,5 +64,22 @@ namespace java.util
             }            
         }
         
+        // overrides that can speed up certain operations
+        public override bool add(System.Object e) { 
+            if (len>=buffer.Length) {
+                System.Object[] newbuffer = new System.Object[buffer.Length*2];
+                System.Array.Copy(buffer,0, newbuffer,0, buffer.Length);
+                buffer = newbuffer;
+            }            
+            buffer[len++] = e;
+            return true;
+        }
+        
+        public override void clear() {   
+            for (int i=0; i<len; i++) {     // remove garbage references
+                buffer[i] = null;
+            }
+            len = 0;
+        }                
 	}	
 }

@@ -1,14 +1,16 @@
 package com.greentube.convertertest;
 
-import com.greentube.convertertest2.TestInterface2;
-import com.greentube.convertertest2.TestInterfaceX;
-import com.greentube.convertertest2.TestObject2;
-import com.greentube.convertertest3.InitSequenceTestA;
-import com.greentube.convertertest3.InitSequenceTestB;
-import com.greentube.convertertest3.InitSequenceTestC;
-import com.greentube.convertertest3.InitializerBlockTest;
-import com.greentube.convertertest3.OuterClass;
-import com.greentube.convertertest3.OuterClass.InnerStatic;
+import com.greentube._convertertest2.TestInterface_X;
+import com.greentube._convertertest2.TestObject2_;
+import com.greentube._convertertest2._TestInterface2;
+import com.greentube.convertertestreserved.debugger.arguments;
+import com.greentube.convertertestreserved.event.lock;
+import com.greentube.convertert€st_3.InitSequenceTestA;
+import com.greentube.convertert€st_3.InitSequenceTestB;
+import com.greentube.convertert€st_3.InitSequenceTestC;
+import com.greentube.convertert€st_3.InitializerBlockTest;
+import com.greentube.convertert€st_3.OuterCläss;
+import com.greentube.convertert€st_3.OuterCläss.InnerStatic;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -67,6 +69,7 @@ public class TestJava4 {
         complexoperationtest();
         initsequencetest();
         innerclasstest();
+        identifi€rmangling();
     }
     
     public static void staticattributestest()
@@ -246,12 +249,12 @@ public class TestJava4 {
         TestInterface f = t;
         assertO(f.hello(), "hello");
         assertB(t instanceof TestInterface);
-        assertB(!(t instanceof TestInterfaceX));
-        Object t2 = new TestObject2();
+        assertB(!(t instanceof TestInterface_X));
+        Object t2 = new TestObject2_();
         assertB(t2 instanceof TestInterface);
-        assertB(t2 instanceof TestInterfaceX);
-        assertB(t2 instanceof TestInterface2);
-        TestInterface f2 = (TestInterface2) t2;
+        assertB(t2 instanceof TestInterface_X);
+        assertB(t2 instanceof _TestInterface2);
+        TestInterface f2 = (_TestInterface2) t2;
         assertO(f2.hello(), "hello");
         
         // check type inclusion relation between some built-in types
@@ -1714,24 +1717,31 @@ public class TestJava4 {
     public static void innerclasstest() {
     	System.out.println("- inner classes");
     	
-    	InnerStatic s = new OuterClass.InnerStatic(44);
+    	InnerStatic s = new OuterCläss.InnerStatic(44);
     	assertO(s.toString(), "44,88,99");
     	
-    	OuterClass x = new OuterClass(4711);
+    	OuterCläss x = new OuterCläss(4711);
     	assertO(x.toString(),"!4711:99,4711");
-    	OuterClass.MemberClass m = x.new MemberClass(44);
+    	OuterCläss.MemberClass m = x.new MemberClass(44);
     	assertO(m.toString(),"44,4711");
     	
     	assertO(x.workWithLocalClass(), "L4721");
-    	assertO(new OuterClass(33).workWithLocalClass(), "L43");
+    	assertO(new OuterCläss(33).workWithLocalClass(), "L43");
     	
     	assertO(x.workWithAnonymousClass(), "A54,4711,4788,7,4788-4788-77");
-    	assertO(new OuterClass(91).workWithAnonymousClass(), "A54,91,168,7,168-168-77");
+    	assertO(new OuterCläss(91).workWithAnonymousClass(), "A54,91,168,7,168-168-77");
 
     	int[] i= new int[1];
-    	new OuterClass(666).getFetcher().fetch(i);
+    	new OuterCläss(666).getFetcher().fetch(i);
     	assertI(i[0],666);
     }
+    
+    public static void identifi€rmangling() {
+    	System.out.println("- identifier mangling");
+    	
+    	assertI(lock.implicit(3),4);
+    	assertI(arguments.yield(5),6);  
+   }
     
     
     public static void assertI(int value, int expected) {

@@ -1,6 +1,6 @@
-package com.greentube.convertertest3;
+package com.greentube.convertert€st_3;
 
-public class OuterClass {
+public class OuterCläss {
 	static int c = 99;
 
 	int p;
@@ -38,7 +38,7 @@ public class OuterClass {
 	}
 	
 		
-	public OuterClass(int p) {
+	public OuterCläss(int p) {
 		this.p = p;
 		member = new MemberClass(99);
 	}

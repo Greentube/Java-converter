@@ -141,6 +141,19 @@ namespace java.util
             currentIndex = index;
             return n;
         }
+
+        class Node {            
+            public System.Object element;
+            public Node prev;
+            public Node next; 
+
+            public Node(System.Object element) {
+                this.element = element;
+                prev = null;
+                next = null;
+            }
+        }        
+
         
 //        private void dump() {
 //            System.Console.Write("LEN: "+len+" CURRENTINDEX: "+currentIndex+ " CURRENT: "
@@ -160,7 +173,7 @@ namespace java.util
 //        }
         
                        
-        // convenience methods of LinkedList
+        // extra convenience methods of LinkedList
         public virtual void addFirst(System.Object obj) {
             add(0,obj);
         }
@@ -184,18 +197,17 @@ namespace java.util
         public virtual System.Object removeLast() {
             return remove(size()-1);
         } 
+            
+            
+        // overrides that can speed up certain operations
         
-        
-        class Node {            
-            public System.Object element;
-            public Node prev;
-            public Node next; 
-
-            public Node(System.Object element) {
-                this.element = element;
-                prev = null;
-                next = null;
-            }
-        }        
+        public override void clear() { 
+            Node h = head;
+            h.next = h;
+            h.prev = h;
+            len = 0;
+            currentNode = h;
+            currentIndex = -1;
+        }
 	}	
 }

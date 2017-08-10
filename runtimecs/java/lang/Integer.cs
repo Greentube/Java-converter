@@ -41,8 +41,8 @@ namespace java.lang
         }
 
         
-        public const int MIN_VALUE_f = -2147483648;
-        public const int MAX_VALUE_f =  2147483647;
+        public const int MIN__VALUE_f = -2147483648;
+        public const int MAX__VALUE_f =  2147483647;
         
     }
 }

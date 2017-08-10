@@ -1,3 +1,5 @@
+import com.greentube.javaconverter.CodePrinter;
+
 aspect GenerateCS {
  
  	// --- AssertStmt ---
@@ -6,7 +8,7 @@ aspect GenerateCS {
  	
  	// --- Block ---
  	
-	public void Block.generateCS(com.greentube.javaconverter.CodePrinter out) {
+	public void Block.generateCS(CodePrinter out) {
 		boolean hadNonDeclStatements=false;
 		int extraBraces = 0;
 		
@@ -53,14 +55,14 @@ aspect GenerateCS {
   
   	// --- BranchTargetStmt ---
 
-	public void BranchTargetStmt.generateCS(com.greentube.javaconverter.CodePrinter out) {
+	public void BranchTargetStmt.generateCS(CodePrinter out) {
 		generateCS(out,null);
 	}
   	
-	public void BranchTargetStmt.generateCS(com.greentube.javaconverter.CodePrinter out, String label) {		
+	public void BranchTargetStmt.generateCS(CodePrinter out, String label) {		
 	}
   	
-	public void DoStmt.generateCS(com.greentube.javaconverter.CodePrinter out, String label) {			
+	public void DoStmt.generateCS(CodePrinter out, String label) {			
 		if (label==null) {
 			out.print("do ");
 			getStmt().generateCS(out);
@@ -72,14 +74,14 @@ aspect GenerateCS {
 			out.println();
 			out.increaseIndent();
 			getStmt().generateCS(out);
-			out.printAndForgetLabel(label+"_c");
+			out.printAndForgetLabel(CodePrinter.escapeIdentifier(label,false)+"_c");
 			out.println();
 			out.print("}");
 			out.print("while(");	
 			getCondition().generateUsingResultCS(out);
 			out.print(");");
 			out.println();
-			out.printAndForgetLabel(label+"_b");
+			out.printAndForgetLabel(CodePrinter.escapeIdentifier(label,false)+"_b");
 			out.println();
 			out.decreaseIndent();
 			out.print("}");
@@ -87,7 +89,7 @@ aspect GenerateCS {
 		out.println();		
  	}
  	
-	public void EnhancedForStmt.generateCS(com.greentube.javaconverter.CodePrinter out, String label) {
+	public void EnhancedForStmt.generateCS(CodePrinter out, String label) {
 		if (label!=null) {
 			out.print("{ ");
 		}
@@ -99,14 +101,18 @@ aspect GenerateCS {
 			out.print("foreach (");
 			getVariableDecl().getTypeAccess().generateCS(out);
 			out.print(" ");
-			out.print(vname);
-			out.print("_l in ");
+			out.printCSIdentifier(vname, "");
+			out.print(" in ");
 			e.generateUsingResultCS(out);
 			out.print(") ");
 		} else if (e.type().isIterable()) {
-			out.print("for (java.util.Iterator "+vname+"_i = ");
+			out.print("for (java.util.Iterator ");
+			out.printCSIdentifier(vname, "_i");
+			out.print(" = ");
 			e.generateUsingResultCS(out);
-			out.print(".iterator(); "+vname+"_i.hasNext(); ) ");	
+			out.print(".iterator(); ");
+			out.printCSIdentifier(vname, "_i");
+			out.print(".hasNext(); ) ");	
 			isiterator = true;		
 		} else {
 			throw new RuntimeException("Expression is neither an array or an Iterable");
@@ -123,11 +129,14 @@ aspect GenerateCS {
 			out.println();
 			out.increaseIndent();
 			getVariableDecl().getTypeAccess().generateCS(out);
-			out.print(" "+vname+"_l = ");
+			out.print(" ");
+			out.printCSIdentifier(vname, "");
+			out.print(" = ");
 			out.print("(");
 			getVariableDecl().getTypeAccess().generateCS(out);
 			out.print(") ");
-			out.print(vname+"_i.next();");
+			out.printCSIdentifier(vname, "_i");
+			out.print(".next();");
 			out.println();
 			getStmt().generateCS(out);
 			out.decreaseIndent();
@@ -138,15 +147,15 @@ aspect GenerateCS {
 		}
 		if (label!=null) {
 			out.decreaseIndent();
-			out.printAndForgetLabel(label+"_c");
+			out.printAndForgetLabel(CodePrinter.escapeIdentifier(label,false)+"_c");
 			out.print(" } ");
-			out.printAndForgetLabel(label+"_b");
+			out.printAndForgetLabel(CodePrinter.escapeIdentifier(label,false)+"_b");
 			out.print(" }");
 			out.println(); 
 		}							
  	}
  	
-	public void ForStmt.generateCS(com.greentube.javaconverter.CodePrinter out, String label) {
+	public void ForStmt.generateCS(CodePrinter out, String label) {
 		if (label!=null) {
 			out.print("{ ");
 		}
@@ -183,19 +192,19 @@ aspect GenerateCS {
 
 		if (label!=null) {
 			out.decreaseIndent();
-			out.printAndForgetLabel(label+"_c");
+			out.printAndForgetLabel(CodePrinter.escapeIdentifier(label,false)+"_c");
 			out.print(" } ");
-			out.printAndForgetLabel(label+"_b");
+			out.printAndForgetLabel(CodePrinter.escapeIdentifier(label,false)+"_b");
 			out.print(" }");
 			out.println(); 
 		}					
  	}
  	
-	public void LabeledStmt.generateCS(com.greentube.javaconverter.CodePrinter out) {
+	public void LabeledStmt.generateCS(CodePrinter out) {
 		((BranchTargetStmt)getStmt()).generateCS(out, getLabel());
  	}
  	
-	public void SwitchStmt.generateCS(com.greentube.javaconverter.CodePrinter out, String label) {	
+	public void SwitchStmt.generateCS(CodePrinter out, String label) {	
 		out.print("switch (");
 		
 		Expr e = getExpr();
@@ -208,7 +217,7 @@ aspect GenerateCS {
 		out.println();
  	}
 
-	public void WhileStmt.generateCS(com.greentube.javaconverter.CodePrinter out, String label) {
+	public void WhileStmt.generateCS(CodePrinter out, String label) {
 		if (label!=null) {
 			out.print("{ ");
 		}
@@ -227,9 +236,9 @@ aspect GenerateCS {
 
 		if (label!=null) {
 			out.decreaseIndent();
-			out.printAndForgetLabel(label+"_c");
+			out.printAndForgetLabel(CodePrinter.escapeIdentifier(label,false)+"_c");
 			out.print(" } ");
-			out.printAndForgetLabel(label+"_b");
+			out.printAndForgetLabel(CodePrinter.escapeIdentifier(label,false)+"_b");
 			out.print(" }");
 			out.println(); 
 		}			
@@ -237,12 +246,12 @@ aspect GenerateCS {
   	
   	// --- BreakStmt ---
   	
-	public void BreakStmt.generateCS(com.greentube.javaconverter.CodePrinter out) {
-		String l = getLabel();
-		if (l==null || l.length()==0) {
+	public void BreakStmt.generateCS(CodePrinter out) {
+		String label = getLabel();
+		if (label==null || label.length()==0) {
 			out.print("break;");
 		} else {
-			out.printJumpToLabel(l+"_b");
+			out.printJumpToLabel(CodePrinter.escapeIdentifier(label,false)+"_b");
 		}		
 		out.println();
 	}
@@ -264,7 +273,7 @@ aspect GenerateCS {
   		return true;
   	}
   	
-	public void ConstCase.generateCS(com.greentube.javaconverter.CodePrinter out) {
+	public void ConstCase.generateCS(CodePrinter out) {
 		Expr e = getValue();				
 		if (canBeReachedByFallThrough()) {
 			out.print("goto case ");
@@ -288,7 +297,7 @@ aspect GenerateCS {
 		out.increaseIndent();
 	}
 	
-	public void DefaultCase.generateCS(com.greentube.javaconverter.CodePrinter out) {
+	public void DefaultCase.generateCS(CodePrinter out) {
 		if (canBeReachedByFallThrough()) {
 			out.print("goto default;");
 			out.println();
@@ -301,12 +310,12 @@ aspect GenerateCS {
   	
   	// --- ContinueStmt ---
 
-  	public void ContinueStmt.generateCS(com.greentube.javaconverter.CodePrinter out) {
-		String l = getLabel();
-		if (l==null || l.length()==0) {
+  	public void ContinueStmt.generateCS(CodePrinter out) {
+		String label = getLabel();
+		if (label==null || label.length()==0) {
 			out.print("continue;");
 		} else {
-			out.printJumpToLabel(l+"_c");
+			out.printJumpToLabel(CodePrinter.escapeIdentifier(label,false)+"_c");
 		}
 		out.println();
 	}
@@ -315,7 +324,7 @@ aspect GenerateCS {
     
     // --- ExprStmt ---
   
-	public void ExprStmt.generateCS(com.greentube.javaconverter.CodePrinter out) {
+	public void ExprStmt.generateCS(CodePrinter out) {
 		getExpr().generateCS(out);   // intentionally do no post-processing
 		out.print(";");
 		out.println();		
@@ -323,7 +332,7 @@ aspect GenerateCS {
 	
 	// --- IfStmt ---
 	
-	public void IfStmt.generateCS(com.greentube.javaconverter.CodePrinter out) {
+	public void IfStmt.generateCS(CodePrinter out) {
 		out.print("if (");
 		getCondition().generateUsingResultCS(out);
 		out.print(") ");
@@ -336,13 +345,13 @@ aspect GenerateCS {
 	}  	
 	
 	// --- LocalClassDeclStmt ---
-	public void LocalClassDeclStmt.generateCS(com.greentube.javaconverter.CodePrinter out) {
+	public void LocalClassDeclStmt.generateCS(CodePrinter out) {
 		// class was already generated 
 	}
 	
 	// --- ReturnStmt ---
 	
-	public void ReturnStmt.generateCS(com.greentube.javaconverter.CodePrinter out) {
+	public void ReturnStmt.generateCS(CodePrinter out) {
 		Expr r = getResult();
 		if (r==null) {
 			out.print("return;");
@@ -362,7 +371,7 @@ aspect GenerateCS {
 		
 	// --- VarDeclStmt ---
 	
-	public void VarDeclStmt.generateCS(com.greentube.javaconverter.CodePrinter out) {
+	public void VarDeclStmt.generateCS(CodePrinter out) {
 		int extradims = 0;
 		for (int i=0; i<getNumDeclarator(); i++) {
 			extradims = Math.max(extradims, getDeclarator(i).getNumDims());
@@ -378,7 +387,7 @@ aspect GenerateCS {
 			TypeDecl t = d.getTypeAccess().type();
 			if (i>0) out.print(",");
 			out.print(" ");			
-			out.print(d.name() + "_l");
+			out.printCSIdentifier(d.name(), "");
 			out.print(" = ");								
 			Expr e = d.getInit();
 			if (e!=null) {

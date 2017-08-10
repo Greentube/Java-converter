@@ -44,10 +44,10 @@ namespace java.lang
         }
 
         
-		public const double MIN_VALUE_f = 4.9E-324;
-		public const double MAX_VALUE_f = 1.7976931348623157E308;
-		public const double POSITIVE_INFINITY_f = 1.0/0.0;
-		public const double NEGATIVE_INFINITY_f = -1.0/0.0;
+		public const double MIN__VALUE_f = 4.9E-324;
+		public const double MAX__VALUE_f = 1.7976931348623157E308;
+		public const double POSITIVE__INFINITY_f = 1.0/0.0;
+		public const double NEGATIVE__INFINITY_f = -1.0/0.0;
 		
 	}
 }

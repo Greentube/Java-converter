@@ -1,6 +1,6 @@
-package com.greentube.convertertest2;
+package com.greentube._convertertest2;
 
-public class TestObject2 implements TestInterface2 {
+public class TestObject2_ implements _TestInterface2 {
 
     public int add(int a, int b)
     {
