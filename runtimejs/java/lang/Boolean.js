@@ -1,33 +1,34 @@
 //load// java/lang/Object
 var java_lang_Boolean = _defineClass ("java_lang_Boolean", java_lang_Object, null, {
 	_1: function(b) {
-		this.b_f = b;
+		this.b = b;
         return this;
     },
 	booleanValue_0: function() {
-		return this.b_f;
+		return this.b;
     },
     equals_1: function(b) {
-        if (b!=null && b._is_java_lang_Boolean && this.b_f == b.b_f) {
+        if (b!=null && b._is_java_lang_Boolean && this.b == b.b) {
           return true;
         }
         return false;
     },
     hashCode_0: function() {
-        return this.b_f ? 1231 : 1237;
+        return this.b ? 1231 : 1237;
     },
     toString_0: function() {
-      return this.b_f ? "true" : "false";
-    },
-    
+      return this.b ? "true" : "false";
+    },    
+}, { // static 
     toString_1: function(b) {
       return b ? "true" : "false";
     },
     valueOf_1: function(b) {
-      return b ? java_lang_Boolean.prototype.TRUE_f : java_lang_Boolean.prototype.FALSE_f;
-    },
-        
+      return b ? java_lang_Boolean.s.TRUE : java_lang_Boolean.s.FALSE;
+    },       
+    TRUE: null,
+    FALSE: null,
 });
 
-java_lang_Boolean.prototype.TRUE_f = (new java_lang_Boolean)._1(true);
-java_lang_Boolean.prototype.FALSE_f = (new java_lang_Boolean)._1(false);
+java_lang_Boolean.s.TRUE = (new java_lang_Boolean)._1(true);
+java_lang_Boolean.s.FALSE = (new java_lang_Boolean)._1(false);

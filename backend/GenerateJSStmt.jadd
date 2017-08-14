@@ -26,7 +26,7 @@ aspect GenerateJS {
 		out.print("do ");
 		getStmt().generateJS(out);
 		out.print("while (");	
-		getCondition().generateJS(out);
+		getCondition().generateUsingResultJS(out);
 		out.print(");");	
 		out.println();
  	}
@@ -42,7 +42,7 @@ aspect GenerateJS {
 			out.print("=0, ");
 			out.printJSIdentifier(vname, "_a");
 			out.print("=");
-			e.generateJS(out);
+			e.generateUsingResultJS(out);
 			out.print("; ");
 			out.print("(");
 			out.printJSIdentifier(vname, "_i");
@@ -65,7 +65,7 @@ aspect GenerateJS {
 			out.print(", ");
 			out.printJSIdentifier(vname, "_i");
 			out.print("=");			
-			e.generateJS(out);
+			e.generateUsingResultJS(out);
 			out.print(".iterator_0(); ");
 			out.printJSIdentifier(vname, "_i");
 			out.print(".hasNext_0()&&((");
@@ -92,19 +92,19 @@ aspect GenerateJS {
 			}
 		}
 		if (hasCondition()) {
-			getCondition().generateJS(out);
+			getCondition().generateUsingResultJS(out);
 		}
 		out.print("; ");
 		for (int i=0; i<getNumUpdateStmt(); i++) {
 			if (i>0) out.print(",");
-			((ExprStmt)getUpdateStmt(i)).getExpr().generateJS(out);
+			((ExprStmt)getUpdateStmt(i)).getExpr().generateUsingResultJS(out);
 		}
 		out.print(") ");
 		getStmt().generateJS(out);
  	}
  	
 	public void LabeledStmt.generateJS(CodePrinter out) {
-		out.printJSIdentifier(getLabel(),"_l");
+		out.printJSIdentifier(getLabel(),"");
 		out.print(": ");
 		getStmt().generateJS(out);
  	}
@@ -130,7 +130,7 @@ aspect GenerateJS {
 		String label = getLabel();
 		if (label!=null && label.length()>0) {
 			out.print(" ");
-			out.printJSIdentifier(getLabel(), "_l");
+			out.printJSIdentifier(getLabel(), "");
 		}
 		out.print(";");	
 		out.println();			
@@ -140,7 +140,7 @@ aspect GenerateJS {
   	
 	public void ConstCase.generateJS(CodePrinter out) {
 		out.print("case ");
-		getValue().generateJS(out);
+		getValue().generateUsingResultJS(out);
 		out.print(":");
 		out.println();
 	}
@@ -156,7 +156,7 @@ aspect GenerateJS {
 		String label = getLabel();
 		if (label!=null && label.length()>0) {
 			out.print(" ");
-			out.printJSIdentifier(getLabel(), "_l");
+			out.printJSIdentifier(getLabel(), "");
 		}
 		out.print(";");
 		out.println();		
@@ -167,7 +167,7 @@ aspect GenerateJS {
     // --- ExprStmt ---
   
 	public void ExprStmt.generateJS(CodePrinter out) {
-		getExpr().generateJS(out);
+		getExpr().generateUsingResultJS(out);
 		out.print(";");
 		out.println();
 	}  	
@@ -176,7 +176,7 @@ aspect GenerateJS {
 	
 	public void IfStmt.generateJS(CodePrinter out) {
 		out.print("if (");
-		getCondition().generateJS(out);
+		getCondition().generateUsingResultJS(out);
 		out.print(") ");
 		getThen().generateJS(out);
 		Stmt e = getElse();
@@ -203,7 +203,7 @@ aspect GenerateJS {
 				out.print("return;");
 			} else {
 				out.print("return ");
-				r.generateJS(out);
+				r.generateUsingResultJS(out);
 				out.print(";");
 			}
 		}
@@ -227,7 +227,7 @@ aspect GenerateJS {
 			out.print(" = ");
 			Expr e = d.getInit();
 			if (e!=null) {
-				e.generateJS(out);
+				e.generateUsingResultJS(out);
 			} else {
 				out.print(type().isPrimitiveType() ? "0" : "null");
 			}

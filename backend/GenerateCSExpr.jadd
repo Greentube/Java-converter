@@ -322,14 +322,10 @@ aspect GenerateCS {
 			} else {
 				throw new RuntimeException("Can not access local variables of outer class method");
 			}
-  		} else {
-  			// this fits in no other category - maybe the 'length' attribute of arrays 
-  			if (getID().equals("length")) {
-  				out.print(".Length");
-  			} else {
-				out.print(".");
-				out.printCSIdentifier(getID(), "");
-			}
+  		} else if (getID().equals("length")) {
+			out.print(".Length");
+		} else {
+			throw new RuntimeException("Unknown type of variable access");
   		}  		
  	}
  	public TypeDecl VarAccess.neededDownCast() {

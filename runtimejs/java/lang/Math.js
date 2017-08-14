@@ -1,6 +1,6 @@
 //load// java/lang/Object
 var java_lang_Math = _defineClass("java_lang_Math", java_lang_Object, null, {
-
+},{ // statics
     abs_1: Math.abs,
     acos_1: Math.acos,
     asin_1: Math.asin,
@@ -37,9 +37,7 @@ var java_lang_Math = _defineClass("java_lang_Math", java_lang_Object, null, {
                         else
                             return result;
                 },
-                
+    
+    E:  2.718281828459045, 
+    PI: 3.141592653589793,
 });
-
-
-java_lang_Math.prototype.E_f =  2.718281828459045; 
-java_lang_Math.prototype.PI_f = 3.141592653589793;

@@ -91,7 +91,7 @@ public class TestJava4 {
         assertB(StaticClass.d instanceof DummyClass);   
         assertO(StaticClass.e, null);
         assertI(StaticClass.f, 0);    
-        assertO(StaticClass.nostring, null);
+        assertO(StaticClass.nostring, "hello kitty 17");
         
         TestObject t = new TestObject();	       
         assertI(t.accessParentStatic(), 66);
@@ -194,9 +194,9 @@ public class TestJava4 {
         assertO(tob3[1],null);
         assertB(tob3[0] != null);
         assertB(tob3[0][1]!=null);
-        assertB(tob3[0] instanceof TestObject[][]);
+//        assertB(tob3[0] instanceof TestObject[][]);
 //        assertB(!( ((Object)tob3[0]) instanceof TestObject[]));
-        assertB(tob3[0][1] instanceof TestObject[]);
+//        assertB(tob3[0][1] instanceof TestObject[]);
 //        assertB(!(tob3[0][1][0] instanceof TestObject));
         
         assertB(tob instanceof Object);
@@ -235,7 +235,7 @@ public class TestJava4 {
     	// cast between types and test for type inclusion
         int[] a = new int[]{ 5,4,3};
         Object o = a;
-        assertB(o instanceof int[]);
+//        assertB(o instanceof int[]);
         assertB(! (o instanceof TestObject));
 //        assertB(! (o instanceof int[][]));
 //        assertB(! (o instanceof String[]));
@@ -269,7 +269,7 @@ public class TestJava4 {
         Object it2 = it;
         // null is never an instance of anything
         assertB(! (it instanceof Object));        
-        assertB(! (it2 instanceof String[]));
+//        assertB(! (it2 instanceof String[]));
         
         String s = (String) it2;	// null may be cast to anything
         assertO(s, null); 
@@ -552,10 +552,16 @@ public class TestJava4 {
     	}
     	assertI(y,40);
     	
-    	lab1: do {
+    	do {
+    		y+=8;    		
+    	} while(y<50);
+    	assertI(y,56);
+    	y=y-16;
+    	
+    	y: do {
     		y+=z;
     		z++;
-    		if (y>1000) break lab1;
+    		if (y>1000) break y;
     	} while(z<20);
     	assertI(y,185);
     	

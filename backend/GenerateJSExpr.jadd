@@ -1,6 +1,14 @@
 import com.greentube.javaconverter.CodePrinter;
 aspect GenerateJS {
  
+ 	public void Expr.generateUsingResultJS(CodePrinter out) {	
+		if (isConstant() && !type().isEnumDecl()) {
+			constant().generateJS(out);  		
+ 		} else {
+ 			generateJS(out);
+ 		}
+	}
+	 
  	// --- Access --- 
  	
   	public void AbstractDot.generateJS(CodePrinter out) {
@@ -18,7 +26,7 @@ aspect GenerateJS {
 // 	}
   	public void ArrayAccess.generateJS(CodePrinter out) {
   		out.print("[");
-  		getExpr().generateJS(out);
+  		getExpr().generateUsingResultJS(out);
   		out.print("]");
  	}
 //  	public void ClassAccess.generateJS(CodePrinter out) {
@@ -43,21 +51,21 @@ aspect GenerateJS {
 		{
 	  		for (int i=0; i<getNumArg(); i++) {
   				if (i>0) out.print(",");
-  				getArg(i).generateJS(out);
+  				getArg(i).generateUsingResultJS(out);
   			}
   		// need to package last parameters (may be zero) into array		
   		} else {
   			// non-varargs parameters
 	  		for (int i=0; i<m.getNumParameter()-1; i++) {
   				if (i>0) out.print(",");
-  				getArg(i).generateJS(out);
+  				getArg(i).generateUsingResultJS(out);
   			}  		
   			// create array for the rest
   			if (m.getNumParameter()>1) out.print(",");
   			out.print("[");
   			for (int i=m.getNumParameter()-1; i<getNumArg(); i++) {
   				if (i>m.getNumParameter()-1) out.print(",");
-  				getArg(i).generateJS(out);
+  				getArg(i).generateUsingResultJS(out);
   			}
   			out.print("]");  			
   		}
@@ -71,7 +79,7 @@ aspect GenerateJS {
  	}
   	public void ConstructorAccess.generateJS(CodePrinter out) {
   		TypeDecl ht = decl().hostType();
-  		if (!(ht.packageName().equals("java.lang.") && ht.uniqueName().equals("Object")) ) {
+  		if (!(ht.packageName().equals("java.lang") && ht.uniqueName().equals("Object")) ) {
 			out.printAndMemorizeReference(ht.packageName(), ht.uniqueName());
 
 	  		ConstructorDecl m = decl();
@@ -84,21 +92,21 @@ aspect GenerateJS {
 			{
 		  		for (int i=0; i<getNumArg(); i++) {
 	  				out.print(",");
-	  				getArg(i).generateJS(out);
+	  				getArg(i).generateUsingResultJS(out);
 	  			}
 	  		// need to package last parameters (may be zero) into array		
 	  		} else {
 	  			// non-varargs parameters
 		  		for (int i=0; i<m.getNumParameter()-1; i++) {
 	  				out.print(",");
-	  				getArg(i).generateJS(out);
+	  				getArg(i).generateUsingResultJS(out);
 	  			}  		
 	  			// create array for the rest
 	  			if (m.getNumParameter()>1) out.print(",");
 	  			out.print("[");
 	  			for (int i=m.getNumParameter()-1; i<getNumArg(); i++) {
 	  				if (i>m.getNumParameter()-1) out.print(",");
-	  				getArg(i).generateJS(out);
+	  				getArg(i).generateUsingResultJS(out);
 	  			}
 	  			out.print("]");  			
 	  		}
@@ -115,7 +123,7 @@ aspect GenerateJS {
   		if (m.isStatic()) {
 			TypeDecl t = m.hostType();
   			out.printAndMemorizeReference(t.packageName(),t.uniqueName());
-  			out.print(".prototype.");
+  			out.print(".s.");
   			out.printJSIdentifier(m.name(),"_"+m.getNumParameter());
   			out.print("(");
 
@@ -164,7 +172,7 @@ aspect GenerateJS {
   		for (int i=0; i<getNumArg(); i++) {
   			if (i>0) out.print(",");
   			if (pararraystart==i) out.print("[");
-  			getArg(i).generateJS(out);
+  			getArg(i).generateUsingResultJS(out);
   		}
   		if (pararraystart>=0) {
   			if (pararraystart>=getNumArg()) out.print(pararraystart>0 ? ",[" : "[");
@@ -199,8 +207,8 @@ aspect GenerateJS {
   		if (v.isClassVariable()) {
   			TypeDecl t = v.hostType();
   			out.printAndMemorizeReference(t.packageName(),t.uniqueName());  		
-  			out.print(".prototype.");
-  			out.printJSIdentifier(getID(),"_f");  
+  			out.print(".s.");
+  			out.printJSIdentifier(getID(),"");  
   			// check if this is inside a static initializer - must force early loading of accessed class
 	  		BodyDecl bd = enclosingBodyDecl();
   			if (bd.isField() || (bd instanceof StaticInitializer)) {
@@ -219,17 +227,17 @@ aspect GenerateJS {
 					}
 				}  		
   			}  		
-			out.printJSIdentifier(getID(),"_f");
+			out.printJSIdentifier(getID(),"");
   		} else if (v.isLocalVariable() || v.isParameter()) {  
   			if (v.hostType() == hostType()) {		
 				out.printJSIdentifier(getID(), "");
 			} else {
 				throw new RuntimeException("Can not access local variables of outer class method");
 			}
+		} else if (getID().equals("length")) {
+			out.print(".length");
   		} else {
-  			// this fits in no other category - maybe the 'length' attribute of arrays 
-			out.print(".");
-			out.printJSIdentifier(getID(), "");
+			throw new RuntimeException("Unknown type of variable access");
   		}  		
  	}
   	
@@ -239,7 +247,7 @@ aspect GenerateJS {
   		out.print("[");
   		for (int i=0; i<getNumInit(); i++) {
   			if (i>0) out.print(",");
-  			getInit(i).generateJS(out);
+  			getInit(i).generateUsingResultJS(out);
   		}
   		out.print("]");
   	}
@@ -249,7 +257,7 @@ aspect GenerateJS {
   	public void AssignMinusExpr.generateJS(CodePrinter out) {
   		getDest().generateJS(out);
   		out.print(" -= ");
-  		getSource().generateJS(out);
+  		getSource().generateUsingResultJS(out);
   	}
   	public void AssignPlusExpr.generateJS(CodePrinter out) {
   		// do some case discrimination if this is a string concatenation
@@ -268,58 +276,58 @@ aspect GenerateJS {
   		} else {
 	  		d.generateJS(out);
   			out.print(" += ");
-  			s.generateJS(out);
+  			s.generateUsingResultJS(out);
   		}
   	}
   	public void AssignAndExpr.generateJS(CodePrinter out) {
   		getDest().generateJS(out);
   		out.print(" &= ");
-  		getSource().generateJS(out);
+  		getSource().generateUsingResultJS(out);
   	}
   	public void AssignOrExpr.generateJS(CodePrinter out) {
   		getDest().generateJS(out);
   		out.print(" |= ");
-  		getSource().generateJS(out);
+  		getSource().generateUsingResultJS(out);
   	}
   	public void AssignXorExpr.generateJS(CodePrinter out) {
   		getDest().generateJS(out);
   		out.print(" ^= ");
-  		getSource().generateJS(out);
+  		getSource().generateUsingResultJS(out);
   	}
   	public void AssignDivExpr.generateJS(CodePrinter out) {
   		getDest().generateJS(out);
   		out.print(" /= ");
-  		getSource().generateJS(out);
+  		getSource().generateUsingResultJS(out);
   	}
   	public void AssignModExpr.generateJS(CodePrinter out) {
   		getDest().generateJS(out);
   		out.print(" %= ");
-  		getSource().generateJS(out);
+  		getSource().generateUsingResultJS(out);
   	}
   	public void AssignMulExpr.generateJS(CodePrinter out) {
   		getDest().generateJS(out);
   		out.print(" *= ");
-  		getSource().generateJS(out);
+  		getSource().generateUsingResultJS(out);
   	}
   	public void AssignLShiftExpr.generateJS(CodePrinter out) {
   		getDest().generateJS(out);
   		out.print(" <<= ");
-  		getSource().generateJS(out);
+  		getSource().generateUsingResultJS(out);
   	}
   	public void AssignRShiftExpr.generateJS(CodePrinter out) {
   		getDest().generateJS(out);
   		out.print(" >>= ");
-  		getSource().generateJS(out);
+  		getSource().generateUsingResultJS(out);
   	}
   	public void AssignURShiftExpr.generateJS(CodePrinter out) {
   		getDest().generateJS(out);
   		out.print(" >>>= ");
-  		getSource().generateJS(out);
+  		getSource().generateUsingResultJS(out);
   	}
   	public void AssignSimpleExpr.generateJS(CodePrinter out) {
   		getDest().generateJS(out);
   		out.print(" = ");
-  		getSource().generateJS(out);
+  		getSource().generateUsingResultJS(out);
   	}
   	  	
   	// --- Binary ---
@@ -331,124 +339,124 @@ aspect GenerateJS {
   		if (type().isString()) {
   			if (l.type().isChar()) {
   				out.print("_c2s(");
-  				l.generateJS(out);
+  				l.generateUsingResultJS(out);
   				out.print(")");
   			} else {
-  				l.generateJS(out);
+  				l.generateUsingResultJS(out);
   			}
   			out.print("+\"\"+");
   			if (r.type().isChar()) {
   				out.print("_c2s(");
-  				r.generateJS(out);
+  				r.generateUsingResultJS(out);
   				out.print(")");
   			} else {
-  				r.generateJS(out);
+  				r.generateUsingResultJS(out);
   			}
   		} else {
-	  		l.generateJS(out);
+	  		l.generateUsingResultJS(out);
   			out.print(" + ");
-  			r.generateJS(out);
+  			r.generateUsingResultJS(out);
   		}
   	}
   	public void SubExpr.generateJS(CodePrinter out) {
-  		getLeftOperand().generateJS(out);
+  		getLeftOperand().generateUsingResultJS(out);
   		out.print(" - ");
-  		getRightOperand().generateJS(out);  	
+  		getRightOperand().generateUsingResultJS(out);  	
   	}
   	public void DivExpr.generateJS(CodePrinter out) {
 		TypeDecl t = type();
 		if (t.isFloat() || t.isDouble()) {
-	  		getLeftOperand().generateJS(out);
+	  		getLeftOperand().generateUsingResultJS(out);
   			out.print(" / ");
-  			getRightOperand().generateJS(out);
+  			getRightOperand().generateUsingResultJS(out);
   		} else {  	
 			out.print("_divideInteger(");
-	  		getLeftOperand().generateJS(out);
+	  		getLeftOperand().generateUsingResultJS(out);
   			out.print(",");
-  			getRightOperand().generateJS(out);
+  			getRightOperand().generateUsingResultJS(out);
 			out.print(")");
   		}
   	}
   	public void ModExpr.generateJS(CodePrinter out) {
-  		getLeftOperand().generateJS(out);
+  		getLeftOperand().generateUsingResultJS(out);
   		out.print(" % ");
-  		getRightOperand().generateJS(out);  	
+  		getRightOperand().generateUsingResultJS(out);  	
   	}
   	public void MulExpr.generateJS(CodePrinter out) {
-  		getLeftOperand().generateJS(out);
+  		getLeftOperand().generateUsingResultJS(out);
   		out.print(" * ");
-  		getRightOperand().generateJS(out);  	
+  		getRightOperand().generateUsingResultJS(out);  	
   	}
   	public void AndBitwiseExpr.generateJS(CodePrinter out) {
-  		getLeftOperand().generateJS(out);
+  		getLeftOperand().generateUsingResultJS(out);
   		out.print(" & ");
-  		getRightOperand().generateJS(out);  	
+  		getRightOperand().generateUsingResultJS(out);  	
   	}
   	public void OrBitwiseExpr.generateJS(CodePrinter out) {
-  		getLeftOperand().generateJS(out);
+  		getLeftOperand().generateUsingResultJS(out);
   		out.print(" | ");
-  		getRightOperand().generateJS(out);  	
+  		getRightOperand().generateUsingResultJS(out);  	
   	}
   	public void XorBitwiseExpr.generateJS(CodePrinter out) {
-  		getLeftOperand().generateJS(out);
+  		getLeftOperand().generateUsingResultJS(out);
   		out.print(" ^ ");
-  		getRightOperand().generateJS(out);  	
+  		getRightOperand().generateUsingResultJS(out);  	
   	}
   	public void AndLogicalExpr.generateJS(CodePrinter out) {
-  		getLeftOperand().generateJS(out);
+  		getLeftOperand().generateUsingResultJS(out);
   		out.print(" && ");
-  		getRightOperand().generateJS(out);  	
+  		getRightOperand().generateUsingResultJS(out);  	
   	}
   	public void OrLogicalExpr.generateJS(CodePrinter out) {
-  		getLeftOperand().generateJS(out);
+  		getLeftOperand().generateUsingResultJS(out);
   		out.print(" || ");
-  		getRightOperand().generateJS(out);  	
+  		getRightOperand().generateUsingResultJS(out);  	
   	}
   	public void EQExpr.generateJS(CodePrinter out) {
-  		getLeftOperand().generateJS(out);
+  		getLeftOperand().generateUsingResultJS(out);
   		out.print(" === ");
-  		getRightOperand().generateJS(out);  	
+  		getRightOperand().generateUsingResultJS(out);  	
   	}
   	public void NEExpr.generateJS(CodePrinter out) {
-  		getLeftOperand().generateJS(out);
+  		getLeftOperand().generateUsingResultJS(out);
   		out.print(" != ");
-  		getRightOperand().generateJS(out);  	
+  		getRightOperand().generateUsingResultJS(out);  	
   	}
   	public void GEExpr.generateJS(CodePrinter out) {
-  		getLeftOperand().generateJS(out);
+  		getLeftOperand().generateUsingResultJS(out);
   		out.print(" >= ");
-  		getRightOperand().generateJS(out);  	
+  		getRightOperand().generateUsingResultJS(out);  	
   	}
   	public void GTExpr.generateJS(CodePrinter out) {
-  		getLeftOperand().generateJS(out);
+  		getLeftOperand().generateUsingResultJS(out);
   		out.print(" > ");
-  		getRightOperand().generateJS(out);  	
+  		getRightOperand().generateUsingResultJS(out);  	
   	}
   	public void LEExpr.generateJS(CodePrinter out) {
-  		getLeftOperand().generateJS(out);
+  		getLeftOperand().generateUsingResultJS(out);
   		out.print(" <= ");
-  		getRightOperand().generateJS(out);  	
+  		getRightOperand().generateUsingResultJS(out);  	
   	}
   	public void LTExpr.generateJS(CodePrinter out) {
-  		getLeftOperand().generateJS(out);
+  		getLeftOperand().generateUsingResultJS(out);
   		out.print(" < ");
-  		getRightOperand().generateJS(out);  	
+  		getRightOperand().generateUsingResultJS(out);  	
   	}
   	public void LShiftExpr.generateJS(CodePrinter out) {
-  		getLeftOperand().generateJS(out);
+  		getLeftOperand().generateUsingResultJS(out);
   		out.print(" << ");
-  		getRightOperand().generateJS(out);
+  		getRightOperand().generateUsingResultJS(out);
 
   	}
   	public void RShiftExpr.generateJS(CodePrinter out) {
-  		getLeftOperand().generateJS(out);
+  		getLeftOperand().generateUsingResultJS(out);
   		out.print(" >> ");
-  		getRightOperand().generateJS(out);  	
+  		getRightOperand().generateUsingResultJS(out);  	
   	}
   	public void URShiftExpr.generateJS(CodePrinter out) {
-  		getLeftOperand().generateJS(out);
+  		getLeftOperand().generateUsingResultJS(out);
   		out.print(" >>> ");
-  		getRightOperand().generateJS(out);  	
+  		getRightOperand().generateUsingResultJS(out);  	
   	}
   	
   	
@@ -459,34 +467,34 @@ aspect GenerateJS {
 		if (t.isPrimitiveType()) {
 			if (t.isByte()) { 
 				out.print("_castTObyte(");
-				getExpr().generateJS(out);
+				getExpr().generateUsingResultJS(out);
 				out.print(")");
 			} else if (t.isChar()) {
 				out.print("_castTOchar(");
-				getExpr().generateJS(out);
+				getExpr().generateUsingResultJS(out);
 				out.print(")");
 			} else if (t.isInt()) {
 				out.print("_castTOint(");
-				getExpr().generateJS(out);
+				getExpr().generateUsingResultJS(out);
 				out.print(")");
 			} else if (t.isDouble()) {
-				getExpr().generateJS(out);
+				getExpr().generateUsingResultJS(out);
 			} else {
 				throw new RuntimeException("Type not supported:"+t.fullName());
 			}
 		} else {
-  			getExpr().generateJS(out);
+  			getExpr().generateUsingResultJS(out);
   		}
   	}
   	
   	// --- ConditionalExpr ---
   	
   	public void ConditionalExpr.generateJS(CodePrinter out) {
-  		getCondition().generateJS(out);
+  		getCondition().generateUsingResultJS(out);
   		out.print("?");
-  		getTrueExpr().generateJS(out);
+  		getTrueExpr().generateUsingResultJS(out);
   		out.print(":");
-  		getFalseExpr().generateJS(out);
+  		getFalseExpr().generateUsingResultJS(out);
   	}
   	
   	// --- InstanceOfExpr ---
@@ -494,17 +502,14 @@ aspect GenerateJS {
   	public void InstanceOfExpr.generateJS(CodePrinter out) {
   	  	TypeDecl t = getTypeAccess().type();
   	  	if (t.isArrayDecl()) {
-//  	  		out.error("Can not create type check for array types");
-// 	  		out.print("false");
-	  		out.print("(_denullify(");
-  			getExpr().generateJS(out);
-  			out.print(")._is_Array)");
+  	  		out.print("false");
+  	  		throw new RuntimeException("Can not create type check for array types");
   	  	} else if (!t.isReferenceType()) {
   	  		out.print("false");
   	  		throw new RuntimeException("Can not create type check for primitive types");
   	  	} else {
 	  		out.print("(_denullify(");
-  			getExpr().generateJS(out);
+  			getExpr().generateUsingResultJS(out);
   			out.print(").");
 	  		out.print("_is_");
 	  		out.printAndMemorizeReference(t.packageName(),t.uniqueName());
@@ -531,76 +536,53 @@ aspect GenerateJS {
 			out.print(")");  		
   		}
   	}
-  	public void BooleanLiteral.generateJS(CodePrinter out) {
-  		out.print(isTrue()?"true":"false");
+  	public void Literal.generateJS(CodePrinter out) {
+  		constant().generateJS(out);
   	}
-  	public void CharacterLiteral.generateJS(CodePrinter out) {
-  		out.print(""+constant().intValue());	
-  	}
-//  	public void IllegalLiteral.generateJS(CodePrinter out) {
+//  	public void IllegalLiteral.generateCS(CodePrinter out) {
 //  	}
   	public void NullLiteral.generateJS(CodePrinter out) {
   		out.print("null");
   	}
-  	public void DoubleLiteral.generateJS(CodePrinter out) {
-  		out.print(""+constant().doubleValue());	
-  	}
-  	public void IntegerLiteral.generateJS(CodePrinter out) {
-  		out.print(""+constant().intValue());	
-  	}
-  	public void StringLiteral.generateJS(CodePrinter out) {
-  		String v = constant().stringValue();
-  		out.print("\"");  		
-  		for (int i=0; i<v.length(); i++) {
-  			Constant.generateCharacterJS(out, v.charAt(i));
-  		}
-  		out.print("\"");
-  		
-  		// check if this is inside a static initializer - must force early loading of created class
-  		BodyDecl bd = enclosingBodyDecl();
-		if (bd.isField() || (bd instanceof StaticInitializer)) {
-  			out.memorizeComplete("java.lang","String");
-  		}  		
-  	}
+  	
   	public void ParExpr.generateJS(CodePrinter out) {
   		out.print("(");
   		getExpr().generateJS(out);
   		out.print(")");
   	}
-
   	
   	// --- Unary ---
   	public void BitNotExpr.generateJS(CodePrinter out) {
   		out.print(" ~ ");
-  		getOperand().generateJS(out);  	
+  		getOperand().generateUsingResultJS(out);  	
   	}
   	public void LogNotExpr.generateJS(CodePrinter out) {
   		out.print(" ! ");
-  		getOperand().generateJS(out);  	
+  		getOperand().generateUsingResultJS(out);  	
   	}
   	public void MinusExpr.generateJS(CodePrinter out) {
   		out.print(" - ");
-  		getOperand().generateJS(out);  	
+  		getOperand().generateUsingResultJS(out);  	
   	}
   	public void PlusExpr.generateJS(CodePrinter out) {
   		out.print(" + ");    
-  		getOperand().generateJS(out);  	
+  		getOperand().generateUsingResultJS(out);  	
   	}
   	public void PostDecExpr.generateJS(CodePrinter out) {
-  		getOperand().generateJS(out);  	
+  		getOperand().generateUsingResultJS(out);  	
   		out.print(" -- ");    
   	}
   	public void PostIncExpr.generateJS(CodePrinter out) {
-  		getOperand().generateJS(out);  	
+  		getOperand().generateUsingResultJS(out);  	
   		out.print(" ++ ");    
   	}
   	public void PreDecExpr.generateJS(CodePrinter out) {
   		out.print(" -- ");    
-  		getOperand().generateJS(out);  	
+  		getOperand().generateUsingResultJS(out);  	
   	}
   	public void PreIncExpr.generateJS(CodePrinter out) {
   		out.print(" ++ ");    
-  		getOperand().generateJS(out);  	
+  		getOperand().generateUsingResultJS(out);  	
   	}
   	
 }

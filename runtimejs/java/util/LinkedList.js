@@ -141,5 +141,5 @@ var java_util_LinkedList = _defineClass("java_util_LinkedList", java_util_Abstra
         return this.remove_1(this.size_0()-1);
     },
     
-});
+}, null);
 

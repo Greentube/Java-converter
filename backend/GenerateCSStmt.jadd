@@ -68,7 +68,7 @@ aspect GenerateCS {
 			getStmt().generateCS(out);
 			out.print("while(");	
 			getCondition().generateUsingResultCS(out);
-			out.print(")");			
+			out.print(");");			
 		} else {
 			out.print("{ do { ");
 			out.println();

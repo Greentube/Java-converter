@@ -89,4 +89,4 @@ var java_util_Vector = _defineClass("java_util_Vector", java_util_ArrayList, nul
         }
 	},
     
-});
+}, null);

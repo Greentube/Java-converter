@@ -1,6 +1,4 @@
 
-//reference// java/lang/String
-
 // definition of the base class for all java classes
 function java_lang_Object()
 {
@@ -24,7 +22,8 @@ java_lang_Object.prototype.equals_1 = function(a)
 };
 java_lang_Object.prototype.hashCode_0 = function()
 {
-  return 1;  // there is no real way to have a identity number 
+// there is no real way to access some object identity, so use a hash of the class name instead
+  return this._classNameString.hashCode_0();  
 };
 // provide the standard javascript means to convert anything to a string
 java_lang_Object.prototype.toString = function()
@@ -42,9 +41,9 @@ java_lang_Object.prototype._classNameString = "java.lang.Object";
 // create a new class (that means, its constructor function) and
 // copy existing members to the new prototype. this keeps the protoyping
 // chain flat and maybe also fast.
-function _defineClass (classname, base, interfaces, methods)
+function _defineClass (classname, base, interfaces, methods, staticmethodsandfields)
 {  
-  // the constructor function which will be used with new 
+  // the constructor function which will be used with 'new' 
   var f = function(optionalOuter) 
   {
       // if provided set up the link to the outer object
@@ -54,7 +53,8 @@ function _defineClass (classname, base, interfaces, methods)
   }
   
   // connect prototype chain
-  f.prototype.__proto__ = base.prototype;
+  f.prototype = Object.create(base.prototype);
+  f.prototype.constructor = f;
   
   // add/overwrite methods that are newly defined
   if (methods) {
@@ -65,12 +65,11 @@ function _defineClass (classname, base, interfaces, methods)
   
   // add attributes than can be used to check for class/interface type
   f.prototype['_is_'+classname] = true;
-  f.prototype._classNameString = classname.replace(new RegExp("_","g"),".");
-  
+  f.prototype._classNameString = classname;
   populateIsInterfaceProperties(interfaces);
 
-  // create container for the static fields members
-  f.s = {};
+  // link to container holding all static content
+  f.s = staticmethodsandfields;
   
   // done
   return f;
@@ -89,7 +88,7 @@ function _defineInterface(classname, superinterfaces)
     return {
         classname: classname,
         superinterfaces: superinterfaces,
-        prototype: {}    // container for all static members
+        s: {}    // container for all static members
     };
 }
 
@@ -193,8 +192,145 @@ Array.prototype.hashCode_0 = function () {
     return 2;
 };
 
-Array.prototype.__defineGetter__('length_f', function() { return this.length; });
-
 Array.prototype._is_java_lang_Object = true;
-Array.prototype._is_Array = true;
+
+
+// extend the javascript String object by monkey-patching in the necessary
+// java methods
+
+String.prototype._is_java_lang_Object = true;
+String.prototype._is_java_lang_String = true;
+
+
+
+String.prototype.charAt_1 = function(x) {
+	return this.charCodeAt(x);
+};
+
+String.prototype.compareTo_1 = function (str) {
+    var l1 = this.length;
+    var l2 = str.length;    
+    for (var i=0; i<l1 && i<l2; i++) {
+        var c1 = this.charCodeAt(i);
+        var c2 = str.charCodeAt(i);
+        if (c1!=c2) {
+            return c1-c2;
+        }
+    }
+    return l1-l2;
+};
+
+String.prototype.concat_1 = function (str) {
+  return this.concat(str);
+};
+
+String.prototype.endsWith_1 = function(suffix) {
+    return this.indexOf(suffix, this.length - suffix.length) !== -1;
+};
+
+String.prototype.equals_1 = function(str) {
+    if (str==null) return false;
+    if (!(str._is_java_lang_String)) return false;  
+	return this.valueOf() == str.valueOf();
+};
+
+String.prototype.hashCode_0 = function() {
+    var h = 0;
+    for (var i=0; i<this.length; i++) {
+       h = (h*31 + this.charCodeAt(i)) & 0xffffffff;
+    }
+    return h;
+};   
+
+String.prototype.indexOf_1 = function(str) {
+	if (str._is_java_lang_String) {
+		return this.indexOf(str);
+	} else {
+		return this.indexOf(String.fromCharCode(str));
+	}
+};
+
+String.prototype.indexOf_2 = function(str, x) {
+	if (str._is_java_lang_String) {
+		return this.indexOf(str,x);
+	} else {
+		return this.indexOf(String.fromCharCode(str),x);
+	}
+};
+
+String.prototype.isEmpty_0 = function() {
+   return this.length_0() === 0;
+};   
+
+String.prototype.lastIndexOf_1 = function(str) {
+	if (str._is_java_lang_String) {
+        return this.lastIndexOf(str);
+    } else {
+        return this.lastIndexOf(String.fromCharCode(str));
+    }
+};
+
+String.prototype.lastIndexOf_2 = function(str, x) {
+	if (str._is_java_lang_String) {
+        return this.lastIndexOf(str, x);
+    } else {
+        return this.lastIndexOf(String.fromCharCode(str), x);
+    }
+};
+
+String.prototype.length_0 = function () {
+    return this.length;
+};
+
+String.prototype.replace_2 = function (oldChar, newChar) {
+	var s = String.fromCharCode(oldChar);
+	if (s==".") s="\\."; // avoid confusion with regular expression syntax
+	return this.replace(new RegExp(s,"g"),String.fromCharCode(newChar));
+};
+
+String.prototype.startsWith_1 = function(prefix) {
+    return this.indexOf(prefix) === 0;
+};
+
+String.prototype.substring_1 = function(start) {
+  return this.substring(start);
+};
+
+String.prototype.substring_2 = function(start,end) {
+  return this.substring(start,end);
+};  
+
+String.prototype.toCharArray_0 = function () {
+	var chararray = this.split('');
+	var i = 0;
+	chararray.forEach(function(entry) {
+	    chararray[i] = entry.charCodeAt();
+	    i++;
+	});
+	return chararray;
+};
+
+String.prototype.toString_0 = function() {
+  return this;
+};
+
+String.prototype.trim_0 = function() {
+  return this.trim();
+};
+
+// Make String object creation possible by providing a string factory. 
+// This object is not used by itself, but only to call one of the constructor
+// methods, which will then return the proper string.
+function java_lang_String()
+{
+};
+
+java_lang_String.prototype._1 = function(chararray)
+{
+    return String.fromCharCode.apply(String, chararray);     
+};
+java_lang_String.prototype._3 = function(chararray,offset,count)
+{
+    return String.fromCharCode.apply(String, chararray.slice(offset,offset+count));
+};
 

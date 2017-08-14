@@ -1,7 +1,7 @@
 //complete// java/io/PrintStream
 //load// java/lang/Object
 var java_lang_System = _defineClass("java_lang_System", java_lang_Object, null, {
-    
+},{ // static    
     arraycopy_5 : function(src, srcPos, dest, destPos, length) {
         if (destPos<=srcPos) {
             for (var i = 0; i < length; i++) {
@@ -13,11 +13,9 @@ var java_lang_System = _defineClass("java_lang_System", java_lang_Object, null, 
             }
         }
     },
-
     exit_1: function(status) {
-    }
-        
+    },
+    out: (new java_io_PrintStream())._1(false),
+    err: (new java_io_PrintStream())._1(true),       
 });
 
-java_lang_System.prototype.out_f = (new java_io_PrintStream())._1(false);
-java_lang_System.prototype.err_f = (new java_io_PrintStream())._1(true);

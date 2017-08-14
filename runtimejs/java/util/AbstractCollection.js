@@ -57,6 +57,6 @@ var java_util_AbstractCollection = _defineClass("java_util_AbstractCollection", 
 		return parts.join("");    
 	}, 
     
-});
+},null); 
 
 

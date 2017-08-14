@@ -45,4 +45,4 @@ var java_util_ArrayList = _defineClass("java_util_ArrayList", java_util_Abstract
         // no operation. the underlying array is always trimmed.
     },
         
-});
+},null); 

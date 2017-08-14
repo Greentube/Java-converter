@@ -59,25 +59,73 @@ aspect GenerateJS {
     	out.print (", {");
     	out.println();
     	out.increaseIndent(); 
-    	    	        	    	        	    	    
-      	for (BodyDecl b : methodsAndConstructors()) {
+    	    	        	    	  
+		// instance methods    	    	        	    	  		      	    	    
+      	for (BodyDecl bd : methodsAndConstructors()) {
       		// check if need to suppress auto-generated methods related to Enums
-			if (b instanceof MethodDecl) {
-      			MethodDecl md = (MethodDecl) b;
-      			if (this instanceof EnumDecl) {
-      				if (md.getID().equals("values") && md.getNumParameter()==0 ) continue;
-      				if (md.getID().equals("valueOf") && md.getNumParameter()==1 )  continue;
-      			}
-				if (md.getID().startsWith("$SwitchMap$") && md.getNumParameter()==0) continue;      		
+			if (bd instanceof MethodDecl) {
+      			MethodDecl md = (MethodDecl) bd;
+      			if (md.isStatic()) continue;   		
       		}
-      		else if (b instanceof ConstructorDecl) {
-      			ConstructorDecl cd = (ConstructorDecl) b;
+      		else if (bd instanceof ConstructorDecl) {
+      			ConstructorDecl cd = (ConstructorDecl) bd;
       			if (this instanceof EnumDecl) {
       				if (cd.isSynthetic()) continue;
       			}      		
       		}
-	        b.generateJS(out);
-    	}    	    	    
+	        bd.generateJS(out);
+    	}    	
+    	
+		// static methods and fields
+		out.decreaseIndent();
+    	out.print ("},{");
+    	out.println();   
+		out.increaseIndent();
+    	
+		for (BodyDecl bd:getBodyDeclList()) {
+			if (bd instanceof MethodDecl) {
+      			MethodDecl md = (MethodDecl) bd;
+				if (!md.isStatic()) continue;
+		        bd.generateJS(out);    		
+      		} else if (bd.isField()) {
+				for (FieldDeclarator fd:bd.fieldDeclarations()) {
+					if (!fd.isStatic()) continue;
+					out.printJSIdentifier(fd.getID(),"");
+					out.print(": ");
+					if (fd.getInit()!=null && fd.getInit().isConstant() && fd.isFinal()) {
+						fd.getInit().generateUsingResultJS(out);
+					} else {
+						out.print(fd.fieldDecl().type().isPrimitiveType() ? "0":"null");
+					}
+					out.print(",");
+					out.println();
+			 	}
+			}
+		}		
+    	    	
+    	if (this instanceof EnumDecl) {
+			out.print("values_0 : function() {");
+			out.println();
+			out.increaseIndent();
+			out.print("return [");
+			out.println();
+			out.increaseIndent(); 
+			for (EnumConstant ec:((EnumDecl)this).enumConstants()) {
+				out.printJSName(packageName(), uniqueName());			
+				out.print(".s.");
+				out.printJSIdentifier(ec.getID(),"");
+				out.print(",");
+				out.println();
+			}
+			out.decreaseIndent();
+			out.print("];");		
+			out.println();
+			out.decreaseIndent();
+			out.print("}");
+			out.println();    	
+			out.print(",");
+			out.println();    	
+    	}    	    
     	    	    	
 		out.decreaseIndent(); 
 		out.print("});");
@@ -87,28 +135,15 @@ aspect GenerateJS {
 			if (bd.isField()) {
 				for (FieldDeclarator fd:bd.fieldDeclarations()) {
 					if (fd.isStatic()) {
-				    	out.printJSName(packageName(), uniqueName());					
-						out.print(".prototype.");
-						out.printJSIdentifier(fd.getID(),"_f");
-						out.print(" = ");
-						out.print(fd.fieldDecl().type().isPrimitiveType() ? "0":"null");
-						out.print(";");
-						out.println();
-					}
-			 	}
-			}
-		}		
-		for (BodyDecl bd:getBodyDeclList()) {
-			if (bd.isField()) {
-				for (FieldDeclarator fd:bd.fieldDeclarations()) {
-					if (fd.isStatic() && fd.getInit()!=null) {
-    					out.printJSName(packageName(), uniqueName());					
-						out.print(".prototype.");
-						out.printJSIdentifier(fd.getID(),"_f");
-						out.print(" = ");
-						fd.getInit().generateJS(out);
-						out.print(";");
-						out.println();
+						if (fd.getInit()!=null && !(fd.isFinal() && fd.getInit().isConstant()) ) {
+	    					out.printJSName(packageName(), uniqueName());					
+							out.print(".s.");
+							out.printJSIdentifier(fd.getID(),"");
+							out.print(" = ");
+							fd.getInit().generateUsingResultJS(out);
+							out.print(";");
+							out.println();
+						}
 					}
 				}
 			} else if (bd instanceof StaticInitializer) {
@@ -129,8 +164,8 @@ aspect GenerateJS {
 				needexternalinitialization = true;
 			} else {
     			out.printJSName(packageName(), uniqueName());			
-				out.print(".prototype.");
-				out.printJSIdentifier(ec.getID(),"_f");
+				out.print(".s.");
+				out.printJSIdentifier(ec.getID(),"");
 				out.print(" = ");
 				out.print("(new ");
 				out.printJSName(packageName(), uniqueName());
@@ -151,24 +186,7 @@ aspect GenerateJS {
 			values.add(ec.getID());			
 			ordinal++;			
 		}
-		
-		out.printJSName(packageName(), uniqueName());
-		out.print(".prototype.values_0 = function() {");
-		out.println();
-		out.increaseIndent();
-		out.print("return [");
-		for (String v: values) {
-			out.printJSName(packageName(), uniqueName());			
-			out.print(".prototype.");
-			out.printJSIdentifier(v,"_f");
-			out.print(",");
-		}
-		out.print("];");		
-		out.println();
-		out.decreaseIndent();
-		out.print("};");
-		out.println();
-		
+				
 		if (needexternalinitialization) {
 			out.memorizeReference(packageName(),uniqueName()+"$init");
 			
@@ -181,8 +199,8 @@ aspect GenerateJS {
 				for (EnumConstant ec:enumConstants()) {
 					if (ec.getInit().type()!=this) {
 						o2.printJSName(packageName(), uniqueName());					
-						o2.print(".prototype.");
-						o2.printJSIdentifier(ec.getID(),"_f");
+						o2.print(".s.");
+						o2.printJSIdentifier(ec.getID(),"");
 						o2.print(" = ");
 						o2.print("(new ");
 						TypeDecl t = ec.getInit().type();
@@ -236,8 +254,8 @@ aspect GenerateJS {
 				for (FieldDeclarator fd:bd.fieldDeclarations()) {
 					if (fd.isStatic()) {
 						out.printAndMemorizeComplete(packageName(),uniqueName());
-						out.print(".prototype.");
-						out.printJSIdentifier(fd.getID(), "_f");
+						out.print(".s.");
+						out.printJSIdentifier(fd.getID(), "");
 						out.print(" = ");
 						fd.getInit().generateJS(out);
 						out.print(";");					}
@@ -286,7 +304,7 @@ aspect GenerateJS {
 					for (FieldDeclarator fd:bd.fieldDeclarations()) {
 						if (!fd.isStatic()) {
 							out.print("this.");
-							out.printJSIdentifier(fd.getID(),"_f");
+							out.printJSIdentifier(fd.getID(),"");
 							out.print(" = ");
 							out.print(fd.fieldDecl().type().isPrimitiveType() ? "0":"null");
 							out.print(";");
@@ -303,9 +321,9 @@ aspect GenerateJS {
 					for (FieldDeclarator fd:bd.fieldDeclarations()) {
 						if (!fd.isStatic() && fd.getInit()!=null) {
 							out.print("this.");
-							out.printJSIdentifier(fd.getID(),"_f");
+							out.printJSIdentifier(fd.getID(),"");
 							out.print(" = ");
-							fd.getInit().generateJS(out);
+							fd.getInit().generateUsingResultJS(out);
 							out.print(";");						
 							out.println();
 						}
@@ -401,5 +419,24 @@ aspect GenerateJS {
   				}
   				break;
   			}  	
-  	}  	  	
+  	}  	  
+  	
+  	public void Constant.generateJS(CodePrinter out) {
+		if (this instanceof	ConstantBoolean) {
+			out.print(booleanValue()?"true":"false");
+		} else if (this instanceof ConstantChar) {
+			out.print(""+intValue());
+		} else if (this instanceof ConstantDouble) {
+			out.print(""+doubleValue());
+		} else if (this instanceof ConstantInt) {
+			out.print(""+intValue());
+		} else if (this instanceof ConstantString) {
+  			String v = stringValue();
+	  		out.print("\"");  		
+	  		for (int i=0; i<v.length(); i++) {
+	  			generateCharacterJS(out, v.charAt(i));
+	  		}
+	  		out.print("\"");	
+	  	}		
+  	}	
 }

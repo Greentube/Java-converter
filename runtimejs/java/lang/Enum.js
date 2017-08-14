@@ -26,6 +26,4 @@ var java_lang_Enum = _defineClass ("java_lang_Enum", java_lang_Object, null, {
         return this.name;
     }
     
-});
-
- 
+},  null);  // no statics

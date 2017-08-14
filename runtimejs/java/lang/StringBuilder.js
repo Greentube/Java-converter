@@ -27,5 +27,5 @@ var java_lang_StringBuffer = _defineClass("java_lang_StringBuffer", java_lang_Ob
         return this.parts.join("");
     }
       
-});
+}, null);  // no statics
  

@@ -1,34 +1,33 @@
 //load// java/lang/Object
 var java_lang_Integer = _defineClass("java_lang_Integer", java_lang_Object, null, {
 	_1: function(i) {
-		this.i_f = i;
+		this.i = i;
         return this;
     },
 	intValue_0: function() {
-		return this.i_f;
+		return this.i;
     },
     
     equals_1: function(i) {
-        if (i!=null && i._is_java_lang_Integer && i.i_f==this.i_f) {
+        if (i!=null && i._is_java_lang_Integer && i.i==this.i) {
             return true;
         }
         return false;
     },
     hashCode_0: function() {
-        return this.i_f;
+        return this.i;
     },    
     toString_0: function() {
-        return this.i_f.toString();
+        return this.i.toString();
     },
-    
+},{  // static
     toString_1 : function(i) {
         return i.toString();
     },
     valueOf_1: function(i) {
         return (new java_lang_Integer())._1(i);
-    },
-    
+    },    
+    MAX__VALUE: 2147483647,
+    MIN__VALUE: -2147483648,
 });
  
-java_lang_Integer.prototype.MAX__VALUE_f = 2147483647;
-java_lang_Integer.prototype.MIN__VALUE_f = -2147483648;

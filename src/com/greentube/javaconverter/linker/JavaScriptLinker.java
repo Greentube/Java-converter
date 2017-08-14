@@ -29,9 +29,8 @@ public class JavaScriptLinker
 		
 		// add startup code to launch the main method
 		String startupcode = "\n"
-			+ (mainfilename.indexOf('/')<0 ? "__":"")
 			+ mainfilename.replace('/', '_')
-			+ ".prototype.main_1([]);\n";			
+			+ ".s.main_1([]);\n";			
 		os.write(startupcode.getBytes("utf-8"));	
 		
 		os.close();

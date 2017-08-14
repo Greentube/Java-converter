@@ -78,11 +78,23 @@ public class TestJava5 extends TestJava4 {
     	}
     	assertO(l.toString(), "[7, 4, 1]");
     	
+    	x: for (int i:new int[]{8,10,12,14,16}) {
+    		if (i==10) continue;
+    		if (i==14) break;
+    		l.add(Integer.valueOf(i));    		
+    	}
+    	assertO(l.toString(), "[7, 4, 1, 8, 12]");
+    	
     	Vector v = new Vector();
-    	for (Integer x: l) {
+    	x: for (Integer x: l) {
+    		if (v.size()==2) {
+    			v.add(Integer.valueOf(47));
+    			continue x;
+    		}
+    		if (v.size()==4) break x;
     		v.add(x);
     	}
-    	assertO(v.toString(), "[7, 4, 1]");    
+    	assertO(v.toString(), "[7, 4, 47, 8]");    
     	
 	}
 	

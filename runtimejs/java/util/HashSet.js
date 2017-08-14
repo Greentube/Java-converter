@@ -17,7 +17,7 @@ var java_util_HashSet = _defineClass("java_util_HashSet", java_util_AbstractColl
         },
         
         add_1: function(e) { 
-            return this.map.put_2(e, java_util_HashSet.prototype.PRESENT_f)==null;
+            return this.map.put_2(e, java_util_HashSet.s.PRESENT)==null;
         },           
         
         addAll_1: function(c) {
@@ -95,7 +95,8 @@ var java_util_HashSet = _defineClass("java_util_HashSet", java_util_AbstractColl
         
         // toArray   implemented by AbstractCollection 
         // toString  implemented by AbstractCollection
-    
+        
+},{     // static
+    PRESENT: new java_lang_Object(),    
 });
 
-java_util_HashSet.prototype.PRESENT_f = (new java_lang_Object())._0();

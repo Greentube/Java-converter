@@ -22,5 +22,5 @@ var java_util_Hashtable = _defineClass("java_util_Hashtable", java_util_HashMap,
         return (new java_util_IteratorEnumeration())._1(this.keySet_0().iterator_0());
 	},
        
-});
+},null);
 

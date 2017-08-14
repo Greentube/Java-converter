@@ -1,34 +1,31 @@
 //load// java/lang/Object
 var java_lang_Byte = _defineClass("java_lang_Byte", java_lang_Object, null, {
 	_1: function(b) {
-		this.b_f = b;
+		this.b = b;
         return this;
     },
 	byteValue_0: function() {
-		return this.b_f;
+		return this.b;
 	},
     equals_1: function(b) {
-        if (b!=null && b._is_java_lang_Byte && this.b_f == b.b_f) {
+        if (b!=null && b._is_java_lang_Byte && this.b == b.b) {
             return true;
         }
         return false;
     },
     hashCode_0: function() {
-        return this.b_f;
+        return this.b;
     },
 	toString_0: function() {
-		return this.b_f.toString();
+		return this.b.toString();
     },    
-    
+},{ // static
     toString_1: function (b) {
         return b.toString();
     },
     valueOf_1: function (b) {
         return (new java_lang_Byte())._1(b);
-    },    
-    
+    },        
+    MIN__VALUE: -128,
+    MAX__VALUE: 127,
 });
-
-
-java_lang_Byte.prototype.MIN__VALUE_f = -128;
-java_lang_Byte.prototype.MAX__VALUE_f = 127;

@@ -113,7 +113,7 @@ var java_util_AbstractList = _defineClass("java_util_AbstractList", java_util_Ab
         
     // toString_0      implemented by AbstractCollection
   	            
-});
+},null); 
 
 
 var java_util_AbstractListIterator = _defineClass("java_util_AbstractListIterator", java_lang_Object, [java_util_Iterator], {
@@ -136,5 +136,5 @@ var java_util_AbstractListIterator = _defineClass("java_util_AbstractListIterato
         this.list.remove_1(--this.n);
     },
         
-});
+},null); 
 

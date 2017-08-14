@@ -1,6 +1,4 @@
 
-//reference// java/lang/String
-
 //load// java/lang/Object
 var java_io_PrintStream = _defineClass ("java_io_PrintStream", java_lang_Object, null, {
 

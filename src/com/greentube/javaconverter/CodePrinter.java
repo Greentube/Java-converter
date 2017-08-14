@@ -141,7 +141,9 @@ public class CodePrinter {
 			"in", "instanceof", "int", "interface", "let", "long", "native", "new",
 			"null", "package", "private", "protected", "public", "return", "short", "static",
 			"super", "switch", "synchronized", "this", "throw", "throws", "transient", "true",
-			"try", "typeof", "var" ,"void", "volatile", "while", "with", "yield"
+			"try", "typeof", "var" ,"void", "volatile", "while", "with", "yield",
+			// keys with special meaning in javascript objects
+			"toString", "length", "__proto__"
 	));
 	
 	public void printJSIdentifier(String id, String suffix) {
@@ -153,14 +155,10 @@ public class CodePrinter {
 	}
 	
 	public void printJSName(String packagename, String uniquename) {
-		if (packagename.length()==0) {
-			print("__");
-		} else {
-			StringTokenizer t = new StringTokenizer(packagename,".");
-			for (int i=0; t.hasMoreElements(); i++) {
-				print(escapeIdentifier(t.nextToken(),false).replace('_', '$'));
-				print("_");
-			}
+		StringTokenizer t = new StringTokenizer(packagename,".");
+		for (int i=0; t.hasMoreElements(); i++) {
+			print(escapeIdentifier(t.nextToken(),false).replace('_', '$'));
+			print("_");
 		}
 		print(escapeIdentifier(uniquename,false).replace('_', '$'));
 	}
@@ -179,13 +177,18 @@ public class CodePrinter {
 	}
 	
 	public void memorizeReference(String packagename, String uniquename) {
-		reference.add(escapePackagePath(packagename) + escapeIdentifier(uniquename,true));
+		mem(reference,packagename,uniquename);
 	}
 	public void memorizeLoad(String packagename, String uniquename) {
-		load.add(escapePackagePath(packagename) + escapeIdentifier(uniquename,true));		
+		mem(load, packagename, uniquename);		
 	}
 	public void memorizeComplete(String packagename, String uniquename) {
-		complete.add(escapePackagePath(packagename) + escapeIdentifier(uniquename,true));	
+		mem(complete, packagename, uniquename);	
+	}
+	private void mem(HashSet<String>storage, String packagename, String uniquename) {
+		if (! (packagename.equals("java.lang") && uniquename.equals("String") )) {
+			storage.add(escapePackagePath(packagename) + escapeIdentifier(uniquename,true));
+		}
 	}
 	
 	public void printExternals() {
