@@ -1,11 +1,11 @@
 //load// java/util/AbstractList
 var java_util_LinkedList = _defineClass("java_util_LinkedList", java_util_AbstractList, null, 
-    function() {
-        this.head = null;
-        this.len = 0;
-        this.currentNode = null;
-        this.currentIndex = 0;        
-    },
+function() {
+    this.head = null;
+    this.len = 0;
+    this.currentNode = null;
+    this.currentIndex = 0;        
+},
 {  
     _0: function() {
         var h = { element:null, next:null, prev: null };

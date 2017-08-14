@@ -1,8 +1,8 @@
 //load// java/lang/Object
 var java_lang_Double = _defineClass ("java_lang_Double", java_lang_Object, null, 
-    function() {
-        this.d = 0;
-    },
+function() {
+    this.d = 0;
+},
 {
 	_1: function(d) {
 		this.d = d;
