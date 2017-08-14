@@ -1,5 +1,9 @@
 //load// java/lang/Object
-var java_lang_Boolean = _defineClass ("java_lang_Boolean", java_lang_Object, null, {
+var java_lang_Boolean = _defineClass ("java_lang_Boolean", java_lang_Object, null, 
+function() {
+    this.b = false;
+},
+{
 	_1: function(b) {
 		this.b = b;
         return this;

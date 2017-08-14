@@ -3,8 +3,11 @@
 //load// java/util/AbstractCollection
 //load// java/util/Iterator
 
-var java_util_HashSet = _defineClass("java_util_HashSet", java_util_AbstractCollection, [java_util_Set], {
-
+var java_util_HashSet = _defineClass("java_util_HashSet", java_util_AbstractCollection, [java_util_Set], 
+    function() {
+        this.map = null;
+    },
+{
         _0: function() {
             this.map = (new java_util_HashMap())._0();
             return this;

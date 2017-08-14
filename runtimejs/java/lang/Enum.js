@@ -1,5 +1,10 @@
 //load// java/lang/Object
-var java_lang_Enum = _defineClass ("java_lang_Enum", java_lang_Object, null, {
+var java_lang_Enum = _defineClass ("java_lang_Enum", java_lang_Object, null, 
+    function() {
+        this.name = null;
+        this.ordinal = 0;
+    },
+{
 	_2: function(name,ordinal) {
         this.name = name;
         this.ordinal = ordinal;

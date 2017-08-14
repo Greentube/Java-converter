@@ -1,5 +1,9 @@
 //load// java/lang/Object
-var java_lang_Byte = _defineClass("java_lang_Byte", java_lang_Object, null, {
+var java_lang_Byte = _defineClass("java_lang_Byte", java_lang_Object, null, 
+    function() {
+        this.b = 0;
+    },
+{
 	_1: function(b) {
 		this.b = b;
         return this;

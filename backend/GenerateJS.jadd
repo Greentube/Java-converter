@@ -36,11 +36,7 @@ aspect GenerateJS {
     	out.printJSName(packageName(), uniqueName());
 		out.print("\", ");
 				
-    	if (hasSuperClass()) {
-      		out.printAndMemorizeLoad(superclass().packageName(),superclass().uniqueName());
-    	} else {
-    		out.printAndMemorizeLoad("java.lang", "Object");
-    	} 
+    	out.printAndMemorizeLoad(superclass().packageName(),superclass().uniqueName());
 		out.print(", ");
 		
 		if (!hasImplements()) {
@@ -55,12 +51,45 @@ aspect GenerateJS {
       		}			
 			out.print("]");
 		} 
+		out.print(",");
+		out.println();
     	
-    	out.print (", {");
+    	// allocator function 
+    	out.print ("function(" + (needsEnclosing()?"_o":"") +") {");	    	
+    	out.println();
+    	out.increaseIndent();   
+    		if (!superclass().isObject()) {
+      			out.printAndMemorizeLoad(superclass().packageName(),superclass().uniqueName());
+      			out.print(".call(this" + (needsEnclosing()?",_o":"") +");");
+      			out.println();      			
+      		} else if (needsEnclosing()) {
+      			out.print("this._o = _o;");
+      			out.println();
+      		}
+			for (BodyDecl bd:getBodyDeclList()) {
+				if (bd.isField()) {
+					for (FieldDeclarator fd:bd.fieldDeclarations()) {
+						if (!fd.isStatic()) {
+							out.print("this.");
+							out.printJSIdentifier(fd.getID(),"");
+							out.print(" = ");
+							out.print(fd.fieldDecl().type().isPrimitiveType() ? "0":"null");
+							out.print(";");
+							out.println();
+						}
+					}
+				}
+			}    	
+    	out.decreaseIndent();
+    	out.print ("},");
+    	out.println();
+    	    	
+    	
+		// instance methods    	    	        	    	  		      	    	    
+    	out.print ("{");
     	out.println();
     	out.increaseIndent(); 
     	    	        	    	  
-		// instance methods    	    	        	    	  		      	    	    
       	for (BodyDecl bd : methodsAndConstructors()) {
       		// check if need to suppress auto-generated methods related to Enums
 			if (bd instanceof MethodDecl) {
@@ -298,21 +327,6 @@ aspect GenerateJS {
 			getConstructorInvocation().generateJS(out);			
 		} else { 
 		// when a super-constructor is called, the initialization of everything else needs to be done here
-			// set instance variables to 0 / null		
-			for (BodyDecl bd:hostType().getBodyDeclList()) {
-				if (bd.isField()) {
-					for (FieldDeclarator fd:bd.fieldDeclarations()) {
-						if (!fd.isStatic()) {
-							out.print("this.");
-							out.printJSIdentifier(fd.getID(),"");
-							out.print(" = ");
-							out.print(fd.fieldDecl().type().isPrimitiveType() ? "0":"null");
-							out.print(";");
-							out.println();
-						}
-					}
-				}
-			}
 			// call the super-constructor
 			getConstructorInvocation().generateJS(out);
 			// do all field initializations

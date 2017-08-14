@@ -1,8 +1,10 @@
 //reference// java/util/Iterator
 //load// java/util/List
 //load// java/util/AbstractCollection
-var java_util_AbstractList = _defineClass("java_util_AbstractList", java_util_AbstractCollection, [java_util_List], {
-   
+var java_util_AbstractList = _defineClass("java_util_AbstractList", java_util_AbstractCollection, [java_util_List], 
+function() {
+},
+{   
     // must be implemented by a modifiable subclass
     // public abstract System.Object get(int index);
     // public abstract System.Object set(int index, System.Object element);        
@@ -10,7 +12,6 @@ var java_util_AbstractList = _defineClass("java_util_AbstractList", java_util_Ab
     // public abstract System.Object remove(int index);        
     // int size() 
     
-
     add_1: function (obj) {
         this.add_2(this.size_0(), obj);
         return true;
@@ -116,8 +117,12 @@ var java_util_AbstractList = _defineClass("java_util_AbstractList", java_util_Ab
 },null); 
 
 
-var java_util_AbstractListIterator = _defineClass("java_util_AbstractListIterator", java_lang_Object, [java_util_Iterator], {
-
+var java_util_AbstractListIterator = _defineClass("java_util_AbstractListIterator", java_lang_Object, [java_util_Iterator], 
+function() {
+    this.list = null;
+    this.n = 0;
+},
+{
 	_1: function(list) {
         this.list = list;
         this.n = 0;

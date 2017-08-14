@@ -6,8 +6,10 @@
 //load// java/lang/Object
 //load// java/util/Collection
 //reference// java/util/Iterator
-var java_util_AbstractCollection = _defineClass("java_util_AbstractCollection", java_lang_Object, [java_util_Collection], {
-
+var java_util_AbstractCollection = _defineClass("java_util_AbstractCollection", java_lang_Object, [java_util_Collection], 
+    function() {
+    },    
+{
 	contains_1: function(obj) {
         var i = this.iterator_0();
         while (i.hasNext_0()) {

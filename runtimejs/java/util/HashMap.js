@@ -10,8 +10,13 @@
 //load// java/util/AbstractCollection
 //load// java/util/Iterator
 
-var java_util_HashMap = _defineClass("java_util_HashMap", java_lang_Object, [java_util_Map], {
-    
+var java_util_HashMap = _defineClass("java_util_HashMap", java_lang_Object, [java_util_Map], 
+    function() {
+        this.stringtable = null;
+        this.commontable = null;
+        this.totalelements = 0;
+    },
+{    
    	_0: function() {
         this.stringtable = {};
         this.commontable = {};
@@ -217,8 +222,11 @@ function _isValidStringKey(s) {
 }
 
 
-var java_util_HashMapKeyView = _defineClass("java_util_HashMapKeyView", java_util_AbstractCollection, [java_util_Set], {
-
+var java_util_HashMapKeyView = _defineClass("java_util_HashMapKeyView", java_util_AbstractCollection, [java_util_Set], 
+    function() {
+        this.map = null;
+    },
+{
     _1: function(map) {   
         this.map = map;
         return this;
@@ -265,8 +273,11 @@ var java_util_HashMapKeyView = _defineClass("java_util_HashMapKeyView", java_uti
 }, null);
 
 
-var java_util_HashMapValueView = _defineClass("java_util_HashMapValueView", java_util_AbstractCollection, [java_util_Collection], {
-
+var java_util_HashMapValueView = _defineClass("java_util_HashMapValueView", java_util_AbstractCollection, [java_util_Collection], 
+    function() {
+        this.map = null;
+    },
+{
    	_1: function(map) {
         this.map = map;
         return this;
@@ -294,8 +305,14 @@ var java_util_HashMapValueView = _defineClass("java_util_HashMapValueView", java
 }, null);
 
 
-var java_util_HashMapIterator = _defineClass("java_util_MapValueView", java_lang_Object, [java_util_Iterator], {
-            
+var java_util_HashMapIterator = _defineClass("java_util_MapValueView", java_lang_Object, [java_util_Iterator], 
+    function() {
+        this.map = null;
+        this.deliverKeys = false;
+        this.keys = null;
+        this.n = 0;
+    },
+{            
     _2: function(map, deliverKeys) {
         this.map = map;
         this.deliverKeys = deliverKeys;

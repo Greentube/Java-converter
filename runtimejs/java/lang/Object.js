@@ -2,7 +2,7 @@
 // definition of the base class for all java classes
 function java_lang_Object()
 {
-    // no members in constructor of empty object
+    // no members for allocation of empty object
 };
 
 // internal default constructor
@@ -39,44 +39,34 @@ java_lang_Object.prototype._classNameString = "java.lang.Object";
 // ---- global toolbox functions for classes and arrays ----
 
 // create a new class (that means, its constructor function) and
-// copy existing members to the new prototype. this keeps the protoyping
-// chain flat and maybe also fast.
-function _defineClass (classname, base, interfaces, methods, staticmethodsandfields)
-{  
-  // the constructor function which will be used with 'new' 
-  var f = function(optionalOuter) 
-  {
-      // if provided set up the link to the outer object
-      if (optionalOuter) { 
-            this._o = optionalOuter;
-      }
-  }
-  
+// copy existing members to the new prototype. 
+function _defineClass (classname, base, interfaces, allocator, methods, staticmethodsandfields)
+{    
   // connect prototype chain
-  f.prototype = Object.create(base.prototype);
-  f.prototype.constructor = f;
+  allocator.prototype = Object.create(base.prototype);
+  allocator.prototype.constructor = allocator;
   
   // add/overwrite methods that are newly defined
   if (methods) {
       for (var name in methods) {      
-        f.prototype[name] = methods[name];
+        allocator.prototype[name] = methods[name];
       }
   }  
   
   // add attributes than can be used to check for class/interface type
-  f.prototype['_is_'+classname] = true;
-  f.prototype._classNameString = classname;
+  allocator.prototype['_is_'+classname] = true;
+  allocator.prototype._classNameString = classname;
   populateIsInterfaceProperties(interfaces);
 
   // link to container holding all static content
-  f.s = staticmethodsandfields;
+  allocator.s = staticmethodsandfields;
   
   // done
-  return f;
+  return allocator;
   
   function populateIsInterfaceProperties(interfaces) {    
     for (var index=0; interfaces && index<interfaces.length; index++) {     
-        f.prototype['_is_' + interfaces[index].classname] = true;
+        allocator.prototype['_is_' + interfaces[index].classname] = true;
         populateIsInterfaceProperties(interfaces[index].superinterfaces);
     }
   }
@@ -318,7 +308,7 @@ String.prototype.trim_0 = function() {
   return this.trim();
 };
 
-// Make String object creation possible by providing a string factory. 
+// Make String object creation easy by providing a dummy string allocator. 
 // This object is not used by itself, but only to call one of the constructor
 // methods, which will then return the proper string.
 function java_lang_String()

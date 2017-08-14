@@ -1,9 +1,13 @@
 
 //load// java/lang/Object
-var java_io_PrintStream = _defineClass ("java_io_PrintStream", java_lang_Object, null, {
-
+var java_io_PrintStream = _defineClass ("java_io_PrintStream", java_lang_Object, null, 
+    function() {
+        this.iserr = false;
+        this.line = null;
+    },
+{
 	_1: function(iserr) {
-        this.iserr_f = iserr;
+        this.iserr = iserr;
         this.line = [];
         return this;
     },
@@ -24,8 +28,6 @@ var java_io_PrintStream = _defineClass ("java_io_PrintStream", java_lang_Object,
     println_1(x) {
         this.print_1(x);
         this.println_0();
-    },
-    
-    
+    },       
 });
 

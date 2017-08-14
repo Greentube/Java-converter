@@ -1,5 +1,8 @@
 //load// java/lang/Object
-var java_lang_Math = _defineClass("java_lang_Math", java_lang_Object, null, {
+var java_lang_Math = _defineClass("java_lang_Math", java_lang_Object, null, 
+function() {       
+},
+{   // no instance methods
 },{ // statics
     abs_1: Math.abs,
     acos_1: Math.acos,

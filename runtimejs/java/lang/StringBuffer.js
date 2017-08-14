@@ -1,6 +1,9 @@
 //load// java/lang/Object
-var java_lang_StringBuilder = _defineClass("java_lang_StringBuilder", java_lang_Object, null, {
-
+var java_lang_StringBuffer = _defineClass("java_lang_StringBuffer", java_lang_Object, null, 
+    function() {
+        this.parts = null;
+    },
+{
     _0: function() {
         this.parts = [];
         return this;

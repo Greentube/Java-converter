@@ -1,6 +1,9 @@
 //load// java/util/AbstractList
-var java_util_ArrayList = _defineClass("java_util_ArrayList", java_util_AbstractList, null, {
-  
+var java_util_ArrayList = _defineClass("java_util_ArrayList", java_util_AbstractList, null, 
+function() {
+    this.storage = null;
+},
+{  
     _0: function() {
         this.storage = [];
         return this;

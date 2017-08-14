@@ -1,5 +1,9 @@
 //load// java/lang/Object
-var java_lang_Character = _defineClass("java_lang_Character", java_lang_Object, null, {
+var java_lang_Character = _defineClass("java_lang_Character", java_lang_Object, null, 
+    function() {
+        this.c = 0;
+    },
+{
 	_1: function(c) {
 		this.c = c;
         return this;
