@@ -68,7 +68,7 @@ aspect GenerateCS {
     	out.println();
     	out.increaseIndent(); 
 
-		if (needsEnclosing() && superclass().isObject()) {
+		if (needsEnclosing() && !superclass().needsEnclosing()) {
 			out.print("public ");
 			enclosingType().generateReferenceCS(out);
 			out.print(" _o;");
@@ -291,7 +291,7 @@ aspect GenerateCS {
   		out.printCSUniqueName(hostType().uniqueName());
   		out.print("(");
   		// pass reference to the enclosing object 
-  		boolean needouter = hostType().needsEnclosing() && !hostType().isSubclassingEnum();
+  		boolean needouter = hostType().needsEnclosing();
   		if (needouter) {
   			hostType().enclosingType().generateReferenceCS(out);
   			out.print(" _o");
@@ -313,12 +313,11 @@ aspect GenerateCS {
 		out.println();
 		out.increaseIndent();
 		
+		// when a super-constructor is called, the initialization of everything that belongs
+		// to this class itself needs to be done here
 		// if calling a constructor of this, do not initialize all variables twice		
-		if (! needsInit) {
-			// nothing to do 			
-		} else { 
-			// when a super-constructor is called, the initialization of everything else needs to be done here
-			if (needouter && ((ClassDecl)hostType()).superclass().isObject()) {
+		if (needsInit) {
+			if (needouter && !((ClassDecl)hostType()).superclass().needsEnclosing()) {
 				out.print("this._o = _o;");
 				out.println();
 			}			

@@ -231,7 +231,7 @@ aspect GenerateJS {
   		} else if (v.isLocalVariable() || v.isParameter()) {  
   			if (v.hostType() == hostType()) {		
 				out.printJSIdentifier(getID(), "");
-			} else {
+			} else {  // this must be an access to local variable of calling method 
 				throw new RuntimeException("Can not access local variables of outer class method");
 			}
 		} else if (getID().equals("length")) {

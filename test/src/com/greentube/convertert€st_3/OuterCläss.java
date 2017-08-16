@@ -1,5 +1,8 @@
 package com.greentube.convertert€st_3;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class OuterCläss {
 	static int c = 99;
 
@@ -105,6 +108,36 @@ public class OuterCläss {
 				};						
 			};
 		
+		List al = new ArrayList();
+		al.add("first");
+		al.add("second");
+		al = new ArrayList(al) {
+			public String toString() {
+				p=16;
+				return "AL: "+super.toString();
+			}
+		};
+		if (al.toString().equals("AL: [first, second]")) {			
+			new Runnable() {
+				public void run() {
+					p++;
+				}
+			}.run();
+				
+			int[] buf = new int[1];
+			new Runnable() {
+				int[] buf;
+				public void run() {
+					buf[0] = p;
+				}
+				public Runnable init(int[] b) {
+					buf = b;
+					return this;
+				}
+			}.init(buf).run();
+			r = r + "," + buf[0];
+		}
+						
 		return r;
 	}
 	

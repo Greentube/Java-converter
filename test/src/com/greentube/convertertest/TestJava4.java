@@ -1750,12 +1750,27 @@ public class TestJava4 {
     	assertO(x.workWithLocalClass(), "L4721");
     	assertO(new OuterCläss(33).workWithLocalClass(), "L43");
     	
-    	assertO(x.workWithAnonymousClass(), "A54,4711,4788,7,4788-4788-77");
-    	assertO(new OuterCläss(91).workWithAnonymousClass(), "A54,91,168,7,168-168-77");
+    	assertO(x.workWithAnonymousClass(), "A54,4711,4788,7,4788-4788-77,17");
+    	assertO(new OuterCläss(91).workWithAnonymousClass(), "A54,91,168,7,168-168-77,17");
 
     	int[] i= new int[1];
     	new OuterCläss(666).getFetcher().fetch(i);
     	assertI(i[0],666);
+    	
+    	final int[] a = new int[] { 0,5 };
+    	Runnable r = new Runnable() {
+    		int[] a;
+    		public Runnable init(int[] a) {
+    			this.a = a;
+    			return this;
+    		}
+    		public void run() {
+    			a[0] = a[1];
+    		}
+    	}.init(a);
+    	assertI(a[0], 0);
+    	r.run();
+    	assertI(a[0], 5);    	
     }
     
     public static void identifi€rmangling() {

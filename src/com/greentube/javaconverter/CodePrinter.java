@@ -104,13 +104,7 @@ public class CodePrinter {
 			} else {
 				b.append("_");
 				if (c=='_') { 
-					// nothing
-				} else if (c>='!' && c<='/') {
-					b.append( (char) (c-'!'+'A'));
-				} else if (c>=':' && c<='@') {
-					b.append( (char) (c-':'+'P'));
-				} else if (c>='[' && c<='^') {
-					b.append( (char) (c-'['+'W'));
+					// '_' escapes to '__' 
 				} else {
 					b.append(Integer.toHexString(c));
 				}	

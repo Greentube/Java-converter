@@ -60,9 +60,10 @@ aspect GenerateJS {
     	out.increaseIndent();   
     		if (!superclass().isObject()) {
       			out.printAndMemorizeLoad(superclass().packageName(),superclass().uniqueName());
-      			out.print(".call(this" + (needsEnclosing()?",_o":"") +");");
+      			out.print(".call(this" + (superclass().needsEnclosing()?",_o":"") +");");
       			out.println();      			
-      		} else if (needsEnclosing()) {
+      		}  
+      		if (needsEnclosing() && !superclass().needsEnclosing()) {
       			out.print("this._o = _o;");
       			out.println();
       		}

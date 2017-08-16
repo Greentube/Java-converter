@@ -138,11 +138,11 @@ aspect GenerateCS {
   			boolean passouter = false;
   			if (this instanceof SuperConstructorAccess) {
   				out.print("base");
-  				passouter = hostType().isInnerClass() && !hostType().isSubclassingEnum()
-  				        && !((ClassDecl)hostType()).superclass().isObject();
+  				passouter = hostType().needsEnclosing() 
+  				        && ((ClassDecl)hostType()).superclass().needsEnclosing();
   			} else {
   				out.print("this");
-  				passouter = hostType().isInnerClass() && !hostType().isSubclassingEnum();
+  				passouter = hostType().needsEnclosing();
   			}
   	
 			out.print("(");
