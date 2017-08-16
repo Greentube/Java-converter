@@ -149,6 +149,8 @@ aspect CheckRestrictions {
 					}				
 				}
 			}
+			
+// TODO check for collisions in the inheritance chain			
 		}
 		
 		super.checkRestrictions(errorlist);		

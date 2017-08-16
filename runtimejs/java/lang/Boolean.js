@@ -28,11 +28,11 @@ function() {
       return b ? "true" : "false";
     },
     valueOf_1: function(b) {
-      return b ? java_lang_Boolean.s.TRUE : java_lang_Boolean.s.FALSE;
+      return b ? java_lang_Boolean.TRUE : java_lang_Boolean.FALSE;
     },       
     TRUE: null,
     FALSE: null,
 });
 
-java_lang_Boolean.s.TRUE = (new java_lang_Boolean)._1(true);
-java_lang_Boolean.s.FALSE = (new java_lang_Boolean)._1(false);
+java_lang_Boolean.TRUE = (new java_lang_Boolean)._1(true);
+java_lang_Boolean.FALSE = (new java_lang_Boolean)._1(false);

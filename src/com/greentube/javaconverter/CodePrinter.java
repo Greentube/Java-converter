@@ -137,7 +137,7 @@ public class CodePrinter {
 			"super", "switch", "synchronized", "this", "throw", "throws", "transient", "true",
 			"try", "typeof", "var" ,"void", "volatile", "while", "with", "yield",
 			// keys with special meaning in javascript objects
-			"toString", "length", "__proto__"
+			"toString", "length", "__proto__", "prototype"
 	));
 	
 	public void printJSIdentifier(String id, String suffix) {

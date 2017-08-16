@@ -123,7 +123,7 @@ aspect GenerateJS {
   		if (m.isStatic()) {
 			TypeDecl t = m.hostType();
   			out.printAndMemorizeReference(t.packageName(),t.uniqueName());
-  			out.print(".s.");
+  			out.print(".");
   			out.printJSIdentifier(m.name(),"_"+m.getNumParameter());
   			out.print("(");
 
@@ -209,7 +209,7 @@ aspect GenerateJS {
   		if (v.isClassVariable()) {
   			TypeDecl t = v.hostType();
   			out.printAndMemorizeReference(t.packageName(),t.uniqueName());  		
-  			out.print(".s.");
+  			out.print(".");
   			out.printJSIdentifier(getID(),"");  
   			// check if this is inside a static initializer - must force early loading of accessed class
 	  		BodyDecl bd = enclosingBodyDecl();

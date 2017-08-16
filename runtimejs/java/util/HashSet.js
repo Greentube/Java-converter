@@ -20,7 +20,7 @@ function() {
         },
         
         add_1: function(e) { 
-            return this.map.put_2(e, java_util_HashSet.s.PRESENT)==null;
+            return this.map.put_2(e, java_util_HashSet.PRESENT)==null;
         },           
         
         addAll_1: function(c) {

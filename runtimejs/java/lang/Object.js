@@ -22,7 +22,7 @@ java_lang_Object.prototype.equals_1 = function(a)
 };
 java_lang_Object.prototype.hashCode_0 = function()
 {
-// there is no real way to access some object identity, so use a hash of the class name instead
+// there is no real way to access any true object identity, so use a hash of the class name instead
   return this._classNameString.hashCode_0();  
 };
 // provide the standard javascript means to convert anything to a string
@@ -42,6 +42,13 @@ java_lang_Object.prototype._classNameString = "java.lang.Object";
 // copy existing members to the new prototype. 
 function _defineClass (classname, base, interfaces, allocator, methods, staticmethodsandfields)
 {    
+  // copy all static content directly into the allocator function (which mainly serves as the class object)
+  if (staticmethodsandfields) {
+      for (var name in staticmethodsandfields) {    
+        allocator[name] = staticmethodsandfields[name];
+      }      
+  }
+  
   // connect prototype chain
   allocator.prototype = Object.create(base.prototype);
   allocator.prototype.constructor = allocator;
@@ -57,17 +64,14 @@ function _defineClass (classname, base, interfaces, allocator, methods, staticme
   allocator.prototype['_is_'+classname] = true;
   allocator.prototype._classNameString = classname;
   populateIsInterfaceProperties(interfaces);
-
-  // link to container holding all static content
-  allocator.s = staticmethodsandfields;
   
   // done
   return allocator;
   
   function populateIsInterfaceProperties(interfaces) {    
     for (var index=0; interfaces && index<interfaces.length; index++) {     
-        allocator.prototype['_is_' + interfaces[index].classname] = true;
-        populateIsInterfaceProperties(interfaces[index].superinterfaces);
+        allocator.prototype['_is_' + interfaces[index]._classname] = true;
+        populateIsInterfaceProperties(interfaces[index]._superinterfaces);
     }
   }
 }
@@ -76,9 +80,8 @@ function _defineClass (classname, base, interfaces, allocator, methods, staticme
 function _defineInterface(classname, superinterfaces)
 {
     return {
-        classname: classname,
-        superinterfaces: superinterfaces,
-        s: {}    // container for all static members
+        _classname: classname,
+        _superinterfaces: superinterfaces,
     };
 }
 

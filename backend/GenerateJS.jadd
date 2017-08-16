@@ -142,7 +142,7 @@ aspect GenerateJS {
 			out.increaseIndent(); 
 			for (EnumConstant ec:((EnumDecl)this).enumConstants()) {
 				out.printJSName(packageName(), uniqueName());			
-				out.print(".s.");
+				out.print(".");
 				out.printJSIdentifier(ec.getID(),"");
 				out.print(",");
 				out.println();
@@ -167,7 +167,7 @@ aspect GenerateJS {
 					if (fd.isStatic()) {
 						if (fd.getInit()!=null && !(fd.isFinal() && fd.getInit().isConstant()) ) {
 	    					out.printJSName(packageName(), uniqueName());					
-							out.print(".s.");
+							out.print(".");
 							out.printJSIdentifier(fd.getID(),"");
 							out.print(" = ");
 							fd.getInit().generateUsingResultJS(out);
@@ -194,7 +194,7 @@ aspect GenerateJS {
 				needexternalinitialization = true;
 			} else {
     			out.printJSName(packageName(), uniqueName());			
-				out.print(".s.");
+				out.print(".");
 				out.printJSIdentifier(ec.getID(),"");
 				out.print(" = ");
 				out.print("(new ");
@@ -229,7 +229,7 @@ aspect GenerateJS {
 				for (EnumConstant ec:enumConstants()) {
 					if (ec.getInit().type()!=this) {
 						o2.printJSName(packageName(), uniqueName());					
-						o2.print(".s.");
+						o2.print(".");
 						o2.printJSIdentifier(ec.getID(),"");
 						o2.print(" = ");
 						o2.print("(new ");
@@ -284,7 +284,7 @@ aspect GenerateJS {
 				for (FieldDeclarator fd:bd.fieldDeclarations()) {
 					if (fd.isStatic()) {
 						out.printAndMemorizeComplete(packageName(),uniqueName());
-						out.print(".s.");
+						out.print(".");
 						out.printJSIdentifier(fd.getID(), "");
 						out.print(" = ");
 						fd.getInit().generateJS(out);
