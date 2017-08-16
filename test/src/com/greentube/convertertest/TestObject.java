@@ -11,7 +11,8 @@ public class TestObject extends TestParentIntermediate {
 
     TestObject   moreobject;
     DummyClass dummyobject;
-
+    public boolean dummyboolean;
+    
     // constructors
     public TestObject() {                  // construct without parameters
         super();                     // constructor calling superconstructor

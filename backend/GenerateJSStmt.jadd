@@ -229,7 +229,7 @@ aspect GenerateJS {
 			if (e!=null) {
 				e.generateUsingResultJS(out);
 			} else {
-				out.print(type().isPrimitiveType() ? "0" : "null");
+				type().generateDefaultValueJS(out);
 			}
 		}
 		out.print(";");

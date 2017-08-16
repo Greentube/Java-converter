@@ -461,13 +461,6 @@ aspect GenerateCS {
 		}
 	}  	
 	
-	public boolean TypeDecl.isSubclassingEnum() {
-		if (isEnumDecl()) return true;
-		if (!isClassDecl()) return false;
-		ClassDecl cd = (ClassDecl) this;
-		return cd.hasSuperclass() && cd.superclass().isSubclassingEnum();
-	}
-	
 	public int EnumDecl.determineOrdinal(String name) {
 		int ordinal = 0;
 		for (EnumConstant ec:enumConstants()) {

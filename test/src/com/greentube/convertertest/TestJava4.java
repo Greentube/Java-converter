@@ -22,7 +22,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
 
 // A test class to test the conversion of various features from java to other languages
@@ -34,6 +33,7 @@ public class TestJava4 {
     final static int staticint99 = 99;  // final static with initializer
 
     static int static1, static2;       // two variables in one line;
+    static boolean static3;
     
     static String initialized = "hello".substring(2);
 
@@ -84,7 +84,8 @@ public class TestJava4 {
         assertI(static1 ,0);
         static1 = 44;
         assertI(static1, 44);
-               
+        assertO("static3"+static3, "static3false");
+        
         assertI(StaticClass.a, 17);
         assertO(StaticClass.b, "hello kitty");
         assertO(StaticClass.c, new Vector());
@@ -95,6 +96,7 @@ public class TestJava4 {
         
         TestObject t = new TestObject();	       
         assertI(t.accessParentStatic(), 66);
+        assertO(""+t.dummyboolean, "false");
         
         assertI(TestInterface.constant1, 6);
         assertO(TestInterface.constant2, "Hi");
@@ -282,6 +284,8 @@ public class TestJava4 {
     public static void operatortest() {
     	System.out.println("- operator");
 
+    	boolean bo;
+    	bo=true;
     	int i=0;
         int j = 423081234;
         boolean a=true;
@@ -300,6 +304,7 @@ public class TestJava4 {
         assertI ( (4-5+5+6+7), 17 );
         assertI ( (4-5-1) , -2);
         assertI ( (4-5+5),  4);
+        assertO (""+bo,"true");
         
         assertI ( (byte) 124, 124);
         assertI ( (byte) 44444, -100);

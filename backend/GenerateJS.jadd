@@ -74,7 +74,7 @@ aspect GenerateJS {
 							out.print("this.");
 							out.printJSIdentifier(fd.getID(),"");
 							out.print(" = ");
-							out.print(fd.fieldDecl().type().isPrimitiveType() ? "0":"null");
+							fd.fieldDecl().type().generateDefaultValueJS(out);
 							out.print(";");
 							out.println();
 						}
@@ -125,7 +125,7 @@ aspect GenerateJS {
 					if (fd.getInit()!=null && fd.getInit().isConstant() && fd.isFinal()) {
 						fd.getInit().generateUsingResultJS(out);
 					} else {
-						out.print(fd.fieldDecl().type().isPrimitiveType() ? "0":"null");
+						fd.fieldDecl().type().generateDefaultValueJS(out);
 					}
 					out.print(",");
 					out.println();
@@ -402,6 +402,17 @@ aspect GenerateJS {
 //	public void SubstitutedBodyDecl.generateJS(CodePrinter out) {
 //	}
   	
+	public void TypeDecl.generateDefaultValueJS(CodePrinter out) {
+		if (isPrimitiveType()) {
+  			if (isBoolean()) {
+  				out.print("false");
+  			} else {
+  				out.print("0");
+  			} 
+  		} else {
+  			out.print("null");
+  		}
+	}		
   	
   	public static void Constant.generateCharacterJS(CodePrinter out, char c) {
   			switch(c) {
