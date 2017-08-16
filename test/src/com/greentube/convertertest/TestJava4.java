@@ -96,8 +96,10 @@ public class TestJava4 {
         
         TestObject t = new TestObject();	       
         assertI(t.accessParentStatic(), 66);
+        assertI(t.accessOwnStatic(), 55);        
+        assertI(TestObject.staticparentattribute, 55);
         assertO(""+t.dummyboolean, "false");
-        
+                
         assertI(TestInterface.constant1, 6);
         assertO(TestInterface.constant2, "Hi");
         assertO(TestInterface.constant3, new Integer(44));
@@ -625,7 +627,6 @@ public class TestJava4 {
     		return "MUCH";
     	}
     }
-    
         
     public static void booleantest() {
     	System.out.println("- boolean");

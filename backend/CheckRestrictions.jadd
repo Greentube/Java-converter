@@ -17,23 +17,30 @@
  *      Number type that can not hold a 64 bit quantity) or quite useless anyway (short, float).
  * - Auto-boxing, Auto-unboxing not supported
  *      This feature would be a horror to get right in all conversion targets. Since its use
- *      is quite disfavored in the first place, the converter does no allow it at all.  
+ *      is already quite disfavored in the first place, the converter does not allow it at all.  
+ * - no 'instanceof' with array types.  
+ *      In the javascript target, all arrays have the same runtime type. In theory it would be 
+ *      possible to detect at runtime if an object is _some_ type of array, but this can
+ *      not be directly written in java syntax.  
  * - Method overloading only based on number of parameters
  *      Instead of implementing the java way of using the full type signatures
  *      of all parameters, the javascript target uses a simpler system that 
  *      takes only the number of parameters into account. As a consequence, it is not possible
- *      to have multiple identically named methods with the same number of parameters in the same class.   
+ *      to have multiple identically named methods with the same number of parameters 
+ *      and the same static/non-static property in the same class.         
  * - No shadowing of fields and methods 
  *      No two instance fields in objects that are somehow inherited from each other can have the 
  *      same name - even if one or both are private. 
  *      Same holds for methods - but there the "name" is considered to be the 
  *      identifier in conjunction with the number-of-parameters.
-        Static fields or methods do not have this restriction.
-        Also local variables may shadow fields.
- * - no 'instanceof' with array types.  
- *      In the javascript target, all arrays have the same runtime type. In theory it would be 
- *      possible to detect at runtime if an object is _some_ type of array, but this can
- *      not be directly written in java syntax. 
+ *      Static fields or methods do not have this restriction.
+ *      Also local variables may shadow fields.
+ * - Access to static members is not allowed by using an instance
+ *      It is kind of legal in java to call a static method with something like: 
+ *      exp.valueOf(4711)    // exp is of type Integer 
+ *      The possible side-effects of the first expression makes it impossible to just always
+ *      eliminate it for conversion. Therefore this strange construction is not supported.
+ *      (but you can use 'super' to access static members of superclasses) 
  * - Anonymous classes can not access local variables
  *      One of the more obscure features of java is the ability to access the local variables
  *      of the method defining the anonymous class - given that they are defined 'final'.
@@ -51,17 +58,7 @@ aspect CheckRestrictions {
   		}
   	}
   	
-  	// -- Threads  (and part of Exceptions)
-	public void MethodDecl.checkRestrictions(ArrayList<String> errorlist) {
-		if (isSynchronized()) {		
-			errorlist.add("Threading is not supported");
-		}
-		if (hasException()) {
-			errorlist.add("Exceptions are not supported");
-		}
-		super.checkRestrictions(errorlist);
-	}
-
+  	// -- Threads 
 	public void SynchronizedStmt.checkRestrictions(ArrayList<String> errorlist) {
 		errorlist.add("Threading is not supported");
 		super.checkRestrictions(errorlist);
@@ -111,8 +108,51 @@ aspect CheckRestrictions {
   	public void LongLiteral.checkRestrictions(ArrayList<String> errorlist) {
   		errorlist.add("Type 'long' not supported");
   	}
-  	  	
-	// method overloading rules 
+
+	// no instanceof with arrays
+  	public void InstanceOfExpr.checkRestrictions(ArrayList<String> errorlist) {
+  	  	if (getTypeAccess().type().isArrayDecl()) {
+  	  		errorlist.add("Can not create type check for array types");
+  	  	}
+		super.checkRestrictions(errorlist);
+	}
+		   	  	
+		   	  			   	    	  
+	// method overloading rules
+	public void MethodDecl.checkRestrictions(ArrayList<String> errorlist) {
+		// do not check for interfaces 
+		if (hostType() instanceof ClassDecl) { 
+		
+			// check forbidden threading
+			if (isSynchronized()) {		
+				errorlist.add("Threading is not supported");
+			}
+			// check forbidden exceptions
+			if (hasException()) {
+				errorlist.add("Exceptions are not supported");
+			}
+			
+			// check method name collisions	in same class		
+			ClassDecl cd = (ClassDecl)hostType();
+			for (BodyDecl bd:cd.getBodyDeclList()) {
+				// no two methods with same name and number of arguments in same class
+				// if both are either static or non-static
+				if ((bd instanceof MethodDecl) && bd!=this) {
+					MethodDecl md = (MethodDecl) bd;
+					if (md.getID().equals(getID())
+					&&  md.getNumParameter()==getNumParameter()
+					&&  md.isStatic() == isStatic()) {
+						errorlist.add(
+						 (isStatic() ? "Static" : "Non-static") + " method "
+					+ "'"+getID()+"' with "+getNumParameter()
+					+ " parameter(s) conflicts with other method defined in same class");
+					}				
+				}
+			}
+		}
+		
+		super.checkRestrictions(errorlist);		
+	}
 	
 	// shadowing field identifiers
 	public void FieldDeclarator.checkRestrictions(ArrayList<String> errorlist) {
@@ -133,14 +173,28 @@ aspect CheckRestrictions {
 		}
 		super.checkRestrictions(errorlist);		
 	}
-	
-	// no instanceof with arrays
-  	public void InstanceOfExpr.checkRestrictions(ArrayList<String> errorlist) {
-  	  	if (getTypeAccess().type().isArrayDecl()) {
-  	  		errorlist.add("Can not create type check for array types");
-  	  	}
+
+	// Access to static members is not allowed by using an instance
+	public void AbstractDot.checkRestrictions(ArrayList<String> errorlist) {
+		Expr l = getLeft();
+		Access r = getRight();
+		if ((r instanceof MethodAccess) && ((MethodAccess) r).decl().isStatic()) {
+			if (! (l instanceof TypeAccess) && ! (l instanceof SuperAccess)) {
+				 errorlist.add("Can not access static method '"
+				 + ((MethodAccess) r).decl().getID()
+				 +"' with instance expression");
+			}
+		}
+		if ((r instanceof VarAccess) && ((VarAccess) r).varDecl().isStatic()) {
+			if (! (l instanceof TypeAccess) && ! (l instanceof SuperAccess)) {
+				 errorlist.add("Can not access static field '"
+				  + ((VarAccess) r).varDecl().name() 
+				  + "' with instance expression");
+			}
+		}
 		super.checkRestrictions(errorlist);
-	}
+	}  		
+	
 		   	  	
 	// anonymous classes may not access surrounding local variables
 	public void VarAccess.checkRestrictions(ArrayList<String> errorlist) {

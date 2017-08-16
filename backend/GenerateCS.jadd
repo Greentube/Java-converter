@@ -78,7 +78,25 @@ aspect GenerateCS {
     	for (BodyDecl bd:getBodyDeclList()) {
 			if (bd.isField()) {
 				for (FieldDeclarator fd:bd.fieldDeclarations()) {
-					out.print(fd.isStatic() ? "public static " : "public ");
+					out.print("public ");
+					if (fd.isStatic()) {
+						out.print("static ");
+						// test if shadowing a previous static field - need "new" keyword 
+						ClassDecl cd = (ClassDecl) superclass();
+						findoriginal: while(!cd.isObject()) {
+							for (BodyDecl y:cd.getBodyDeclList()) {
+								if (y.isField()) {
+									for (FieldDeclarator x:y.fieldDeclarations()) {
+										if (x.isStatic() && x.getID().equals(fd.getID())) {
+											out.print("new ");
+											break findoriginal;
+										}
+									}
+								}
+							}
+							cd = (ClassDecl) cd.superclass();
+						}					
+					}					 
 					fd.fieldDecl().getTypeAccess().generateCS(out);
 					out.print(" ");
 					out.printCSIdentifier(fd.getID(),"_f");

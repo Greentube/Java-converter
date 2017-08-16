@@ -145,8 +145,9 @@ aspect GenerateJS {
   			out.printJSIdentifier(m.name(),"_"+m.getNumParameter());
   			out.print("(");
   			
-  		} else if (prevExpr().isSuperAccess()) {
-			out.print(".");
+  		} else if (prevExpr().isSuperAccess()) {  		
+  			out.printAndMemorizeReference(m.hostType().packageName(),m.hostType().uniqueName());
+  			out.print(".prototype.");  		
 			out.printJSIdentifier(m.name(),"_"+m.getNumParameter());
 			out.print(".call(this");
   			if (m.getNumParameter()>0) out.print(",");
@@ -185,8 +186,9 @@ aspect GenerateJS {
 //  	public void ParseName.generateJS(CodePrinter out) {
 // 	}
   	public void SuperAccess.generateJS(CodePrinter out) {
-  		out.printAndMemorizeReference(type().packageName(),type().uniqueName());
-  		out.print(".prototype");
+  		// do not generate anything - must be implemented by the method or variable access
+//  		out.printAndMemorizeReference(type().packageName(),type().uniqueName());
+//  		out.print(".prototype");
  	}
   	public void ThisAccess.generateJS(CodePrinter out) {
   		out.print("this");

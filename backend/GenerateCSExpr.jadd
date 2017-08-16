@@ -59,9 +59,13 @@ aspect GenerateCS {
 			out.print(")(");				  		
   		}
   		boolean skipfirst=false;
-  		// do not generate additional type access when addressing nested types absolutely
-  		if (len==2 && (list.get(0) instanceof TypeAccess) && (list.get(1) instanceof TypeAccess)) {
-  			skipfirst=true;
+  		// do not generate explicit the type accesses - will be done by the expression itself
+  		if (len>=2 && (list.get(len-2) instanceof TypeAccess)) {
+			skipfirst = true;
+		}
+  		// do not generate explicit super accesses - will be done by the expression itself
+  		if (len>=2 && (list.get(len-2) instanceof SuperAccess)) {
+			skipfirst = true;
 		}
 		// do not generate the preceeding expression for " x.new " calls. will be injected by the new action later.
 		if (len==2 && (list.get(1) instanceof ClassInstanceExpr)) {
@@ -186,14 +190,17 @@ aspect GenerateCS {
   	public void MethodAccess.generateCS(CodePrinter out) {
   		MethodDecl m = decl();
   		if (m.isStatic()) {
-  			if (!isRightChildOfDot()) {
-  				TypeDecl ht = m.hostType();
-  				out.printCSName(ht.packageName(),ht.uniqueName());
-  			}
+  			TypeDecl ht = m.hostType();
+			out.printCSName(ht.packageName(),ht.uniqueName());			
 			out.print(".");
-  			out.printCSIdentifier(renameMethod(m.name(),true), "");
-  			
-  		} else if (!isRightChildOfDot()) {
+  			out.printCSIdentifier(renameMethod(m.name(),true), "");  			
+  		} else if (isRightChildOfDot()) {
+  			if (prevExpr().isSuperAccess()) {
+  				out.print("base");
+  			}
+  			out.print(".");
+  			out.printCSIdentifier(renameMethod(m.name(),false), "");
+  		} else {
 			out.print("this.");
 			TypeDecl t = hostType();
 			if (t!=m.hostType() && t.isInnerTypeOf(m.hostType())) {
@@ -203,10 +210,6 @@ aspect GenerateCS {
 					t = t.enclosingType();
 				}
 			}  		
-  			out.printCSIdentifier(renameMethod(m.name(),false), "");
-
-  		} else {
-  			out.print(".");
   			out.printCSIdentifier(renameMethod(m.name(),false), "");
   		}
 
@@ -258,9 +261,9 @@ aspect GenerateCS {
   		getTypeAccess().generateCS(out);
  	}
  	
-  	public void SuperAccess.generateCS(CodePrinter out) {
-  		out.print("base");
- 	}
+//  	public void SuperAccess.generateCS(CodePrinter out) {
+// 	}
+
   	public void ThisAccess.generateCS(CodePrinter out) {
   		out.print("this");
  	}
@@ -294,10 +297,8 @@ aspect GenerateCS {
   	public void VarAccess.generateCS(CodePrinter out) {  	
   		Variable v = varDecl();
   		if (v.isClassVariable()) {
-  			if (!isRightChildOfDot()) {
-  				TypeDecl ht = v.hostType();
-  				out.printCSName(ht.packageName(),ht.uniqueName());
-  			} else if (v.hostType().isInterfaceDecl()) {
+			out.printCSName(v.hostType().packageName(),v.hostType().uniqueName());
+  			if (v.hostType().isInterfaceDecl()) {
   				out.print("_c"); 
   			}
   			out.print(".");

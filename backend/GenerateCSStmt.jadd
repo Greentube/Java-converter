@@ -388,22 +388,16 @@ aspect GenerateCS {
 			if (i>0) out.print(",");
 			out.print(" ");			
 			out.printCSIdentifier(d.name(), "");
-			out.print(" = ");								
 			Expr e = d.getInit();
 			if (e!=null) {
+				out.print(" = ");								
 				if (t.isChar() && e.type().isInt()) {
 					out.print("java.lang.SYSTEM.castToChar(");
 					e.generateUsingResultCS(out);
 					out.print(")");
 				} else {
 					e.generateUsingResultCS(out);
-				}
-			} else if (t.isChar()) {
-				out.print("'\\u0000'");
-			} else if (t.isPrimitiveType()) {
-				out.print("0");
-			} else {
-				out.print("null");
+				}		
 			}
 		}
 		out.print(";");

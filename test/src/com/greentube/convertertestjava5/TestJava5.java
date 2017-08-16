@@ -130,6 +130,7 @@ public class TestJava5 extends TestJava4 {
 		default:      
 			assertB(true);
 		}
+
 		
 		assertB(day1 != day2);
 		assertB(day2 == day3);
@@ -167,6 +168,15 @@ public class TestJava5 extends TestJava4 {
 		Animal[] animals = Animal.values();
 		assertI(animals.length,5);
 		assertO(animals[1],Animal.GIRAFFE);
+		
+		Runnable r = new Runnable() {
+			Animal a;
+			public String toString() {
+				return "a="+a;
+			}
+			public void run() {}
+		};
+		assertO(r.toString(), "a=null");
 	}
 	
 	public static void varargstest() {

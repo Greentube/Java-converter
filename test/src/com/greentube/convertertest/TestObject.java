@@ -13,6 +13,8 @@ public class TestObject extends TestParentIntermediate {
     public DummyClass dummyobject;
     public boolean dummyboolean;
     
+    public static int staticparentattribute = 55;  // shadow parent static attribute
+    
     // constructors
     public TestObject() {                  // construct without parameters
         super();                     // constructor calling superconstructor
@@ -44,6 +46,10 @@ public class TestObject extends TestParentIntermediate {
     }
     
     public int accessParentStatic() {
+    	return super.staticparentattribute + super.staticmethod() - 88;
+    }
+    
+    public int accessOwnStatic() {
     	return staticparentattribute;
     }
     
