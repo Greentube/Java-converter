@@ -124,14 +124,14 @@ public class OuterCläss {
 				}
 			}.run();
 				
-			int[] buf = new int[1];
+			final int[] buf = new int[1];
 			new Runnable() {
-				int[] buf;
+				int[] b;
 				public void run() {
-					buf[0] = p;
+					b[0] = p;
 				}
 				public Runnable init(int[] b) {
-					buf = b;
+					this.b = b;
 					return this;
 				}
 			}.init(buf).run();

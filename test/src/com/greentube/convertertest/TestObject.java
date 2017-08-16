@@ -10,7 +10,7 @@ public class TestObject extends TestParentIntermediate {
     int    somenumber;                  // instance attribute default initializer
 
     TestObject   moreobject;
-    DummyClass dummyobject;
+    public DummyClass dummyobject;
     public boolean dummyboolean;
     
     // constructors

@@ -17,7 +17,7 @@ public class TestParent {
     
     Vector dummyvector;
     static int staticparentattribute = 66;
-    
+        
     public TestParent() {
         dummyvector = new Vector();
         dummyvector.addElement ("el:0");

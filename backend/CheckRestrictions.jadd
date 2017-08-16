@@ -3,12 +3,13 @@
  * All of those restrictions are checked a compile time to guarantee correct behavior
  * if the conversion succeeds.
  *
- * Basically the language features of java 1.7 are provided with the following exceptions.
+ * Basically the language features of java 1.7 are provided with the following restrictions:
  * - Threads   
  *      No threading is supported at all. No synchronization keywords either.      
  * - Exceptions
  *      No explicit exception handling. No throw and no try/catch. 
- *      Misbehavior of the program at runtime (NullPointerException,ArrayOutOfBounds,etc.) 
+ *      Misbehavior of the program at runtime (NullPointerException,ArrayIndexOutOfBoundsException,
+ *      CastException,etc.)
  *      will lead to undefined results (the C#-target will probably behave quite similar to java,
  *      but javascript will often silently ignore the problem and run into trouble later on).
  * - no 'long', 'short', 'float'
@@ -21,16 +22,14 @@
  *      Instead of implementing the java way of using the full type signatures
  *      of all parameters, the javascript target uses a simpler system that 
  *      takes only the number of parameters into account. As a consequence, it is not possible
- *      to have multiple identically named methods with the same number of parameters.   
- * - Fields and methods in one inheritance chain must not conflict. 
+ *      to have multiple identically named methods with the same number of parameters in the same class.   
+ * - No shadowing of fields and methods 
  *      No two instance fields in objects that are somehow inherited from each other can have the 
  *      same name - even if one or both are private. 
  *      Same holds for methods - but there the "name" is considered to be the 
  *      identifier in conjunction with the number-of-parameters.
         Static fields or methods do not have this restriction.
- * - no reflection
- *      The internal structure of the targets runtime is quite different to the java runtime and
- *      the whole releflection framework (beginning with the Class object) is not implemented.   
+        Also local variables may shadow fields.
  * - no 'instanceof' with array types.  
  *      In the javascript target, all arrays have the same runtime type. In theory it would be 
  *      possible to detect at runtime if an object is _some_ type of array, but this can
@@ -39,7 +38,8 @@
  *      One of the more obscure features of java is the ability to access the local variables
  *      of the method defining the anonymous class - given that they are defined 'final'.
  *      Because the implementation in the conversion targets would be extremely complex, 
- *      it is not supported. If needed, use some other means to pass data into an anonymous class.       
+ *      it is not supported. If needed, use some other means to pass data into an anonymous class.        
+ * - Limited subset of java core classes
  */
 
 
@@ -112,39 +112,80 @@ aspect CheckRestrictions {
   		errorlist.add("Type 'long' not supported");
   	}
   	  	
-  	
-  	public void AssignExpr.checkRestrictions(ArrayList<String> errorlist) {
-  		if (! (this instanceof AssignSimpleExpr)) {
-  			if (getDest().expressionHasPotentialSideEffects()) {
-  				errorlist.add("Can not use compound assignment '"+printOp()+"' with side effects in target operand");
-  			}  		
-  		}
+	// method overloading rules 
+	
+	// shadowing field identifiers
+	public void FieldDeclarator.checkRestrictions(ArrayList<String> errorlist) {
+		if (!isStatic()) {
+			ClassDecl cd = (ClassDecl) ((ClassDecl)hostType()).superclass();
+			while(!cd.isObject()) {
+				for (BodyDecl bd:cd.getBodyDeclList()) {
+					if (bd.isField()) {
+						for (FieldDeclarator fd:bd.fieldDeclarations()) {
+							if (!fd.isStatic() && fd.getID().equals(getID())) {
+  								errorlist.add("Field '"+getID()+"' must not shadow parent field");								
+							}
+						}
+					}
+				}
+				cd = (ClassDecl) cd.superclass();
+			}
+		}
+		super.checkRestrictions(errorlist);		
+	}
+	
+	// no instanceof with arrays
+  	public void InstanceOfExpr.checkRestrictions(ArrayList<String> errorlist) {
+  	  	if (getTypeAccess().type().isArrayDecl()) {
+  	  		errorlist.add("Can not create type check for array types");
+  	  	}
 		super.checkRestrictions(errorlist);
-	}		
+	}
+		   	  	
+	// anonymous classes may not access surrounding local variables
+	public void VarAccess.checkRestrictions(ArrayList<String> errorlist) {
+		Variable v = varDecl();
+		if (v.isLocalVariable() || v.isParameter()) {	
+			if (v.hostType() != hostType()) {
+				errorlist.add("Can not access local variables of outer class method");
+			}
+		}		
+		super.checkRestrictions(errorlist);
+	}
 		
-	public boolean ASTNode.expressionHasPotentialSideEffects() {
-  		for (int i=0; i<getNumChild(); i++) {
-  			if (getChild(i).expressionHasPotentialSideEffects()) return true;
-  		}
-  		return false;
-	}  	
-  	public boolean ConstructorAccess.expressionHasPotentialSideEffects() {
-  		return true;
-  	}
-  	public boolean MethodAccess.expressionHasPotentialSideEffects() {
-  		return true;
-  	}  	  	
-  	public boolean AssignExpr.expressionHasPotentialSideEffects() {
-  		return true;
-  	}
-  	public boolean PostfixExpr.expressionHasPotentialSideEffects() {
-  		return true;
-  	}
-  	public boolean PreDecExpr.expressionHasPotentialSideEffects() {
-  		return true;
-  	}
-  	public boolean PreIncExpr.expressionHasPotentialSideEffects() {
-  		return true;
-  	}
+  	
+//  	public void AssignExpr.checkRestrictions(ArrayList<String> errorlist) {
+//  		if (! (this instanceof AssignSimpleExpr)) {
+//  			if (getDest().expressionHasPotentialSideEffects()) {
+//  				errorlist.add("Can not use compound assignment '"+printOp()+"' with side effects in target operand");
+//  			}  		
+//  		}
+//		super.checkRestrictions(errorlist);
+//	}		
+//		
+//	public boolean ASTNode.expressionHasPotentialSideEffects() {
+//  		for (int i=0; i<getNumChild(); i++) {
+//  			if (getChild(i).expressionHasPotentialSideEffects()) return true;
+//  		}
+//  		return false;
+//	}  	
+//  	public boolean ConstructorAccess.expressionHasPotentialSideEffects() {
+//  		return true;
+//  	}
+//  	public boolean MethodAccess.expressionHasPotentialSideEffects() {
+//  		return true;
+//  	}  	  	
+//  	public boolean AssignExpr.expressionHasPotentialSideEffects() {
+//  		return true;
+//  	}
+//  	public boolean PostfixExpr.expressionHasPotentialSideEffects() {
+//  		return true;
+//  	}
+//  	public boolean PreDecExpr.expressionHasPotentialSideEffects() {
+//  		return true;
+//  	}
+//  	public boolean PreIncExpr.expressionHasPotentialSideEffects() {
+//  		return true;
+//  	}
   	
 }
