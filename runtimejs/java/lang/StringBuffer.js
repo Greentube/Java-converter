@@ -3,6 +3,7 @@ var java_lang_StringBuffer = _defineClass("java_lang_StringBuffer", java_lang_Ob
 function() {
     this.parts = null;
 },
+null, // no statics
 {
     _0: function() {
         this.parts = [];
@@ -30,5 +31,5 @@ function() {
         return this.parts.join("");
     }
       
-}, null); // no statics
+}); 
  

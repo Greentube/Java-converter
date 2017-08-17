@@ -6,6 +6,7 @@ function() {
     this.currentNode = null;
     this.currentIndex = 0;        
 },
+null,  // no static
 {  
     _0: function() {
         var h = { element:null, next:null, prev: null };
@@ -147,5 +148,5 @@ function() {
         return this.remove_1(this.size_0()-1);
     },
     
-}, null);
+});
 

@@ -4,6 +4,7 @@ var java_util_Hashtable = _defineClass("java_util_Hashtable", java_util_HashMap,
 function() {
     java_util_HashMap.call(this);
 },
+null,  // no static
 {    
     // legacy methods only supported by Hashtable, but not the Map interface 
     // everything can be easily implemented by just using the methods of the
@@ -23,7 +24,6 @@ function() {
     
 	keys_0: function(){
         return (new java_util_IteratorEnumeration())._1(this.keySet_0().iterator_0());
-	},
-       
-},null);
+	},      
+});
 

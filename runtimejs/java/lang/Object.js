@@ -40,9 +40,9 @@ java_lang_Object.prototype._classNameString = "java.lang.Object";
 
 // create a new class (that means, its constructor function) and
 // copy existing members to the new prototype. 
-function _defineClass (classname, base, interfaces, allocator, methods, staticmethodsandfields)
+function _defineClass (classname, base, interfaces, allocator, staticmethodsandfields, instancemethods)
 {    
-  // copy all static content directly into the allocator function (which mainly serves as the class object)
+  // copy all static content directly into the allocator function (which also serves as the class object)
   if (staticmethodsandfields) {
       for (var name in staticmethodsandfields) {    
         allocator[name] = staticmethodsandfields[name];
@@ -54,15 +54,15 @@ function _defineClass (classname, base, interfaces, allocator, methods, staticme
   allocator.prototype.constructor = allocator;
   
   // add/overwrite methods that are newly defined
-  if (methods) {
-      for (var name in methods) {      
-        allocator.prototype[name] = methods[name];
+  if (instancemethods) {
+      for (var name in instancemethods) {      
+        allocator.prototype[name] = instancemethods[name];
       }
   }  
   
   // add attributes than can be used to check for class/interface type
   allocator.prototype['_is_'+classname] = true;
-  allocator.prototype._classNameString = classname;
+  allocator.prototype._classname = classname;
   populateIsInterfaceProperties(interfaces);
   
   // done
@@ -77,12 +77,23 @@ function _defineClass (classname, base, interfaces, allocator, methods, staticme
 }
 
 // create a new interface with possible superinterfaces as well
-function _defineInterface(classname, superinterfaces)
+function _defineInterface(classname, superinterfaces, staticmethodsandfields)
 {
-    return {
+    // create the 'interface' object 
+    var i = {
         _classname: classname,
         _superinterfaces: superinterfaces,
     };
+    
+    // copy all static content directly into the interface object
+    if (staticmethodsandfields) {
+        for (var name in staticmethodsandfields) {    
+            i[name] = staticmethodsandfields[name];
+        }      
+    }
+    
+    // done
+    return i;
 }
 
 
@@ -90,7 +101,7 @@ function _defineInterface(classname, superinterfaces)
 // this is necessary to avoid runtime errors when checking for type instance
 function _denullify(x)
 {
-  return (x==null) ? false : x;
+    return (x==null) ? false : x;
 }
 
 // perform a division like for java integer types

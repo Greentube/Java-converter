@@ -4,6 +4,7 @@
 var java_util_AbstractList = _defineClass("java_util_AbstractList", java_util_AbstractCollection, [java_util_List], 
 function() {
 },
+null,  // no static
 {   
     // must be implemented by a modifiable subclass
     // public abstract System.Object get(int index);
@@ -112,9 +113,8 @@ function() {
         return modified;
     },
         
-    // toString_0      implemented by AbstractCollection
-  	            
-},null); 
+    // toString_0      implemented by AbstractCollection  	           
+}); 
 
 
 var java_util_AbstractListIterator = _defineClass("java_util_AbstractListIterator", java_lang_Object, [java_util_Iterator], 
@@ -122,6 +122,7 @@ function() {
     this.list = null;
     this.n = 0;
 },
+null,  // no static
 {
 	_1: function(list) {
         this.list = list;
@@ -141,5 +142,5 @@ function() {
         this.list.remove_1(--this.n);
     },
         
-},null); 
+}); 
 

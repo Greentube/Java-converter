@@ -4,6 +4,7 @@ var java_util_Vector = _defineClass("java_util_Vector", java_util_ArrayList, nul
 function() {
     java_util_ArrayList.call(this);
 },
+null,  // no static
 {    
     // legacy methods only supported by Vector (but not the List interface )
     // everything can be easily implemented by just using the existing methods
@@ -89,6 +90,5 @@ function() {
                 for (var i=this.size_0()-1; i>=newsize; i--) this.remove_1(i);
             }
         }
-	},
-    
-}, null);
+	},   
+});

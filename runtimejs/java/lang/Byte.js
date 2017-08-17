@@ -3,6 +3,16 @@ var java_lang_Byte = _defineClass("java_lang_Byte", java_lang_Object, null,
 function() {
     this.b = 0;
 },
+{ // static
+    toString_1: function (b) {
+        return b.toString();
+    },
+    valueOf_1: function (b) {
+        return (new java_lang_Byte())._1(b);
+    },        
+    MIN__VALUE: -128,
+    MAX__VALUE: 127,
+},
 {
 	_1: function(b) {
 		this.b = b;
@@ -23,13 +33,4 @@ function() {
 	toString_0: function() {
 		return this.b.toString();
     },    
-},{ // static
-    toString_1: function (b) {
-        return b.toString();
-    },
-    valueOf_1: function (b) {
-        return (new java_lang_Byte())._1(b);
-    },        
-    MIN__VALUE: -128,
-    MAX__VALUE: 127,
 });

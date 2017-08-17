@@ -4,6 +4,7 @@ function() {
     this.name = null;
     this.ordinal = 0;
 },
+null,   // no static
 {
 	_2: function(name,ordinal) {
         this.name = name;
@@ -29,6 +30,5 @@ function() {
     
     toString_0: function() {
         return this.name;
-    }
-    
-},  null);  // no statics
+    }    
+}); 

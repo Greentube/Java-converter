@@ -3,6 +3,7 @@ var java_lang_StringBuilder = _defineClass("java_lang_StringBuilder", java_lang_
 function() {
     this.parts = null;
 },
+null,    // no statics
 {
     _0: function() {
         this.parts = [];
@@ -30,5 +31,5 @@ function() {
         return this.parts.join("");
     }
       
-}, null);  // no statics
+});
  

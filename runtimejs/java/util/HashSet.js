@@ -7,6 +7,9 @@ var java_util_HashSet = _defineClass("java_util_HashSet", java_util_AbstractColl
 function() {
     this.map = null;
 },
+{   // static
+    PRESENT: new java_lang_Object()._0(),  
+},
 {
         _0: function() {
             this.map = (new java_util_HashMap())._0();
@@ -99,6 +102,4 @@ function() {
         // toArray   implemented by AbstractCollection 
         // toString  implemented by AbstractCollection
         
-},{     // static
-    PRESENT: new java_lang_Object(),    
 });

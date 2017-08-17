@@ -3,6 +3,16 @@ var java_lang_Character = _defineClass("java_lang_Character", java_lang_Object, 
 function() {
     this.c = 0;
 },
+{ // static    
+    toString_1 : function(c) {
+        return String.fromCharCode(c);
+    },
+    valueOf_1: function(c) {
+        return (new java_lang_Character())._1(c);
+    },
+    MAX__VALUE : 0xffff,
+    MIN__VALUE : 0,    
+},
 {
 	_1: function(c) {
 		this.c = c;
@@ -24,14 +34,5 @@ function() {
     toString_0: function() {
         return String.fromCharCode(this.c);
     },
-},{ // static    
-    toString_1 : function(c) {
-        return String.fromCharCode(c);
-    },
-    valueOf_1: function(c) {
-        return (new java_lang_Character())._1(c);
-    },
-    MAX__VALUE : 0xffff,
-    MIN__VALUE : 0,    
 });
  

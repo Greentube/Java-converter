@@ -3,6 +3,16 @@ var java_lang_Boolean = _defineClass ("java_lang_Boolean", java_lang_Object, nul
 function() {
     this.b = false;
 },
+{ // static 
+    toString_1: function(b) {
+      return b ? "true" : "false";
+    },
+    valueOf_1: function(b) {
+      return b ? java_lang_Boolean.TRUE : java_lang_Boolean.FALSE;
+    },       
+    TRUE: null,
+    FALSE: null,
+},
 {
 	_1: function(b) {
 		this.b = b;
@@ -23,15 +33,6 @@ function() {
     toString_0: function() {
       return this.b ? "true" : "false";
     },    
-}, { // static 
-    toString_1: function(b) {
-      return b ? "true" : "false";
-    },
-    valueOf_1: function(b) {
-      return b ? java_lang_Boolean.TRUE : java_lang_Boolean.FALSE;
-    },       
-    TRUE: null,
-    FALSE: null,
 });
 
 java_lang_Boolean.TRUE = (new java_lang_Boolean)._1(true);

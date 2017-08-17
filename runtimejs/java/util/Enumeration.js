@@ -1,5 +1,5 @@
 //load// java/lang/Object
-var java_util_Enumeration = _defineInterface("java_util_Enumeration", null);
+var java_util_Enumeration = _defineInterface("java_util_Enumeration", null, null);
 
 // -- methods:
 // boolean	hasMoreElements()
@@ -10,6 +10,7 @@ var java_util_IteratorEnumeration = _defineClass("java_util_IteratorEnumeration"
 function() {
     this.iterator = null;
 },
+null,  // no static
 {    
     _1: function(iterator) {
         this.iterator = iterator;
@@ -22,7 +23,6 @@ function() {
     
     nextElement_0: function() {  
         return this.iterator.next_0();
-    },
-    
+    },    
 });
 

@@ -8,7 +8,8 @@
 //reference// java/util/Iterator
 var java_util_AbstractCollection = _defineClass("java_util_AbstractCollection", java_lang_Object, [java_util_Collection], 
 function() {
-},    
+},   
+null,  // no static 
 {
 	contains_1: function(obj) {
         var i = this.iterator_0();
@@ -57,8 +58,7 @@ function() {
 		}
 		parts.push("]");
 		return parts.join("");    
-	}, 
-    
-},null); 
+	},    
+}); 
 
 

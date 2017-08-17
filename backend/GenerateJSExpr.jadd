@@ -79,7 +79,6 @@ aspect GenerateJS {
  	}
   	public void ConstructorAccess.generateJS(CodePrinter out) {
   		TypeDecl ht = decl().hostType();
-  		if (!(ht.packageName().equals("java.lang") && ht.uniqueName().equals("Object")) ) {
 			out.printAndMemorizeReference(ht.packageName(), ht.uniqueName());
 
 	  		ConstructorDecl m = decl();
@@ -112,7 +111,6 @@ aspect GenerateJS {
 	  		}
 	
 			out.print(")");
-		}		
  	}
  	
 //  	public void DiamondAccess.generateJS(CodePrinter out) {

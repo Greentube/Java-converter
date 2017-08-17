@@ -2,8 +2,7 @@
 var java_lang_Math = _defineClass("java_lang_Math", java_lang_Object, null, 
 function() {       
 },
-{   // no instance methods
-},{ // statics
+{ // statics
     abs_1: Math.abs,
     acos_1: Math.acos,
     asin_1: Math.asin,
@@ -43,4 +42,6 @@ function() {
     
     E:  2.718281828459045, 
     PI: 3.141592653589793,
-});
+},
+null  // no instance methods
+);

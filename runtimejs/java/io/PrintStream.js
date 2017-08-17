@@ -5,6 +5,7 @@ function() {
     this.iserr = false;
     this.line = null;
 },
+null,
 {
 	_1: function(iserr) {
         this.iserr = iserr;

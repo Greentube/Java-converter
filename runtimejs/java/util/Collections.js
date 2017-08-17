@@ -2,6 +2,6 @@
 var java_util_Collections = _extendClass("java_util_Collections", java_lang_Object, null, 
 function() {
 },
-{     // no member functions
-},{   // static
-});
+null,  // no static
+null   // no instance methods
+);

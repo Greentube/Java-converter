@@ -16,6 +16,7 @@ function() {
     this.commontable = null;
     this.totalelements = 0;
 },
+null,  // no static
 {    
    	_0: function() {
         this.stringtable = {};
@@ -213,9 +214,8 @@ function() {
 	  
     values_0: function() {
         return (new java_util_HashMapValueView())._1(this);
-    },
-        
-}, null);
+    },        
+});
 
 function _isValidStringKey(s) {
     return s!=null && s._is_java_lang_String;
@@ -226,6 +226,7 @@ var java_util_HashMapKeyView = _defineClass("java_util_HashMapKeyView", java_uti
 function() {
     this.map = null;
 },
+null,    // no static
 {
     _1: function(map) {   
         this.map = map;
@@ -268,15 +269,15 @@ function() {
         return this.map.totalelements;
     },
     
-// Object[]	toArray()              // implemented by AbstractCollection
-   	
-}, null);
+// Object[]	toArray()              // implemented by AbstractCollection   
+});
 
 
 var java_util_HashMapValueView = _defineClass("java_util_HashMapValueView", java_util_AbstractCollection, [java_util_Collection], 
 function() {
     this.map = null;
 },
+null,  // no static
 {
    	_1: function(map) {
         this.map = map;
@@ -301,8 +302,7 @@ function() {
     },
     
 // Object[]	toArray()              // implemented by AbstractCollection
-
-}, null);
+});
 
 
 var java_util_HashMapIterator = _defineClass("java_util_MapValueView", java_lang_Object, [java_util_Iterator], 
@@ -312,6 +312,7 @@ function() {
     this.keys = null;
     this.n = 0;
 },
+null,  // no static
 {            
     _2: function(map, deliverKeys) {
         this.map = map;
@@ -350,6 +351,5 @@ function() {
             
     remove_0: function() {
         this.map.remove_1(this.keys[this.n-1]);
-    },
-    
-}, null);
+    },   
+});

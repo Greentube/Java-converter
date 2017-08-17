@@ -3,6 +3,7 @@ var java_util_ArrayList = _defineClass("java_util_ArrayList", java_util_Abstract
 function() {
     this.storage = null;
 },
+null,  // no static
 {  
     _0: function() {
         this.storage = [];
@@ -48,4 +49,4 @@ function() {
         // no operation. the underlying array is always trimmed.
     },
         
-},null); 
+}); 
