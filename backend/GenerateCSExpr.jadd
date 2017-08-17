@@ -354,30 +354,87 @@ aspect GenerateCS {
   	}
   	
   	// --- AssignExpr ---
-
+	
+	public void AssignExpr.generateWithOptionalCastCS(CodePrinter out, String operator) {
+  		Expr d = getDest();
+  		Expr s = getSource();
+		// may need to refactor into normal binary operation
+  		if (s.type()!=d.type()) {
+			d.generateCS(out);
+			out.print(" = ");
+			if (!d.type().isInt() || !s.type().isDouble()) {
+				out.print("(");						
+				d.type().generateReferenceCS(out);
+  				out.print(")");
+  			}
+  			if (s.type().isDouble()) {
+  				out.print("SYSTEM.castToInt");
+  			}		
+  			out.print("(");			
+			d.generateCS(out);		
+			out.print(" ");
+			out.print(operator);
+			out.print(" ");
+  			s.generateUsingResultCS(out);
+  			out.print(")");		
+  		// can use the compound operator	
+  		} else {
+  			d.generateCS(out);
+  			out.print(" ");
+  			out.print(operator);
+  			out.print("= ");
+  			s.generateUsingResultCS(out);
+  		}
+	}
+	
   	public void AssignMinusExpr.generateCS(CodePrinter out) {
-  		getDest().generateCS(out);
-  		out.print(" -= ");
-  		getSource().generateUsingResultCS(out);
+  		generateWithOptionalCastCS(out, "-");
   	}
   	public void AssignPlusExpr.generateCS(CodePrinter out) {
   		// do some case discrimination if this is a string concatenation
-  		Expr d = getDest();
-  		Expr s = getSource();
   		if (type().isString()) {
+	  		Expr d = getDest();
+  			Expr s = getSource();
   			d.generateCS(out);
   			out.print (" = ");
-  			out.print("System.String.Join(\"\",java.lang.SYSTEM.str(");
+  			out.print("System.String.Join(\"\",SYSTEM.str(");
   			d.generateCS(out);
-  			out.print("),java.lang.SYSTEM.str(");
+  			out.print("),SYSTEM.str(");
 			s.generateUsingResultCS(out);
 			out.print("))");
+		// may need to refactor into normal binary operation
   		} else {
-	  		d.generateCS(out);
-  			out.print(" += ");
-  			s.generateUsingResultCS(out);
-  		}
+	  		generateWithOptionalCastCS(out, "+");
+	  	}
   	}
+  	public void AssignDivExpr.generateCS(CodePrinter out) {
+  		Expr d = getDest();
+  		Expr s = getSource();
+  		if (d.type().isDouble() || s.type().isDouble()) {
+	  		generateWithOptionalCastCS(out, "/");
+	  	} else {
+			d.generateCS(out);
+			out.print(" = ");
+			if (!d.type().isInt()) {
+				out.print("(");						
+				d.type().generateReferenceCS(out);
+  				out.print(")");
+  			}
+  			out.print("SYSTEM.div(");			
+			d.generateCS(out);		
+			out.print(",");
+  			s.generateUsingResultCS(out);
+  			out.print(")");		
+		}
+  	}
+  	public void AssignModExpr.generateCS(CodePrinter out) {
+  		generateWithOptionalCastCS(out, "%");
+  	}
+  	public void AssignMulExpr.generateCS(CodePrinter out) {
+  		generateWithOptionalCastCS(out, "*");
+  	}
+  	
+  	
   	public void AssignAndExpr.generateCS(CodePrinter out) {
   		getDest().generateCS(out);
   		out.print(" &= ");
@@ -391,21 +448,6 @@ aspect GenerateCS {
   	public void AssignXorExpr.generateCS(CodePrinter out) {
   		getDest().generateCS(out);
   		out.print(" ^= ");
-  		getSource().generateUsingResultCS(out);
-  	}
-  	public void AssignDivExpr.generateCS(CodePrinter out) {
-  		getDest().generateCS(out);
-  		out.print(" /= ");
-  		getSource().generateUsingResultCS(out);
-  	}
-  	public void AssignModExpr.generateCS(CodePrinter out) {
-  		getDest().generateCS(out);
-  		out.print(" %= ");
-  		getSource().generateUsingResultCS(out);
-  	}
-  	public void AssignMulExpr.generateCS(CodePrinter out) {
-  		getDest().generateCS(out);
-  		out.print(" *= ");
   		getSource().generateUsingResultCS(out);
   	}
   	public void AssignLShiftExpr.generateCS(CodePrinter out) {
@@ -435,7 +477,7 @@ aspect GenerateCS {
   		out.print(" = ");
 
 		if (d.type().isChar() && s.type().isInt()) {
-			out.print("java.lang.SYSTEM.castToChar(");
+			out.print("SYSTEM.castToChar(");
   			s.generateUsingResultCS(out);
   			out.print(")");		
 		} else {
@@ -454,7 +496,7 @@ aspect GenerateCS {
 			if ((l.type().isString() && l.isConstant()) || (l instanceof AddExpr)) {
 				l.generateUsingResultCS(out);
 			} else {
-				out.print("java.lang.SYSTEM.str(");
+				out.print("SYSTEM.str(");
   				l.generateUsingResultCS(out);
 				out.print(")");
 			}			
@@ -462,7 +504,7 @@ aspect GenerateCS {
 			if ((r.type().isString() && r.isConstant()) || (r instanceof AddExpr)) {
 				r.generateUsingResultCS(out);
 			} else {
-				out.print("java.lang.SYSTEM.str(");
+				out.print("SYSTEM.str(");
   				r.generateUsingResultCS(out);
 				out.print(")");
 			}
@@ -478,10 +520,17 @@ aspect GenerateCS {
   		getRightOperand().generateUsingResultCS(out);  	
   	}
   	public void DivExpr.generateCS(CodePrinter out) {
-		TypeDecl t = type();
-		getLeftOperand().generateUsingResultCS(out);
-  		out.print("/");
-  		getRightOperand().generateUsingResultCS(out);
+		if (type().isDouble()) {
+			getLeftOperand().generateUsingResultCS(out);
+  			out.print("/");
+  			getRightOperand().generateUsingResultCS(out);
+  		} else {
+  			out.print("(SYSTEM.div(");
+			getLeftOperand().generateUsingResultCS(out);
+  			out.print(",");
+  			getRightOperand().generateUsingResultCS(out);
+  			out.print("))");  		
+  		}
   	}
   	public void ModExpr.generateCS(CodePrinter out) {
   		getLeftOperand().generateUsingResultCS(out);
@@ -561,9 +610,9 @@ aspect GenerateCS {
   	}
   	public void URShiftExpr.generateCS(CodePrinter out) {
   		out.print("((int)(");
-  		out.print("java.lang.SYSTEM.makeUnsigned(");
+  		out.print("((uint)(");
   		getLeftOperand().generateUsingResultCS(out);
-  		out.print(")>>");
+  		out.print("))>>");
   		getRightOperand().generateUsingResultCS(out);
   		out.print("))");  	
   	}
@@ -578,19 +627,31 @@ aspect GenerateCS {
 			if (t.isBoolean()) {
 				e.generateUsingResultCS(out);			
 			} else if (t.isByte()) {
-				out.print("(java.lang.SYSTEM.castToByte(");
+				if (e.type().isDouble()) {
+					out.print("(SYSTEM.castToByte(");
+				} else {
+					out.print("((sbyte)(");
+				}				
 				e.generateUsingResultCS(out);
-				out.print("))");				
+				out.print("))");
 			} else if (t.isChar()) {
-				out.print("(java.lang.SYSTEM.castToChar(");
+				if (e.type().isDouble()) {
+					out.print("(SYSTEM.castToChar(");
+				} else {
+					out.print("((char)(");
+				}				
 				e.generateUsingResultCS(out);
 				out.print("))");
 			} else if (t.isInt()) {
-				out.print("(java.lang.SYSTEM.castToInt(");
+				if (e.type().isDouble()) {
+					out.print("(SYSTEM.castToInt(");
+				} else {
+					out.print("((int)(");
+				}				
 				e.generateUsingResultCS(out);
 				out.print("))");
 			} else if (t.isDouble()) {
-				out.print("(java.lang.SYSTEM.castToDouble(");
+				out.print("((double)(");
 				e.generateUsingResultCS(out);
 				out.print("))");
 			} else {
@@ -641,7 +702,7 @@ aspect GenerateCS {
   				out.print("]");
   			// multi-dimensional array
   			} else {
-	  			out.print("(java.lang.SYSTEM.dim<");
+	  			out.print("(SYSTEM.dim<");
   				t.elementType().generateReferenceCS(out);
   				out.print(">(");
   				getTypeAccess().generateCS(out);

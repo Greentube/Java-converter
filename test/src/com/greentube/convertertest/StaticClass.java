@@ -101,7 +101,7 @@ public class StaticClass {
 		for (int i = 0; i <= bl; i++)
 		{
 			int b = i < bl ? (((int) bytes[i]) & 0xff) : 0x80;
-			M[i / 4] |= (b << (i * 8));
+			M[i / 4] = M[i / 4] | (b << (i * 8));
 		}
 		// append length in bits at correct place
 		M[M.length - 2] = bl * 8;
@@ -163,7 +163,7 @@ public class StaticClass {
 			// add previous values to current buffer
 			for (int j = 0; j < 4; j++)
 			{
-				ABCD[j] += ABCDcopy[j];
+				ABCD[j] = ABCD[j] + ABCDcopy[j];
 			}
 		}
 

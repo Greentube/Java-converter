@@ -352,25 +352,40 @@ aspect GenerateJS {
   			} else {
   				r.generateUsingResultJS(out);
   			}
-  		} else {
+  		} else if (type().isDouble()) {
 	  		l.generateUsingResultJS(out);
   			out.print(" + ");
   			r.generateUsingResultJS(out);
+  		} else {
+  			out.print("((");
+	  		l.generateUsingResultJS(out);
+  			out.print(" + ");
+  			r.generateUsingResultJS(out);
+  			out.print(")&-1)");
   		}
   	}
   	public void SubExpr.generateJS(CodePrinter out) {
-  		getLeftOperand().generateUsingResultJS(out);
-  		out.print(" - ");
-  		getRightOperand().generateUsingResultJS(out);  	
+  		Expr l = getLeftOperand();
+  		Expr r = getRightOperand();  	
+  		if (type().isDouble()) {
+	  		l.generateUsingResultJS(out);
+  			out.print(" - ");
+  			r.generateUsingResultJS(out);
+  		} else {
+  			out.print("((");
+	  		l.generateUsingResultJS(out);
+  			out.print(" - ");
+  			r.generateUsingResultJS(out);
+  			out.print(")&-1)");
+  		}
   	}
   	public void DivExpr.generateJS(CodePrinter out) {
-		TypeDecl t = type();
-		if (t.isFloat() || t.isDouble()) {
+		if (type().isDouble()) {
 	  		getLeftOperand().generateUsingResultJS(out);
   			out.print(" / ");
   			getRightOperand().generateUsingResultJS(out);
   		} else {  	
-			out.print("_divideInteger(");
+			out.print("_div(");
 	  		getLeftOperand().generateUsingResultJS(out);
   			out.print(",");
   			getRightOperand().generateUsingResultJS(out);
@@ -378,15 +393,36 @@ aspect GenerateJS {
   		}
   	}
   	public void ModExpr.generateJS(CodePrinter out) {
-  		getLeftOperand().generateUsingResultJS(out);
-  		out.print(" % ");
-  		getRightOperand().generateUsingResultJS(out);  	
+  		Expr l = getLeftOperand();
+  		Expr r = getRightOperand();  	
+  		if (type().isDouble()) {
+	  		l.generateUsingResultJS(out);
+  			out.print(" % ");
+  			r.generateUsingResultJS(out);
+  		} else {
+  			out.print("((");
+	  		l.generateUsingResultJS(out);
+  			out.print(" % ");
+  			r.generateUsingResultJS(out);
+  			out.print(")&-1)");
+  		}
   	}
   	public void MulExpr.generateJS(CodePrinter out) {
-  		getLeftOperand().generateUsingResultJS(out);
-  		out.print(" * ");
-  		getRightOperand().generateUsingResultJS(out);  	
+  		Expr l = getLeftOperand();
+  		Expr r = getRightOperand();  	
+  		if (type().isDouble()) {
+	  		l.generateUsingResultJS(out);
+  			out.print(" * ");
+  			r.generateUsingResultJS(out);
+  		} else {
+  			out.print("((");
+	  		l.generateUsingResultJS(out);
+  			out.print(" * ");
+  			r.generateUsingResultJS(out);
+  			out.print(")&-1)");
+  		}
   	}
+  	
   	public void AndBitwiseExpr.generateJS(CodePrinter out) {
   		getLeftOperand().generateUsingResultJS(out);
   		out.print(" & ");

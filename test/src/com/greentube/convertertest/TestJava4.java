@@ -48,7 +48,6 @@ public class TestJava4 {
         casttest();
         operatortest();
         assignoperatortest();
-        numbertest();
         numberconversiontest();
         controlstructurestest();
         booleantest();        
@@ -281,6 +280,28 @@ public class TestJava4 {
         // check if the toString operation delivers at least some string
         assertB(new Object().toString()!=null);
         assertB(new ClassWithNoToString().toString()!=null);
+
+        // do some number type casting
+        int i;
+        double d;
+        i=124;       assertI ( (byte)i, 124);
+        i=44444;     assertI ( (byte)i, -100);
+        i=-2344444;  assertI ( (byte) i, 4);
+        d=-1234.1;   assertI ( (byte) d, 46);        
+        d=-1234.9;   assertI ( (byte) d, 46);        
+        d=434.9;     assertI ( (byte) d, -78);            
+        d=1234.5;    assertI ( (char) d, 1234);
+        i= -1234;    assertI ( (char) i, 64302);
+        d=0.2;       assertI ( (char) d, 0);
+        d=-0.2;      assertI ( (char) d, 0);
+        d=-77777.8;  assertI ( (char) d, 53295);
+        d=77777.8;   assertI ( (char) d, 12241);
+        d=1234.5;    assertI ( (int) d, 1234);
+        d=-1234;     assertI ( (int) d, -1234);
+        d=0.2;       assertI ( (int) d, 0);
+        d=-0.2;      assertI ( (int) d, 0);
+        d=-77777.8;  assertI ( (int) d, -77777);
+        d=-77777.2;  assertI ( (int) d, -77777);
     }
     
     public static void operatortest() {
@@ -308,25 +329,6 @@ public class TestJava4 {
         assertI ( (4-5+5),  4);
         assertO (""+bo,"true");
         
-        assertI ( (byte) 124, 124);
-        assertI ( (byte) 44444, -100);
-        assertI ( (byte) -2344444, 4);
-        assertI ( (byte) -1234.1, 46);        
-        assertI ( (byte) -1234.9, 46);        
-        assertI ( (byte) 434.9, -78);            
-        assertI ( (char) 1234.5, 1234);
-        assertI ( (char) -1234, 64302);
-        assertI ( (char) 0.2, 0);
-        assertI ( (char) -0.2, 0);
-        assertI ( (char) -77777.8, 53295);
-        assertI ( (char) 77777.8, 12241);
-        assertI ( (int) 1234.5, 1234);
-        assertI ( (int) -1234, -1234);
-        assertI ( (int) 0.2, 0);
-        assertI ( (int) -0.2, 0);
-        assertI ( (int) -77777.8, -77777);
-        assertI ( (int) -77777.2, -77777);
-        
         boolean t=true;
         boolean f=false;
         boolean f2=false;
@@ -334,6 +336,81 @@ public class TestJava4 {
         assertB ( (f && t || t), true);
         assertB ( 3 < 4, true);
         assertB ( - -3 > + + +4, false);
+        
+        i = 17;
+    	assertI( i/5, 3);
+    	assertI( i%5, 2);
+    	assertI( i*5, 85);
+    	assertI( (-i)/5, -3);    
+    	assertI( (-i)%5, -2);
+    	assertI( (-i)*5, -85);
+    	assertI( i/-5, -3);
+    	assertI( i%-5, 2);
+    	assertI( i*-5, -85);
+    	assertI( (-i)/-5, 3);    
+    	assertI( (-i)%-5, -2);
+    	assertI( (-i)*-5, 85);
+    	i = 246;
+    	assertI (i<<6, 15744);
+        assertI (-(i)>>2, -62);
+        assertI (-(i>>2), -61);
+        assertI (-(i)>>>2, 1073741762);
+        assertI (-(i>>>2), -61);
+        assertI (i<<30, -2147483648);
+        i=1;
+        assertI (1<<100, 16);
+        i=2000000000;
+        assertI (2000000000>>40, 7812500);
+        i=Integer.MIN_VALUE;
+        i=i-1;
+        assertI (i, 2147483647);
+        i=i+1;
+        assertI (i,Integer.MIN_VALUE);
+        assertI (i*-1, -2147483648);
+        assertI (i/-1, -2147483648);
+        assertI (i % Integer.MIN_VALUE+1, 1);
+        assertI (i % Integer.MAX_VALUE, -1);
+        i = Integer.MAX_VALUE;
+        assertI (i % Integer.MIN_VALUE+1, -2147483648);
+        assertI (i % Integer.MAX_VALUE, 0);
+        assertI (i % Integer.MAX_VALUE-1, -1);
+        
+        double e = 99d;
+        double d = 5.1d;
+        assertD( e/d, 19.411764705882355);        
+        assertD(31.0/2, 15.5);
+        e = 1.0/0.0;
+        assertD(e, Double.POSITIVE_INFINITY);
+        d = -1.0/0.0;
+        assertD(d, Double.NEGATIVE_INFINITY);
+        assertB(e-e != 0.0);
+        assertB(d-d != 0.0);
+        assertB(e+d != 0.0);
+        assertB(e/e != 0.0);
+        assertD(2*e, Double.POSITIVE_INFINITY);
+        assertD(e+e, Double.POSITIVE_INFINITY);
+        assertB(0.0/0.0 != Double.NEGATIVE_INFINITY);
+        assertB(0.0/0.0 != Double.POSITIVE_INFINITY);
+        assertB(0.0/0.0 != 0);        
+                
+        // test numerical overflows
+        assertI ( Integer.MAX_VALUE+1, Integer.MIN_VALUE);
+        int x = 2000000000;
+        int y = 2000000000;
+        assertI(x+y, -294967296);
+        assertI(x*y, -1651507200);
+        assertI(-1000000000-y, 1294967296);
+        x = -1000000000;
+        y = -2100000000;
+        assertI(x+y, 1194967296);
+        assertI(y/x,2);
+        // smaller number types get promoted for operations
+        byte k = -100;
+        byte l = -90;
+        assertI(k+l, -190);        
+        char m = 'A';
+        char n = (char) 65530;
+        assertI(m+n, 65595);                
     }
     
     public static void assignoperatortest() {
@@ -341,7 +418,7 @@ public class TestJava4 {
     	
     	int i = 0;
     	int[] a = {7};
-    	a[i] += 8;
+    	a[i] = a[i] + 8;
     	i++;
     	assertI(a[0], 15);
     	assertI(i,1);
@@ -355,8 +432,11 @@ public class TestJava4 {
     	
     	double d = 1.0;
     	d += 7;
+    	assertD(d, 8.0);
     	d -= 4.5;
+    	assertD(d, 3.5);
     	d *= 3;
+    	assertD(d, 10.5);
     	d /= 3;
     	assertD(d, 3.5);
     	d++;
@@ -369,12 +449,17 @@ public class TestJava4 {
     	assertD(d, 1.5);
     	
     	i = 17;
-    	i += 3;
-    	i -= 3;
-    	i *= 2;
-    	assertI(i, 34);
-    	i = i/4;   // can not use i /= 4;
-    	assertI(i, 8);
+    	int q = (i += 3.2);
+    	assertI(i,20);
+    	assertI(q,20);
+    	i -= 3.3;
+    	assertI(i,16);
+    	i *= 2.1;
+    	assertI(i, 33);
+    	i /= 4.01;
+    	assertI(i,8);
+    	i %= 16.0001;
+    	assertI(i,8);
     	i &= 15;
     	assertI(i, 8);
     	i |= 3;
@@ -390,57 +475,88 @@ public class TestJava4 {
     	assertI(i, -268435456);
     	i >>= 4;
     	assertI(i, 0xff000000);
+    	assertI(i, -16777216);
     	i >>>= 4;
     	assertI(i, 0x0ff00000);   
+    	i /= 0.0;
+    	assertI(i, Integer.MAX_VALUE);
+    	i = -1;
+    	i /= 0.0;
+    	assertI(i, Integer.MIN_VALUE);   
+    	i = 0;
+    	i /= 0.0;
+    	assertI(i, 0);   
     	
     	char c = 0;
     	c = 544;
     	assertI(c,544);
-    	i = (byte) 1;
-    	assertI(i,1);
-    }
-    
-    public static void numbertest() {
-    	System.out.println("- number");
+    	c += 2;
+    	assertI(c,546);
+    	c -= 600.1;
+    	assertI(c, 65482);
+    	c *= 2.1;
+    	assertI(c, 6440);
+    	c /= 2.3;
+    	assertI(c, 2800);
+    	c %= 9.0;
+    	assertI(c, 1);
+    	c /= 0.0;
+    	assertI(c, Character.MAX_VALUE);
+    	c = 1;
+    	c /= 0.0;
+    	assertI(c, Character.MAX_VALUE);
+    	c = 1;
+    	c /= -0.0;
+    	assertI(c, 0);
+    	c = 0;
+    	c /= 0.0;
+    	assertI(c, 0);
     	
-    	assertI( 17/5, 3);
-    	assertI( 17%5, 2);
-    	assertI( 17*5, 85);
-    	assertI( (-17)/5, -3);    
-    	assertI( (-17)%5, -2);
-    	assertI( (-17)*5, -85);
-    	assertI( 17/-5, -3);
-    	assertI( 17%-5, 2);
-    	assertI( 17*-5, -85);
-    	assertI( (-17)/-5, 3);    
-    	assertI( (-17)%-5, -2);
-    	assertI( (-17)*-5, 85);
-
-    	assertI (246<<6, 15744);
-        assertI (-(246)>>2, -62);
-        assertI (-(246)>>>2, 1073741762);
-        assertI (642<<30, -2147483648);
-        assertI (1<<100, 16);
-        assertI (2000000000>>40, 7812500);
-            
-        double c = 99d;
-        double d = 5.1d;
-        assertD( c/((double)d), 19.411764705882355);        
-        assertD(31.0/2, 15.5);
-        c = 1.0/0.0;
-        assertD(c, Double.POSITIVE_INFINITY);
-        d = -1.0/0.0;
-        assertD(d, Double.NEGATIVE_INFINITY);
-        assertB(c-c != 0.0);
-        assertB(d-d != 0.0);
-        assertB(c+d != 0.0);
-        assertB(c/c != 0.0);
-        assertD(2*c, Double.POSITIVE_INFINITY);
-        assertD(c+c, Double.POSITIVE_INFINITY);
-        assertB(0.0/0.0 != Double.NEGATIVE_INFINITY);
-        assertB(0.0/0.0 != Double.POSITIVE_INFINITY);
-        assertB(0.0/0.0 != 0);
+    	byte by = 0;
+    	by = 34;
+    	assertI(by,34);
+    	by += 2;
+    	assertI(by,36);
+    	by -= 600.1;
+    	assertI(by,-52);
+    	by *= 2.1;
+    	assertI(by,-109);
+    	by /= 2.3;
+    	assertI(by,-47);
+    	by %= 9.0;
+    	assertI(by,-2);
+    	by /= 0.0;
+    	assertI(by,0);
+    	by = 17;
+    	by /= 0.0;
+    	assertI(by,-1);
+    	by = 0;
+    	by /= 0.0;
+    	assertI(by,0);
+    	
+    	i = Integer.MIN_VALUE;
+        i *= -1;
+        assertI (i, -2147483648);
+    	i = Integer.MIN_VALUE;
+    	i /= -1;
+        assertI (i, -2147483648);
+    	i = Integer.MIN_VALUE;
+    	i /= Integer.MIN_VALUE;
+        assertI (i, 1);
+    	i = Integer.MAX_VALUE;
+    	i /= Integer.MIN_VALUE+1;
+        assertI (i, -1);
+        i = Integer.MAX_VALUE;
+        i %= Integer.MIN_VALUE;
+        assertI (i, 2147483647);
+        i = Integer.MAX_VALUE;
+        i %= Integer.MIN_VALUE+1;
+        assertI (i, 0);
+        i = Integer.MAX_VALUE;
+        i %= Integer.MAX_VALUE-1;
+        assertI (i, 1);    	
     }
+
        
     public static void numberconversiontest()
     {
@@ -1850,6 +1966,7 @@ public class TestJava4 {
     		assertO(value[i],expected[i]);
     	}
     }
+    
     
 }
 

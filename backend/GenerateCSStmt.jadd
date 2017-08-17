@@ -392,7 +392,7 @@ aspect GenerateCS {
 			if (e!=null) {
 				out.print(" = ");								
 				if (t.isChar() && e.type().isInt()) {
-					out.print("java.lang.SYSTEM.castToChar(");
+					out.print("SYSTEM.castToChar(");
 					e.generateUsingResultCS(out);
 					out.print(")");
 				} else {

@@ -50,7 +50,7 @@ public class Converter extends Frontend {
 			}			
 		}
 		for (String s:errorlist) {
-			System.out.println(unit.pathName()+": "+s);
+			System.out.println(unit.pathName()+":"+s);
 		}			
 		err += errorlist.size();
 	}

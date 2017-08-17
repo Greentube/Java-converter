@@ -105,7 +105,7 @@ function _denullify(x)
 }
 
 // perform a division like for java integer types
-function _divideInteger(a, b) { 
+function _div(a, b) { 
 	return (a - a % b) / b; 
 } 
 

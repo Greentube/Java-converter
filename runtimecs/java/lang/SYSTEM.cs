@@ -79,40 +79,18 @@ namespace java.lang {
             return a;
         }    
         
-        public static sbyte castToByte(sbyte x) {
-            return x;
+        public static int div(int a, int b) {
+            // handle a weird special case for java compatibility
+            if (a==-2147483648 && b==-1) return a;
+            // normal arithmetic (may even throw DivideByZeroException)
+            return a / b;
         }
-        public static sbyte castToByte(char x) {
-            return (sbyte) x;
-        }
-        public static sbyte castToByte(int x) {
-            return (sbyte) x;
-        }
+        
         public static sbyte castToByte(double x) {
             return (sbyte) castToInt(x);
-        }
-        
-        public static char castToChar(sbyte x) {
-            return (char) x;
-        }
-        public static char castToChar(char x) {
-            return x;
-        }
-        public static char castToChar(int x) {
-            return (char) x;
-        }
+        }        
         public static char castToChar(double x) {
             return (char) castToInt(x);
-        }
-        
-        public static int castToInt(sbyte x) {
-            return (int) x;
-        }
-        public static int castToInt(char x) {
-            return (int) x;
-        }
-        public static int castToInt(int x) {
-            return x;
         }
         public static int castToInt(double a) {
             // NaN will be cast to 0
@@ -127,19 +105,6 @@ namespace java.lang {
                 if (a<-2147483648) return -2147483648;
                 return (int) System.Math.Ceiling(a);    
             }
-        }
-        
-        public static double castToDouble(sbyte x) {
-            return (double) x;
-        }
-        public static double castToDouble(char x) {
-            return (double) x;
-        }
-        public static double castToDouble(int x) {
-            return (double) x;
-        }
-        public static double castToDouble(double x) {
-            return x;
         }
 
         public static System.String str(bool v) {
@@ -168,9 +133,6 @@ namespace java.lang {
             return (o==null) ? "null" : o.ToString();
         }
         
-        public static uint makeUnsigned(int x) {
-            return (uint) x;
-        }
     }
 
 
