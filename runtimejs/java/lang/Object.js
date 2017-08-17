@@ -104,11 +104,6 @@ function _denullify(x)
     return (x==null) ? false : x;
 }
 
-// perform a division like for java integer types
-function _div(a, b) { 
-	return (a - a % b) / b; 
-} 
-
 // convert a unicode code number to a string with the corresponding letter 
 function _c2s(c) {
     return String.fromCharCode(c);
@@ -119,11 +114,6 @@ function _castTObyte(a) {
     var i = _castTOint(a) & 0xff;
     if (i<0x80) return i;
     else        return i-0x100;
-}
-function _castTOshort(a) {
-    var i = _castTOint(a) & 0xffff;
-    if (i<0x8000) return i;
-    else          return i-0x10000;
 }
 function _castTOchar(a) {
     return _castTOint(a) & 0xffff;
@@ -141,9 +131,6 @@ function _castTOint(a) {
     else {           // is no number at all
         return 0;
     }
-}
-function _castTOdouble(a) {
-    return a;
 }
 
 

@@ -486,6 +486,27 @@ public class TestJava4 {
     	i = 0;
     	i /= 0.0;
     	assertI(i, 0);   
+    	i = 5;
+    	i /= 2;
+    	assertI(i, 2);   
+    	i = -5;
+    	i /= 2;
+    	assertI(i, -2);   
+    	
+    	i = 18;
+    	i++;
+    	assertI(i,19);
+    	i = Integer.MAX_VALUE;
+    	assertI(i++, Integer.MAX_VALUE);
+    	assertI(i,Integer.MIN_VALUE);
+    	assertI(--i, Integer.MAX_VALUE);
+    	assertI(i,Integer.MAX_VALUE);
+    	a[0]=0;
+    	assertI(a[0]++, 0);
+    	assertI(a[0]--, 1);
+    	a[0] = Integer.MAX_VALUE;
+    	assertI(a[0]++, Integer.MAX_VALUE);
+    	assertI(a[0]++, Integer.MIN_VALUE);
     	
     	char c = 0;
     	c = 544;
@@ -512,6 +533,17 @@ public class TestJava4 {
     	c /= 0.0;
     	assertI(c, 0);
     	
+    	c = 99;
+    	c++;
+    	assertI(c,100);
+    	c = 0;
+    	assertI(--c, Character.MAX_VALUE);
+    	assertI(c,Character.MAX_VALUE);
+    	assertI(c++, Character.MAX_VALUE);
+    	assertI(c, 0);
+    	assertI(c++, 0);
+    	assertI(c, 1);
+    	
     	byte by = 0;
     	by = 34;
     	assertI(by,34);
@@ -533,7 +565,18 @@ public class TestJava4 {
     	by = 0;
     	by /= 0.0;
     	assertI(by,0);
-    	
+
+    	by = 99;
+    	assertI(by++, 99);
+    	assertI(by,100);
+    	by = Byte.MIN_VALUE;
+    	assertI(--by, Byte.MAX_VALUE);
+    	assertI(by, Byte.MAX_VALUE);
+    	assertI(by++, Byte.MAX_VALUE);
+    	assertI(by, Byte.MIN_VALUE);
+    	assertI(by++, Byte.MIN_VALUE);
+    	assertI(by, Byte.MIN_VALUE+1);
+    	    	
     	i = Integer.MIN_VALUE;
         i *= -1;
         assertI (i, -2147483648);

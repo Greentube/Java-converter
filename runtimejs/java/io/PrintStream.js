@@ -18,7 +18,7 @@ null,
     },
         
 	println_0: function() {
-		if (this.iserr_f) {
+		if (this.iserr) {
             console.warn(this.line.join(""));
         } else {
             console.log(this.line.join(""));

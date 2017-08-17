@@ -254,10 +254,47 @@ aspect GenerateJS {
   	
   	// --- AssignExpr ---
 
+	public void AssignExpr.generateWithOptionalCastJS(CodePrinter out, String operator) {
+  		Expr d = getDest();
+  		Expr s = getSource();
+  		if (d.type().isDouble()) {
+	  		d.generateJS(out);
+	  		out.print(" ");
+	  		out.print(operator);
+  			out.print("= ");
+  			s.generateUsingResultJS(out);
+  		} else if (s.type().isDouble()) {
+	  		d.generateJS(out);
+  			out.print(" = ");
+  			if (d.type().isByte()) {
+  				out.print("_castTObyte(");
+  			} else if (d.type().isChar()) {
+  				out.print("_castTOchar(");
+  			} else if (d.type().isInt()) {
+  				out.print("_castTOint(");
+  			} else {
+  				throw new RuntimeException("Can not implicitly cast to destination type");
+  			}
+	  		d.generateJS(out);
+	  		out.print(" ");
+	  		out.print(operator);
+	  		out.print(" ");
+  			s.generateUsingResultJS(out);
+			out.print(")");
+  		} else {
+  			d.generateJS(out);
+  			out.print(" = ((");
+  			d.generateJS(out);
+  			out.print(" ");
+  			out.print(operator);
+  			out.print(" ");
+  			getSource().generateUsingResultJS(out);
+  			out.print(")&-1)");  		
+  		}
+	}
+
   	public void AssignMinusExpr.generateJS(CodePrinter out) {
-  		getDest().generateJS(out);
-  		out.print(" -= ");
-  		getSource().generateUsingResultJS(out);
+  		generateWithOptionalCastJS(out,"-");
   	}
   	public void AssignPlusExpr.generateJS(CodePrinter out) {
   		// do some case discrimination if this is a string concatenation
@@ -274,11 +311,16 @@ aspect GenerateJS {
   				s.generateJS(out);
   			}
   		} else {
-	  		d.generateJS(out);
-  			out.print(" += ");
-  			s.generateUsingResultJS(out);
+	  		generateWithOptionalCastJS(out,"+");
   		}
   	}
+  	public void AssignMulExpr.generateJS(CodePrinter out) {
+  		generateWithOptionalCastJS(out,"*");
+  	}  	
+  	public void AssignDivExpr.generateJS(CodePrinter out) {
+  		generateWithOptionalCastJS(out,"/");
+  	}
+  	
   	public void AssignAndExpr.generateJS(CodePrinter out) {
   		getDest().generateJS(out);
   		out.print(" &= ");
@@ -294,19 +336,9 @@ aspect GenerateJS {
   		out.print(" ^= ");
   		getSource().generateUsingResultJS(out);
   	}
-  	public void AssignDivExpr.generateJS(CodePrinter out) {
-  		getDest().generateJS(out);
-  		out.print(" /= ");
-  		getSource().generateUsingResultJS(out);
-  	}
   	public void AssignModExpr.generateJS(CodePrinter out) {
   		getDest().generateJS(out);
   		out.print(" %= ");
-  		getSource().generateUsingResultJS(out);
-  	}
-  	public void AssignMulExpr.generateJS(CodePrinter out) {
-  		getDest().generateJS(out);
-  		out.print(" *= ");
   		getSource().generateUsingResultJS(out);
   	}
   	public void AssignLShiftExpr.generateJS(CodePrinter out) {
@@ -380,29 +412,16 @@ aspect GenerateJS {
   		}
   	}
   	public void DivExpr.generateJS(CodePrinter out) {
+	  		Expr l = getLeftOperand();
+  			Expr r = getRightOperand();  	
 		if (type().isDouble()) {
-	  		getLeftOperand().generateUsingResultJS(out);
-  			out.print(" / ");
-  			getRightOperand().generateUsingResultJS(out);
-  		} else {  	
-			out.print("_div(");
-	  		getLeftOperand().generateUsingResultJS(out);
-  			out.print(",");
-  			getRightOperand().generateUsingResultJS(out);
-			out.print(")");
-  		}
-  	}
-  	public void ModExpr.generateJS(CodePrinter out) {
-  		Expr l = getLeftOperand();
-  		Expr r = getRightOperand();  	
-  		if (type().isDouble()) {
 	  		l.generateUsingResultJS(out);
-  			out.print(" % ");
+  			out.print(" / ");
   			r.generateUsingResultJS(out);
-  		} else {
+  		} else {  	
   			out.print("((");
 	  		l.generateUsingResultJS(out);
-  			out.print(" % ");
+  			out.print(" / ");
   			r.generateUsingResultJS(out);
   			out.print(")&-1)");
   		}
@@ -422,7 +441,11 @@ aspect GenerateJS {
   			out.print(")&-1)");
   		}
   	}
-  	
+  	public void ModExpr.generateJS(CodePrinter out) {
+ 		getLeftOperand().generateUsingResultJS(out);
+		out.print(" % ");
+		getRightOperand().generateUsingResultJS(out);
+  	}  	
   	public void AndBitwiseExpr.generateJS(CodePrinter out) {
   		getLeftOperand().generateUsingResultJS(out);
   		out.print(" & ");
