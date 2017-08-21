@@ -72,6 +72,8 @@ public class TestJava4 {
         initsequencetest();
         innerclasstest();
         identifi€rmangling();
+        
+        unsupported();
     }
     
     public static void staticattributestest()
@@ -126,6 +128,7 @@ public class TestJava4 {
         
         assertI(t.depth(),3);
         assertI(new TestParentIntermediate().depth(),2);
+        assertI(new TestParentIntermediate().depth(4), 4);
     }
     
 
@@ -1944,8 +1947,22 @@ public class TestJava4 {
     	assertI(lock.implicit(3),4);
     	assertI(arguments.yield(5),6);  
    }
+
     
-    
+    public static void unsupported() {
+    	ArrayList<Integer> al= new ArrayList<>();
+    	al.add(Integer.valueOf(4));
+    	al.add(Integer.valueOf(17));
+    	int sum=0;
+    	for (Integer i: al) {
+    		int x=i.intValue();
+//    		x = i;
+//    		sum += i; 
+    		sum = sum + x;
+    	}
+    	assertI(sum, 21);
+    }
+        
     public static void assertI(int value, int expected) {
     	if (value!=expected) {
     		System.err.println("Received "+value+" instead of "+expected);

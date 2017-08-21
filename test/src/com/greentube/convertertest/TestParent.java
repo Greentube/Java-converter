@@ -45,5 +45,8 @@ public class TestParent {
     public int depth() {
     	return 1;
     }
+    public int depth(int multiplier) {
+    	return multiplier;
+    }
 
 }

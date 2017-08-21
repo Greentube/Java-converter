@@ -21,7 +21,6 @@ public class TestParentIntermediate extends TestParent implements TestInterface 
     	return "hello";
     }
     
-    @Override    
     public int depth() {
     	return super.depth()+1;
     }

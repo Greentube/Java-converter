@@ -397,7 +397,7 @@ aspect GenerateCS {
 					out.print(")");
 				} else {
 					e.generateUsingResultCS(out);
-				}		
+				}					
 			}
 		}
 		out.print(";");

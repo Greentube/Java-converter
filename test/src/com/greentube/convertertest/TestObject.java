@@ -21,7 +21,7 @@ public class TestObject extends TestParentIntermediate {
         somenumber = 4711;
         somestring = "defaulttext";
     }
-
+    
     public TestObject(String str) {        // constructor with 1 parametere
         this(str,4711);              // calling second constructor of 'this'
     }    
@@ -59,9 +59,11 @@ public class TestObject extends TestParentIntermediate {
     	return someparameter;
     }
     
-    @Override
     public int depth() {
     	return super.depth()+1;
+    }
+    public int depth(int multiplier) {
+    	return super.depth(multiplier) + 5;
     }
     
 }
