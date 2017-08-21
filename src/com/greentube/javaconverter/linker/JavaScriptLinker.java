@@ -136,7 +136,7 @@ public class JavaScriptLinker
 	
 	private void writeOrdered(OutputStream os, int[] o) throws IOException {		
 		for (int i=0; i<o.length; i++) {
-			System.out.println(index2name.get(o[i]));
+//			System.out.println(index2name.get(o[i]));
 			os.write(modules.get(o[i]));
 		}
 	}

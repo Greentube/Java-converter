@@ -35,10 +35,12 @@
  *      identifier in conjunction with the number-of-parameters.
  *      Static fields or methods do not have this restriction.
  *      Also local variables may shadow fields.
- * - Compound assignments can only use limited types of destination 
+ * - Compound assignments and increment/decrement operators can only use limited types of destination 
  *      When using any of the operators +=,-=,*=,... it is only possible to use 
- *      a local variable or a static or instance field of the current class as the destination. 
- *      This is to avoid potential double-evaluation behavior in various conversion targets. 
+ *      a target that is guaranteed to have no side effects on evaluation. While 
+ *      it is possible to use  a[i]+=5  it is unsupported to write  a[i++]+=4.
+ *      Same thing holds for ++ and --  (i[4]++ is ok, i[get()]++  is not).  
+ *      This is to avoid faulty double-evaluation behavior in various conversion targets. 
  * - Access to static members is not allowed by using an instance
  *      It is kind of legal in java to call a static method with something like: 
  *      exp.valueOf(4711)    // where exp is of type Integer 
@@ -102,6 +104,95 @@ aspect CheckRestrictions {
 		}
 		return false;
 	}
+	
+	// side effect detection
+	public boolean Expr.hasPotentialSideEffects() {
+ 		System.err.print("Side effect test encountered:"+this.getClass().getName());	
+  		return false;
+	}
+  	public boolean AbstractDot.hasPotentialSideEffects() {
+  		return getLeft().hasPotentialSideEffects() || getRight().hasPotentialSideEffects();  		
+	}
+	public boolean ArrayAccess.hasPotentialSideEffects() {
+		return getExpr().hasPotentialSideEffects();
+	}
+	public boolean ClassInstanceExpr.hasPotentialSideEffects() {
+		return true;
+	}
+	public boolean MethodAccess.hasPotentialSideEffects() {
+		return true;
+	}
+  	public boolean ParTypeAccess.hasPotentialSideEffects() {
+		return getTypeAccess().hasPotentialSideEffects();
+	}
+	public boolean ThisAccess.hasPotentialSideEffects() {
+		return false;
+	}
+	public boolean TypeAccess.hasPotentialSideEffects() {
+		return false;
+	}
+  	public boolean ArrayTypeAccess.hasPotentialSideEffects() {
+  		return getAccess().hasPotentialSideEffects();
+	}	
+  	public boolean ArrayTypeWithSizeAccess.hasPotentialSideEffects() {
+  		return getAccess().hasPotentialSideEffects()
+  		    || getExpr().hasPotentialSideEffects();
+	}   		
+	public boolean VarAccess.hasPotentialSideEffects() {
+		return false;
+	}
+  	public boolean ArrayInit.hasPotentialSideEffects() {
+  		for (int i=0; i<getNumInit(); i++) {
+  			if (getInit(i).hasPotentialSideEffects()) return true;
+  		}
+  		return false;
+  	}
+    public boolean AssignExpr.hasPotentialSideEffects() {
+    	return true;
+    }
+    public boolean Binary.hasPotentialSideEffects() {
+    	return getLeftOperand().hasPotentialSideEffects() || getRightOperand().hasPotentialSideEffects();
+    }
+    public boolean CastExpr.hasPotentialSideEffects() {
+    	return getExpr().hasPotentialSideEffects();
+    }
+  	public boolean ConditionalExpr.hasPotentialSideEffects() {
+  		return getCondition().hasPotentialSideEffects() 
+  		    || getTrueExpr().hasPotentialSideEffects()
+  		    || getFalseExpr().hasPotentialSideEffects();
+  	}
+	public boolean InstanceOfExpr.hasPotentialSideEffects() {
+  		return getExpr().hasPotentialSideEffects();
+  	}    
+  	public boolean ArrayCreationExpr.hasPotentialSideEffects() {
+  		// array with initialization data
+  		if (hasArrayInit()) {
+  			return getArrayInit().hasPotentialSideEffects();
+  		} else {
+  			return getTypeAccess().hasPotentialSideEffects();
+  		}
+  	}
+    public boolean Literal.hasPotentialSideEffects() {
+    	return false;
+    }
+  	public boolean ParExpr.hasPotentialSideEffects() {
+  		return getExpr().hasPotentialSideEffects();
+  	}
+    public boolean Unary.hasPotentialSideEffects() {
+    	return getOperand().hasPotentialSideEffects();
+    }
+  	public boolean PostDecExpr.hasPotentialSideEffects() {
+  		return true;
+  	}
+  	public boolean PostIncExpr.hasPotentialSideEffects() {
+  		return true;
+  	}
+  	public boolean PreDecExpr.hasPotentialSideEffects() {
+  		return true;
+  	}
+  	public boolean PreIncExpr.hasPotentialSideEffects() {
+  		return true;
+	}    
 	
     	
   	// -- Threads 
@@ -255,25 +346,8 @@ aspect CheckRestrictions {
 	public void AssignExpr.checkRestrictions(ArrayList<String> errorlist)
 	{
 		if (!(this instanceof AssignSimpleExpr)) {
-			boolean isok = false;
-			Expr d = getDest();
-			if (d instanceof VarAccess) {
-				Variable v = ((VarAccess)d).varDecl();
-				// can use class variables or locals
-				if (v.isClassVariable() || v.isLocalVariable() || v.isParameter()) {
-					isok = true;
-				} else if (v.isInstanceVariable()) {
-					// can use non-static fields that have no accessor
-					if (!isRightChildOfDot()) {
-						isok = true;
-					// can use non-static fields of 'this' 
-					} else if (d.prevExpr() instanceof ThisAccess) {
-						isok = true;
-					}
-				}  				
-			}
-			if (!isok) {
-				reportRestriction(errorlist, "Can only use compound assignment directly with fields or local variables");			
+			if (getDest().hasPotentialSideEffects()) {
+				reportRestriction(errorlist, "Can not use compound assignment when destination my have side effects");			
 			}
 		}
 		
@@ -282,6 +356,33 @@ aspect CheckRestrictions {
 		
 		super.checkRestrictions(errorlist);					
 	}
+	
+	// Increment or decrement operators (++, --) only on operands without side effects	
+  	public void PostDecExpr.checkRestrictions(ArrayList<String> errorlist) {
+		if (getOperand().hasPotentialSideEffects()) {
+			reportRestriction(errorlist, "Can not use -- when operand could have side effects");			
+		}  	
+		super.checkRestrictions(errorlist);					
+  	}
+  	public void PostIncExpr.checkRestrictions(ArrayList<String> errorlist) {
+		if (getOperand().hasPotentialSideEffects()) {
+			reportRestriction(errorlist, "Can not use ++ when operand could have side effects");			
+		}  	
+		super.checkRestrictions(errorlist);					
+  	}
+  	public void PreDecExpr.checkRestrictions(ArrayList<String> errorlist) {
+		if (getOperand().hasPotentialSideEffects()) {
+			reportRestriction(errorlist, "Can not use -- when operand could have side effects");			
+		}  	
+		super.checkRestrictions(errorlist);					
+  	}
+  	public void PreIncExpr.checkRestrictions(ArrayList<String> errorlist) {
+		if (getOperand().hasPotentialSideEffects()) {
+			reportRestriction(errorlist, "Can not use ++ when operand could have side effects");			
+		}  	
+		super.checkRestrictions(errorlist);					
+  	}  	
+	
 	
 	// Autoboxing/unboxing in method call parameters
 	public void MethodAccess.checkRestrictions(ArrayList<String> errorlist) {
@@ -469,6 +570,5 @@ aspect CheckRestrictions {
 			}
 		}		
 		super.checkRestrictions(errorlist);
-	}
-		  	
+	}		 
 }

@@ -97,7 +97,7 @@ aspect GenerateJS {
 		out.print("; ");
 		for (int i=0; i<getNumUpdateStmt(); i++) {
 			if (i>0) out.print(",");
-			((ExprStmt)getUpdateStmt(i)).getExpr().generateUsingResultJS(out);
+			((ExprStmt)getUpdateStmt(i)).getExpr().generateJS(out);
 		}
 		out.print(") ");
 		getStmt().generateJS(out);
@@ -111,14 +111,14 @@ aspect GenerateJS {
  	
 	public void SwitchStmt.generateJS(CodePrinter out) {
 		out.print("switch (");
-		getExpr().generateJS(out);
+		getExpr().generateUsingResultJS(out);
 		out.print(")");
 		getBlock().generateJS(out);	
  	}
 
 	public void WhileStmt.generateJS(CodePrinter out) {
 		out.print("while (");
-		getCondition().generateJS(out);
+		getCondition().generateUsingResultJS(out);
 		out.print(") ");
 		getStmt().generateJS(out);	
  	}
@@ -167,7 +167,7 @@ aspect GenerateJS {
     // --- ExprStmt ---
   
 	public void ExprStmt.generateJS(CodePrinter out) {
-		getExpr().generateUsingResultJS(out);
+		getExpr().generateJS(out);
 		out.print(";");
 		out.println();
 	}  	

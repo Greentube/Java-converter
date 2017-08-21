@@ -620,29 +620,58 @@ aspect GenerateJS {
   		getOperand().generateUsingResultJS(out);  	
   	}
   	public void MinusExpr.generateJS(CodePrinter out) {
-  		out.print(" - ");
+  		out.print("(-(");
   		getOperand().generateUsingResultJS(out);  	
+  		out.print(")&-1)");
   	}
   	public void PlusExpr.generateJS(CodePrinter out) {
   		out.print(" + ");    
   		getOperand().generateUsingResultJS(out);  	
   	}
+  	
+  	// ---- Very exotic handling of pre/post inc/dec
+  	public void Unary.generateIncOrDecJS(CodePrinter out, boolean pre, boolean inc) {
+  		Expr e = getOperand();
+  		
+  		// operand can be reached without additional computation - can be inlined
+		if (! (e instanceof AbstractDot)) {
+			
+			if (!pre) {
+				out.print("((");
+			}
+			out.print("(");
+			e.generateUsingResultJS(out);
+			out.print("=(");
+			e.generateUsingResultJS(out);
+			out.print(inc?" +1":" -1");
+			out.print(")&-1)");
+			if (!pre) {
+				out.print(inc?"-1":"+1"); // undo computation if unaltered value is needed
+				out.print(")&-1)");
+			}
+			
+		// operand is reached via computed value - need a function to work properly
+		} else {
+				
+		
+		
+		}
+ 	}  	
+  	
   	public void PostDecExpr.generateJS(CodePrinter out) {
-  		getOperand().generateUsingResultJS(out);  	
-  		out.print(" -- ");    
+  		generateIncOrDecJS(out, false, false);
   	}
   	public void PostIncExpr.generateJS(CodePrinter out) {
-  		getOperand().generateUsingResultJS(out);  	
-  		out.print(" ++ ");    
+  		generateIncOrDecJS(out, false, true);
   	}
   	public void PreDecExpr.generateJS(CodePrinter out) {
-  		out.print(" -- ");    
-  		getOperand().generateUsingResultJS(out);  	
+  		generateIncOrDecJS(out, true, false);
   	}
   	public void PreIncExpr.generateJS(CodePrinter out) {
-  		out.print(" ++ ");    
-  		getOperand().generateUsingResultJS(out);  	
-  	}
+  		generateIncOrDecJS(out, true, true);
+  	}  	
+
+  	  	
   	
 }
 
