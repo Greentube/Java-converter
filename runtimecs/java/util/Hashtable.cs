@@ -17,11 +17,11 @@ namespace java.util
         }
         
         public virtual Enumeration elements() {
-            return new IteratorEnumeration(this.values().iterator());
+            return new HashMapIterator(this,false);
         }
     
         public virtual Enumeration keys() {
-            return new IteratorEnumeration(this.keySet().iterator());
+            return new HashMapIterator(this,true);
         }          
 	}	
 }

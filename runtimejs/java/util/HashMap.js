@@ -9,6 +9,7 @@
 //load// java/util/Set
 //load// java/util/AbstractCollection
 //load// java/util/Iterator
+//load// java/util/Enumeration
 
 var java_util_HashMap = _defineClass("java_util_HashMap", java_lang_Object, [java_util_Map], 
 function() {
@@ -115,7 +116,7 @@ null,  // no static
         return sum;
     },
 	
-	isEmpty_0: function(){
+	isEmpty_0: function() {
         return this.size_0() <= 0;
 	},
 
@@ -305,7 +306,8 @@ null,  // no static
 });
 
 
-var java_util_HashMapIterator = _defineClass("java_util_MapValueView", java_lang_Object, [java_util_Iterator], 
+var java_util_HashMapIterator = _defineClass("java_util_MapValueView", 
+    java_lang_Object, [java_util_Iterator, java_util_Enumeration], 
 function() {
     this.map = null;
     this.deliverKeys = false;
@@ -339,7 +341,6 @@ null,  // no static
         
         return this;
     },
-            
     hasNext_0: function() {
         return this.n<this.keys.length;
     },
@@ -347,9 +348,15 @@ null,  // no static
     next_0: function() {
         var k = this.keys[this.n++];
         return this.deliverKeys ? k : this.map.get_1(k);
-    },
-            
+    },           
     remove_0: function() {
         this.map.remove_1(this.keys[this.n-1]);
     },   
+    
+    hasMoreElements_0: function() {
+        return this.hasNext_0();
+    },    
+    nextElement_0: function() {  
+        return this.next_0();
+    },        
 });

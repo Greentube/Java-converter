@@ -1,4 +1,5 @@
-//reference// java/util/Iterator
+//load// java/util/Iterator
+//load// java/util/Enumeration
 //load// java/util/List
 //load// java/util/AbstractCollection
 var java_util_AbstractList = _defineClass("java_util_AbstractList", java_util_AbstractCollection, [java_util_List], 
@@ -117,7 +118,8 @@ null,  // no static
 }); 
 
 
-var java_util_AbstractListIterator = _defineClass("java_util_AbstractListIterator", java_lang_Object, [java_util_Iterator], 
+var java_util_AbstractListIterator = _defineClass("java_util_AbstractListIterator", 
+     java_lang_Object, [java_util_Iterator, java_util_Enumeration], 
 function() {
     this.list = null;
     this.n = 0;
@@ -141,6 +143,12 @@ null,  // no static
     remove_0: function() {
         this.list.remove_1(--this.n);
     },
-        
+
+    hasMoreElements_0: function() {
+        return this.hasNext_0();
+    },    
+    nextElement_0: function() {  
+        return this.next_0();
+    },    
 }); 
 

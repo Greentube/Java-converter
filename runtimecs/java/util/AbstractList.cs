@@ -110,29 +110,37 @@ namespace java.util
             }
             return modified;
         }   
-
-
-        class AbstractListIterator : Iterator 
-        {
-            AbstractList list;
-            int n;
-            
-            public AbstractListIterator(AbstractList list) {
-                this.list = list;
-                this.n = 0;
-            }
-            
-            public bool hasNext() {
-                return n < list.size();
-            }
-        
-            public System.Object next() {
-                return list.get(n++);
-            }
-            
-            public void remove() {
-                list.remove(--n);
-            }
-        }        
 	}	
+    
+    class AbstractListIterator : Iterator, Enumeration 
+    {
+        AbstractList list;
+        int n;
+
+        public AbstractListIterator(AbstractList list) {
+            this.list = list;
+            this.n = 0;
+        }
+
+        public bool hasNext() {
+            return n < list.size();
+        }
+
+        public System.Object next() {
+            return list.get(n++);
+        }
+
+        public void remove() {
+            list.remove(--n);
+        }
+
+
+        public bool hasMoreElements() {
+            return hasNext();
+        }            
+        public System.Object nextElement() {
+            return next();
+        }
+    }        
+    
 }

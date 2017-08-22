@@ -996,8 +996,10 @@ public class TestJava4 {
         assertD(Math.exp(0),1);
         assertD(Math.floor(0.5), 0);
         assertApproximately(Math.log(Math.E), 1);
-        assertD(Math.max(4,6), 6);        
-        assertD(Math.min(124,5), 5);        
+        assertD(Math.max(4.3,6.7), 6.7);        
+        assertI(Math.max(4,6), 6);        
+        assertD(Math.min(-124.0,5.0), -124);        
+        assertI(Math.min(124,5), 5);        
         assertD(Math.pow(2,3), 8);
         assertD(Math.rint(6.3), 6.0);
         assertD(Math.rint(-16.3), -16.0);
@@ -1208,6 +1210,21 @@ public class TestJava4 {
     	c.append(-66555.7423);
     	c.append((Object)null);
     	assertO(c.toString(),"!no47yes66.7?-66555.7423null");
+    	
+    	c = new StringBuffer("nulltest:");
+    	Object o = null;
+    	c.append(o);
+    	c.append(":");
+    	String s = null;
+    	c.append(s);
+    	c.append(":");
+    	assertO(c.toString(),"nulltest:null:null:");
+    	s = "XAX";
+    	c = new StringBuffer();
+    	c.append(s.charAt(1));
+    	assertO(c.toString(),"A");
+    	s = s.replace('A','B');
+    	assertO(s,"XBX");
     }
     
     public static void stringbuildertest()
@@ -1682,7 +1699,8 @@ public class TestJava4 {
     	assertB(s.contains("1"));
     	assertB(!s.contains("-1"));   
     	HashMap s2 = new HashMap();
-    	for (Iterator it2 = s.iterator(); it2.hasNext(); ) {
+    	Iterable itabl = s;
+    	for (Iterator it2 = itabl.iterator(); it2.hasNext(); ) {
     		s2.put(it2.next(),"?");
     	}
     	assertI(s.size(),6);

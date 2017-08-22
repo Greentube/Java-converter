@@ -137,8 +137,8 @@ namespace java.lang {
 
     public static class StringExtensions
     {        
-        public static int charAt(this System.String str, int index) {
-            return (int) str[index];
+        public static char charAt(this System.String str, int index) {
+            return str[index];
         }
         
   		public static int compareTo(this System.String str, System.String other) {

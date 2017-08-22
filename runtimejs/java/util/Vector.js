@@ -28,7 +28,7 @@ null,  // no static
 	},
 
     elements_0: function() {
-        return (new java_util_IteratorEnumeration())._1(this.iterator_0());
+        return new java_util_AbstractListIterator()._1(this);
     },
     
 	firstElement_0: function () {

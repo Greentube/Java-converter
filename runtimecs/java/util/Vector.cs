@@ -27,7 +27,7 @@ namespace java.util
         }
 
         public virtual Enumeration elements() {
-            return new IteratorEnumeration(this.iterator());
+            return new AbstractListIterator(this);
         }
     
         public virtual System.Object firstElement() {

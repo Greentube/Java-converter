@@ -19,11 +19,11 @@ null,  // no static
     },
     
     elements_0: function() {
-        return (new java_util_IteratorEnumeration())._1(this.values_0().iterator_0());
+        return new java_util_HashMapIterator()._2(this, false);
     },
     
 	keys_0: function(){
-        return (new java_util_IteratorEnumeration())._1(this.keySet_0().iterator_0());
+        return new java_util_HashMapIterator()._2(this, true);
 	},      
 });
 

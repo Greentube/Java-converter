@@ -5,13 +5,13 @@ namespace java.lang
     {
         private readonly int value;
 
-        public int intValue() {
-            return value;
-        }
-
 
         public Integer(int v) {
             value = v;
+        }
+
+        public int intValue() {
+            return value;
         }
 
         public override bool Equals(System.Object o)

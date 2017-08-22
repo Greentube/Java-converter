@@ -30,10 +30,10 @@ namespace java.lang {
 		{
 			return System.Math.Ceiling(a);
 		}
-        public static double copySign(double magnitude, double sign) 
-        {
-            return System.Math.Abs(magnitude) * System.Math.Sign(sign);
-        }
+//        public static double copySign(double magnitude, double sign) 
+//        {
+//            return System.Math.Abs(magnitude) * System.Math.Sign(sign);
+//        }
 		public static double cos(double a) 
 		{
 			return System.Math.Cos(a);
@@ -57,10 +57,10 @@ namespace java.lang {
 //        public static int getExponent(double a) 
 //        {
 //        }
-        public static double hypot(double x, double y)
-        {
-            return sqrt(x*x+y*y);
-        }
+//        public static double hypot(double x, double y)
+//        {
+//            return sqrt(x*x+y*y);
+//        }
         public static double IEEERemainder(double f1, double f2)
         {
             return System.Math.IEEERemainder(f1,f2);
@@ -82,6 +82,14 @@ namespace java.lang {
 			return (a>b) ? a : b;
 		}
 		public static double min(double a, double b) 
+		{
+			return (a<b) ? a : b;
+		}
+		public static int max(int a, int b) 
+		{
+			return (a>b) ? a : b;
+		}
+		public static int min(int a, int b) 
 		{
 			return (a<b) ? a : b;
 		}

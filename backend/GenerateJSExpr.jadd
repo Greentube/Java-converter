@@ -150,6 +150,11 @@ aspect GenerateJS {
 			out.print(".call(this");
   			if (m.getNumParameter()>0) out.print(",");
   			
+  		} else if (m.name().equals("append") && m.hostType().packageName().equals("java.lang")
+  			 && (m.hostType().uniqueName().equals("StringBuffer") || m.hostType().uniqueName().equals("StringBuilder"))
+  			 && getArg(0).type().isChar() )  {
+  			out.print(".appendChar_1(");  	
+  					 
   		} else {
   			out.print(".");
   			out.printJSIdentifier(m.name(),"_"+m.getNumParameter());

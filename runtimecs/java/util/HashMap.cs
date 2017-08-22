@@ -2,7 +2,7 @@ namespace java.util
 {
 	public class HashMap : Map
 	{
-        private System.Collections.Generic.Dictionary<System.Object,System.Object> data;        
+        internal System.Collections.Generic.Dictionary<System.Object,System.Object> data;        
         private bool hasNullKey;
         private System.Object valueForNullKey;
         
@@ -226,36 +226,44 @@ namespace java.util
             
             // Object[]	toArray()              // implemented by AbstractCollection        
         }
-        
-        class HashMapIterator : Iterator {
-            HashMap map;
-            bool deliverKeys;
-            System.Object[] keys;
-            int n;
-            
-            public HashMapIterator(HashMap map, bool deliverKeys) {                
-                this.map = map;
-                this.deliverKeys = deliverKeys;
-                
-                this.keys = new System.Object[map.size()]; 
-                // when having a null key, the last array element will not be overwritten here
-                map.data.Keys.CopyTo(this.keys,0); 
-                this.n = 0;
-            }
-            
-            public bool hasNext() {
-                return n<keys.Length;
-            }
-            
-            public System.Object next() {
-                System.Object k = keys[n];
-                n++;                
-                return deliverKeys ? k : map.get(k);
-            }
-            
-            public void remove() {
-                map.remove(keys[n-1]);
-            }
-        }    
     }
+    
+    class HashMapIterator : Iterator, Enumeration {
+        HashMap map;
+        bool deliverKeys;
+        System.Object[] keys;
+        int n;
+        
+        public HashMapIterator(HashMap map, bool deliverKeys) {                
+            this.map = map;
+            this.deliverKeys = deliverKeys;
+            
+            this.keys = new System.Object[map.size()]; 
+            // when having a null key, the last array element will not be overwritten here
+            map.data.Keys.CopyTo(this.keys,0); 
+            this.n = 0;
+        }
+        
+        public bool hasNext() {
+            return n<keys.Length;
+        }
+        
+        public System.Object next() {
+            System.Object k = keys[n];
+            n++;                
+            return deliverKeys ? k : map.get(k);
+        }
+        
+        public void remove() {
+            map.remove(keys[n-1]);
+        }
+        
+        public bool hasMoreElements() {
+            return hasNext();
+        }            
+        public System.Object nextElement() {
+            return next();
+        }
+        
+    }    
 }

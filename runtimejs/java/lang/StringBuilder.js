@@ -16,8 +16,15 @@ null, // no statics
         return this;
     },
     
-    append_1: function(o) {
-        var s = (o==null) ? "null" : o._is_java_lang_Object ? o.toString_0() : String(o);
+    append_1: function(x) {
+        var s = (x==null) ? "null" : x._is_java_lang_Object ? x.toString_0() : String(x);
+        this._length += s.length;
+        this._parts.push(s);
+        return this;
+    },
+    
+    appendChar_1: function(c) {
+        var s = String.fromCharCode(c);
         this._length += s.length;
         this._parts.push(s);
         return this;

@@ -70,6 +70,7 @@
  *      for simple output. 
  */
 
+import com.greentube.javaconverter.LibraryList;
 
 aspect CheckRestrictions {
   	  	
@@ -407,6 +408,15 @@ aspect CheckRestrictions {
 	  		               ((ArrayDecl)m.getParameter(straightargs).type()).elementType(),
 	  		                errorlist);
   		}
+  		
+  		// test for availability in supported core libraries
+		if (!LibraryList.isAllowed(m.hostType().packageName() + "." + m.hostType().uniqueName(), 
+								   m.type().typeName() + " " +m.signature())) {
+			reportRestriction(errorlist, "Unsupported core library method in "
+				+ m.hostType().packageName() + "." + m.hostType().uniqueName() + ": " 
+				+ m.type().typeName() + " " + m.signature());
+		}
+  		
 		super.checkRestrictions(errorlist);					  		
 	}
 	// Autoboxing/unboxing in super/this-constructor call parameters
@@ -432,6 +442,15 @@ aspect CheckRestrictions {
 	  		               ((ArrayDecl)m.getParameter(straightargs).type()).elementType(),
 	  		                errorlist);
   		}
+
+  		// test for availability in supported core libraries
+		if (!LibraryList.isAllowed(m.hostType().packageName() + "." + m.hostType().uniqueName(), 
+								   m.signature())) {
+			reportRestriction(errorlist, "Unsupported core library constructor in "
+				+ m.hostType().packageName() + "." + m.hostType().uniqueName() + ": " 
+				+ m.signature());
+		}
+  		
 		super.checkRestrictions(errorlist);					  		  		
 	}
 	// Autoboxing/unboxing in constructor call parameters
@@ -457,6 +476,15 @@ aspect CheckRestrictions {
 	  		               ((ArrayDecl)m.getParameter(straightargs).type()).elementType(),
 	  		                errorlist);
   		}
+  		
+  		// test for availability in supported core libraries
+		if (!LibraryList.isAllowed(m.hostType().packageName() + "." + m.hostType().uniqueName(), 
+								   m.signature())) {
+			reportRestriction(errorlist, "Unsupported core library constructor in "
+				+ m.hostType().packageName() + "." + m.hostType().uniqueName() + ": " 
+				+ m.signature());
+		}
+  		
 		super.checkRestrictions(errorlist);					  		  			
 	}
 	// autoboxing/unboxing at variable declarators	
@@ -561,14 +589,23 @@ aspect CheckRestrictions {
 	}  		
 	
 		   	  	
-	// anonymous classes may not access surrounding local variables
 	public void VarAccess.checkRestrictions(ArrayList<String> errorlist) {
+		// anonymous classes may not access surrounding local variables
 		Variable v = varDecl();
 		if (v.isLocalVariable() || v.isParameter()) {	
 			if (v.hostType() != hostType()) {
 				reportRestriction(errorlist, "Can not access local variables of outer class method");
 			}
-		}		
+		}
+		
+		// check if part of the supported library
+		if (v.isClassVariable() || v.isInstanceVariable()) {
+			if (!LibraryList.isAllowed(v.hostType().packageName() + "." + v.hostType().uniqueName(),getID())) {
+				reportRestriction(errorlist, "Unsupported core library field: "
+					+ v.hostType().packageName() + "." + v.hostType().uniqueName() + "." + getID() );
+			}
+  		}
+  						
 		super.checkRestrictions(errorlist);
 	}		 
 }
