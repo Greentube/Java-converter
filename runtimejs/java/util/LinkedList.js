@@ -1,10 +1,10 @@
 //load// java/util/AbstractList
 var java_util_LinkedList = _defineClass("java_util_LinkedList", java_util_AbstractList, null, 
 function() {
-    this.head = null;
-    this.len = 0;
-    this.currentNode = null;
-    this.currentIndex = 0;        
+    this._head = null;
+    this._len = 0;
+    this._currentNode = null;
+    this._currentIndex = 0;        
 },
 null,  // no static
 {  
@@ -12,10 +12,10 @@ null,  // no static
         var h = { element:null, next:null, prev: null };
         h.next = h;
         h.prev = h;
-        this.head = h;
-        this.len = 0;
-        this.currentNode = h;
-        this.currentIndex = -1;
+        this._head = h;
+        this._len = 0;
+        this._currentNode = h;
+        this._currentIndex = -1;
         return this;
     },
     
@@ -39,18 +39,18 @@ null,  // no static
 	add_2: function(index, element) {
         var n = { element:element, next:null, prev:null };
         var y;
-        if (index==this.len) {
-            y = this.head;
+        if (index==this._len) {
+            y = this._head;
         } else {
             y = this.seek_1(index); 
-            if (this.currentIndex>=index) this.currentIndex++;
+            if (this._currentIndex>=index) this._currentIndex++;
         }
         var x = y.prev;
         n.prev = x;
         n.next = y;
         x.next = n;
         y.prev = n;
-        this.len++;            
+        this._len++;            
     },
 
     remove_1: function (index) {   
@@ -59,43 +59,43 @@ null,  // no static
         var y = n.next;
         x.next = y;
         y.prev = x;
-        this.len--;
-        if (this.currentIndex>=index) {
-            if (this.currentIndex==index) {
-                this.currentNode = x;
+        this._len--;
+        if (this._currentIndex>=index) {
+            if (this._currentIndex==index) {
+                this._currentNode = x;
             }    
-            this.currentIndex--;
+            this._currentIndex--;
         }
         return n.element;
     },
 
 	size_0: function() {
-		return this.len;
+		return this._len;
 	},
     
     seek_1: function(index) {
-        var len = this.len;
+        var len = this._len;
         if (index<0 || index>=len) throw new RangeError();
-        if (index==0) return this.head.next;
-        if (index==this.len-1) return this.head.prev;
+        if (index==0) return this._head.next;
+        if (index==this.len-1) return this._head.prev;
             
         // decide in which direction to traverse the list
-        var ci = this.currentIndex;
+        var ci = this._currentIndex;
         // the target node is already found
-        if (index==ci) return this.currentNode;
+        if (index==ci) return this._currentNode;
             
         var n = null;
         // the target node is before the current one
         if (index<ci) {
             // it is nearer to search from start
             if (index <= ci-index) {
-                n = this.head.next;
+                n = this._head.next;
                 for (var i=0; i<index; i++) {
                     n = n.next;
                 }
             // it is nearer to search from the current
             } else {
-                n = this.currentNode;
+                n = this._currentNode;
                 for (var i=ci; i>index; i--) {
                     n = n.prev;
                 }                    
@@ -104,13 +104,13 @@ null,  // no static
         } else {
             // it is nearer to search from the current
             if (index-ci <= len-index) {
-                n = this.currentNode;
+                n = this._currentNode;
                 for (var i=ci; i<index; i++) {
                     n = n.next;
                 }
             // it is nearer to search from the end
             } else {
-                n = this.head.prev;
+                n = this._head.prev;
                 for (var i=len-1; i>index; i--) {
                     n = n.prev;
                 }                    
@@ -118,8 +118,8 @@ null,  // no static
         }
             
         // memorize for later access
-        this.currentNode = n;
-        this.currentIndex = index;
+        this._currentNode = n;
+        this._currentIndex = index;
         return n;
     },
     

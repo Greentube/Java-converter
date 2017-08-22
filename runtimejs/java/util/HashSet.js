@@ -5,14 +5,14 @@
 
 var java_util_HashSet = _defineClass("java_util_HashSet", java_util_AbstractCollection, [java_util_Set], 
 function() {
-    this.map = null;
+    this._map = null;
 },
 {   // static
-    PRESENT: new java_lang_Object()._0(),  
+    _PRESENT: new java_lang_Object()._0(),  
 },
 {
         _0: function() {
-            this.map = (new java_util_HashMap())._0();
+            this._map = (new java_util_HashMap())._0();
             return this;
         },
         
@@ -23,7 +23,7 @@ function() {
         },
         
         add_1: function(e) { 
-            return this.map.put_2(e, java_util_HashSet.PRESENT)==null;
+            return this._map.put_2(e, java_util_HashSet._PRESENT)==null;
         },           
         
         addAll_1: function(c) {
@@ -38,11 +38,11 @@ function() {
         },
         
         clear_0: function() {
-            this.map.clear_0();
+            this._map.clear_0();
         },
         
         contains_1: function(e) { 
-            return this.map.containsKey_1(e);
+            return this._map.containsKey_1(e);
         },
         
         // containsAll        implemented by AbstractCollection
@@ -58,24 +58,24 @@ function() {
         },
                 
         hashCode_0: function() { 
-            return this.map.keySet_0().hashCode_0();
+            return this._map.keySet_0().hashCode_0();
         },
         
         // isEmpty       implemented by AbstractCollection
         
         iterator_0: function() {
-            return this.map.keySet_0().iterator_0();
+            return this._map.keySet_0().iterator_0();
         },
                 
         remove_1: function(key) { 
-            return this.map.remove_1(key)!=null;
+            return this._map.remove_1(key)!=null;
         },
         
         removeAll_1: function(collection) {
             var i = collection.iterator_0();
             var didremove = false;
             while (i.hasNext_0()) {
-                if (this.remove(i.next_0())) {
+                if (this.remove_1(i.next_0())) {
                     didremove = true;
                 }
             }        
@@ -96,7 +96,7 @@ function() {
         },
         
         size_0: function() { 
-            return this.map.size_0();
+            return this._map.size_0();
         }
         
         // toArray   implemented by AbstractCollection 

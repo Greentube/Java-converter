@@ -1,12 +1,12 @@
 //load// java/util/AbstractList
 var java_util_ArrayList = _defineClass("java_util_ArrayList", java_util_AbstractList, null, 
 function() {
-    this.storage = null;
+    this._storage = null;
 },
 null,  // no static
 {  
     _0: function() {
-        this.storage = [];
+        this._storage = [];
         return this;
     },
     
@@ -17,32 +17,32 @@ null,  // no static
     },
   
     get_1: function(index) {
-        return this.storage[index];	
+        return this._storage[index];	
 	},
     
 	set_2: function(index, obj) {
-		this.storage[index] = obj;
+		this._storage[index] = obj;
 	},
 	    
 	add_2: function(index, obj) {
-        if(index==this.storage.length) {
-            this.storage.push(obj);
+        if(index==this._storage.length) {
+            this._storage.push(obj);
         } else if (index==0) {
-            this.storage.unshift(obj);
+            this._storage.unshift(obj);
         } else {
-            this.storage.splice (index,0, obj);
+            this._storage.splice (index,0, obj);
         }
     },
 
     remove_1: function (idx) {   
-        var obj = this.storage[idx];
-        if (idx==0) this.storage.shift();
-        else        this.storage.splice(idx,1);
+        var obj = this._storage[idx];
+        if (idx==0) this._storage.shift();
+        else        this._storage.splice(idx,1);
         return obj;                    
     },
 
 	size_0: function() {
-		return this.storage.length;
+		return this._storage.length;
 	},
     
     trimToSize_0: function() {

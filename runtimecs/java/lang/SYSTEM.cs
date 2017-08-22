@@ -131,8 +131,7 @@ namespace java.lang {
             
         public static System.String str(System.Object o) {
             return (o==null) ? "null" : o.ToString();
-        }
-        
+        }        
     }
 
 

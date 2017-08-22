@@ -1,14 +1,14 @@
 //load// java/lang/Object
 var java_lang_Enum = _defineClass ("java_lang_Enum", java_lang_Object, null, 
 function() {
-    this.name = null;
-    this.ordinal = 0;
+    this._name = null;
+    this._ordinal = 0;
 },
 null,   // no static
 {
 	_2: function(name,ordinal) {
-        this.name = name;
-        this.ordinal = ordinal;
+        this._name = name;
+        this._ordinal = ordinal;
         return this;
     },
     
@@ -17,18 +17,18 @@ null,   // no static
     },
     
     hashCode_0 : function() {
-        return this.ordinal;
+        return this._ordinal;
     },
     
     name_0: function() {
-        return this.name;
+        return this._name;
     },
     
     ordinal_0: function() {
-        return this.ordinal;
+        return this._ordinal;
     },
     
     toString_0: function() {
-        return this.name;
+        return this._name;
     }    
 }); 

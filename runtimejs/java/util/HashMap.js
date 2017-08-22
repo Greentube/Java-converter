@@ -12,16 +12,16 @@
 
 var java_util_HashMap = _defineClass("java_util_HashMap", java_lang_Object, [java_util_Map], 
 function() {
-    this.stringtable = null;
-    this.commontable = null;
-    this.totalelements = 0;
+    this._stringtable = null;
+    this._commontable = null;
+    this._totalelements = 0;
 },
 null,  // no static
 {    
    	_0: function() {
-        this.stringtable = {};
-        this.commontable = {};
-        this.totalelements = 0;
+        this._stringtable = {};
+        this._commontable = {};
+        this._totalelements = 0;
         return this;
 	},
 
@@ -32,18 +32,18 @@ null,  // no static
 	},
     
 	clear_0: function() {
-		this.stringtable = {};
-		this.commontable = {};
-        this.totalelements = 0;
+		this._stringtable = {};
+		this._commontable = {};
+        this._totalelements = 0;
 	},
 	
 	containsKey_1: function(key) {
         if (_isValidStringKey(key)) {
-            return this.stringtable.hasOwnProperty(key);
+            return this._stringtable.hasOwnProperty(key);
         }
         var hc = (key==null) ? 0 : key.hashCode_0();
-        if (!this.commontable.hasOwnProperty(hc)) return false;
-        for (var kv of this.commontable[hc]) {  // scan all key-value pairs for the hashCode
+        if (!this._commontable.hasOwnProperty(hc)) return false;
+        for (var kv of this._commontable[hc]) {  // scan all key-value pairs for the hashCode
             var k = kv[0];
             if (key==null ? k==null : key.equals_1(k)) return true;
         }
@@ -52,18 +52,18 @@ null,  // no static
     
 	containsValue_1: function(value) {
         // search through all string keys
-        for (var s in this.stringtable) {
-            if (this.stringtable.hasOwnProperty(s)) {
-                var v = this.stringtable[s];
+        for (var s in this._stringtable) {
+            if (this._stringtable.hasOwnProperty(s)) {
+                var v = this._stringtable[s];
                 if (value==null ? v==null : value.equals_1(v)) {
                     return true;
                 }
             }
         }
         // search through all hashcode-buckets        
-        for (var hc in this.commontable) { 
-            if (this.commontable.hasOwnProperty(hc)) {
-                for (var kv of this.commontable[hc]) { 
+        for (var hc in this._commontable) { 
+            if (this._commontable.hasOwnProperty(hc)) {
+                for (var kv of this._commontable[hc]) { 
                     var  v = kv[1];
                     if (value==null ? v==null : value.equals_1(v)) {
                         return true;
@@ -90,11 +90,11 @@ null,  // no static
 
 	get_1: function(key) {
         if (_isValidStringKey(key)) {
-            return this.stringtable.hasOwnProperty(key) ? this.stringtable[key] : null;
+            return this._stringtable.hasOwnProperty(key) ? this._stringtable[key] : null;
         }
         var hc = (key==null) ? 0 : key.hashCode_0();
-        if (!this.commontable.hasOwnProperty(hc)) return null;
-        for (var kv of this.commontable[hc]) {  // scan all key-value pairs for the hashCode
+        if (!this._commontable.hasOwnProperty(hc)) return null;
+        for (var kv of this._commontable[hc]) {  // scan all key-value pairs for the hashCode
             var k = kv[0];
             if (key==null ? k==null : key.equals_1(k)) {
                 return kv[1];
@@ -126,17 +126,17 @@ null,  // no static
 	put_2: function(key, value) {
         // easy operation when can directly use the javascript object mapping
         if (_isValidStringKey(key)) {
-            if (!this.stringtable.hasOwnProperty(key)) this.totalelements++;
-            this.stringtable[key] = value;
+            if (!this._stringtable.hasOwnProperty(key)) this._totalelements++;
+            this._stringtable[key] = value;
         // complex operation, maintaining buckets of key-value pairs 
         } else {
             var hc = (key==null) ? 0 : key.hashCode_0();
-            if (!this.commontable.hasOwnProperty(hc)) {
+            if (!this._commontable.hasOwnProperty(hc)) {
                 // create new bucket if not yet existing
-                this.commontable[hc] = [[key,value]]; 
-                this.totalelements++;
+                this._commontable[hc] = [[key,value]]; 
+                this._totalelements++;
             } else {
-                for (var kv of this.commontable[hc]) {  // scan all key-value pairs for the hashCode
+                for (var kv of this._commontable[hc]) {  // scan all key-value pairs for the hashCode
                     var k = kv[0];
                     // found occurence of the key - overwrite the value
                     if (key==null ? k==null : key.equals_1(k)) {
@@ -145,8 +145,8 @@ null,  // no static
                     }
                 }
                 // bucket does not contain key yet - create a new key-value pair
-                this.commontable[hc].push([key,value]);
-                this.totalelements++;
+                this._commontable[hc].push([key,value]);
+                this._totalelements++;
             }
         }
 	},
@@ -162,15 +162,15 @@ null,  // no static
 	    
 	remove_1: function(key) {
         if (_isValidStringKey(key)) {  
-            var st = this.stringtable;
+            var st = this._stringtable;
             if (st.hasOwnProperty(key)) {                
                 var rtn = st[key];
                 delete st[key];
-                this.totalelements--;
+                this._totalelements--;
                 return rtn;
             }
         } else {
-            var ct = this.commontable;
+            var ct = this._commontable;
             var hc = (key==null) ? 0 : key.hashCode_0();
             if (ct.hasOwnProperty(hc)) {
                 var bucket = ct[hc];
@@ -183,7 +183,7 @@ null,  // no static
                         } else {
                             delete ct[hc];
                         }
-                        this.totalelements--;
+                        this._totalelements--;
                         return rtn;
                     }
                 }
@@ -193,7 +193,7 @@ null,  // no static
 	},
 	
 	size_0: function(){
-		return this.totalelements;
+		return this._totalelements;
 	},
 	
 	toString_0: function(){
@@ -266,7 +266,7 @@ null,    // no static
     },
 
     size_0: function() {
-        return this.map.totalelements;
+        return this.map._totalelements;
     },
     
 // Object[]	toArray()              // implemented by AbstractCollection   
@@ -298,7 +298,7 @@ null,  // no static
     },
 
     size_0: function() {
-        return this.map.totalelements;
+        return this.map._totalelements;
     },
     
 // Object[]	toArray()              // implemented by AbstractCollection
@@ -320,15 +320,15 @@ null,  // no static
         
         var k = [];
         // search through all string keys
-        for (var s in map.stringtable) {
-            if (map.stringtable.hasOwnProperty(s)) {
+        for (var s in map._stringtable) {
+            if (map._stringtable.hasOwnProperty(s)) {
                 k.push(s);
             }
         }
         // search through all hashcode-buckets        
-        for (var hc in map.commontable) { 
-            if (map.commontable.hasOwnProperty(hc)) {
-                for (var kv of map.commontable[hc]) { 
+        for (var hc in map._commontable) { 
+            if (map._commontable.hasOwnProperty(hc)) {
+                for (var kv of map._commontable[hc]) { 
                     k.push(kv[0]);
                 }
             }
