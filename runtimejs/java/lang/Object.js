@@ -111,9 +111,7 @@ function _c2s(c) {
 
 // do some numerical cast operations
 function _castTObyte(a) {
-    var i = _castTOint(a) & 0xff;
-    if (i<0x80) return i;
-    else        return i-0x100;
+    return _castTOint(a) << 24 >> 24;
 }
 function _castTOchar(a) {
     return _castTOint(a) & 0xffff;

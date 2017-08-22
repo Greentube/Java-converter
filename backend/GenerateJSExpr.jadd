@@ -625,50 +625,91 @@ aspect GenerateJS {
   		out.print(")&-1)");
   	}
   	public void PlusExpr.generateJS(CodePrinter out) {
-  		out.print(" + ");    
   		getOperand().generateUsingResultJS(out);  	
   	}
   	
-  	// ---- Very exotic handling of pre/post inc/dec
-  	public void Unary.generateIncOrDecJS(CodePrinter out, boolean pre, boolean inc) {
-  		Expr e = getOperand();
-  		
-  		// operand can be reached without additional computation - can be inlined
-		if (! (e instanceof AbstractDot)) {
-			
-			if (!pre) {
-				out.print("((");
-			}
-			out.print("(");
-			e.generateUsingResultJS(out);
-			out.print("=(");
-			e.generateUsingResultJS(out);
-			out.print(inc?" +1":" -1");
-			out.print(")&-1)");
-			if (!pre) {
-				out.print(inc?"-1":"+1"); // undo computation if unaltered value is needed
-				out.print(")&-1)");
-			}
-			
-		// operand is reached via computed value - need a function to work properly
-		} else {
-				
-		
-		
-		}
- 	}  	
   	
+  	public void Unary.generatePostOperatorJS(CodePrinter out, boolean inc)
+  	{
+  		Expr e = getOperand();
+  		if (e.type().isDouble()) {
+  			e.generateJS(out);
+  			out.print(inc?" ++ ":" -- ");
+  			return;
+  		}
+  		
+  		boolean needresult = !(getParent() instanceof ExprStmt);
+  		if (needresult) {
+  			out.print("(((");
+  		}
+  		
+		e.generateUsingResultJS(out);
+		out.print("=(");
+		e.generateUsingResultJS(out);
+		out.print(inc?" +1)":" -1)");
+		if (e.type().isInt()) {
+			out.print("&-1");
+		} else if (e.type().isChar()) {
+			out.print("&0xffff");
+		} else if (e.type().isByte()) {
+			out.print("<<24>>24");
+		}
+  	
+  		if (needresult) {
+  			out.print(")");
+  			// must revert the operation to get the original value out
+			out.print(inc?" -1)":" +1)");
+			if (e.type().isInt()) {
+				out.print("&-1");
+			} else if (e.type().isChar()) {
+				out.print("&0xffff");
+			} else if (e.type().isByte()) {
+				out.print("<<24>>24");
+			}
+			out.print(")");
+  		}  	  	
+  	}
+  	public void Unary.generatePreOperatorJS(CodePrinter out, boolean inc)
+  	{
+  		Expr e = getOperand();
+  		if (e.type().isDouble()) {
+  			out.print(inc?" ++ ":" -- ");
+  			e.generateJS(out);
+  			return;
+  		}
+  		
+  		boolean needresult = !(getParent() instanceof ExprStmt);
+  		if (needresult) {
+  			out.print("(");
+  		}
+		
+		e.generateUsingResultJS(out);
+		out.print("=(");
+		e.generateUsingResultJS(out);
+		out.print(inc?" +1)":" -1)");
+		if (e.type().isInt()) {
+			out.print("&-1");
+		} else if (e.type().isChar()) {
+			out.print("&0xffff");
+		} else if (e.type().isByte()) {
+			out.print("<<24>>24");
+		}
+		
+  		if (needresult) {
+  			out.print(")");
+  		}  	
+  	}  	
   	public void PostDecExpr.generateJS(CodePrinter out) {
-  		generateIncOrDecJS(out, false, false);
+  		generatePostOperatorJS(out, false);
   	}
   	public void PostIncExpr.generateJS(CodePrinter out) {
-  		generateIncOrDecJS(out, false, true);
+  		generatePostOperatorJS(out, true);
   	}
   	public void PreDecExpr.generateJS(CodePrinter out) {
-  		generateIncOrDecJS(out, true, false);
+  		generatePreOperatorJS(out,false);
   	}
   	public void PreIncExpr.generateJS(CodePrinter out) {
-  		generateIncOrDecJS(out, true, true);
+  		generatePreOperatorJS(out,true);
   	}  	
 
   	  	

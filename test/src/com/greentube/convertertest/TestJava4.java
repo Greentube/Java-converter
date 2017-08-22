@@ -423,31 +423,6 @@ public class TestJava4 {
         char n = (char) 65530;
         assertI(m+n, 65595);    
         
-        // do various weird and wonderful things with the inc/dec operators
-        int[] ia = new int[2];
-        char idx=0;
-        assertI(ia[0]++, 0);
-        assertI(idx,0);   assertI(ia[0],1);  assertI(ia[1],0);
-        assertI(ia[idx++], 1);
-        assertI(idx,1);   assertI(ia[0],1);  assertI(ia[1],0);
-        assertI(--ia[idx], -1);
-        assertI(idx,1);   assertI(ia[0],1);  assertI(ia[1],-1);
-        ia[0] = Integer.MIN_VALUE;
-        ia[1] = 0;
-        idx=0;
-        assertI(idx,0);   assertI(ia[0],Integer.MIN_VALUE);  assertI(ia[1],0);
-        ia[idx]--; idx--;
-        assertI(idx,Character.MAX_VALUE);  assertI(ia[0],Integer.MAX_VALUE);  assertI(ia[1],0);
-        ++idx;
-        ia[idx]++;
-        assertI(idx,0);   assertI(ia[0],Integer.MIN_VALUE);  assertI(ia[1],0);        
-        ia[idx+0]++; idx++;
-        assertI(idx,1);   assertI(ia[0],Integer.MIN_VALUE+1);  assertI(ia[1],0);   
-        
-        int[][] iia = new int[2][2];
-        idx=0;
-        iia[++idx][idx=0] = 1;
-        assertI(idx,0);  assertI(iia[0][0],0); assertI(iia[0][0],0); assertI(iia[1][0],1); assertI(iia[1][1],0);   
     }
     
     public static void assignoperatortest() {
@@ -580,6 +555,9 @@ public class TestJava4 {
     	assertI(c, 0);
     	assertI(c++, 0);
     	assertI(c, 1);
+    	char c2 = --c;
+    	c2--;
+    	assertI(c2, Character.MAX_VALUE);
     	
     	byte by = 0;
     	by = 34;
@@ -602,7 +580,9 @@ public class TestJava4 {
     	by = 0;
     	by /= 0.0;
     	assertI(by,0);
-
+    	byte b2 = ++by;
+    	assertI(b2,1);
+    	
     	by = 99;
     	assertI(by++, 99);
     	assertI(by,100);
@@ -634,7 +614,45 @@ public class TestJava4 {
         assertI (i, 0);
         i = Integer.MAX_VALUE;
         i %= Integer.MAX_VALUE-1;
-        assertI (i, 1);    	
+        assertI (i, 1);
+        
+        // do various weird and wonderful things with the inc/dec operators
+        int[] ia = new int[2];
+        char idx=0;
+        assertI(ia[0]++, 0);
+        assertI(idx,0);   assertI(ia[0],1);  assertI(ia[1],0);
+        assertI(ia[idx++], 1);
+        assertI(idx,1);   assertI(ia[0],1);  assertI(ia[1],0);
+        assertI(--ia[idx], -1);
+        assertI(idx,1);   assertI(ia[0],1);  assertI(ia[1],-1);
+        ia[0] = Integer.MIN_VALUE;
+        ia[1] = 0;
+        idx=0;
+        assertI(idx,0);   assertI(ia[0],Integer.MIN_VALUE);  assertI(ia[1],0);
+        ia[idx]--; idx--;
+        assertI(idx,Character.MAX_VALUE);  assertI(ia[0],Integer.MAX_VALUE);  assertI(ia[1],0);
+        ++idx;
+        ia[idx]++;
+        assertI(idx,0);   assertI(ia[0],Integer.MIN_VALUE);  assertI(ia[1],0);        
+        ia[idx+0]++; idx++;
+        assertI(idx,1);   assertI(ia[0],Integer.MIN_VALUE+1);  assertI(ia[1],0);   
+        
+        int[][] iia = new int[2][2];
+        idx=0;
+        iia[++idx][idx=0] = 1;
+        assertI(idx,0);  assertI(iia[0][0],0); assertI(iia[0][0],0); assertI(iia[1][0],1); assertI(iia[1][1],0);
+        
+        d = 4.3;
+        assertD(d++,4.3);
+        assertD(d,5.3);
+        assertD(++d,6.3);
+        assertD(d,6.3);
+        assertD(--d,5.3);
+        assertD(d--,5.3);
+        assertD(d,4.3);   
+        d = 0.999999999999;
+        double d2 = d;
+        assertD(d++,d2);
     }
 
        
