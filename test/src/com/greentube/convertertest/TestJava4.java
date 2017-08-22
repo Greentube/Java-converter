@@ -136,12 +136,29 @@ public class TestJava4 {
     	System.out.println ("- array");
     	
         // simple array with initializer
-        int[] ar = new int[]{3,4,5};
+    	int[] ar = new int[0];
+        assertI(ar.length, 0);
+    	ar = new int[1];
+        assertI(ar.length, 1);
+    	ar = new int[2];
+        assertI(ar.length, 2);
+    	ar = new int[]{};
+        assertI(ar.length, 0);
+    	ar = new int[]{4};
+        assertI(ar.length, 1);
+        assertI(ar[0],4);
+    	ar = new int[]{4,5};
+        assertI(ar.length, 2);
+        assertI(ar[0],4);
+        assertI(ar[1],5);
+        ar = new int[]{3,4,5};
         assertI(ar.length, 3);
         assertI(ar[0],3);
         assertI(ar[1],4);
         assertI(ar[2],5);
-               
+        boolean[][] b2 = new boolean[4][2];
+        assertB(b2[2][1] == false);
+        
         // create multidimensional array
         int[][]a = new int[4][5];                
         assertI(a.length, 4);
@@ -1017,6 +1034,8 @@ public class TestJava4 {
         assertO (44 - 33 + "hi", "11hi");
         assertO (44 + "" + 33 + "hi", "4433hi");
         assertO ("" + 44 + 33 + "hi", "4433hi");
+        a = null;
+        assertO(a+null,"nullnull");
         // doing weird stuff with characters and the string + operator
         char c = '@';
         a = ((String)null) + c;

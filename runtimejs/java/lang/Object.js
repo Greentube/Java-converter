@@ -14,7 +14,7 @@ java_lang_Object.prototype._0 = function()
 // add default member functions
 java_lang_Object.prototype.toString_0 = function()
 {
-  return this._classNameString;
+  return this._classname;
 };
 java_lang_Object.prototype.equals_1 = function(a)
 {
@@ -23,17 +23,12 @@ java_lang_Object.prototype.equals_1 = function(a)
 java_lang_Object.prototype.hashCode_0 = function()
 {
 // there is no real way to access any true object identity, so use a hash of the class name instead
-  return this._classNameString.hashCode_0();  
-};
-// provide the standard javascript means to convert anything to a string
-java_lang_Object.prototype.toString = function()
-{
-  return this.toString_0();
+  return this._classname.hashCode_0();  
 };
 
 // add type detection flag
 java_lang_Object.prototype._is_java_lang_Object = true;
-java_lang_Object.prototype._classNameString = "java.lang.Object";
+java_lang_Object.prototype._classname = "java_lang_Object";
 
 
 // ---- global toolbox functions for classes and arrays ----
@@ -109,6 +104,12 @@ function _c2s(c) {
     return String.fromCharCode(c);
 }
 
+// convert any object to a string - and give "null" for null reference
+function _str(o) {
+    if (o==null) return "null";
+    return o.toString_0();    
+}
+
 // do some numerical cast operations
 function _castTObyte(a) {
     return _castTOint(a) << 24 >> 24;
@@ -137,19 +138,14 @@ function _castTOint(a) {
 // the sizes for the dimensions are given as arguments 1 to n, and the 
 // initialization value is the last call argument.
 
-function _createArray () {
-  return _createArrayImpl(arguments,0);
+function _dim(dimensions,initvalue) {
+  return _dimImpl(dimensions,initvalue,0);
 }
 
-function _createArrayImpl(dimensions_and_initializer, cursor)
+function _dimImpl(dimensions,initvalue,cursor)
 {
-  var dims = dimensions_and_initializer.length - cursor - 1;
-  if (dims<1) {
-    return null;
-  } 
-  else if (dims==1) {
-    var len = dimensions_and_initializer[cursor];
-    var initvalue = dimensions_and_initializer[cursor+1];
+  if (cursor>=dimensions.length-1) {
+    var len = dimensions[cursor];
     var a = new Array(len);
     for (var i=0; i<len; i++) {
       a[i] = initvalue;
@@ -157,10 +153,10 @@ function _createArrayImpl(dimensions_and_initializer, cursor)
     return a;
   }
   else {
-    var len = dimensions_and_initializer[cursor];
+    var len = dimensions[cursor];
     var a = new Array(len);
     for (var i=0; i<len; i++) {
-      a[i] = _createArrayImpl(dimensions_and_initializer, cursor+1);
+      a[i] = _dimImpl(dimensions,initvalue, cursor+1);
     }
     return a;    
   }
@@ -189,8 +185,6 @@ Array.prototype._is_java_lang_Object = true;
 
 String.prototype._is_java_lang_Object = true;
 String.prototype._is_java_lang_String = true;
-
-
 
 String.prototype.charAt_1 = function(x) {
 	return this.charCodeAt(x);

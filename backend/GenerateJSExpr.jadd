@@ -369,20 +369,32 @@ aspect GenerateJS {
   		Expr l = getLeftOperand();
   		Expr r = getRightOperand();
   		if (type().isString()) {
-  			if (l.type().isChar()) {
+			if ((l.type().isString() && l.isConstant()) || (l instanceof AddExpr)) {
+				l.generateUsingResultJS(out);
+  			} else if (l.type().isChar()) {
   				out.print("_c2s(");
   				l.generateUsingResultJS(out);
   				out.print(")");
+			} else if (l.type().isReferenceType()) {
+  				out.print("_str(");
+  				l.generateUsingResultJS(out);
+  				out.print(")");  		
   			} else {
   				l.generateUsingResultJS(out);
   			}
   			out.print("+\"\"+");
-  			if (r.type().isChar()) {
+			if ((r.type().isString() && r.isConstant()) || (r instanceof AddExpr)) {
+				r.generateUsingResultJS(out);
+  			} else if (r.type().isChar()) {
   				out.print("_c2s(");
   				r.generateUsingResultJS(out);
   				out.print(")");
-  			} else {
+  			} else if (r.type().isReferenceType()) {
+  				out.print("_str(");
   				r.generateUsingResultJS(out);
+  				out.print(")");  		
+  			} else {
+  				r.generateUsingResultJS(out);  			 
   			}
   		} else if (type().isDouble()) {
 	  		l.generateUsingResultJS(out);
@@ -583,12 +595,12 @@ aspect GenerateJS {
   			getArrayInit().generateJS(out);
   		} else {
   			Access ta = getTypeAccess();
-	  		out.print("_createArray(");  		
+	  		out.print("_dim([");  		
 			ta.generateJS(out);
-			
+			out.print("],");
 			if ((ta instanceof ArrayTypeWithSizeAccess) 
 			 && ta.type().elementType().isPrimitiveType()) { 
-				out.print("0");
+				out.print(ta.type().elementType().isBoolean()?"false":"0");
 			} else {
 				out.print("null");
 			}								
