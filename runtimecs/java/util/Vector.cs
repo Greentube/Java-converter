@@ -12,7 +12,7 @@ namespace java.util
             this.add(o);
         }
 	    
-        public virtual Vector clone() {
+        public virtual System.Object clone() {
             return new Vector(this);
         }
 
