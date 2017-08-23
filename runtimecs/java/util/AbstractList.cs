@@ -3,9 +3,6 @@ namespace java.util
 	public abstract class AbstractList : AbstractCollection, List
 	{
         
-        public AbstractList() {
-        }
-        
         // must be implemented by a modifiable subclass
         public abstract System.Object get(int index);
         public abstract System.Object set(int index, System.Object element);        

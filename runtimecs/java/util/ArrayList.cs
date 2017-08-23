@@ -81,5 +81,11 @@ namespace java.util
             }
             len = 0;
         }                
+        
+        public override System.Object[] toArray() {
+            System.Object[] copy = new System.Object[len];
+            System.Array.Copy(buffer,0,copy,0,len);
+            return copy;
+        }        
 	}	
 }

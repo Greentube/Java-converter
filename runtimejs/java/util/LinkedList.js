@@ -148,5 +148,18 @@ null,  // no static
         return this.remove_1(this.size_0()-1);
     },
     
+    // optimized operations
+    clear_0: function() {
+        var h = this._head;
+        h.next = h;
+        h.prev = h;
+        this._head = h;
+        this._len = 0;
+        this._currentNode = h;
+        this._currentIndex = -1;
+	},      
+
+
+    
 });
 

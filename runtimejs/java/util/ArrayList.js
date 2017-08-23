@@ -48,5 +48,19 @@ null,  // no static
     trimToSize_0: function() {
         // no operation. the underlying array is always trimmed.
     },
+    
+    // optimized operations
+    add_1: function(obj) { 
+        this._storage.push(obj);
+        return true;
+    },
+    
+    clear_0: function() {
+        this._storage.length = 0;
+	},      
+    
+	toArray_0: function () {
+        return this._storage.slice();
+	},    
         
 }); 

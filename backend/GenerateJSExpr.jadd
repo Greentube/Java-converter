@@ -172,10 +172,15 @@ aspect GenerateJS {
   			if (i>0) out.print(",");
   			if (pararraystart==i) out.print("[");
   			
-  			// do necessary data conversion for the StringBuffer.append function 
-  			if (i==0 && m.name().equals("append") && m.hostType().packageName().equals("java.lang")
-  			 && (m.hostType().uniqueName().equals("StringBuffer") || m.hostType().uniqueName().equals("StringBuilder"))
-  			 && getArg(0).type().isChar() )  {
+  			// do necessary data conversion for some built-in methods 
+  			// to clarify the use of a char instead of a int 
+  			TypeDecl ht = m.hostType();
+  			if (i==0 && getNumArg()==1 && getArg(0).type().isChar() && (
+  			     (m.name().equals("append") && ht.packageName().equals("java.lang") && ht.uniqueName().equals("StringBuffer"))
+  			  || (m.name().equals("append") && ht.packageName().equals("java.lang") && ht.uniqueName().equals("StringBuilder"))
+  			  || (m.name().equals("print") && ht.packageName().equals("java.io") && ht.uniqueName().equals("PrintStream"))
+  			  || (m.name().equals("println") && ht.packageName().equals("java.io") && ht.uniqueName().equals("PrintStream"))
+  			  ) ) {
   				out.print("_c2s(");  	
   				getArg(i).generateUsingResultJS(out);
   				out.print(")");  	

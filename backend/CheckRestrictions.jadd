@@ -73,13 +73,14 @@
 import com.greentube.javaconverter.LibraryList;
 
 aspect CheckRestrictions {
-  	  	
+  	  	  	
   	public void ASTNode.checkRestrictions(ArrayList<String> errorlist) {  	
   		for (int i=0; i<getNumChild(); i++) {
   			getChild(i).checkRestrictions(errorlist);
   		}
   	}
   	
+  	// --- generate utility query methods ---
   	public void ASTNode.reportRestriction(ArrayList<String> errorlist, String message) {
   		int s = getStart();
   		errorlist.add(getLine(s)+","+getColumn(s)+": "+message);
@@ -195,7 +196,7 @@ aspect CheckRestrictions {
   		return true;
 	}    
 	
-    	
+
   	// -- Threads 
 	public void SynchronizedStmt.checkRestrictions(ArrayList<String> errorlist) {
 		reportRestriction(errorlist, "Threading is not supported");
@@ -410,11 +411,19 @@ aspect CheckRestrictions {
   		}
   		
   		// test for availability in supported core libraries
-		if (!LibraryList.isAllowed(m.hostType().packageName() + "." + m.hostType().uniqueName(), 
-								   m.type().typeName() + " " +m.signature())) {
+  		MethodDecl orig = (m instanceof MethodDeclSubstituted) ? ((MethodDeclSubstituted)m).getOriginal() : m;
+  		StringBuffer sig = new StringBuffer(orig.type().erasure().typeName());
+  		sig.append(" ");
+  		sig.append(orig.name());
+  		sig.append("(");
+  		for (int i=0; i<orig.getNumParameter(); i++) {
+  			if (i!=0) sig.append(", ");
+  			sig.append(orig.getParameter(i).type().erasure().typeName());
+  		}
+		sig.append(")");  		
+		if (!LibraryList.isAllowed(orig.hostType().packageName() + "." + orig.hostType().uniqueName(), sig.toString())) {
 			reportRestriction(errorlist, "Unsupported core library method in "
-				+ m.hostType().packageName() + "." + m.hostType().uniqueName() + ": " 
-				+ m.type().typeName() + " " + m.signature());
+				+ orig.hostType().packageName() + "." + orig.hostType().uniqueName() + ": " + sig);
 		}
   		
 		super.checkRestrictions(errorlist);					  		
@@ -444,11 +453,10 @@ aspect CheckRestrictions {
   		}
 
   		// test for availability in supported core libraries
-		if (!LibraryList.isAllowed(m.hostType().packageName() + "." + m.hostType().uniqueName(), 
-								   m.signature())) {
+  		String sig = m.signature();  		
+		if (!LibraryList.isAllowed(m.hostType().packageName() + "." + m.hostType().uniqueName(), sig)) {
 			reportRestriction(errorlist, "Unsupported core library constructor in "
-				+ m.hostType().packageName() + "." + m.hostType().uniqueName() + ": " 
-				+ m.signature());
+				+ m.hostType().packageName() + "." + m.hostType().uniqueName() + ": " + sig);
 		}
   		
 		super.checkRestrictions(errorlist);					  		  		
