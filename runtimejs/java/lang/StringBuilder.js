@@ -23,13 +23,6 @@ null, // no statics
         return this;
     },
     
-    appendChar_1: function(c) {
-        var s = String.fromCharCode(c);
-        this._length += s.length;
-        this._parts.push(s);
-        return this;
-    },
-  
     length_0: function() {
         return this._length;
     },

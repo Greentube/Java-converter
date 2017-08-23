@@ -150,11 +150,6 @@ aspect GenerateJS {
 			out.print(".call(this");
   			if (m.getNumParameter()>0) out.print(",");
   			
-  		} else if (m.name().equals("append") && m.hostType().packageName().equals("java.lang")
-  			 && (m.hostType().uniqueName().equals("StringBuffer") || m.hostType().uniqueName().equals("StringBuilder"))
-  			 && getArg(0).type().isChar() )  {
-  			out.print(".appendChar_1(");  	
-  					 
   		} else {
   			out.print(".");
   			out.printJSIdentifier(m.name(),"_"+m.getNumParameter());
@@ -176,7 +171,17 @@ aspect GenerateJS {
   		for (int i=0; i<getNumArg(); i++) {
   			if (i>0) out.print(",");
   			if (pararraystart==i) out.print("[");
-  			getArg(i).generateUsingResultJS(out);
+  			
+  			// do necessary data conversion for the StringBuffer.append function 
+  			if (i==0 && m.name().equals("append") && m.hostType().packageName().equals("java.lang")
+  			 && (m.hostType().uniqueName().equals("StringBuffer") || m.hostType().uniqueName().equals("StringBuilder"))
+  			 && getArg(0).type().isChar() )  {
+  				out.print("_c2s(");  	
+  				getArg(i).generateUsingResultJS(out);
+  				out.print(")");  	
+  			} else {	   			
+  				getArg(i).generateUsingResultJS(out);
+  			}
   		}
   		if (pararraystart>=0) {
   			if (pararraystart>=getNumArg()) out.print(pararraystart>0 ? ",[" : "[");

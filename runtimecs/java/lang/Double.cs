@@ -25,7 +25,10 @@ namespace java.lang
 
 		public override int GetHashCode()
 		{
-			return (int) value;
+            long l = System.BitConverter.DoubleToInt64Bits( value );       
+            int a = (int) (l>>32);
+            int b = (int) l;
+			return  a ^ b;
 		}
 
 		public override System.String ToString() 

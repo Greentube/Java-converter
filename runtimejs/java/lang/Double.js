@@ -32,7 +32,9 @@ function() {
         return false;
     },    
     hashCode_0: function() {
-        return Math.round(d) & 0xffffffff;
+        var n = Math.round(this.d);
+        var f = this.d - n;        
+        return n ^ f;
     },
     toString_0: function() {
         var s = this.d.toString();

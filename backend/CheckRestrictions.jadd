@@ -56,7 +56,7 @@
  *      Objects not overriding hashCode will provide a default implementation may deliver
  *      an extremely weak hash (only depending on the object's class). Do not 
  *      use these as keys in any Hashtable/HashMap/HashSet. 
- *      The String objects will create a good hash, but a different one as is specified 
+ *      The String and Double objects will create a good hash, but a different one as is specified 
  *      in java. Do not rely on certain hash values for specific strings.
  * - Different default implementation of toString()
  *      Objects not overriding toString will provide a default implementation

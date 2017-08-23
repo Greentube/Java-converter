@@ -939,6 +939,7 @@ public class TestJava4 {
     	Double d = new Double(5);
     	Double d2 = new Double(7);
     	Double d3 = Double.valueOf(5.00);
+    	assertI(d.hashCode(), d3.hashCode());
     	
     	assertB(! d.equals(d2));
     	assertB(! d.equals("5.0"));
