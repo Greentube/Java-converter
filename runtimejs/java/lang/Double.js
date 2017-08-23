@@ -4,6 +4,10 @@ function() {
     this.d = 0;
 },
 { // static
+    isNaN_1: isNaN,    
+    isInfinite_1: function(d) {
+        return ! (isFinite(d) || isNaN(d))
+    },
     toString_1: function(d) {
         var s = d.toString();
         if (s.indexOf('.')<0) return s+".0";
@@ -30,6 +34,12 @@ function() {
             return true;
         }
         return false;
+    },    
+    isInfinite_0: function() {
+        return java_lang_Double.isInfinite_1(this.d);
+    },    
+    isNaN_0: function() {
+        return java_lang_Double.isNaN_1(this.d);
     },    
     hashCode_0: function() {
         var n = Math.round(this.d);

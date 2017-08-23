@@ -46,10 +46,10 @@ namespace java.lang {
 		{
 			return System.Math.Exp(a);
 		}   
-//		public static double expm1(double a) 
-//		{
-//			return System.Math.Exp(a)-1.0;
-//		}   
+		public static double expm1(double a) 
+		{
+			return System.Math.Exp(a)-1.0;
+		}   
 		public static double floor(double a) 
 		{
 			return System.Math.Floor(a);
@@ -57,11 +57,11 @@ namespace java.lang {
 //        public static int getExponent(double a) 
 //        {
 //        }
-//        public static double hypot(double x, double y)
-//        {
-//            return sqrt(x*x+y*y);
-//        }
-        public static double IEEERemainder(double f1, double f2)
+        public static double hypot(double x, double y)
+        {
+            return sqrt(x*x+y*y);
+        }
+        public static double IEEEremainder(double f1, double f2)
         {
             return System.Math.IEEERemainder(f1,f2);
         }
@@ -73,10 +73,10 @@ namespace java.lang {
 		{
 			return System.Math.Log10(a);
 		}
-//        public static double log1p(double x)
-//        {
-//            return System.Math.Log(x + 1.0);
-//        }
+        public static double log1p(double x)
+        {
+            return System.Math.Log(x + 1.0);
+        }
 		public static double max(double a, double b) 
 		{
 			return (a>b) ? a : b;
@@ -137,7 +137,7 @@ namespace java.lang {
 		}
 		public static double tanh(double a) 
 		{
-			return System.Math.Tan(a);
+			return System.Math.Tanh(a);
 		}
         public static double toDegrees(double angrad)
         {

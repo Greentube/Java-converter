@@ -16,7 +16,15 @@ namespace java.lang
 		{
 			return value;
 		}
-
+        
+        public bool isNaN() {
+            return isNaN(value);
+        }
+        
+        public bool isInfinite() {
+            return isInfinite(value);
+        }
+        
 		public override bool Equals(System.Object o) 
 		{
 			if (o==null || !(o is Double)) return false;
@@ -35,6 +43,14 @@ namespace java.lang
 		{
             return java.lang.SYSTEM.str(value);
 		}
+
+        public static bool isNaN(double d) {
+            return System.Double.IsNaN(d);
+        }
+        
+        public static bool isInfinite(double d) {
+            return System.Double.IsInfinity(d);
+        }
         
 		public static System.String toString(double d)
 		{

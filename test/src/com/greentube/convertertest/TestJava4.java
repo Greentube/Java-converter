@@ -954,6 +954,20 @@ public class TestJava4 {
     	assertO(Double.toString((byte)-36), "-36.0");   
     	assertO("x"+Double.toString(6.5)+"y", "x6.5y");
     	assertO("x"+Double.toString(2.0)+"y", "x2.0y");
+    	
+    	d = new Double(4.1);
+    	d = Double.valueOf(d.doubleValue() / 0.0);
+    	assertB(d.isInfinite());
+    	assertB(!d.isNaN());
+    	assertB(Double.isInfinite(d.doubleValue()));
+    	assertB(!Double.isNaN(d.doubleValue()));
+    	
+    	d = new Double(0.0);
+    	d = Double.valueOf(d.doubleValue() / 0.0);
+    	assertB(!d.isInfinite());
+    	assertB(d.isNaN());
+    	assertB(!Double.isInfinite(d.doubleValue()));
+    	assertB(Double.isNaN(d.doubleValue()));    	
     }
         
     public static void integertest()
@@ -993,25 +1007,47 @@ public class TestJava4 {
         assertApproximately(Math.atan(1), Math.PI/4.0);
         assertApproximately(Math.atan2(1.0,1.0), Math.PI/4.0);
         assertD(Math.ceil(0.5), 1.0);
-        assertD(Math.cos(0), 1);
-        assertD(Math.exp(0),1);
+        assertApproximately(Math.cos(4.3), -0.40079917207997545);
+        assertApproximately(Math.cosh(0.2), 1.020066755619076);
+        assertApproximately(Math.exp(0),1);
+        assertApproximately(Math.expm1(2),6.38905609893065);
+        assertApproximately(Math.expm1(0.2),0.22140275816016985);        
+        assertApproximately(Math.expm1(-3.1),-0.9549507976064422);        
         assertD(Math.floor(0.5), 0);
+        assertD(Math.IEEEremainder(4.25,2.0),0.25);
+        assertD(Math.IEEEremainder(-4.25,2.0),-0.25);
+        assertD(Math.hypot(3.0,4.0),5.0);
+        assertApproximately(Math.hypot(-4.5,-4),6.020797289396148);
         assertApproximately(Math.log(Math.E), 1);
+        assertD(Math.log10(100.0),2.0);
+        assertApproximately(Math.log1p(99.0),4.605170185988092);
+        assertB(Double.isNaN(Math.log1p(-2)));        
         assertD(Math.max(4.3,6.7), 6.7);        
         assertI(Math.max(4,6), 6);        
         assertD(Math.min(-124.0,5.0), -124);        
         assertI(Math.min(124,5), 5);        
         assertD(Math.pow(2,3), 8);
+        assertD(Math.pow(2,-3), 0.125);
         assertD(Math.rint(6.3), 6.0);
         assertD(Math.rint(-16.3), -16.0);
         assertD(Math.rint(-16.5), -16.0);
         assertD(Math.rint(16.5), 16.0);
         assertD(Math.rint(-17.5), -18.0);
         assertD(Math.rint(17.5), 18.0);
+        assertD(Math.signum(-113.1),-1);
+        assertD(Math.signum(5354.1),1);
         assertApproximately(Math.sin(Math.PI/2.0), 1);
+        assertApproximately(Math.sin(1.41), 0.9871001010138504);
+        assertApproximately(Math.sinh(-4.3), -36.843112570291794);
+        assertApproximately(Math.sinh(1.41), 1.9259060604588694);
         assertD(Math.sqrt(4),2);
+        assertD(Math.sqrt(9),3);
+        assertApproximately(Math.tan(Math.PI/6.0), 0.5773502691896257);
         assertApproximately(Math.tan(Math.PI/4.0), 1);
-        assertD(Math.log10(100),2);
+        assertApproximately(Math.tanh(Math.PI/4.0), 0.6557942026326724);
+        assertApproximately(Math.tanh(Math.PI/6.0), 0.4804727781564516);
+        assertApproximately(Math.toRadians(60), Math.PI/3);
+        assertApproximately(Math.toDegrees(Math.PI), 180);
     }
     
     public static void objecttest() {
@@ -2090,7 +2126,9 @@ public class TestJava4 {
     }
     public static void assertApproximately(double value, double expected)
     {
-    	if (value<expected-0.00000000001 || value>expected+0.00000000001) {
+    	if (Double.isInfinite(value) || Double.isNaN(value)) {
+    		System.err.println("Received "+value+" instead of "+expected);    		
+    	} else 	if (value<expected-0.00000000001 || value>expected+0.00000000001) {
     		System.err.println("Received "+value+" instead of "+expected);
     	}
     }
