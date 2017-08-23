@@ -79,7 +79,7 @@ public class TestJava5 extends TestJava4 {
     	assertO(l.toString(), "[7, 4, 1]");
     	
     	x: for (int i:new int[]{8,10,12,14,16}) {
-    		if (i==10) continue;
+    		if (i==10) continue x;
     		if (i==14) break;
     		l.add(Integer.valueOf(i));    		
     	}

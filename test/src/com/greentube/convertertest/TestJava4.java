@@ -231,10 +231,20 @@ public class TestJava4 {
         assertB(sa.equals(sa));
         assertB(!sa.equals(sa1));
         assertB(!sa.equals("something"));
+        
+        Object[] oba = new String[]{"one","two","three"};
+        assertO(oba[0],"one");
+        oba[0] = "fix";
+        assertO(oba[0],"fix");
+        Object[] tpa = passarray(new TestObject[2]);
+        tpa[0] = new TestObject();
     }
     
     private static int getArray()[] {
         return new int[]{9,8,7,6,5,4,3};
+    }
+    private static TestParent[] passarray(TestParent[] a) {
+    	return a;
     }
 
     public static void shadowingtest() { 
