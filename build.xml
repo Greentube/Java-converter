@@ -4,10 +4,11 @@
 	<taskdef name="jastadd" classname="org.jastadd.JastAddTask"
 		classpath="${extendjpath}/tools/jastadd2.jar"/>
 
-	<target name="build" depends="clean,generate" description="Build the converter">		
+	<target name="build" depends="clean,generate" description="Build the converter">	
+		
 	</target>
 	
-	<target name="clean" description="Clean builded files">
+	<target name="clean" description="Clean all builded files">
 		<delete dir="${basedir}/gen"/>
 	</target>
 		

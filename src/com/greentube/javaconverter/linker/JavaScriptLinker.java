@@ -28,9 +28,12 @@ public class JavaScriptLinker
 		linker.writeOrdered(os,o);
 		
 		// add startup code to launch the main method
-		String startupcode = "\n"
+		if (mainfilename.indexOf('/')<0) mainfilename="//"+mainfilename;
+		String startupcode = 
+			  "\n"
 			+ mainfilename.replace('/', '_')
-			+ ".main_1([]);\n";			
+			+ ".main_1([]);"
+			+ "\n";
 		os.write(startupcode.getBytes("utf-8"));	
 		
 		os.close();

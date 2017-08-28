@@ -150,9 +150,13 @@ public class CodePrinter {
 	
 	public void printJSName(String packagename, String uniquename) {
 		StringTokenizer t = new StringTokenizer(packagename,".");
-		for (int i=0; t.hasMoreElements(); i++) {
-			print(escapeIdentifier(t.nextToken(),false).replace('_', '$'));
-			print("_");
+		if (t.countTokens()==0) {
+			print("__");
+		} else {
+			for (int i=0; t.hasMoreElements(); i++) {
+				print(escapeIdentifier(t.nextToken(),false).replace('_', '$'));
+				print("_");
+			}
 		}
 		print(escapeIdentifier(uniquename,false).replace('_', '$'));
 	}
