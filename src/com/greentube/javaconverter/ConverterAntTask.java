@@ -33,18 +33,14 @@ public class ConverterAntTask extends Task {
         this.csdir = destdir;
     }
 
-//    private File externaldir=null;
-//    public void setExternal(File extdir) {
-//        this.externaldir = extdir;
-//    }
+    private String classpath=null;
+    public void setClasspath(String path) {
+        this.classpath = path;
+    }
     
     public void execute() throws BuildException {
 
     	Vector args = new Vector();
-        args.add("-bootclasspath");
-        args.add("C:/Users/rgraf/Documents/java-converter/rt.jar");
-        args.add("-classpath");
-        args.add("C:/Users/rgraf/Documents/java-converter/bin");
         if (jsdir!=null) { 
         	args.add("-js");
         	args.add(jsdir.toString());
@@ -53,13 +49,16 @@ public class ConverterAntTask extends Task {
         	args.add("-cs");
         	args.add(csdir.toString());
         }
+        if (classpath!=null) {
+        	args.add("-classpath");
+        	args.add(classpath);
+        }
         
         for (int i=0; i<filesets.size(); i++) {
             FileSet fs = (FileSet)filesets.get(i);
             DirectoryScanner ds = fs.getDirectoryScanner(getProject());
             File sourcedir = ds.getBasedir();
-            String[] relativepaths = ds.getIncludedFiles();
-                        
+            String[] relativepaths = ds.getIncludedFiles();                        
             for (int j=0; j<relativepaths.length; j++) {
             	args.add(new File(sourcedir, relativepaths[j]). getAbsolutePath());
             }

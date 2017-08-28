@@ -1,0 +1,55 @@
+Java-Converter 2.0
+------------------ 
+
+The java converter consists of a single .jar file that contains everything needed
+for converting java sources to all conversion targets and also includes the necessary core
+library files.
+It can be started to convert multiple java sources at once than may have dependencies to
+other classes which need not be converted. When external dependencies exist, the .class files
+need to be provided to allow resolving the types.
+
+The converter can be used as a command-line tool (starting the executable .jar) or with Ant, 
+using the provided AntTask classes (com.greentube.javaconverter.ConverterAntTask, 
+com.greentube.javaconverter.JavaScriptLinkerAntTask). 
+
+
+Workflow Javascript
+-------------------
+
+1 Convert all necessary .java files to .js.
+
+1.1 using command line 
+   java -jar converter.jar -classpath <dependencies> -js <outputdir> file ...
+   
+1.2 using ant
+   <taskdef name="convertJava" classname="com.greentube.javaconverter.ConverterAntTask"/> 
+    <convertJava js="${basedir}/build/javascript" classpath="${basedir}/../bin">
+        <fileset dir="${basedir}/src">
+            <include name="**/*.java"/>
+        </fileset>
+    </convertJava>
+
+2. Link all .js to a single .js program
+
+1.2 using command line
+   java -jar converter.jar link -searchpath <path> -main <mainprogram> -output <output file>
+
+   <taskdef name="linkJavaScript" classname="com.greentube.javaconverter.JavaScriptLinkerAntTask"/> 
+   <linkJavaScript 
+    		searchpath="${basedir}/build/javascript"
+    		main="Launcher"
+    		output="${basedir}/build/javascript/main.js" 
+    		>
+    </linkJavaScript>		
+       
+       
+Workflow C#
+-----------
+       
+Converting the file to C# is basically identical as for javascript, but use
+the -cs instead of -js to generate .js files. It is even possible to generate
+both type of files in one go.
+
+The generated .cs - files then need to be compiled into a .net assembly with
+some compiler of your choice.
+ 

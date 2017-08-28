@@ -2,14 +2,25 @@
 <project name="Test project to javascript target" default="build">
 
   <taskdef name="convertJava" classname="com.greentube.javaconverter.ConverterAntTask"/> 
-  <taskdef name="linkJavaScript" classname="com.greentube.javaconverter.linker.JavaScriptLinkerAntTask"/> 
+  <taskdef name="linkJavaScript" classname="com.greentube.javaconverter.JavaScriptLinkerAntTask"/> 
 			
   <target name="build">
   	
   	<delete dir="${basedir}/build/javascript"/>
     <mkdir dir="${basedir}/build/javascript" />
-    <convertJava js="${basedir}/build/javascript">  <!-- external="${basedir}/runtime"> -->
+  	
+    <convertJava js="${basedir}/build/javascript"> 
         <fileset dir="${basedir}/src">
+            <include name="**/*.java"/>
+        </fileset>
+    </convertJava>
+    <convertJava js="${basedir}/build/javascript" classpath="${basedir}/../bin">
+        <fileset dir="${basedir}/src2">
+            <include name="**/*.java"/>
+        </fileset>
+    </convertJava>
+    <convertJava js="${basedir}/build/javascript" classpath="${basedir}/../bin">
+        <fileset dir="${basedir}/src3">
             <include name="**/*.java"/>
         </fileset>
     </convertJava>
@@ -17,7 +28,7 @@
     <linkJavaScript 
     		output="${basedir}/build/javascript/main.js" 
     		searchpath="${basedir}/build/javascript,${basedir}/../runtimejs"
-    		mainfile="Launcher"
+    		main="Launcher"
     		>
     </linkJavaScript>		
 

@@ -1,86 +1,168 @@
 <project name="JavaConverter" default="generate">
 	<property name="extendjpath" location="${basedir}/../extendj"/>
-
+	
 	<taskdef name="jastadd" classname="org.jastadd.JastAddTask"
 		classpath="${extendjpath}/tools/jastadd2.jar"/>
 
-	<target name="build" depends="clean,generate" description="Build the converter">	
-		
+	
+	<target name="build" depends="clean,generate,buildjar" description="Completely build the converter">	
 	</target>
+	
+	<target name="generate" description="Generate the converter program from JastAdd files">
+		<!-- Generate AST node types and weave aspect modules. -->
+		<mkdir dir="${basedir}/gen"/>
+		<jastadd
+			package="org.extendj.ast"
+			rewrite="cnta"
+			safeLazy="true"
+			beaver="true"
+			visitCheck="false"
+			cacheCycle="false"
+			outdir="${basedir}/gen"
+			>
+			<fileset dir="${extendjpath}/java4/grammar">
+				<include name="*.ast"/>
+				<exclude name="CatchClause.ast"/>
+				<exclude name="Literals.ast"/>
+			</fileset>
+			<fileset dir="${extendjpath}/java4/frontend">
+				<include name="*.jrag"/>
+				<include name="*.jadd"/>
+				<exclude name="BytecodeAttributes.jrag"/>
+				<exclude name="BytecodeDescriptor.jrag"/>
+				<exclude name="BytecodeReader.jrag"/>
+				<exclude name="Constant.jadd"/>
+				<exclude name="Literals.jrag"/>
+				<exclude name="Variable.jadd"/>
+			</fileset>			
+			<fileset dir="${extendjpath}/java4/backend">
+				<include name="*.jrag"/>
+				<include name="*.jadd"/>
+			</fileset>					
+			<fileset dir="${extendjpath}/java5/grammar">
+				<include name="*.ast"/>
+			</fileset>
+			<fileset dir="${extendjpath}/java5/frontend">
+				<include name="*.jrag"/>
+				<include name="*.jadd"/>
+			</fileset>				
+			<fileset dir="${extendjpath}/java5/backend">
+				<include name="*.jrag"/>
+				<include name="*.jadd"/>
+			</fileset>												
+			<fileset dir="${extendjpath}/java6/frontend">
+				<include name="*.jrag"/>
+				<include name="*.jadd"/>
+			</fileset>
+			<fileset dir="${extendjpath}/java7/grammar">
+				<include name="*.ast"/>
+			</fileset>
+			<fileset dir="${extendjpath}/java7/frontend">
+				<include name="*.jrag"/>
+				<include name="*.jadd"/>
+			</fileset>				
+			<fileset dir="${extendjpath}/java7/backend">
+				<include name="*.jrag"/>
+				<include name="*.jadd"/>
+			</fileset>
+			
+			<fileset dir="${basedir}/backend">
+				<include name="*.jrag"/>
+				<include name="*.jadd"/>
+			</fileset>
+			
+		</jastadd>
+	</target>
+
+	
+	<target name="buildjar" description="Compile and package everything needed into an executable jar">
+		<delete dir="${basedir}/build"/>
+		<mkdir dir="${basedir}/build"/>
+		<mkdir dir="${basedir}/build/package"/>
+		
+		<!-- add runtime file for various conversion targets -->
+	    <copy todir="${basedir}/build/package/runtimecs" >
+	        <fileset dir="${basedir}/runtimecs"/>
+	    </copy>
+	    <copy todir="${basedir}/build/package/runtimejs" >
+	        <fileset dir="${basedir}/runtimejs"/>
+	    </copy>		
+		
+		<!-- extract necessary bootstrap classes (file format of java 1.7) for use with the converter -->
+		<unzip src="${basedir}/rt.jar" dest="${basedir}/build/package">
+			<patternset>
+				<include name="java/lang/AbstractStringBuilder.class" />
+			    <include name="java/lang/Boolean.class" />				
+			    <include name="java/lang/Byte.class" />
+			    <include name="java/lang/Character.class" />
+				<include name="java/lang/Double.class" />
+				<include name="java/lang/Enum.class" />
+				<include name="java/lang/Integer.class" />
+				<include name="java/lang/Iterable.class" />
+				<include name="java/lang/Math.class" />
+				<include name="java/lang/Number.class" />
+			    <include name="java/lang/Object.class" />
+				<include name="java/lang/Runnable.class" />
+				<include name="java/lang/StringBuffer.class" />
+				<include name="java/lang/StringBuilder.class" />
+			    <include name="java/lang/String.class" />
+				<include name="java/lang/System.class" />
+				<include name="java/lang/Throwable.class" />				
+			    <include name="java/util/AbstractCollection.class" />
+			    <include name="java/util/AbstractList.class" />
+			    <include name="java/util/AbstractMap.class" />
+			    <include name="java/util/AbstractSet.class" />
+			    <include name="java/util/ArrayList.class" />
+			    <include name="java/util/Collection.class" />
+			    <include name="java/util/Comparator.class" />
+			    <include name="java/util/Enumeration.class" />
+			    <include name="java/util/HashMap.class" />
+			    <include name="java/util/HashSet.class" />
+			    <include name="java/util/Hashtable.class" />
+			    <include name="java/util/Iterator.class" />
+			    <include name="java/util/LinkedList.class" />
+			    <include name="java/util/List.class" />
+			    <include name="java/util/Map.class" />
+			    <include name="java/util/Set.class" />
+			    <include name="java/util/Vector.class" />
+			    <include name="java/util/Dictionary.class" />
+			    <include name="java/io/PrintStream.class" />
+			    <include name="java/io/FilterOutputStream.class" />
+			    <include name="java/io/OutputStream.class" />
+			</patternset>
+		</unzip>
+		
+		<!-- compile the whole converter (including the generated sources) -->			
+		<javac compiler="javac1.7" destdir="${basedir}/build/package" includeAntRuntime="true">
+			<src path="${basedir}/src"/>	
+			<src path="${basedir}/gen"/>	
+			<src path="${extendjpath}/src/frontend"/>
+			<src path="${extendjpath}/src/frontend-main"/>
+			<src path="${extendjpath}/src/backend"/>
+			<src path="${extendjpath}/src/backend-main"/>
+			<src path="${extendjpath}/src/gen/org/extendj/parser"/>
+			<src path="${extendjpath}/src/gen/org/extendj/scanner"/>
+		</javac>	
+
+		<!-- add documentation files -->
+	    <copy todir="${basedir}/build/package/doc" >
+	        <fileset dir="${basedir}/doc"/>
+	    </copy>		
+		
+		<!-- package everything together -->
+	  	<jar destfile="${basedir}/build/converter.jar">
+	  		<fileset dir="${basedir}/build/package"/>
+	        <manifest>
+	             <attribute name="Main-Class" value="com.greentube.javaconverter.Converter"/>
+	             <attribute name="Implementation-Version" value="${timestamp}"/>
+	        </manifest>         
+	  	</jar>  		
+	</target>	
 	
 	<target name="clean" description="Clean all builded files">
 		<delete dir="${basedir}/gen"/>
+		<delete dir="${basedir}/build"/>
 	</target>
 		
-	<target name="generate" description="Generate the converter program from JastAdd files">
-			<!-- Generate AST node types and weave aspect modules. -->
-			<mkdir dir="${basedir}/gen"/>
-			<jastadd
-				package="org.extendj.ast"
-				rewrite="cnta"
-				safeLazy="true"
-				beaver="true"
-				visitCheck="false"
-				cacheCycle="false"
-				outdir="${basedir}/gen"
-				>
-				<fileset dir="${extendjpath}/java4/grammar">
-					<include name="*.ast"/>
-					<exclude name="CatchClause.ast"/>
-					<exclude name="Literals.ast"/>
-				</fileset>
-				<fileset dir="${extendjpath}/java4/frontend">
-					<include name="*.jrag"/>
-					<include name="*.jadd"/>
-					<exclude name="BytecodeAttributes.jrag"/>
-					<exclude name="BytecodeDescriptor.jrag"/>
-					<exclude name="BytecodeReader.jrag"/>
-					<exclude name="Constant.jadd"/>
-					<exclude name="Literals.jrag"/>
-					<exclude name="Variable.jadd"/>
-				</fileset>			
-				<fileset dir="${extendjpath}/java4/backend">
-					<include name="*.jrag"/>
-					<include name="*.jadd"/>
-				</fileset>					
-				<fileset dir="${extendjpath}/java5/grammar">
-					<include name="*.ast"/>
-				</fileset>
-				<fileset dir="${extendjpath}/java5/frontend">
-					<include name="*.jrag"/>
-					<include name="*.jadd"/>
-				</fileset>				
-				<fileset dir="${extendjpath}/java5/backend">
-					<include name="*.jrag"/>
-					<include name="*.jadd"/>
-				</fileset>												
-				<fileset dir="${extendjpath}/java6/frontend">
-					<include name="*.jrag"/>
-					<include name="*.jadd"/>
-				</fileset>
-				<fileset dir="${extendjpath}/java7/grammar">
-					<include name="*.ast"/>
-				</fileset>
-				<fileset dir="${extendjpath}/java7/frontend">
-					<include name="*.jrag"/>
-					<include name="*.jadd"/>
-				</fileset>				
-				<fileset dir="${extendjpath}/java7/backend">
-					<include name="*.jrag"/>
-					<include name="*.jadd"/>
-				</fileset>
-				
-				<fileset dir="${basedir}/backend">
-					<include name="*.jrag"/>
-					<include name="*.jadd"/>
-				</fileset>
-				
-			</jastadd>
-	</target>
-	
-	<target name="version">
-		<ant dir="${extendjpath}/" antfile="build.xml" target="update-version-string" inheritAll="false"/>  			
-	</target>
-
 
 </project>

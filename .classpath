@@ -3,6 +3,8 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="src" path="test/src"/>
+	<classpathentry kind="src" path="test/src2"/>
+	<classpathentry kind="src" path="test/src3"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/ant.jar"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/extendj"/>

@@ -116,8 +116,7 @@ public class CodePrinter {
 	
 	public static String escapePackagePath(String packagename) {
 		StringBuffer b = new StringBuffer();
-		StringTokenizer t = new StringTokenizer(packagename,".");
-		for (int i=0; t.hasMoreElements(); i++) {
+		for (StringTokenizer t = new StringTokenizer(packagename,"."); t.hasMoreElements(); ) {
 			b.append(escapeIdentifier(t.nextToken(), true));
 			b.append("/");
 		}
@@ -153,7 +152,7 @@ public class CodePrinter {
 		if (t.countTokens()==0) {
 			print("__");
 		} else {
-			for (int i=0; t.hasMoreElements(); i++) {
+			while (t.hasMoreElements()) {
 				print(escapeIdentifier(t.nextToken(),false).replace('_', '$'));
 				print("_");
 			}
@@ -251,7 +250,7 @@ public class CodePrinter {
 			print("java.lang.SYSTEM");
 		} else {
 			StringTokenizer t = new StringTokenizer(packagename,".");
-			for (int i=0; t.hasMoreElements(); i++) {
+			while (t.hasMoreElements()) {
 				printCSIdentifier(t.nextToken(),"");
 				print(".");
 			}

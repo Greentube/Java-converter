@@ -1,0 +1,100 @@
+Native code for javascript
+--------------------------
+
+The interfacing of the converted javascript code to the actual runtime 
+environment (a browser or node.js system) needs the implementation of 
+native classes.
+
+Nearly everything that is necessary to understand how to implement 
+native classes can be learned from looking at the provided core classes
+(in the subfolder runtimejs/ in converter.jar). 
+Nevertheless there is a short explanation of the most important concepts.
+
+Linker directives:
+
+   	//load// java/lang/Object
+   
+   	This is a directive to the javascript linker that this file depends on
+   	another file that has to be loaded before this one. That is normally
+   	used for the base class or interfaces.
+    
+   	//reference// java/util/Enumeration
+	
+	This directive tells the linker that the file needs to be loaded eventually
+	before the actual startup of the program, but probably at a later time
+	than the current file.
+	
+	//complete// java/io/PrintStream
+	
+	This is the most strict requirement directive and tells the linker that
+	the file and all its reference-dependencies (fully recursively) need to 
+	be loaded before this one. This is important if a class has some static
+	initialization to do that is actually done at loading time but may depend
+	on other classes to be completely loaded already.
+	
+	
+Class definitions are done by calling a global function (defined in java/lang/Object.js):
+
+var c = _defineClass(name, baseclass, interfaces,
+allocatorfunction,
+staticmembers,
+instancemethods )  
+
+This creates an object that is later used to reference the class itself, create new
+instances and for the static members.
+The provided allocator function is basically the same object that is also returned by the
+_defineClass function, but then filled up with all necessary stuff to make it a working 
+java class. An important consideration was to separate the object allocation 
+(creating the fields of the object with default zero-values - 0, false or null) and the
+actual java constructor which is called in a second step after allocation. This makes it
+possible to have exactly one javascript-constructor of each class and the object management
+becomes extremely predictable for any optimizing javascript engine. 
+Static members are directly stored in the class object (which is also the allocator function),
+both fields and methods alike. Do no longer use the .prototype field to store static stuff.
+
+
+
+Interface definitions are like so:
+
+var i = _defineInterface(name, baseinterfaces, staticmembers) 
+
+Interfaces are very light-weight in javascript. They mainly consist of static fields
+and some references to super-interfaces for the type-inclusion checks.
+ 
+ 
+There is no specific implementation class for java.lang.String, because 
+the existing javascript-strings are directly used, but enhanced with many 
+java-style methods. There is even a fake java_lang_String entity that is used
+by the converted code for string instantiation - but normally not used from
+native code.
+
+
+Identifier escaping
+ 
+To avoid any potential name clashes with converted java code, the following rules are
+applied to java identifiers:
+   A-Z,a-z,0-9 are used directly
+   _ is converted to __
+   anything else is escaped in hexadecimal unicode with _xxx_
+    
+   A direct consequence of this method is, that there can never be an odd number of 
+   underscores in a converted identifier. So if you want to have private fields or methods
+   that will not clash with any java identifier, you can simply prefix it with a single _
+   
+Java class names are even further escaped to preserve the usage of _ as a delimiter
+between package parts and class name: After initial escaping (what may result
+in having some _ in the names), all _ are then converted to $. Then the indiviudal
+parts of the fully qualified class name are connected together with _ 
+This results in things like  java_lang_Object  or the like.
+As example the following java class  com.X_friends.Jane_Gray  will be escaped 
+as    com_X$friends_Jane$Gray
+Normally you don't need to worry about this extreme escaping as long as you use sensible 
+class names and packages.
+
+
+Method overloading
+
+As always, all methods have a suffix that denote the number of parameters 
+  (  java_lang_Integer.valueOf_1(i)  for example). 
+This allows a basic form of overloading, and is still compatible with the identifier 
+escaping (the is not considered part of the identifier and will not be doubled).

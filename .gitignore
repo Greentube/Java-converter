@@ -1,5 +1,6 @@
 /bin/
 /gen/
+/build/
 /test/build/
 /test/csharpproject/bin
 /test/csharpproject/obj

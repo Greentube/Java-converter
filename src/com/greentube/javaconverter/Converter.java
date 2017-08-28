@@ -1,7 +1,11 @@
 package com.greentube.javaconverter;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Vector;
 
 import org.extendj.ast.CompilationUnit;
 import org.extendj.ast.Frontend;
@@ -15,14 +19,37 @@ public class Converter extends Frontend {
 	private int err;
 	
 	public Converter() {
-		super("Converter", "0.1.0");
+		super("Converter", "0.2.0");
 		destDirJS=null;
 		destDirCS=null;
 		err = 0;
 	}
 	  
-	public int run(String args[]) {
-		run(args, Program.defaultBytecodeReader(), Program.defaultJavaParser());
+	public int run(String args[]) {		
+		Vector<String> argv= new Vector<String>(Arrays.asList(args));
+        
+		URL res = getClass().getResource("/com/greentube/javaconverter/Converter.class");
+		if (res!=null) {
+			String p = res.toString();
+			if (p.startsWith("jar:")) {
+				int idx = p.indexOf("file:");
+				if (idx>=0) p=p.substring(idx+5);
+				idx = p.indexOf('!');
+				if (idx>=0) p=p.substring(0, idx);			
+				argv.add("-bootclasspath");                
+				argv.add(p);
+			} else {
+				p = res.getPath();
+				if (p.startsWith("file:")) p = p.substring(5);
+				int idx = p.lastIndexOf('/');
+				if (idx>0) p=p.substring(0, idx);
+				p = p+"/../../../../rt.jar";
+				argv.add("-bootclasspath");                
+				argv.add(p);
+			}
+		}
+		
+		err = run(argv.toArray(new String[0]), Program.defaultBytecodeReader(), Program.defaultJavaParser());
 		if (err>0) {
 			System.out.println("Total conversion errors: "+err);
 		}
@@ -88,13 +115,40 @@ public class Converter extends Frontend {
 	    return EXIT_SUCCESS;	
 	}
 
-	  
-	  
+	  	  
 	public static void main(String args[]) {
-	    int exitCode = new Converter().run(args);
-	    if (exitCode != 0) {
-	    	System.exit(exitCode);
-	    }
+		// add possibility to launch the linker instead of the the converter
+		if (args.length>0 && args[0].equals("link")) {			
+			String mainfile = null;
+			String searchpath = null;
+			String outputfile = null;
+			
+			for (int i=1; i<args.length-1; i++) {
+				if (args[i].equals("-main")) {
+					mainfile = args[i+1];
+					i++;
+				} else if (args[i].equals("-searchpath")) {
+					searchpath = args[i+1];
+					i++; 
+				} else if (args[i].equals("-output")) {
+					outputfile = args[i+1];
+					i++; 
+				}				
+			}			
+			
+			try {		
+				JavaScriptLinker.link(mainfile, searchpath, outputfile);
+			} catch (IOException e) {
+				System.err.println(e.getMessage());
+			}
+			
+		// converter operation
+		} else {
+			int exitCode = new Converter().run(args);
+			if (exitCode != 0) {
+				System.exit(exitCode);
+			}
+		}
 	}
 
 }
