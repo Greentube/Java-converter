@@ -120,7 +120,8 @@ namespace java.lang {
             if (System.Double.IsNaN(v)) return "NaN";    
             if (System.Double.IsInfinity(v)) return "Infinity";
             if (System.Double.IsNegativeInfinity(v)) return "-Infinity";
-            System.String s = v.ToString();
+             // use decimal point regardless of localisation settings
+            System.String s = v.ToString().Replace(',','.');
             // check if already have some decimal places
             if (s.IndexOf('.')>=0) return s;
             return s + ".0";
