@@ -13,7 +13,7 @@ aspect GenerateCS {
   				generateCS(out);
   			} else {
   				out.print("((");
-				t.generateReferenceCS(out);		
+				out.print(t.getNameCS());		
   				out.print(")(");
   				generateCS(out);
   				out.print("))");
@@ -55,7 +55,7 @@ aspect GenerateCS {
   		TypeDecl t = useresult ? last.neededDownCast() : null;
   		if (t!=null) {
 			out.print("((");
-			t.generateReferenceCS(out);
+			out.print(t.getNameCS());
 			out.print(")(");				  		
   		}
   		boolean skipfirst=false;
@@ -97,7 +97,7 @@ aspect GenerateCS {
   	public void ClassInstanceExpr.generateCS(CodePrinter out) {
 		int n = getNumArg();
   		out.print("new ");
-  		out.printCSName(type().packageName(), type().uniqueName());
+  		out.print(type().getNameCS());
 		out.print("(");  		
 		if (isRightChildOfDot()) {
 			prevExpr().generateUsingResultCS(out);
@@ -127,7 +127,7 @@ aspect GenerateCS {
   			// create array for the rest
   			if (m.getNumParameter()>1) out.print(",");
   			out.print("new ");
-  			m.getParameter(m.getNumParameter()-1).type().generateReferenceCS(out);
+  			out.print(m.getParameter(m.getNumParameter()-1).type().getNameCS());
   			out.print("{");
   			for (int i=m.getNumParameter()-1; i<getNumArg(); i++) {
   				if (i>m.getNumParameter()-1) out.print(",");
@@ -174,7 +174,7 @@ aspect GenerateCS {
 	  			// create array for the rest
 	  			if (m.getNumParameter()>1) out.print(",");
 	  			out.print("new ");
-	  			m.getParameter(m.getNumParameter()-1).type().generateReferenceCS(out);
+	  			out.print(m.getParameter(m.getNumParameter()-1).type().getNameCS());
 	  			out.print("{");
 	  			for (int i=m.getNumParameter()-1; i<getNumArg(); i++) {
 	  				if (i>m.getNumParameter()-1) out.print(",");
@@ -191,7 +191,7 @@ aspect GenerateCS {
   		MethodDecl m = decl();
   		if (m.isStatic()) {
   			TypeDecl ht = m.hostType();
-			out.printCSName(ht.packageName(),ht.uniqueName());			
+			out.print(ht.getNameCS());			
 			out.print(".");
   			out.printCSIdentifier(renameMethod(m.name(),true), "");  			
   		} else if (isRightChildOfDot()) {
@@ -233,7 +233,7 @@ aspect GenerateCS {
   			// create array for the rest
   			if (m.getNumParameter()>1) out.print(",");
   			out.print("new ");
-  			m.getParameter(m.getNumParameter()-1).type().generateReferenceCS(out);
+  			out.print(m.getParameter(m.getNumParameter()-1).type().getNameCS());
   			out.print("{");
   			for (int i=m.getNumParameter()-1; i<getNumArg(); i++) {
   				if (i>m.getNumParameter()-1) out.print(",");
@@ -269,7 +269,7 @@ aspect GenerateCS {
  	}
 	
   	public void TypeAccess.generateCS(CodePrinter out) {
-  		type().generateReferenceCS(out);
+  		out.print(type().getNameCS());
 	}
  	
   	public void ArrayTypeAccess.generateCS(CodePrinter out) {
@@ -297,7 +297,7 @@ aspect GenerateCS {
   	public void VarAccess.generateCS(CodePrinter out) {  	
   		Variable v = varDecl();
   		if (v.isClassVariable()) {
-			out.printCSName(v.hostType().packageName(),v.hostType().uniqueName());
+			out.print(v.hostType().getNameCS());
   			if (v.hostType().isInterfaceDecl()) {
   				out.print("_c"); 
   			}
@@ -344,7 +344,7 @@ aspect GenerateCS {
   	
   	public void ArrayInit.generateCS(CodePrinter out) {
   		out.print("new ");
-  		type().generateReferenceCS(out);
+  		out.print(type().getNameCS());
   		out.print("{");
   		for (int i=0; i<getNumInit(); i++) {
   			if (i>0) out.print(",");
@@ -364,7 +364,7 @@ aspect GenerateCS {
 			out.print(" = ");
 			if (!d.type().isInt() || !s.type().isDouble()) {
 				out.print("(");						
-				d.type().generateReferenceCS(out);
+				out.print(d.type().getNameCS());
   				out.print(")");
   			}
   			if (s.type().isDouble()) {
@@ -417,7 +417,7 @@ aspect GenerateCS {
 			out.print(" = ");
 			if (!d.type().isInt()) {
 				out.print("(");						
-				d.type().generateReferenceCS(out);
+				out.print(d.type().getNameCS());
   				out.print(")");
   			}
   			out.print("SYSTEM.div(");			
@@ -693,20 +693,27 @@ aspect GenerateCS {
   			getArrayInit().generateCS(out);
   		} else {
   			TypeDecl t = type();
+  			int d = t.dimension();
   			// one-dimensional array
-  			if (t.dimension()==1) {
+  			if (d==1) {
   				out.print("new ");
-  				t.elementType().generateReferenceCS(out);
+  				out.print(t.elementType().getNameCS());
   				out.print("[");
   				getTypeAccess().generateCS(out);
   				out.print("]");
   			// multi-dimensional array
   			} else {
-	  			out.print("(SYSTEM.dim<");
-  				t.elementType().generateReferenceCS(out);
-  				out.print(">(");
+  				if (d<=4) {
+  					out.print("SYSTEM.dim<");
+  					out.print(t.elementType().getNameCS());
+  					out.print(">");
+  				} else {
+					int id = out.memorizeDim(t.elementType().getNameCS(), d);				
+  				    out.print("_dim"+id);
+  				}  				
+				out.print("(");
   				getTypeAccess().generateCS(out);
-				out.print("))");
+				out.print(")");
 			}
   		}
   	}

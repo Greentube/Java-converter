@@ -41,7 +41,8 @@ aspect GenerateCS {
 	  
 		if (packageName().length()>0) {
 			out.print("namespace ");
-			out.printCSPackageName(packageName());
+			String n = getNameCS();
+			out.print(n.substring(0,n.lastIndexOf('.')));			
 			out.print(" {");
 			out.increaseIndent();
 			out.println();
@@ -49,18 +50,18 @@ aspect GenerateCS {
 		out.print("using java.lang;");  
 		out.println();
 		out.print("public class ");
-		out.printCSUniqueName(uniqueName());
+		out.printCSIdentifier(uniqueName());
 		out.print(": ");
 
     	if (hasSuperClass()) {
-    		out.printCSName(superclass().packageName(), superclass().uniqueName());
+    		out.print(superclass().getNameCS());
     	} else {
     		out.print("System.Object");
     	}
    		for (Iterator<TypeDecl> iter = interfacesIterator(); iter.hasNext(); ) {
    			out.print(", ");
    			TypeDecl td = iter.next();
-      		out.printCSName(td.packageName(),td.uniqueName());
+      		out.print(td.getNameCS());
    		}			
     	
     	out.println();
@@ -70,7 +71,7 @@ aspect GenerateCS {
 
 		if (needsEnclosing() && !superclass().needsEnclosing()) {
 			out.print("public ");
-			enclosingType().generateReferenceCS(out);
+			out.print(enclosingType().getNameCS());
 			out.print(" _o;");
 			out.println(); 
 		}
@@ -133,7 +134,7 @@ aspect GenerateCS {
 					if (fd.isStatic() && fd.getInit()!=null) {
 						if (!havestaticconstructor) {
 							out.print("static ");
-							out.printCSUniqueName(uniqueName());
+							out.printCSIdentifier(uniqueName());
 							out.print("() {");
 							out.println();
 							out.increaseIndent();
@@ -149,7 +150,7 @@ aspect GenerateCS {
 			} else if (bd instanceof StaticInitializer) {
 				if (!havestaticconstructor) {
 					out.print("static ");
-					out.printCSUniqueName(uniqueName());
+					out.printCSIdentifier(uniqueName());
 					out.print("() {");
 					out.println();
 					out.increaseIndent();
@@ -169,11 +170,11 @@ aspect GenerateCS {
 			int ordinal = 0;
 			for (EnumConstant ec:ed.enumConstants()) {
 				out.print("public static ");
-				out.printCSUniqueName(uniqueName());
+				out.printCSIdentifier(uniqueName());
 				out.print(" ");
 				out.printCSIdentifier(ec.getID(),"_f");		
 				out.print(" = new "); 								
-				out.printCSUniqueName(ec.getInit().type().uniqueName());
+				out.printCSIdentifier(ec.getInit().type().uniqueName());
 				out.print("(\""+ec.getID()+"\","+ordinal);
 				for (int i=0; i<ec.getNumArg(); i++) {
 					out.print(",");
@@ -184,12 +185,12 @@ aspect GenerateCS {
 				ordinal++;			
 			}	
 			out.print("public static ");
-			out.printCSUniqueName(uniqueName());
+			out.printCSIdentifier(uniqueName());
 			out.print("[] values() {");
 			out.println();
 			out.increaseIndent();
 			out.print("return new ");
-			out.printCSUniqueName(uniqueName());
+			out.printCSIdentifier(uniqueName());
 			out.print("[]{");
 			boolean hasfirst=false;
 			for (EnumConstant ec:ed.enumConstants()) {
@@ -203,6 +204,8 @@ aspect GenerateCS {
 			out.print("}");
 			out.println();
 		}
+	
+		out.printAndForgetDims();
 	
 		out.decreaseIndent(); 
 		out.print("}");
@@ -219,13 +222,16 @@ aspect GenerateCS {
 	public void InterfaceDecl.generateCS(CodePrinter out) {
 		if (packageName().length()>0) {
 			out.print("namespace ");
-			out.printCSPackageName(packageName());
+			String n = getNameCS();
+			out.print(n.substring(0,n.lastIndexOf('.')));						
 			out.print(" {");
 			out.increaseIndent();
 			out.println();
 		}
+		out.print("using java.lang;");  
+		out.println();		
 		out.print("public interface ");
-		out.printCSUniqueName(uniqueName());
+		out.printCSIdentifier(uniqueName());
 
 		if (hasSuperInterface()) {
 			out.print(": ");
@@ -233,7 +239,7 @@ aspect GenerateCS {
       		for (Iterator<TypeDecl> iter = interfacesIterator(); iter.hasNext(); n++) {
       			if (n>0) out.print(",");
       			TypeDecl td = iter.next();
-        		out.printCSName(td.packageName(), td.uniqueName());
+        		out.print(td.getNameCS());
       		}			
 		}
 		out.print(" {");
@@ -255,7 +261,7 @@ aspect GenerateCS {
 		
 		if (hasfields) {
 			out.print("public static class ");
-			out.printCSUniqueName(uniqueName());
+			out.printCSIdentifier(uniqueName());
 			out.print("_c { ");
 			out.println();
 			out.increaseIndent();
@@ -276,6 +282,9 @@ aspect GenerateCS {
 					}
 				}
 			}	
+			
+			out.printAndForgetDims();
+						
 			out.decreaseIndent();
 			out.print("}");	
 			out.println();						
@@ -306,12 +315,12 @@ aspect GenerateCS {
 		
   		int numpar = getNumParameter();  		
   		out.print("public ");  		
-  		out.printCSUniqueName(hostType().uniqueName());
+  		out.printCSIdentifier(hostType().uniqueName());
   		out.print("(");
   		// pass reference to the enclosing object 
   		boolean needouter = hostType().needsEnclosing();
   		if (needouter) {
-  			hostType().enclosingType().generateReferenceCS(out);
+  			out.print(hostType().enclosingType().getNameCS());
   			out.print(" _o");
   		}
   		for (int i=0; i<numpar; i++) {
@@ -451,34 +460,46 @@ aspect GenerateCS {
 //	}
 
 
-	public void TypeDecl.generateReferenceCS(CodePrinter out) {
+	public String TypeDecl.getNameCS() {
 		if (isPrimitiveType()) {
   			if (isInt()) {
-  				out.print("int");
+  				return("int");
   			} else if (isByte()) {
-  				out.print("sbyte");  		
+  				return("sbyte");  		
   			} else if (isChar()) {  		
-  				out.print("char");
+  				return("char");
   			} else if (isBoolean()) {
-  				out.print("bool");
+  				return("bool");
   			} else if (isDouble()) {
-  				out.print("double");
+  				return("double");
   			} else {
   				throw new RuntimeException("Type not supported:"+fullName());
   			}
   		} else if (isVoid()) {
-  			out.print("void");
+  			return("void");
   		} else if (isArrayDecl()) {
-  			elementType().generateReferenceCS(out);
+  			String s = elementType().getNameCS();
   			for (int i=dimension(); i>0; i--) {
-  				out.print("[]");
+  				s = s + "[]";
   			}
+  			return s;
   		} else {
   			TypeDecl erased = erasure();
-  			out.printCSName(erased.packageName(),erased.uniqueName());
+  			String s = erased.packageName()+"."+erased.uniqueName();
+  			if (s.equals("java.lang.String")) return "System.String";
+  			if (s.equals("java.lang.Object")) return "System.Object";
+  			if (s.equals("java.lang.System")) return "java.lang.SYSTEM";
+  			
+  			StringBuffer sb = new StringBuffer();
+			StringTokenizer t = new StringTokenizer(s,".");
+			for (int i=0; t.hasMoreElements(); i++) {
+				if (i>0) sb.append(".");
+				sb.append(CodePrinter.escapeIdentifierCS(t.nextToken()));
+			}
+			return sb.toString();
 		}
-	}  	
-	
+	}
+		
 	public int EnumDecl.determineOrdinal(String name) {
 		int ordinal = 0;
 		for (EnumConstant ec:enumConstants()) {

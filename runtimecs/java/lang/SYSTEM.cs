@@ -36,48 +36,6 @@ namespace java.lang {
             }
             return a;
         }
-        public static T[][][][][] dim<T>(int n0, int n1, int n2, int n3, int n4) {
-            T[][][][][] a = new T[n0][][][][];
-            for (int i0=0; n1>=0 && i0<n0; i0++) {
-                a[i0] = dim<T>(n1,n2,n3,n4);
-            }
-            return a;
-        }
-        public static T[][][][][][] dim<T>(int n0, int n1, int n2, int n3, int n4, int n5) {
-            T[][][][][][] a = new T[n0][][][][][];
-            for (int i0=0; n1>=0 && i0<n0; i0++) {
-                a[i0] = dim<T>(n1,n2,n3,n4,n5);
-            }
-            return a;
-        }
-        public static T[][][][][][][] dim<T>(int n0, int n1, int n2, int n3, int n4, int n5, int n6) {
-            T[][][][][][][] a = new T[n0][][][][][][];
-            for (int i0=0; n1>=0 && i0<n0; i0++) {
-                a[i0] = dim<T>(n1,n2,n3,n4,n5,n6);
-            }
-            return a;
-        }
-        public static T[][][][][][][][] dim<T>(int n0, int n1, int n2, int n3, int n4, int n5, int n6, int n7) {
-            T[][][][][][][][] a = new T[n0][][][][][][][];
-            for (int i0=0; n1>=0 && i0<n0; i0++) {
-                a[i0] = dim<T>(n1,n2,n3,n4,n5,n6,n7);
-            }
-            return a;
-        }
-        public static T[][][][][][][][][] dim<T>(int n0, int n1, int n2, int n3, int n4, int n5, int n6, int n7, int n8) {
-            T[][][][][][][][][] a = new T[n0][][][][][][][][];
-            for (int i0=0; n1>=0 && i0<n0; i0++) {
-                a[i0] = dim<T>(n1,n2,n3,n4,n5,n6,n7,n8);
-            }
-            return a;
-        }
-        public static T[][][][][][][][][][] dim<T>(int n0, int n1, int n2, int n3, int n4, int n5, int n6, int n7, int n8, int n9) {
-            T[][][][][][][][][][] a = new T[n0][][][][][][][][][];
-            for (int i0=0; n1>=0 && i0<n0; i0++) {
-                a[i0] = dim<T>(n1,n2,n3,n4,n5,n6,n7,n8,n9);
-            }
-            return a;
-        }    
         
         public static int div(int a, int b) {
             // handle a weird special case for java compatibility

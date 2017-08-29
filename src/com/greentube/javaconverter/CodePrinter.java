@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -24,6 +25,8 @@ public class CodePrinter {
 	
 	// for c# code
 	private HashSet<String> pendingLabels;	
+	private HashMap<String,Integer> deepestdim;
+	private HashMap<String,Integer> dimtypeid;
 	
 	public CodePrinter(File outputfolder, String filename) {
 		try {
@@ -44,6 +47,8 @@ public class CodePrinter {
 		complete = new HashSet();
 		
 		pendingLabels = new HashSet();
+		deepestdim = new HashMap();
+		dimtypeid = new HashMap();
 	}
 	
 	public CodePrinter(CodePrinter p, String filename) {
@@ -230,34 +235,22 @@ public class CodePrinter {
 		}
 		print(escaped);
 	}
-	
-	public void printCSUniqueName(String s) {		
-		printCSIdentifier(s,"");
-	}
-	public void printCSPackageName(String s) {
-		StringTokenizer t = new StringTokenizer(s,".");
-		for (int i=0; t.hasMoreElements(); i++) {
-			if (i>0) print(".");
-			printCSIdentifier(t.nextToken(),"");
-		}		
-	}
-	public void printCSName(String packagename, String uniquename) {
-		if (packagename.equals("java.lang") && uniquename.equals("Object")) {
-			print("System.Object");
-		} else if (packagename.equals("java.lang") && uniquename.equals("String")) {
-			print("System.String");
-		} else if (packagename.equals("java.lang") && uniquename.equals("System")) {
-			print("java.lang.SYSTEM");
-		} else {
-			StringTokenizer t = new StringTokenizer(packagename,".");
-			while (t.hasMoreElements()) {
-				printCSIdentifier(t.nextToken(),"");
-				print(".");
-			}
-			printCSIdentifier(uniquename, "");
+	public void printCSIdentifier(String id) {
+		String escaped = escapeIdentifier(id,false);
+		if (csharpreserved.contains(escaped)) {
+			print("@");
 		}
+		print(escaped);
 	}
-	
+
+	public static String escapeIdentifierCS(String id) {
+		String escaped = escapeIdentifier(id,false);
+		if (csharpreserved.contains(escaped)) {
+			return "@"+escaped;
+		}
+		return escaped;
+	}
+		
 	public void printJumpToLabel(String l) {
 		print("goto ");
 		print(l);
@@ -272,4 +265,132 @@ public class CodePrinter {
 		}
 	}
 	
+	public int memorizeDim(String elementtype, int depth) {
+		if (!deepestdim.containsKey(elementtype)) {
+			deepestdim.put(elementtype, Integer.valueOf(depth));
+			dimtypeid.put(elementtype, Integer.valueOf(deepestdim.size()));
+			return deepestdim.size();
+		}
+		deepestdim.put(elementtype, Integer.valueOf(Math.max(deepestdim.get(elementtype).intValue(), depth))); 
+		return dimtypeid.get(elementtype).intValue();
+	}
+	public void printAndForgetDims() {
+		for (String en:deepestdim.keySet()) {
+			int dd = deepestdim.get(en).intValue();
+			int id = dimtypeid.get(en).intValue();
+		
+			for (int d=5; d<=dd; d++) {
+				print("private static "+en);
+				for (int i=0; i<d; i++) print("[]");
+				print(" _dim"+id+"(");
+				for (int i=0; i<d; i++) {
+					if (i>0) print(", ");
+					print("int n"+i);
+				}
+				print(") {");
+				println();
+				increaseIndent();
+				print(en);
+				for (int i=0; i<d; i++) print("[]");
+				print(" a = new "+en+"[n0]");
+				for (int i=1; i<d; i++) print("[]");
+				print(";");
+				println();
+				print("for (int i0=0; n1>=0 && i0<n0; i0++) {");
+				println();
+				increaseIndent();
+				print("a[i0] = ");
+				if (d<=5) {
+					print("SYSTEM.dim<"+en+">");			
+				} else {
+					print("_dim"+id);
+				}
+				print("(");
+				for (int i=1; i<d; i++) {
+					if (i>1) print(", ");
+					print("n"+i);
+				}
+				print(")");
+				print(";");
+				println();
+				decreaseIndent();
+				print("}");
+				println();
+				print("return a;");
+				println();
+				
+				decreaseIndent();
+				print("}");
+				println();
+			}
+		}		
+		deepestdim.clear();
+		dimtypeid.clear();
+	}
+/*
+    public static T[][] dim<T>(int n0, int n1) {
+        T[][] a = new T[n0][];
+        for (int i0=0; n1>=0 && i0<n0; i0++) {
+            a[i0] = new T[n1];
+        }
+        return a;
+    }
+    public static T[][][] dim<T>(int n0, int n1, int n2) {
+        T[][][] a = new T[n0][][];
+        for (int i0=0; n1>=0 && i0<n0; i0++) {
+            a[i0] = dim<T>(n1,n2);
+        }
+        return a;
+    }
+    public static T[][][][] dim<T>(int n0, int n1, int n2, int n3) {
+        T[][][][] a = new T[n0][][][];
+        for (int i0=0; n1>=0 && i0<n0; i0++) {
+            a[i0] = dim<T>(n1,n2,n3);
+        }
+        return a;
+    }
+    public static T[][][][][] dim<T>(int n0, int n1, int n2, int n3, int n4) {
+        T[][][][][] a = new T[n0][][][][];
+        for (int i0=0; n1>=0 && i0<n0; i0++) {
+            a[i0] = dim<T>(n1,n2,n3,n4);
+        }
+        return a;
+    }
+    public static T[][][][][][] dim<T>(int n0, int n1, int n2, int n3, int n4, int n5) {
+        T[][][][][][] a = new T[n0][][][][][];
+        for (int i0=0; n1>=0 && i0<n0; i0++) {
+            a[i0] = dim<T>(n1,n2,n3,n4,n5);
+        }
+        return a;
+    }
+    public static T[][][][][][][] dim<T>(int n0, int n1, int n2, int n3, int n4, int n5, int n6) {
+        T[][][][][][][] a = new T[n0][][][][][][];
+        for (int i0=0; n1>=0 && i0<n0; i0++) {
+            a[i0] = dim<T>(n1,n2,n3,n4,n5,n6);
+        }
+        return a;
+    }
+    public static T[][][][][][][][] dim<T>(int n0, int n1, int n2, int n3, int n4, int n5, int n6, int n7) {
+        T[][][][][][][][] a = new T[n0][][][][][][][];
+        for (int i0=0; n1>=0 && i0<n0; i0++) {
+            a[i0] = dim<T>(n1,n2,n3,n4,n5,n6,n7);
+        }
+        return a;
+    }
+    public static T[][][][][][][][][] dim<T>(int n0, int n1, int n2, int n3, int n4, int n5, int n6, int n7, int n8) {
+        T[][][][][][][][][] a = new T[n0][][][][][][][][];
+        for (int i0=0; n1>=0 && i0<n0; i0++) {
+            a[i0] = dim<T>(n1,n2,n3,n4,n5,n6,n7,n8);
+        }
+        return a;
+    }
+    public static T[][][][][][][][][][] dim<T>(int n0, int n1, int n2, int n3, int n4, int n5, int n6, int n7, int n8, int n9) {
+        T[][][][][][][][][][] a = new T[n0][][][][][][][][][];
+        for (int i0=0; n1>=0 && i0<n0; i0++) {
+            a[i0] = dim<T>(n1,n2,n3,n4,n5,n6,n7,n8,n9);
+        }
+        return a;
+    }    
+	
+*/	
 }

@@ -104,6 +104,13 @@ public class TestJava4 {
         assertI(TestInterface.constant1, 6);
         assertO(TestInterface.constant2, "Hi");
         assertO(TestInterface.constant3, new Integer(44));
+        assertB(TestInterface.ultradeepfield
+        		[0][0][0][0][0][0][0][0][0][0] [0][0][0][0][0][0][0][0][0][0]
+          		[0][0][0][0][0][0][0][0][0][0] [0][0][0][0][0][0][0][0][0][0]
+           		[0][0][0][0][0][0][0][0][0][0] [0][0][0][0][0][0][0][0][0][0]
+           		[0][0][0][0][0][0][0][0][0][0] [0][0][0][0][0][0][0][0][0][0]
+           		[0][0][0][0][0][0][0][0][0][0] [0][0][0][0][0][0][1][1][1][1]        				
+        	,false);
     }
     
     public static void constructortest()
