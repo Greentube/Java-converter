@@ -272,7 +272,6 @@ public class LibraryList
         { "java.util.Hashtable",
             "<init>()",
             "<init>(java.util.Map)",
-
             "void clear()",        
             "boolean containsKey(java.lang.Object)", 
             "boolean containsValue(java.lang.Object)",                    
@@ -388,8 +387,6 @@ public class LibraryList
             "boolean removeAll(java.lang.Collection)",
             "boolean retainAll(java.lang.Collection)",
 
-            "void trimToSize()",						
-
             "<init>()",
             "<init>(java.util.Collection)",
             "void addElement(java.lang.Object)",
@@ -407,6 +404,7 @@ public class LibraryList
             "void removeElementAt(int)",
             "void setElementAt(java.lang.Object, int)",
             "void setSize(int)",
+            "void trimToSize()",                                    
         }
     };
 

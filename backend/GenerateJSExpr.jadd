@@ -31,169 +31,136 @@ aspect GenerateJS {
  	}
 //  	public void ClassAccess.generateJS(CodePrinter out) {
 // 	}
-  	public void ClassInstanceExpr.generateJS(CodePrinter out) {
-  		out.print("(new ");
-  		out.printAndMemorizeReference(type().packageName(), type().uniqueName());
-		out.print("(");  		
-		if (isRightChildOfDot()) {
-			prevExpr().generateJS(out);
-  		} else if (type().isInnerClass()) {
-  			out.print("this");
-  		}  		
+    public void ClassInstanceExpr.generateJS(CodePrinter out) 
+    {   if (transformed()!=this)
+        {   transformed().generateJS(out);
+            return;
+        }
 
-  		ConstructorDecl m = decl();
-  		out.print("))._"+m.getNumParameter()+"(");
-  		
-  		// check if must create a temporary array to package the var args   	
-		if (!m.isVariableArity() 
-		|| (getNumArg()==m.getNumParameter() && getArg(getNumArg()-1).type()==m.getParameter(getNumArg()-1).type()) ) 
-		// can leave parameters as they are
-		{
-	  		for (int i=0; i<getNumArg(); i++) {
-  				if (i>0) out.print(",");
-  				getArg(i).generateUsingResultJS(out);
-  			}
-  		// need to package last parameters (may be zero) into array		
-  		} else {
-  			// non-varargs parameters
-	  		for (int i=0; i<m.getNumParameter()-1; i++) {
-  				if (i>0) out.print(",");
-  				getArg(i).generateUsingResultJS(out);
-  			}  		
-  			// create array for the rest
-  			if (m.getNumParameter()>1) out.print(",");
-  			out.print("[");
-  			for (int i=m.getNumParameter()-1; i<getNumArg(); i++) {
-  				if (i>m.getNumParameter()-1) out.print(",");
-  				getArg(i).generateUsingResultJS(out);
-  			}
-  			out.print("]");  			
-  		}
-  		
-  		out.print(")");
-  		
-  		// check if this is inside a static initializer - must force early loading of created class
-  		if (enclosingBodyDecl().isField()) {
-  			out.memorizeComplete(type().packageName(),type().uniqueName());
-  		}
- 	}
-  	public void ConstructorAccess.generateJS(CodePrinter out) {
-  		TypeDecl ht = decl().hostType();
-			out.printAndMemorizeReference(ht.packageName(), ht.uniqueName());
+        boolean foundpar=false;
+        out.print("(new ");
+        out.printAndMemorizeReference(type().packageName(), type().uniqueName());
+        out.print("(");
+        if (isRightChildOfDot()) 
+        {   prevExpr().generateJS(out);
+            foundpar=true;
+        }
+        else if (type().needsEnclosing()) 
+        {   out.print("this");
+            foundpar=true;
+        }
+        for (Variable v:type().enclosingVariables()) {
+            if (foundpar) out.print(",");
+            out.printCSIdentifier(v.name());
+            foundpar=true;
+        }        
+        out.print("))");
 
-	  		ConstructorDecl m = decl();
-			out.print(".prototype._" + m.getNumParameter() + ".call(this");
-	  		
-	  		// check if must create a temporary array to package the var args   	
-			if (!m.isVariableArity() 
-			|| (getNumArg()==m.getNumParameter() && getArg(getNumArg()-1).type()==m.getParameter(getNumArg()-1).type()) ) 
-			// can leave parameters as they are
-			{
-		  		for (int i=0; i<getNumArg(); i++) {
-	  				out.print(",");
-	  				getArg(i).generateUsingResultJS(out);
-	  			}
-	  		// need to package last parameters (may be zero) into array		
-	  		} else {
-	  			// non-varargs parameters
-		  		for (int i=0; i<m.getNumParameter()-1; i++) {
-	  				out.print(",");
-	  				getArg(i).generateUsingResultJS(out);
-	  			}  		
-	  			// create array for the rest
-	  			if (m.getNumParameter()>1) out.print(",");
-	  			out.print("[");
-	  			for (int i=m.getNumParameter()-1; i<getNumArg(); i++) {
-	  				if (i>m.getNumParameter()-1) out.print(",");
-	  				getArg(i).generateUsingResultJS(out);
-	  			}
-	  			out.print("]");  			
-	  		}
-	
-			out.print(")");
- 	}
- 	
+        ConstructorDecl m = decl();
+        out.print("._"+m.getNumParameter()+"(");        
+        for (int i=0; i<getNumArg(); i++) {
+            if (i>0) out.print(",");
+            getArg(i).generateUsingResultJS(out);
+        }
+        out.print(")");
+
+        // check if this is inside a static initializer - must force early loading of created class
+        if (enclosingBodyDecl().isField()) {
+            out.memorizeComplete(type().packageName(),type().uniqueName());
+        }
+    }
+    public void ConstructorAccess.generateJS(CodePrinter out) 
+    {   if (transformed()!=this)
+        {   transformed().generateJS(out);
+            return;
+        }
+
+        TypeDecl ht = decl().hostType();
+        out.printAndMemorizeReference(ht.packageName(), ht.uniqueName());
+
+        ConstructorDecl m = decl();
+        out.print(".prototype._" + m.getNumParameter() + ".call(this");
+        for (int i=0; i<getNumArg(); i++) 
+        {   out.print(",");
+            getArg(i).generateUsingResultJS(out);
+        }
+        out.print(")");
+    }
+
 //  	public void DiamondAccess.generateJS(CodePrinter out) {
 // 	}
-  	public void MethodAccess.generateJS(CodePrinter out) {
-  		MethodDecl m = decl();
-  		
-  		if (m.isStatic()) {
-			TypeDecl t = m.hostType();
-  			out.printAndMemorizeReference(t.packageName(),t.uniqueName());
-  			out.print(".");
-  			out.printJSIdentifier(m.name(),"_"+m.getNumParameter());
-  			out.print("(");
+    public void MethodAccess.generateJS(CodePrinter out) 
+    {   if (transformed()!=this)
+        {   transformed().generateJS(out);
+            return;
+        }
 
-	  		// check if this is inside a static initializer - must force early loading of accessed class
-	  		BodyDecl bd = enclosingBodyDecl();
-  			if (bd.isField() || (bd instanceof StaticInitializer)) {
-  				out.memorizeComplete(t.packageName(),t.uniqueName());
-  			}
-  			
-  		} else if (!isRightChildOfDot()) {
-			out.print("this.");
-			TypeDecl t = hostType();
-			if (t!=m.hostType() && t.isInnerTypeOf(m.hostType())) {
-				while (t!=m.hostType()) {			
-					out.print("_o.");
-					t = t.enclosingType();
-				}
-			}  		
-  			out.printJSIdentifier(m.name(),"_"+m.getNumParameter());
-  			out.print("(");
-  			
-  		} else if (prevExpr().isSuperAccess()) {  		
-  			out.printAndMemorizeReference(m.hostType().packageName(),m.hostType().uniqueName());
-  			out.print(".prototype.");  		
-			out.printJSIdentifier(m.name(),"_"+m.getNumParameter());
-			out.print(".call(this");
-  			if (m.getNumParameter()>0) out.print(",");
-  			
-  		} else {
-  			out.print(".");
-  			out.printJSIdentifier(m.name(),"_"+m.getNumParameter());
-  			out.print("(");
-  		}
+        MethodDecl m = decl();
+        if (m.isStatic()) 
+        {   TypeDecl t = m.hostType();
+            out.printAndMemorizeReference(t.packageName(),t.uniqueName());
+            out.print(".");
+            out.printJSIdentifier(m.name(),"_"+m.getNumParameter());
+            out.print("(");
 
-		// check if this is a method with variable number of parameters - must 
-		// package last arguments into array
-		int pararraystart=-1;
-		if (m.isVariableArity()) {		
-			if (getNumArg()==m.getNumParameter() 
-			 && getArg(getNumArg()-1).type()==m.getParameter(getNumArg()-1).type() ) {
-			 	// the call uses an explicit array already - no implicit array creation needed
-			} else {
-				pararraystart = m.getNumParameter()-1;
-			}
-  		}
-  		// generate parameters and inject one '[' in the correct position
-  		for (int i=0; i<getNumArg(); i++) {
-  			if (i>0) out.print(",");
-  			if (pararraystart==i) out.print("[");
-  			
-  			// do necessary data conversion for some built-in methods 
-  			// to clarify the use of a char instead of a int 
-  			TypeDecl ht = m.hostType();
-  			if (i==0 && getNumArg()==1 && getArg(0).type().isChar() && (
-  			     (m.name().equals("append") && ht.packageName().equals("java.lang") && ht.uniqueName().equals("StringBuffer"))
-  			  || (m.name().equals("append") && ht.packageName().equals("java.lang") && ht.uniqueName().equals("StringBuilder"))
-  			  || (m.name().equals("print") && ht.packageName().equals("java.io") && ht.uniqueName().equals("PrintStream"))
-  			  || (m.name().equals("println") && ht.packageName().equals("java.io") && ht.uniqueName().equals("PrintStream"))
-  			  ) ) {
-  				out.print("_c2s(");  	
-  				getArg(i).generateUsingResultJS(out);
-  				out.print(")");  	
-  			} else {	   			
-  				getArg(i).generateUsingResultJS(out);
-  			}
-  		}
-  		if (pararraystart>=0) {
-  			if (pararraystart>=getNumArg()) out.print(pararraystart>0 ? ",[" : "[");
-  			out.print("]");
-  		}
-  		out.print(")");  	
- 	}
+            // check if this is inside a static initializer - 
+            //must force early loading of accessed class
+            BodyDecl bd = enclosingBodyDecl();
+            if (bd.isField() || (bd instanceof StaticInitializer)) 
+            {   out.memorizeComplete(t.packageName(),t.uniqueName());
+            }
+        } 
+        else if (!isRightChildOfDot()) 
+        {   out.print("this.");
+            TypeDecl t = hostType();
+            if (t!=m.hostType() && t.isInnerTypeOf(m.hostType())) 
+            {   while (t!=m.hostType()) 
+                {   out.print("_o.");
+                    t = t.enclosingType();
+                }
+            }
+            out.printJSIdentifier(m.name(),"_"+m.getNumParameter());
+            out.print("(");
+        }
+        else if (prevExpr().isSuperAccess()) 
+        {   out.printAndMemorizeReference(m.hostType().packageName(),m.hostType().uniqueName());
+            out.print(".prototype.");  		
+            out.printJSIdentifier(m.name(),"_"+m.getNumParameter());
+            out.print(".call(this");
+            if (m.getNumParameter()>0) out.print(",");
+        }
+        else
+        {   out.print(".");
+            out.printJSIdentifier(m.name(),"_"+m.getNumParameter());
+            out.print("(");
+        }
+
+        // generate parameters 
+        for (int i=0; i<getNumArg(); i++) {
+            if (i>0) out.print(",");
+            // do necessary data conversion for some built-in methods 
+            // to clarify the use of a char instead of a int 
+            TypeDecl ht = m.hostType();
+            String tn = ht.packageName() + "." + ht.uniqueName();
+            if 
+            (   i==0 && getNumArg()==1 && getArg(0).type().isChar() && 
+                (   (m.name().equals("append") && tn.equals("java.lang.StringBuffer"))
+                    || (m.name().equals("append") && tn.equals("java.lang.StringBuilder"))
+                    || (m.name().equals("print") && tn.equals("java.io.PrintStream"))
+                    || (m.name().equals("println") && tn.equals("java.io.PrintStream"))
+                ) 
+            ) 
+            {   out.print("_c2s(");  	
+                getArg(i).generateUsingResultJS(out);
+                out.print(")");  	
+            } 
+            else 
+            {  getArg(i).generateUsingResultJS(out);
+            }
+        }
+        out.print(")");
+    }
+
 //  	public void PackageAccess.generateJS(CodePrinter out) {
 // 	}
 //  	public void ParseName.generateJS(CodePrinter out) {
@@ -236,19 +203,22 @@ aspect GenerateJS {
 				out.print("this.");
 				TypeDecl t = hostType();
 				if (t!=v.hostType() && t.isInnerTypeOf(v.hostType())) {
-					while (t!=v.hostType()) {			
+					while (t!=v.hostType()) {
 						out.print("_o.");
 						t = t.enclosingType();
 					}
 				}  		
   			}  		
 			out.printJSIdentifier(getID(),"");
-  		} else if (v.isLocalVariable() || v.isParameter()) {  
-  			if (v.hostType() == hostType()) {		
-				out.printJSIdentifier(getID(), "");
-			} else {  // this must be an access to local variable of calling method 
-				throw new RuntimeException("Can not access local variables of outer class method");
-			}
+        } else if (v.isLocalVariable() || v.isParameter()) 
+        {   if (v.hostType() == hostType()) 
+            {   out.printJSIdentifier(getID(), "");
+            }
+            else 
+            {   // this must be an access to local variable of calling method
+                out.print("this.");
+                out.printJSIdentifier(getID(), "_o");
+            }
 		} else if (getID().equals("length")) {
 			out.print(".length");
   		} else {

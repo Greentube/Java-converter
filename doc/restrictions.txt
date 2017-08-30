@@ -47,12 +47,7 @@
       The possible side-effects of the first expression makes it impossible to just always
       eliminate it for conversion. Therefore this strange construction is not supported.
       (but you can use 'super' to access static members of superclasses) 
- - Anonymous classes can not access local variables
-      One of the more obscure features of java is the ability to access the local variables
-      of the method defining the anonymous class - given that they are defined 'final'.
-      Because the implementation in the conversion targets would be extremely complex, 
-      it is not supported. If needed, use some other means to pass data into an anonymous class.        
- - Different default implementation of hashCode()
+  - Different default implementation of hashCode()
       Objects not overriding hashCode will provide a default implementation may deliver
       an extremely weak hash (only depending on the object's class). Do not 
       use these as keys in any Hashtable/HashMap/HashSet. 

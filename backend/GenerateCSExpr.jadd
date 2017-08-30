@@ -94,155 +94,122 @@ aspect GenerateCS {
  	}
 //  	public void ClassAccess.generateCS(CodePrinter out) {
 // 	}
-  	public void ClassInstanceExpr.generateCS(CodePrinter out) {
-		int n = getNumArg();
-  		out.print("new ");
-  		out.print(type().getNameCS());
-		out.print("(");  		
-		if (isRightChildOfDot()) {
-			prevExpr().generateUsingResultCS(out);
-			if (n>0) out.print(",");
-		} else if (type().needsEnclosing()) {
-			out.print("this");
-			if (n>0) out.print(",");
-		}
-		
-  		ConstructorDecl m = decl();
-  		// check if must create a temporary array to package the var args   	
-		if (!m.isVariableArity() 
-		|| (getNumArg()==m.getNumParameter() && getArg(getNumArg()-1).type()==m.getParameter(getNumArg()-1).type()) ) 
-		// can leave parameters as they are
-		{
-	  		for (int i=0; i<getNumArg(); i++) {
-  				if (i>0) out.print(",");
-  				getArg(i).generateUsingResultCS(out);
-  			}
-  		// need to package last parameters (may be zero) into array		
-  		} else {
-  			// non-varargs parameters
-	  		for (int i=0; i<m.getNumParameter()-1; i++) {
-  				if (i>0) out.print(",");
-  				getArg(i).generateUsingResultCS(out);
-  			}  		
-  			// create array for the rest
-  			if (m.getNumParameter()>1) out.print(",");
-  			out.print("new ");
-  			out.print(m.getParameter(m.getNumParameter()-1).type().getNameCS());
-  			out.print("{");
-  			for (int i=m.getNumParameter()-1; i<getNumArg(); i++) {
-  				if (i>m.getNumParameter()-1) out.print(",");
-  				getArg(i).generateUsingResultCS(out);
-  			}
-  			out.print("}");  			
-  		}
-  		out.print(")");  	
- 	}
- 	
-  	public void ConstructorAccess.generateCS(CodePrinter out) {
-  			boolean passouter = false;
-  			if (this instanceof SuperConstructorAccess) {
-  				out.print("base");
-  				passouter = hostType().needsEnclosing() 
-  				        && ((ClassDecl)hostType()).superclass().needsEnclosing();
-  			} else {
-  				out.print("this");
-  				passouter = hostType().needsEnclosing();
-  			}
-  	
-			out.print("(");
-			if (passouter) {
-				out.print("_o");
-			}
-			
-	  		ConstructorDecl m = decl();
-	  		// check if must create a temporary array to package the var args   	
-			if (!m.isVariableArity() 
-			|| (getNumArg()==m.getNumParameter() && getArg(getNumArg()-1).type()==m.getParameter(getNumArg()-1).type()) ) 
-			// can leave parameters as they are
-			{
-		  		for (int i=0; i<getNumArg(); i++) {
-	  				if (i>0 || passouter) out.print(",");
-	  				getArg(i).generateUsingResultCS(out);
-	  			}
-	  		// need to package last parameters (may be zero) into array		
-	  		} else {
-	  			// non-varargs parameters
-		  		for (int i=0; i<m.getNumParameter()-1; i++) {
-	  				if (i>0 || passouter) out.print(",");
-	  				getArg(i).generateUsingResultCS(out);
-	  			}  		
-	  			// create array for the rest
-	  			if (m.getNumParameter()>1) out.print(",");
-	  			out.print("new ");
-	  			out.print(m.getParameter(m.getNumParameter()-1).type().getNameCS());
-	  			out.print("{");
-	  			for (int i=m.getNumParameter()-1; i<getNumArg(); i++) {
-	  				if (i>m.getNumParameter()-1) out.print(",");
-	  				getArg(i).generateUsingResultCS(out);
-	  			}
-	  			out.print("}");  			
-	  		}
-	  		out.print(")");  	
- 	}
- 	
+    public void ClassInstanceExpr.generateCS(CodePrinter out) {
+        if (transformed()!=this)
+        {   transformed().generateCS(out);
+            return;
+        }
+        
+        boolean foundpar=false;
+         
+        int n = getNumArg();
+        out.print("new ");
+        out.print(type().getNameCS());
+        out.print("(");
+        if (isRightChildOfDot()) {
+            prevExpr().generateUsingResultCS(out);
+            foundpar=true;
+        } else if (type().needsEnclosing()) {
+            out.print("this");
+            foundpar=true;
+        }
+        
+        for (Variable v:type().enclosingVariables()) {
+            if (foundpar) out.print(",");
+            out.printCSIdentifier(v.name());
+            foundpar=true;
+        }
+        
+        for (int i=0; i<n; i++) {
+            if (i>0 || foundpar) out.print(",");
+            getArg(i).generateUsingResultCS(out);
+        }
+        out.print(")");
+    }
+
+    public void ConstructorAccess.generateCS(CodePrinter out) 
+    {   if (transformed()!=this) 
+        {   transformed().generateCS(out);
+            return;
+        }
+
+        boolean passouter = false;
+        if (this instanceof SuperConstructorAccess) {
+            out.print("base");
+            passouter = hostType().needsEnclosing() 
+                        && ((ClassDecl)hostType()).superclass().needsEnclosing();
+        } else {
+            out.print("this");
+            passouter = hostType().needsEnclosing();
+        }
+        
+        Collection<Variable>encvar = hostType().enclosingVariables();
+
+        out.print("(");
+        if (passouter) {
+            out.print("_o");
+        }
+        
+        int encvarcount=0;
+        if (!(this instanceof SuperConstructorAccess)) {
+            for (Variable v:encvar) {
+                if (encvarcount>0 || passouter) out.print(",");
+                out.printCSIdentifier(v.name(),"_o");
+                encvarcount++;
+            }
+        }
+        
+        for (int i=0; i<getNumArg(); i++) 
+        {
+            if (i>0 || passouter || encvarcount>0) out.print(",");
+            getArg(i).generateUsingResultCS(out);
+        }
+        out.print(")");
+    }
+
 //  	public void DiamondAccess.generateCS(CodePrinter out) {
 // 	}
-  	public void MethodAccess.generateCS(CodePrinter out) {
-  		MethodDecl m = decl();
-  		if (m.isStatic()) {
-  			TypeDecl ht = m.hostType();
-			out.print(ht.getNameCS());			
-			out.print(".");
-  			out.printCSIdentifier(renameMethod(m.name(),true), "");  			
-  		} else if (isRightChildOfDot()) {
-  			if (prevExpr().isSuperAccess()) {
-  				out.print("base");
-  			}
-  			out.print(".");
-  			out.printCSIdentifier(renameMethod(m.name(),false), "");
-  		} else {
-			out.print("this.");
-			TypeDecl t = hostType();
-			if (t!=m.hostType() && t.isInnerTypeOf(m.hostType())) {
-				while (t!=m.hostType()) {			
-					out.print("_o");
-					out.print(".");
-					t = t.enclosingType();
-				}
-			}  		
-  			out.printCSIdentifier(renameMethod(m.name(),false), "");
-  		}
+    public void MethodAccess.generateCS(CodePrinter out) 
+    {   if (transformed()!=this) 
+        {   transformed().generateCS(out);
+            return;
+        }
 
-  		out.print("(");
-  		// check if must create a temporary array to package the var args   	
-		if (!m.isVariableArity() 
-		|| (getNumArg()==m.getNumParameter() && getArg(getNumArg()-1).type()==m.getParameter(getNumArg()-1).type()) ) 
-		// can leave parameters as they are
-		{
-	  		for (int i=0; i<getNumArg(); i++) {
-  				if (i>0) out.print(",");
-  				getArg(i).generateUsingResultCS(out);
-  			}
-  		// need to package last parameters (may be zero) into array		
-  		} else {
-  			// non-varargs parameters
-	  		for (int i=0; i<m.getNumParameter()-1; i++) {
-  				if (i>0) out.print(",");
-  				getArg(i).generateUsingResultCS(out);
-  			}  		
-  			// create array for the rest
-  			if (m.getNumParameter()>1) out.print(",");
-  			out.print("new ");
-  			out.print(m.getParameter(m.getNumParameter()-1).type().getNameCS());
-  			out.print("{");
-  			for (int i=m.getNumParameter()-1; i<getNumArg(); i++) {
-  				if (i>m.getNumParameter()-1) out.print(",");
-  				getArg(i).generateUsingResultCS(out);
-  			}
-  			out.print("}");  			
-  		}
-  		out.print(")");  	
- 	}
+        MethodDecl m = decl();
+        if (m.isStatic()) 
+        {   TypeDecl ht = m.hostType();
+            out.print(ht.getNameCS());
+            out.print(".");
+            out.printCSIdentifier(renameMethod(m.name(),true), "");
+        }
+        else if (isRightChildOfDot()) 
+        {   if (prevExpr().isSuperAccess()) {
+                out.print("base");
+            }
+            out.print(".");
+            out.printCSIdentifier(renameMethod(m.name(),false), "");
+        }
+        else 
+        {   out.print("this.");
+            TypeDecl t = hostType();
+            if (t!=m.hostType() && t.isInnerTypeOf(m.hostType())) 
+            {   while (t!=m.hostType()) 
+                {   out.print("_o");
+                    out.print(".");
+                    t = t.enclosingType();
+                }
+            }
+            out.printCSIdentifier(renameMethod(m.name(),false), "");
+        }
+
+        out.print("(");
+        for (int i=0; i<getNumArg(); i++) 
+        {   if (i>0) out.print(",");
+            getArg(i).generateUsingResultCS(out);
+        }
+        out.print(")");
+    }
+       
  	public TypeDecl MethodAccess.neededDownCast() {
   		MethodDecl m = decl();
 		if (m.erasedMethod().type()!=m.type()) {
@@ -320,8 +287,9 @@ aspect GenerateCS {
   		} else if (v.isLocalVariable() || v.isParameter()) {  
   			if (v.hostType() == hostType()) {		
 				out.printCSIdentifier(getID(), "");
-			} else {
-				throw new RuntimeException("Can not access local variables of outer class method");
+			} else 
+			{   out.print("this.");
+                out.printCSIdentifier(getID(), "_o");
 			}
   		} else if (getID().equals("length")) {
 			out.print(".Length");

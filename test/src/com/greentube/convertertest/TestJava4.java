@@ -2081,7 +2081,11 @@ public class TestJava4 {
     	}.init(a);
     	assertI(a[0], 0);
     	r.run();
-    	assertI(a[0], 5);    	
+    	assertI(a[0], 5);
+
+    	assertO(OuterCläss.accessLocalVariablesOfStatic(), "47,11,8");
+    	OuterCläss oc2 = new OuterCläss(77);
+    	assertO(oc2.accessLocalVariablesOfInstanceMethod(), "77,77");
     }
     
     public static void identifi€rmangling() {

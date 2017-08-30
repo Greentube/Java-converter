@@ -148,4 +148,33 @@ public class OuterCläss {
 			}			
 		};
 	}
+	
+	public static String accessLocalVariablesOfStatic() {
+	   final int[] storage = new int[1];
+       final String[] storage2 = new String[1];
+	   final int[] dummy = new int[]{8};
+	   
+	   Runnable r = new Runnable() {
+	       public void run() {
+           storage[0] = 47;
+           storage2[0] = "11";
+	       }
+	   };
+	   r.run();
+	   return storage[0] + "," + storage2[0] + "," + dummy[0];
+	}
+
+    public String accessLocalVariablesOfInstanceMethod() {
+       final int[] storage = new int[1];
+       final String[] storage2 = new String[1];
+       
+       Runnable r = new Runnable() {
+           public void run() {
+               storage[0] = getP();
+               storage2[0] = ""+getL();
+           }
+       };
+       r.run();
+       return storage[0] + "," + storage2[0];
+    }
 }

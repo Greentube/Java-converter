@@ -532,23 +532,20 @@ aspect CheckRestrictions {
 	}  		
 	
 		   	  	
-	public void VarAccess.checkRestrictions(ArrayList<String> errorlist) {
-		// anonymous classes may not access surrounding local variables
-		Variable v = varDecl();
-		if (v.isLocalVariable() || v.isParameter()) {	
-			if (v.hostType() != hostType()) {
-				reportRestriction(errorlist, "Can not access local variables of outer class method");
-			}
-		}
-		
-		// check if part of the supported library
-		if (v.isClassVariable() || v.isInstanceVariable()) {
-			if (!LibraryList.isAllowed(v.hostType().packageName() + "." + v.hostType().uniqueName(),getID())) {
-				reportRestriction(errorlist, "Unsupported core library field: "
-					+ v.hostType().packageName() + "." + v.hostType().uniqueName() + "." + getID() );
-			}
-  		}
-  						
-		super.checkRestrictions(errorlist);
-	}		 
+    public void VarAccess.checkRestrictions(ArrayList<String> errorlist) 
+    {   Variable v = varDecl();
+
+        // check if part of the supported library
+        if (v.isClassVariable() || v.isInstanceVariable()) 
+        {   if (!LibraryList.isAllowed(v.hostType().packageName() + "." + v.hostType().uniqueName(),getID())) 
+            {   reportRestriction
+                (   errorlist, 
+                    "Unsupported core library field: "+ v.hostType().packageName() 
+                    + "." + v.hostType().uniqueName() + "." + getID()
+                );
+            }
+        }
+        super.checkRestrictions(errorlist);
+    }
 }
+

@@ -75,7 +75,15 @@ aspect GenerateCS {
 			out.print(" _o;");
 			out.println(); 
 		}
-    	    	        	    	
+        for (Variable v:enclosingVariables()) {
+            out.print("public ");
+            out.print(v.type().getNameCS());
+            out.print(" ");
+            out.printCSIdentifier(v.name(),"_o");            
+            out.print(";");
+            out.println();
+        }
+
     	for (BodyDecl bd:getBodyDeclList()) {
 			if (bd.isField()) {
 				for (FieldDeclarator fd:bd.fieldDeclarations()) {
@@ -299,7 +307,7 @@ aspect GenerateCS {
   	
 
 
-  	public void ConstructorDecl.generateCS(CodePrinter out) {
+  	public void ConstructorDecl.generateCS(CodePrinter out) {  	
 		// decide if all the fields have to be initialized right here	
 		boolean needsInit = true;			
 		if (hasConstructorInvocation()) {
@@ -313,18 +321,29 @@ aspect GenerateCS {
         	}
       	}		
 		
-  		int numpar = getNumParameter();  		
+        Collection<Variable>encvar = hostType().enclosingVariables();
+        boolean needouter = hostType().needsEnclosing();
+  		int numpar = getNumParameter();
+  		  		
   		out.print("public ");  		
   		out.printCSIdentifier(hostType().uniqueName());
-  		out.print("(");
+  		out.print("(");  		
   		// pass reference to the enclosing object 
-  		boolean needouter = hostType().needsEnclosing();
   		if (needouter) {
   			out.print(hostType().enclosingType().getNameCS());
   			out.print(" _o");
   		}
+  		// pass accessible local variables of constructing method
+  		int countencvar=0;
+  		for (Variable v:encvar) {
+  		    if (countencvar>0 || needouter) out.print(",");
+  		    out.print(v.type().getNameCS());
+  		    out.print(" ");
+            out.printCSIdentifier(v.name(),"_o");   
+  		    countencvar++;
+  		}
   		for (int i=0; i<numpar; i++) {
-  			if (i>0 || needouter) out.print(",");
+  			if (i>0 || needouter || encvar.size()>0) out.print(",");
   			getParameter(i).getTypeAccess().generateCS(out);
   			if (i==numpar-1 && isVariableArity()) {
   				out.print("[]");
@@ -334,7 +353,9 @@ aspect GenerateCS {
   		}
   		out.print(")");
   		out.print(":");
-  		((ExprStmt)getConstructorInvocation()).getExpr().generateCS(out);	// intentionally no post-processing	
+  		                                        // intentionally no post-processing
+  		((ExprStmt)getConstructorInvocation()).getExpr().generateCS(out);	
+  		                                        	
 		out.println();
   		out.print("{");  		
 		out.println();
@@ -348,6 +369,14 @@ aspect GenerateCS {
 				out.print("this._o = _o;");
 				out.println();
 			}			
+            for (Variable v:encvar) {
+                out.print("this.");
+                out.printCSIdentifier(v.name(),"_o");
+                out.print(" = ");   
+                out.printCSIdentifier(v.name(),"_o");
+                out.print(";");
+                out.println();
+            }
 			
 			// do all field initializations
 			for (BodyDecl bd:hostType().getBodyDeclList()) {
