@@ -13,26 +13,26 @@ Nevertheless there is a short explanation of the most important concepts.
 Linker directives:
 
    	//load// java/lang/Object
-   
-   	This is a directive to the javascript linker that this file depends on
-   	another file that has to be loaded before this one. That is normally
-   	used for the base class or interfaces.
+
+    This is a directive to the javascript linker that this file depends on
+    another file that has to be loaded before this one. That is normally
+    used for the base class or interfaces.
+
+    //reference// java/util/Enumeration
+
+    This directive tells the linker that the file needs to be loaded eventually
+    before the actual startup of the program, but probably at a later time
+    than the current file.
+
+    //complete// java/io/PrintStream
     
-   	//reference// java/util/Enumeration
-	
-	This directive tells the linker that the file needs to be loaded eventually
-	before the actual startup of the program, but probably at a later time
-	than the current file.
-	
-	//complete// java/io/PrintStream
-	
-	This is the most strict requirement directive and tells the linker that
-	the file and all its reference-dependencies (fully recursively) need to 
-	be loaded before this one. This is important if a class has some static
-	initialization to do that is actually done at loading time but may depend
-	on other classes to be completely loaded already.
-	
-	
+    This is the most strict requirement directive and tells the linker that
+    the file and all its reference-dependencies (fully recursively) need to 
+    be loaded before this one. This is important if a class has some static
+    initialization to do that is actually done at loading time but may depend
+    on other classes to be completely loaded already.
+
+
 Class definitions are done by calling a global function (defined in java/lang/Object.js):
 
 var c = _defineClass(name, baseclass, interfaces,
@@ -60,8 +60,8 @@ var i = _defineInterface(name, baseinterfaces, staticmembers)
 
 Interfaces are very light-weight in javascript. They mainly consist of static fields
 and some references to super-interfaces for the type-inclusion checks.
- 
- 
+
+
 There is no specific implementation class for java.lang.String, because 
 the existing javascript-strings are directly used, but enhanced with many 
 java-style methods. There is even a fake java_lang_String entity that is used
@@ -70,16 +70,16 @@ native code.
 
 
 Identifier escaping
- 
+
 To avoid any potential name clashes with converted java code, the following rules are
 applied to java identifiers:
-   A-Z,a-z,0-9 are used directly
-   _ is converted to __
-   anything else is escaped in hexadecimal unicode with _xxx_
+    A-Z,a-z,0-9 are used directly
+    _ is converted to __
+    anything else is escaped in hexadecimal unicode with _xxx_
     
-   A direct consequence of this method is, that there can never be an odd number of 
-   underscores in a converted identifier. So if you want to have private fields or methods
-   that will not clash with any java identifier, you can simply prefix it with a single _
+    A direct consequence of this method is, that there can never be an odd number of 
+    underscores in a converted identifier. So if you want to have private fields or methods
+    that will not clash with any java identifier, you can simply prefix it with a single _
    
 Java class names are even further escaped to preserve the usage of _ as a delimiter
 between package parts and class name: After initial escaping (what may result

@@ -1,78 +1,64 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.greentube.javaconverter;
 
-import java.io.File;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Vector;
+import java.io.*;
+import java.util.*;
+import org.apache.tools.ant.*;
+import org.apache.tools.ant.types.*;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.DirectoryScanner;
-import org.apache.tools.ant.types.FileSet;
-import org.apache.tools.ant.Task;
-
-
-public class ConverterAntTask extends Task {
-
-    private List filesets = new LinkedList();
-    public void addFileset(FileSet fs) {
-        filesets.add(fs);
+public class ConverterAntTask extends Task 
+{   private List filesets = new LinkedList();
+    public void addFileset(FileSet fs) 
+    {   filesets.add(fs);
     }
-
     private File jsdir;
-    public void setJs(File destdir) {
-        this.jsdir = destdir;
+    public void setJs(File destdir) 
+    {   this.jsdir = destdir;
     }
-    
     private File csdir=null;
-    public void setCs(File destdir) {
-        this.csdir = destdir;
+    public void setCs(File destdir) 
+    {   this.csdir = destdir;
     }
-
     private String classpath=null;
-    public void setClasspath(String path) {
-        this.classpath = path;
+    public void setClasspath(String path) 
+    {   this.classpath = path;
     }
-    
-    public void execute() throws BuildException {
 
-    	Vector args = new Vector();
-        if (jsdir!=null) { 
-        	args.add("-js");
-        	args.add(jsdir.toString());
+    public void execute() throws BuildException 
+    {   Vector args = new Vector();
+        if (jsdir!=null) 
+        {   args.add("-js");
+            args.add(jsdir.toString());
         }
-        if (csdir!=null) { 
-        	args.add("-cs");
-        	args.add(csdir.toString());
+        if (csdir!=null) 
+        {   args.add("-cs");
+            args.add(csdir.toString());
         }
-        if (classpath!=null) {
-        	args.add("-classpath");
-        	args.add(classpath);
+        if (classpath!=null) 
+        {   args.add("-classpath");
+            args.add(classpath);
         }
-        
-        for (int i=0; i<filesets.size(); i++) {
-            FileSet fs = (FileSet)filesets.get(i);
+
+        for (int i=0; i<filesets.size(); i++)
+        {   FileSet fs = (FileSet)filesets.get(i);
             DirectoryScanner ds = fs.getDirectoryScanner(getProject());
             File sourcedir = ds.getBasedir();
             String[] relativepaths = ds.getIncludedFiles();                        
-            for (int j=0; j<relativepaths.length; j++) {
-            	args.add(new File(sourcedir, relativepaths[j]). getAbsolutePath());
+            for (int j=0; j<relativepaths.length; j++) 
+            {   args.add(new File(sourcedir, relativepaths[j]). getAbsolutePath());
             }
         }
-        
-        try {
-        	String[] aa = new String[args.size()];
-        	args.copyInto(aa);
+
+        try 
+        {   String[] aa = new String[args.size()];
+            args.copyInto(aa);
             int err = (new Converter()).run(aa);
             if (err>0) throw new BuildException("Converter terminated with "+err+" errors");
-        } catch (Exception e) {
-            throw new BuildException("Error when converting file in Convert task", e, getLocation());
+        } 
+        catch (Exception e) 
+        {   throw new BuildException
+            ("Error when converting file in Convert task", e, getLocation()
+            );
         }
-
     }
 
 }

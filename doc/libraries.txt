@@ -1,10 +1,10 @@
-package com.greentube.javaconverter;
+Supported core libraries
+------------------------
 
-import java.util.*;
+The converter directly supports a certain set of java core classes and methods.
+This list here is copied directly from the converter and is given in a java syntax.
+Nevertheless, the meaning should be clear: 		
 
-public class LibraryList 
-{   static String[][] supported = 
-    {   
         { "java.io.PrintStream",
             "void print(boolean)",
             "void print(double)",
@@ -135,7 +135,7 @@ public class LibraryList
             "java.lang.String substring(int)",
             "java.lang.String substring(int, int)",
             "char[] toCharArray()",
-            "java.lang.String trim()",			
+            "java.lang.String trim()",          
         },
         { "java.lang.StringBuffer",
             "<init>()",
@@ -147,7 +147,7 @@ public class LibraryList
             "java.lang.StringBuffer append(char)",
             "java.lang.StringBuffer append(int)",
             "java.lang.StringBuffer append(double)",
-            "int length()",			
+            "int length()",         
         },
         { "java.lang.StringBuilder",
             "<init>()",
@@ -159,7 +159,7 @@ public class LibraryList
             "java.lang.StringBuilder append(char)",
             "java.lang.StringBuilder append(int)",
             "java.lang.StringBuilder append(double)",
-            "int length()",			
+            "int length()",         
         },
         { "java.lang.System",
             "out",
@@ -173,7 +173,7 @@ public class LibraryList
             "boolean isEmpty()",
             "java.util.Iterator iterator()",        
             "int size()",
-            "java.lang.Object[] toArray()",			
+            "java.lang.Object[] toArray()",         
         },
         { "java.util.AbstractList",
             "boolean contains(java.lang.Object)",
@@ -181,7 +181,7 @@ public class LibraryList
             "boolean isEmpty()",
             "java.util.Iterator iterator()",
             "int size()",
-            "java.lang.Object[] toArray()",	
+            "java.lang.Object[] toArray()", 
 
             "java.lang.Object get(int)",
             "java.lang.Object set(int, java.lang.Object)",
@@ -195,14 +195,14 @@ public class LibraryList
             "int lastIndexOf(java.lang.Object)",
             "boolean removeAll(java.lang.Collection)",
             "boolean retainAll(java.lang.Collection)",
-        },	
+        },  
         { "java.util.ArrayList",
             "boolean contains(java.lang.Object)",
             "boolean containsAll(java.util.Collection)",
             "boolean isEmpty()",
             "java.util.Iterator iterator()",
             "int size()",
-            "java.lang.Object[] toArray()",	
+            "java.lang.Object[] toArray()", 
 
             "java.lang.Object get(int)",
             "java.lang.Object set(int, java.lang.Object)",        
@@ -218,8 +218,8 @@ public class LibraryList
             "boolean retainAll(java.lang.Collection)",
 
             "<init>()",
-            "<init>(java.util.Collection)",			
-            "void trimToSize()",						
+            "<init>(java.util.Collection)",         
+            "void trimToSize()",                        
         },
         { "java.util.Collection",
             "boolean contains(java.lang.Object)",
@@ -234,8 +234,8 @@ public class LibraryList
             "boolean equals(java.lang.Object)",
         },
         { "java.util.Enumeration",
-            "boolean hasMoreElements()",		
-            "java.lang.Object nextElement()",			
+            "boolean hasMoreElements()",        
+            "java.lang.Object nextElement()",           
         },
         { "java.util.HashMap",
             "<init>()",
@@ -266,7 +266,7 @@ public class LibraryList
             "boolean addAll(java.util.Collection)",
             "void clear()",                
             "boolean remove(java.lang.Object",
-            "boolean removeAll(java.util.Collection",			
+            "boolean removeAll(java.util.Collection",           
             "boolean retainAll(java.util.Collection",
         },
         { "java.util.Hashtable",
@@ -291,7 +291,7 @@ public class LibraryList
             "java.util.Enumeration keys()",
         },
         { "java.util.Iterator",
-            "boolean hasNext()",		
+            "boolean hasNext()",        
             "java.lang.Object next()",
             "void remove()",
         },
@@ -301,7 +301,7 @@ public class LibraryList
             "boolean isEmpty()",
             "java.util.Iterator iterator()",
             "int size()",
-            "java.lang.Object[] toArray()",	
+            "java.lang.Object[] toArray()", 
 
             "java.lang.Object get(int)",
             "java.lang.Object set(int,java.lang.Object)",
@@ -323,7 +323,7 @@ public class LibraryList
             "java.lang.Object getFirst()",
             "java.lang.Object getLast()",
             "java.lang.Object removeFirst()",
-            "java.lang.Object removeLast()",			
+            "java.lang.Object removeLast()",            
         },
         { "java.util.List",
             "boolean contains(java.lang.Object)",
@@ -344,11 +344,11 @@ public class LibraryList
             "java.lang.Object remove(int)",
             "boolean removeAll(java.util.Collection)",
             "boolean retainAll(java.util.Collection)",
-            "java.lang.Object set(int, java.lang.Object)",    		    
+            "java.lang.Object set(int, java.lang.Object)",              
         },
         { "java.util.Map",
             "void clear()",
-            "boolean containsKey(java.lang.Object)",	
+            "boolean containsKey(java.lang.Object)",    
             "boolean containsValue(java.lang.Object)",
             "java.lang.Object get(java.lang.Object)",
             "boolean isEmpty()",
@@ -373,7 +373,7 @@ public class LibraryList
             "boolean isEmpty()",
             "java.util.Iterator iterator()",
             "int size()",
-            "java.lang.Object[] toArray()",	
+            "java.lang.Object[] toArray()", 
 
             "java.lang.Object get(int)",
             "java.lang.Object set(int, java.lang.Object)",        
@@ -388,7 +388,7 @@ public class LibraryList
             "boolean removeAll(java.lang.Collection)",
             "boolean retainAll(java.lang.Collection)",
 
-            "void trimToSize()",						
+            "void trimToSize()",                        
 
             "<init>()",
             "<init>(java.util.Collection)",
@@ -408,31 +408,3 @@ public class LibraryList
             "void setElementAt(java.lang.Object, int)",
             "void setSize(int)",
         }
-    };
-
-
-    static HashMap<String,HashSet<String>> map = null;
-
-    public static boolean isAllowed(String fullclassname, String membername)
-    {   // generate map at first call for fast retrieval
-        if (map==null) 
-        {   map = new HashMap<>();
-            for (int i=0; i<supported.length; i++) {				
-                HashSet<String> members = new HashSet<>();
-                for (int j=1; j<supported[i].length; j++) 
-                {   members.add(supported[i][j]);
-                }
-                // support these on any object:
-                members.add("boolean equals(java.lang.Object)");	
-                members.add("int hashCode()");
-                members.add("java.lang.String toString()");
-                map.put(supported[i][0],  members);
-            }
-        }
-
-        // unknown classes are not restricted
-        if (!map.containsKey(fullclassname)) return true;    
-        // provided class only allows whitelisted members
-        return map.get(fullclassname).contains(membername);	
-    }
-}

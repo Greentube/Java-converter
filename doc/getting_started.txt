@@ -36,10 +36,10 @@ Workflow Javascript
 
    <taskdef name="linkJavaScript" classname="com.greentube.javaconverter.JavaScriptLinkerAntTask"/> 
    <linkJavaScript 
-    		searchpath="${basedir}/build/javascript"
-    		main="Launcher"
-    		output="${basedir}/build/javascript/main.js" 
-    		>
+            searchpath="${basedir}/build/javascript"
+            main="Launcher"
+            output="${basedir}/build/javascript/main.js" 
+            >
     </linkJavaScript>		
        
        
