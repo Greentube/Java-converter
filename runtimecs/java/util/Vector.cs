@@ -1,6 +1,6 @@
 namespace java.util 
 {
-	public class Vector: ArrayList
+	public class Vector: ArrayListImpl
 	{        
         public Vector() : base() {
         }

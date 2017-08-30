@@ -1,6 +1,6 @@
 namespace java.util 
 {
-	public class Hashtable : HashMap
+	public class Hashtable : HashMapImpl
 	{
         public Hashtable() : base() {
         }

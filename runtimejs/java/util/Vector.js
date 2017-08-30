@@ -1,8 +1,8 @@
 //reference// java/util/Enumeration
-//load// java/util/AbstractList
-var java_util_Vector = _defineClass("java_util_Vector", java_util_ArrayList, null, 
+//load// java/util/ArrayListImpl
+var java_util_Vector = _defineClass("java_util_Vector", java_util_ArrayListImpl, null, 
 function() {
-    java_util_ArrayList.call(this);
+    java_util_ArrayListImpl.call(this);
 },
 null,  // no static
 {    

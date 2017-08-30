@@ -423,55 +423,77 @@ aspect GenerateJS {
   		}
 	}		
   	
-  	public static void Constant.generateCharacterJS(CodePrinter out, char c) {
-  			switch(c) {
-  			case '\b': 	out.print("\\b");
-  						break;
-  			case '\f':  out.print("\\f");	
-  			            break;
-  			case '\n':  out.print("\\n"); 
-  			            break;
-  			case '\r':  out.print("\\r");
-  			            break;
-  			case '\t':  out.print("\\t");
-  			            break;
-  			case '\\':  out.print("\\\\");
-  			            break;
-  			case '"':   out.print("\\\"");
-  			            break;  			
-  			case '\'':  out.print("\\'");
-  			            break;  			
-  			default: 
-  				if (c>=32 && c<=126) {
-  				 	out.print(""+c);
-  				} else {
-  					String hx = Integer.toHexString((int)c);
-  					out.print("\\u");
-  					for (int j=hx.length(); j<4; j++) {
-  						out.print("0");
-  					} 
-  					out.print(hx);
-  				}
-  				break;
-  			}  	
-  	}  	  
-  	
-  	public void Constant.generateJS(CodePrinter out) {
-		if (this instanceof	ConstantBoolean) {
-			out.print(booleanValue()?"true":"false");
-		} else if (this instanceof ConstantChar) {
-			out.print(""+intValue());
-		} else if (this instanceof ConstantDouble) {
-			out.print(""+doubleValue());
-		} else if (this instanceof ConstantInt) {
-			out.print(""+intValue());
-		} else if (this instanceof ConstantString) {
-  			String v = stringValue();
-	  		out.print("\"");  		
-	  		for (int i=0; i<v.length(); i++) {
-	  			generateCharacterJS(out, v.charAt(i));
-	  		}
-	  		out.print("\"");	
-	  	}		
-  	}	
+    public static void Constant.generateCharacterJS(CodePrinter out, char c) 
+    {   switch(c) 
+        {   case '\b':
+            {   out.print("\\b");
+                break;
+            }
+            case '\f':
+            {   out.print("\\f"); 
+                break;
+            }
+            case '\n':
+            {   out.print("\\n");
+                break;
+            }
+            case '\r':
+            {   out.print("\\r");
+                break;
+            }
+            case '\t':
+            {   out.print("\\t");
+                break;
+            }
+            case '\\':
+            {   out.print("\\\\");
+                break;
+            }
+            case '"':
+            {   out.print("\\\"");
+                break;
+            }
+            case '\'':
+            {   out.print("\\'");
+                break;
+            }
+            default:
+            {   if (c>=32 && c<=126) 
+                {   out.print(""+c);
+                } 
+                else 
+                {   String hx = Integer.toHexString((int)c);
+                    out.print("\\u");
+                    for (int j=hx.length(); j<4; j++) 
+                    {   out.print("0");
+                    }
+                    out.print(hx);
+                }
+                break;
+            }
+        }
+    }
+
+    public void Constant.generateJS(CodePrinter out) 
+    {   if (this instanceof	ConstantBoolean) 
+        {   out.print(booleanValue()?"true":"false");
+        }
+        else if (this instanceof ConstantChar) 
+        {   out.print(""+intValue());
+        }
+        else if (this instanceof ConstantDouble) 
+        {   out.print(""+doubleValue());
+        }
+        else if (this instanceof ConstantInt) 
+        {   out.print(""+intValue());
+        }
+        else if (this instanceof ConstantString) 
+        {   String v = stringValue();
+            out.print("\"");
+            for (int i=0; i<v.length(); i++) 
+            {   generateCharacterJS(out, v.charAt(i));
+            }
+            out.print("\"");
+        }
+    }
 }

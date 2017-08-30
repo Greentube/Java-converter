@@ -1,8 +1,8 @@
 //reference// java/util/Enumeration
-//load// java/util/HashMap
-var java_util_Hashtable = _defineClass("java_util_Hashtable", java_util_HashMap, null, 
+//load// java/util/HashMapImpl
+var java_util_Hashtable = _defineClass("java_util_Hashtable", java_util_HashMapImpl, null, 
 function() {
-    java_util_HashMap.call(this);
+    java_util_HashMapImpl.call(this);
 },
 null,  // no static
 {    

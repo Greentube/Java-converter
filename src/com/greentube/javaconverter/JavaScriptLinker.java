@@ -140,7 +140,7 @@ public class JavaScriptLinker
             }
             throw new IOException(msg.toString());
         }
-        return o;		
+        return o;
     }
 
     private void writeOrdered(OutputStream os, int[] o) throws IOException 
@@ -325,4 +325,3 @@ class TransitiveClosure
         return null;
     }
 }
-
