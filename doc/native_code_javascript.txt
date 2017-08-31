@@ -33,30 +33,35 @@ Linker directives:
     on other classes to be completely loaded already.
 
 
-Class definitions are done by calling a global function (defined in java/lang/Object.js):
+Class definitions are done by creating a single global class object containing 
+an allocator function and all static methods and fields.
 
-var c = _defineClass(name, baseclass, interfaces,
-allocatorfunction,
-staticmembers,
-instancemethods )  
+var c = {
+    $: function() {
+    },
+    static1: function(x) {},
+    static2: function(y) {},
+    staticfield: 4711,
+};
 
-This creates an object that is later used to reference the class itself, create new
-instances and for the static members.
-The provided allocator function is basically the same object that is also returned by the
-_defineClass function, but then filled up with all necessary stuff to make it a working 
-java class. An important consideration was to separate the object allocation 
-(creating the fields of the object with default zero-values - 0, false or null) and the
-actual java constructor which is called in a second step after allocation. This makes it
-possible to have exactly one javascript-constructor of each class and the object management
-becomes extremely predictable for any optimizing javascript engine. 
-Static members are directly stored in the class object (which is also the allocator function),
-both fields and methods alike. Do no longer use the .prototype field to store static stuff.
+This class is enough when it is not necessary to create any instance objects 
+(like for java.lang.Math), but otherwise you need to connect the prototyping 
+chain and additional stuff. Do this by calling: 
 
+_class(class, baseclass, interfaces, name, instance_fields_and_methods);
+
+Note, that the $ member has the special meaning to be the allocator function
+for the class. It will be referenced in various circumstances (allocation,
+type inclusion test).
 
 
 Interface definitions are like so:
 
-var i = _defineInterface(name, baseinterfaces, staticmembers) 
+var i = { 
+    _superinterfaces: [ ... ], 
+    staticmember1: xx,
+    staticmember2: yy,     
+}; 
 
 Interfaces are very light-weight in javascript. They mainly consist of static fields
 and some references to super-interfaces for the type-inclusion checks.

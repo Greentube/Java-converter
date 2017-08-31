@@ -134,7 +134,11 @@ function _dimImpl(dimensions,initvalue,cursor)
 }
 
 // do some patching of the built-in array protoype to allow easy
-// integration with other java objects
+// integration with other java objects.
+// Be aware that this now messes up any optimization possibility for 
+// any  for (x in array) loop on the entirety of the program,
+// DO NOT USE such a loop!
+
 Array.prototype._isObject = true;
 Array.prototype._interfaces = [];
 

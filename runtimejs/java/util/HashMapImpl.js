@@ -1,7 +1,9 @@
 // implements a generic java hashmap by dividing the data into
 // entries with a string key and entries with arbitrary object keys.
 //   stringtable .. a JS object that directly maps the strings to keys
-//   commontable .. a JS object that maps hashcodes to key-value pairs
+//   commontable .. a JS object that maps hashcodes to key-value pairs:
+//                  For each hashcode, an array is maintained that holds a sequence
+//                  of keys and values (so the array always has even length)
 //   totalelements .. always keep track of the size
 
 //load// java/lang/Object
@@ -33,7 +35,7 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
 	},
     
 	clear_0: function() {
-		this._stringtable = {};
+		this._stringtable = {}; 
 		this._commontable = {};
         this._totalelements = 0;
 	},
@@ -44,8 +46,9 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
         }
         var hc = (key==null) ? 0 : key.hashCode_0();
         if (!this._commontable.hasOwnProperty(hc)) return false;
-        for (var kv of this._commontable[hc]) {  // scan all key-value pairs for the hashCode
-            var k = kv[0];
+        var kv = this._commontable[hc];
+        for (var i=0; i<kv.length; i+=2) {  // scan all key-value pairs for the hashCode
+            var k = kv[i];
             if (key==null ? k==null : key.equals_1(k)) return true;
         }
         return false;
@@ -64,8 +67,9 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
         // search through all hashcode-buckets        
         for (var hc in this._commontable) { 
             if (this._commontable.hasOwnProperty(hc)) {
-                for (var kv of this._commontable[hc]) { 
-                    var  v = kv[1];
+                var kv = this._commontable[hc];
+                for (var i=1; i<kv.length; i+=2) {
+                    var v = kv[i];
                     if (value==null ? v==null : value.equals_1(v)) {
                         return true;
                     }   
@@ -95,10 +99,11 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
         }
         var hc = (key==null) ? 0 : key.hashCode_0();
         if (!this._commontable.hasOwnProperty(hc)) return null;
-        for (var kv of this._commontable[hc]) {  // scan all key-value pairs for the hashCode
-            var k = kv[0];
+        var kv = this._commontable[hc];  // scan all key-value pairs for the hashCode
+        for (var i=0; i<kv.length; i+=2) {  
+            var k = kv[i];
             if (key==null ? k==null : key.equals_1(k)) {
-                return kv[1];
+                return kv[i+1];
             }
         }
         return null;        
@@ -111,7 +116,7 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
             var v = this.get_1(k);
             var c = (k==null ? 0 : k.hashCode_0()) ^
                     (v==null ? 0 : v.hashCode_0());
-            sum = (sum + c) & 0xffffffff;
+            sum = (sum + c) | 0;
         }
         return sum;
     },
@@ -127,29 +132,39 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
 	put_2: function(key, value) {
         // easy operation when can directly use the javascript object mapping
         if (_isValidStringKey(key)) {
-            if (!this._stringtable.hasOwnProperty(key)) this._totalelements++;
-            this._stringtable[key] = value;
+            if (this._stringtable.hasOwnProperty(key)) {
+                var rtn = this._stringtable[key];
+                this._stringtable[key] = value;
+                return rtn;
+            } else {
+                this._totalelements++;
+                this._stringtable[key] = value;                
+            }
         // complex operation, maintaining buckets of key-value pairs 
         } else {
             var hc = (key==null) ? 0 : key.hashCode_0();
             if (!this._commontable.hasOwnProperty(hc)) {
                 // create new bucket if not yet existing
-                this._commontable[hc] = [[key,value]]; 
+                this._commontable[hc] = [key,value]; 
                 this._totalelements++;
             } else {
-                for (var kv of this._commontable[hc]) {  // scan all key-value pairs for the hashCode
-                    var k = kv[0];
+                var kv = this._commontable[hc];
+                for (var i=0; i<kv.length; i+=2) {  // scan all key-value pairs for the hashCode
+                    var k = kv[i];
                     // found occurence of the key - overwrite the value
                     if (key==null ? k==null : key.equals_1(k)) {
-                        kv[1] = value;
-                        return;
+                        var rtn = kv[i+1];
+                        kv[i+1] = value;
+                        return rtn;
                     }
                 }
                 // bucket does not contain key yet - create a new key-value pair
-                this._commontable[hc].push([key,value]);
+                kv.push(key);
+                kv.push(value);
                 this._totalelements++;
             }
         }
+        return null;
 	},
     
     putAll_1: function(map) {
@@ -171,16 +186,16 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
                 return rtn;
             }
         } else {
-            var ct = this._commontable;
             var hc = (key==null) ? 0 : key.hashCode_0();
+            var ct = this._commontable;
             if (ct.hasOwnProperty(hc)) {
-                var bucket = ct[hc];
-                for (var i=0; i<bucket.length; i++) {
-                    var k = bucket[i][0];
+                var kv = ct[hc];
+                for (var i=0; i<kv.length; i+=2) {
+                    var k = kv[i];
                     if (key==null ? k==null : key.equals_1(k)) {
-                        var rtn = bucket[i][1];
-                        if (bucket.length>1) {
-                            bucket.splice(i,1);
+                        var rtn = kv[i+1];
+                        if (kv.length>2) {
+                            kv.splice(i,2);
                         } else {
                             delete ct[hc];
                         }
@@ -241,7 +256,7 @@ _class(java_util_HashMapKeyView, java_util_AbstractCollection, [java_util_Set], 
 // containsAll_1                   // implemented by AbstractCollection
 
     equals_1: function(o) {
-        if (o==null || !(o._is_java_util_MapKeyView) || this.size_0()!=o.size_0()) {
+        if (o==null || !(o instanceof java_util_HashMapKeyView.$) || this.size_0()!=o.size_0()) {
             return false;
         }
         for (var it=this.iterator_0(); it.hasNext_0(); ) {
@@ -329,8 +344,9 @@ _class(java_util_HashMapIterator, java_lang_Object, [java_util_Iterator, java_ut
         // search through all hashcode-buckets        
         for (var hc in map._commontable) { 
             if (map._commontable.hasOwnProperty(hc)) {
-                for (var kv of map._commontable[hc]) { 
-                    k.push(kv[0]);
+                var kv = map._commontable[hc];
+                for (var i=0; i<kv.length; i+=2) { 
+                    k.push(kv[i]);
                 }
             }
         }

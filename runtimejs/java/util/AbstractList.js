@@ -69,7 +69,7 @@ _class(java_util_AbstractList, java_util_AbstractCollection, [java_util_List], "
         var hashCode = 1;
         for (var it=this.iterator_0(); it.hasNext_0(); ) {
             var e = it.next_0();
-            hashCode = ( 31*hashCode + (e==null ? 0 : e.hashCode_0()) ) & 0xffffffff;
+            hashCode = ( 31*hashCode + (e==null ? 0 : e.hashCode_0()) ) | 0;
         }
         return hashCode;
     },       
