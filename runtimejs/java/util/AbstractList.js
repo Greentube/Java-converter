@@ -2,11 +2,12 @@
 //load// java/util/Enumeration
 //load// java/util/List
 //load// java/util/AbstractCollection
-var java_util_AbstractList = _defineClass("java_util_AbstractList", java_util_AbstractCollection, [java_util_List], 
-function() {
-},
-null,  // no static
-{   
+var java_util_AbstractList = {
+    $: function() {
+    },
+};
+_class(java_util_AbstractList, java_util_AbstractCollection, [java_util_List], "java.util.AbstractList", {
+
     // must be implemented by a modifiable subclass
     // public abstract System.Object get(int index);
     // public abstract System.Object set(int index, System.Object element);        
@@ -53,7 +54,7 @@ null,  // no static
 
     equals_1: function(o) {
         var s = this.size_0();
-        if (o==null || !(o._is_java_util_Collection) || s!=o.size_0()) {
+        if (o==null || !_implements(o,java_util_Collection) || s!=o.size_0()) {
             return false;
         }
         for (var it1=this.iterator_0(), it2=o.iterator_0(); it1.hasNext_0(); ) {           
@@ -82,7 +83,7 @@ null,  // no static
     },
 	        
     iterator_0: function() {
-        return (new java_util_AbstractListIterator())._1(this);
+        return new java_util_AbstractListIterator.$()._1(this);
     },
    
 	lastIndexOf_1: function (o) {
@@ -118,14 +119,15 @@ null,  // no static
 }); 
 
 
-var java_util_AbstractListIterator = _defineClass("java_util_AbstractListIterator", 
-     java_lang_Object, [java_util_Iterator, java_util_Enumeration], 
-function() {
-    this.list = null;
-    this.n = 0;
-},
-null,  // no static
-{
+var java_util_AbstractListIterator = {
+    $: function() {
+        this.list = null;
+        this.n = 0;
+    },
+};
+_class(java_util_AbstractListIterator, java_lang_Object, 
+       [java_util_Iterator, java_util_Enumeration], "java.util.AbstractListIterator", {
+           
 	_1: function(list) {
         this.list = list;
         this.n = 0;

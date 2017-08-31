@@ -6,11 +6,12 @@
 //load// java/lang/Object
 //load// java/util/Collection
 //reference// java/util/Iterator
-var java_util_AbstractCollection = _defineClass("java_util_AbstractCollection", java_lang_Object, [java_util_Collection], 
-function() {
-},   
-null,  // no static 
-{
+var java_util_AbstractCollection = {
+    $: function() {
+    },   
+};
+_class(java_util_AbstractCollection, java_lang_Object, [java_util_Collection], "java.util.AbstractCollection", {
+
 	contains_1: function(obj) {
         var i = this.iterator_0();
         while (i.hasNext_0()) {

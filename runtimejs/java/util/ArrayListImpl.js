@@ -1,10 +1,10 @@
 //load// java/util/AbstractList
-var java_util_ArrayListImpl = _defineClass("java_util_ArrayListImpl", java_util_AbstractList, null, 
-function() {
-    this._storage = null;
-},
-null,  // no static
-{  
+var java_util_ArrayListImpl = {
+    $: function() {
+        this._storage = null;
+    },
+};
+_class(java_util_ArrayListImpl, java_util_AbstractList, null, "java.util.ArrayListImpl", {
     _0: function() {
         this._storage = [];
         return this;

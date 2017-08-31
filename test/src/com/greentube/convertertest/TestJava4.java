@@ -275,7 +275,8 @@ public class TestJava4 {
     	// cast between types and test for type inclusion
         int[] a = new int[]{ 5,4,3};
         Object o = a;
-//        assertB(o instanceof int[]);
+        assertB(o instanceof Object);
+        assertB(! (o instanceof String));
         assertB(! (o instanceof TestObject));
 //        assertB(! (o instanceof int[][]));
 //        assertB(! (o instanceof String[]));
@@ -288,6 +289,10 @@ public class TestJava4 {
         assertB(o instanceof TestParentIntermediate);
         t = (TestObject) o;
         assertO(t.hello(), "hello");
+        o = "trixi";
+        assertB(o instanceof Object);
+        assertB(o instanceof String);
+        assertB(! (o instanceof TestObject));        
         
         TestInterface f = t;
         assertO(f.hello(), "hello");

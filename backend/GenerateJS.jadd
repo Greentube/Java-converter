@@ -30,33 +30,13 @@ aspect GenerateJS {
 	  
     	out.print("var ");
     	out.printJSName(packageName(), uniqueName());
-    	out.print(" = _defineClass(");
+    	out.print(" = {");
+        out.println();
+        out.increaseIndent();
 
-    	out.print("\"");
-    	out.printJSName(packageName(), uniqueName());
-		out.print("\", ");
-				
-    	out.printAndMemorizeLoad(superclass().packageName(),superclass().uniqueName());
-		out.print(", ");
-		
-		if (!hasImplements()) {
-			out.print("null");
-		} else {
-			out.print("[");
-			int n=0;
-      		for (Iterator<TypeDecl> iter = interfacesIterator(); iter.hasNext(); n++) {
-      			if (n>0) out.print(",");
-      			TypeDecl t = iter.next();
-        		out.printAndMemorizeLoad(t.packageName(), t.uniqueName());
-      		}			
-			out.print("]");
-		} 
-		out.print(",");
-		out.println();
-    	
         // allocator function
         boolean foundpar=false; 
-        out.print ("function(");
+        out.print ("$: function(");
         if (needsEnclosing()) 
         {   out.print("_o");
             foundpar=true;
@@ -71,7 +51,7 @@ aspect GenerateJS {
         out.increaseIndent();   
         if (!superclass().isObject()) 
         {   out.printAndMemorizeLoad(superclass().packageName(),superclass().uniqueName());
-            out.print(".call(this" + (superclass().needsEnclosing()?",_o":"") +");");
+            out.print(".$.call(this" + (superclass().needsEnclosing()?",_o":"") +");");
             out.println();
         }  
         if (needsEnclosing() && !superclass().needsEnclosing()) 
@@ -100,68 +80,87 @@ aspect GenerateJS {
                 }
             }
         }
-    	out.decreaseIndent();
-    	out.print ("},");
-    	out.println();
-    	    	    	
-		// static methods and fields
-    	out.print ("{");
-    	out.println();   
-		out.increaseIndent();    	
+        out.decreaseIndent();
+        out.print("},");
+        out.println();
+
+        // static methods and fields
+        for (BodyDecl bd:getBodyDeclList()) {
+            if (bd instanceof MethodDecl) {
+                MethodDecl md = (MethodDecl) bd;
+                if (!md.isStatic()) continue;
+                bd.generateJS(out);         
+            } else if (bd.isField()) {
+                for (FieldDeclarator fd:bd.fieldDeclarations()) {
+                    if (!fd.isStatic()) continue;
+                    out.printJSIdentifier(fd.getID(),"");
+                    out.print(": ");
+                    if (fd.getInit()!=null && fd.getInit().isConstant() && fd.isFinal()) {
+                        fd.getInit().generateUsingResultJS(out);
+                    } else {
+                        fd.fieldDecl().type().generateDefaultValueJS(out);
+                    }
+                    out.print(",");
+                    out.println();
+                }
+            }
+        }       
+                
+        if (this instanceof EnumDecl) {
+            out.print("values_0 : function() {");
+            out.println();
+            out.increaseIndent();
+            out.print("return [");
+            out.println();
+            out.increaseIndent(); 
+            for (EnumConstant ec:((EnumDecl)this).enumConstants()) {
+                out.printJSName(packageName(), uniqueName());           
+                out.print(".");
+                out.printJSIdentifier(ec.getID(),"");
+                out.print(",");
+                out.println();
+            }
+            out.decreaseIndent();
+            out.print("];");        
+            out.println();
+            out.decreaseIndent();
+            out.print("}");
+            out.println();      
+            out.print(",");
+            out.println();      
+        }           
+                        
+        out.decreaseIndent(); 
+        out.print("};");
+        out.println();
+
+
+        out.print("_class(");
+        out.printJSName(packageName(), uniqueName());
+        out.print(", ");
+        out.printAndMemorizeLoad(superclass().packageName(),superclass().uniqueName());
+        out.print(", ");
 		
-		for (BodyDecl bd:getBodyDeclList()) {
-			if (bd instanceof MethodDecl) {
-      			MethodDecl md = (MethodDecl) bd;
-				if (!md.isStatic()) continue;
-		        bd.generateJS(out);    		
-      		} else if (bd.isField()) {
-				for (FieldDeclarator fd:bd.fieldDeclarations()) {
-					if (!fd.isStatic()) continue;
-					out.printJSIdentifier(fd.getID(),"");
-					out.print(": ");
-					if (fd.getInit()!=null && fd.getInit().isConstant() && fd.isFinal()) {
-						fd.getInit().generateUsingResultJS(out);
-					} else {
-						fd.fieldDecl().type().generateDefaultValueJS(out);
-					}
-					out.print(",");
-					out.println();
-			 	}
-			}
-		}		
-    	    	
-    	if (this instanceof EnumDecl) {
-			out.print("values_0 : function() {");
-			out.println();
-			out.increaseIndent();
-			out.print("return [");
-			out.println();
-			out.increaseIndent(); 
-			for (EnumConstant ec:((EnumDecl)this).enumConstants()) {
-				out.printJSName(packageName(), uniqueName());			
-				out.print(".");
-				out.printJSIdentifier(ec.getID(),"");
-				out.print(",");
-				out.println();
-			}
-			out.decreaseIndent();
-			out.print("];");		
-			out.println();
-			out.decreaseIndent();
-			out.print("}");
-			out.println();    	
-			out.print(",");
-			out.println();    	
-    	}    	    
-    	    	    	
-		out.decreaseIndent(); 
-		out.print("},");
+		if (!hasImplements()) {
+			out.print("null");
+		} else {
+			out.print("[");
+			int n=0;
+      		for (Iterator<TypeDecl> iter = interfacesIterator(); iter.hasNext(); n++) {
+      			if (n>0) out.print(",");
+      			TypeDecl t = iter.next();
+        		out.printAndMemorizeLoad(t.packageName(), t.uniqueName());
+      		}			
+			out.print("]");
+		} 
+		out.print(", ");
+		out.print("\"");
+		out.print(fullName());
+		out.print("\", {");		
 		out.println();
+        out.increaseIndent();                                     
 
 		// instance methods    	    	        	    	  		      	    	    
-    	out.print ("{");
-    	out.println();
-    	out.increaseIndent();     	    	        	    	  
       	for (BodyDecl bd : methodsAndConstructors()) {
       		// check if need to suppress auto-generated methods related to Enums
 			if (bd instanceof MethodDecl) {
@@ -176,6 +175,7 @@ aspect GenerateJS {
       		}
 	        bd.generateJS(out);
     	}    	
+    	
     	out.decreaseIndent();     	    	        	    	  
     	out.print ("});");
     	out.println();
@@ -217,9 +217,9 @@ aspect GenerateJS {
 				out.print(".");
 				out.printJSIdentifier(ec.getID(),"");
 				out.print(" = ");
-				out.print("(new ");
+				out.print("new ");
 				out.printJSName(packageName(), uniqueName());
-				out.print("())._"+(ec.getNumArg()+2)+"(\"");
+				out.print(".$()._"+(ec.getNumArg()+2)+"(\"");
 				String id = ec.getID();
 				for (int i=0; i<id.length(); i++) {
 					Constant.generateCharacterJS(out, id.charAt(i)); 
@@ -252,10 +252,10 @@ aspect GenerateJS {
 						o2.print(".");
 						o2.printJSIdentifier(ec.getID(),"");
 						o2.print(" = ");
-						o2.print("(new ");
+						o2.print("new ");
 						TypeDecl t = ec.getInit().type();
 						o2.printAndMemorizeComplete(t.packageName(),t.uniqueName());
-						o2.print("())._"+(ec.getNumArg()+2)+"(\"");
+						o2.print(".$()._"+(ec.getNumArg()+2)+"(\"");
 						String id = ec.getID();
 						for (int i=0; i<id.length(); i++) {
 							Constant.generateCharacterJS(o2,id.charAt(i));
@@ -279,13 +279,12 @@ aspect GenerateJS {
 
     	out.print("var ");
     	out.printJSName(packageName(),uniqueName());
-    	out.print(" = _defineInterface(");
-		out.print("\"");
-    	out.printJSName(packageName(),uniqueName());
-		out.print("\",");
+    	out.print(" = { ");
+    	out.println();
+    	out.increaseIndent();
+    	out.print("_superinterfaces: ");
 		if (!hasSuperInterface()) {
 			out.print("null");
-    		out.memorizeLoad("java.lang","Object");
 		} else {
 			out.print("[");
 			int n=0;
@@ -298,11 +297,7 @@ aspect GenerateJS {
 		}
 		out.print(",");
 		out.println();
-		
-		out.print("{");
-		out.println();
-		out.increaseIndent();
-		
+				
 		for (BodyDecl bd:getBodyDeclList()) {
 			if (bd.isField()) {
 				for (FieldDeclarator fd:bd.fieldDeclarations()) {
@@ -317,7 +312,7 @@ aspect GenerateJS {
 		}	
 		
 		out.decreaseIndent();
-		out.print("});");
+		out.print("};");
 		out.println();			
 	}  
   	

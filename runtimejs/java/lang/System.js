@@ -1,9 +1,6 @@
 //complete// java/io/PrintStream
 //load// java/lang/Object
-var java_lang_System = _defineClass("java_lang_System", java_lang_Object, null, 
-function() {
-},
-{ // statics    
+var java_lang_System = {    
     arraycopy_5 : function(src, srcPos, dest, destPos, length) {
         if (destPos<=srcPos) {
             for (var i = 0; i < length; i++) {
@@ -18,9 +15,7 @@ function() {
     exit_1: function(status) {
     },
     
-    out: (new java_io_PrintStream())._1(false),
-    err: (new java_io_PrintStream())._1(true),       
-},
-null   // no instance methods 
-);
+    out: new java_io_PrintStream.$()._1(false),
+    err: new java_io_PrintStream.$()._1(true),       
+};
 

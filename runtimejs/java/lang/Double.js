@@ -1,9 +1,8 @@
 //load// java/lang/Object
-var java_lang_Double = _defineClass ("java_lang_Double", java_lang_Object, null, 
-function() {
-    this.d = 0;
-},
-{ // static
+var java_lang_Double = {
+    $: function() {
+        this.d = 0;
+    },
     isNaN_1: isNaN,    
     isInfinite_1: function(d) {
         return ! (isFinite(d) || isNaN(d))
@@ -14,14 +13,14 @@ function() {
         return s;
     },
     valueOf_1: function (d) {
-        return (new java_lang_Double())._1(d);
+        return new java_lang_Double.$()._1(d);
     },
     MIN__VALUE : 4.9E-324,
     MAX__VALUE : 1.7976931348623157E308,
     POSITIVE__INFINITY : 1.0/0.0,
     NEGATIVE__INFINITY : -1.0/0.0,
-},
-{
+};
+_class (java_lang_Double, java_lang_Object, null, "java.lang.Double", {
 	_1: function(d) {
 		this.d = d;
         return this;
@@ -30,7 +29,7 @@ function() {
         return this.d;
     },    
     equals_1: function(d) {
-        if (d!=null && d._is_java_lang_Double && this.d==d.d) {
+        if (d!=null && (d instanceof java_lang_Double.$) && this.d==d.d) {
             return true;
         }
         return false;

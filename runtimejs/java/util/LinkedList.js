@@ -1,13 +1,13 @@
 //load// java/util/AbstractList
-var java_util_LinkedList = _defineClass("java_util_LinkedList", java_util_AbstractList, null, 
-function() {
-    this._head = null;
-    this._len = 0;
-    this._currentNode = null;
-    this._currentIndex = 0;        
-},
-null,  // no static
-{  
+var java_util_LinkedList = {
+    $: function() {
+        this._head = null;
+        this._len = 0;
+        this._currentNode = null;
+        this._currentIndex = 0;        
+    },    
+};
+_class(java_util_LinkedList, java_util_AbstractList, null, "java.util.LinkedList", {
     _0: function() {
         var h = { element:null, next:null, prev: null };
         h.next = h;
@@ -158,8 +158,6 @@ null,  // no static
         this._currentNode = h;
         this._currentIndex = -1;
 	},      
-
-
     
 });
 

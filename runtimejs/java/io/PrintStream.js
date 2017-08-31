@@ -1,12 +1,12 @@
 
 //load// java/lang/Object
-var java_io_PrintStream = _defineClass ("java_io_PrintStream", java_lang_Object, null, 
-function() {
-    this._iserr = false;
-    this._line = null;
-},
-null,
-{
+var java_io_PrintStream = {
+    $: function() {
+        this._iserr = false;
+        this._line = null;
+    },
+};
+_class (java_io_PrintStream, java_lang_Object, null, "java.io.PrintStream", {
 	_1: function(iserr) {
         this._iserr = iserr;
         this._line = [];

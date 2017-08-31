@@ -1,11 +1,12 @@
 //reference// java/util/Enumeration
 //load// java/util/ArrayListImpl
-var java_util_Vector = _defineClass("java_util_Vector", java_util_ArrayListImpl, null, 
-function() {
-    java_util_ArrayListImpl.call(this);
-},
-null,  // no static
-{    
+var java_util_Vector = {
+    $: function() {
+        java_util_ArrayListImpl.$.call(this);
+    },
+};
+_class(java_util_Vector, java_util_ArrayListImpl, null, "java.util.Vector", {
+
     // legacy methods only supported by Vector (but not the List interface )
     // everything can be easily implemented by just using the existing methods
     
@@ -14,7 +15,7 @@ null,  // no static
 	},
 	    
     clone_0: function () {
-        return (new java_util_Vector())._1(this);
+        return new java_util_Vector.$()._1(this);
 	},   
 
 	copyInto_1: function(array){        
@@ -28,7 +29,7 @@ null,  // no static
 	},
 
     elements_0: function() {
-        return new java_util_AbstractListIterator()._1(this);
+        return new java_util_AbstractListIterator.$()._1(this);
     },
     
 	firstElement_0: function () {

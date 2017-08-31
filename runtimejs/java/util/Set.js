@@ -1,5 +1,5 @@
 //load// java/util/Collection
-var java_util_Set = _defineInterface("java_util_Set", [java_util_Collection], null);
+var java_util_Set = { _superinterfaces: [java_util_Collection] }; 
 
 // methods:
   // bool contains(System.Object o);

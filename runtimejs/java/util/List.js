@@ -1,5 +1,5 @@
 //load// java/util/Collection
-var java_util_List = _defineInterface("java_util_List",[java_util_Collection], null);  
+var java_util_List = { _superinterfaces: [java_util_Collection] }; 
 
 // -- methods:
 // boolean add(E e)                        

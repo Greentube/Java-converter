@@ -1,11 +1,11 @@
 //load// java/lang/Object
-var java_lang_StringBuilder = _defineClass("java_lang_StringBuilder", java_lang_Object, null, 
-function() {
-    this._parts = null;
-    this._length = 0;
-},
-null, // no statics
-{
+var java_lang_StringBuilder = {
+    $: function() {
+        this._parts = null;
+        this._length = 0;
+    },
+};
+_class(java_lang_StringBuilder, java_lang_Object, null, "java.lang.StringBuilder", {
     _0: function() {
         this._parts = [];        
         return this;
@@ -15,9 +15,9 @@ null, // no statics
         this._length = initialvalue.length;
         return this;
     },
-    
+
     append_1: function(x) {
-        var s = (x==null) ? "null" : x._is_java_lang_Object ? x.toString_0() : String(x);
+        var s = (x==null) ? "null" : x._isObject ? x.toString_0() : String(x);
         this._length += s.length;
         this._parts.push(s);
         return this;
@@ -29,7 +29,6 @@ null, // no statics
   
     toString_0: function() {
         return this._parts.join("");
-    }
-      
+    }     
 }); 
  

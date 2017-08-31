@@ -1,18 +1,16 @@
-//load// java/util/Map
+//reference// java/util/HashMap
 //load// java/util/Set
 //load// java/util/AbstractCollection
-//load// java/util/Iterator
-
-var java_util_HashSet = _defineClass("java_util_HashSet", java_util_AbstractCollection, [java_util_Set], 
-function() {
-    this._map = null;
-},
-{   // static
-    _PRESENT: new java_lang_Object()._0(),  
-},
-{
+//complete// java/lang/Object
+var java_util_HashSet = {
+    $: function() {
+        this._map = null;
+    },
+    _PRESENT: new java_lang_Object.$()._0(),  
+};
+_class(java_util_HashSet, java_util_AbstractCollection, [java_util_Set], "java.util.HashSet", {
         _0: function() {
-            this._map = (new java_util_HashMap())._0();
+            this._map = new java_util_HashMap.$()._0();
             return this;
         },
         

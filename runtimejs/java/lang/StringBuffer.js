@@ -1,11 +1,11 @@
 //load// java/lang/Object
-var java_lang_StringBuffer = _defineClass("java_lang_StringBuffer", java_lang_Object, null, 
-function() {
-    this._parts = null;
-    this._length = 0;
-},
-null, // no statics
-{
+var java_lang_StringBuffer = {
+    $: function() {
+        this._parts = null;
+        this._length = 0;
+    },
+};
+_class(java_lang_StringBuffer, java_lang_Object, null, "java.lang.StringBuffer", {
     _0: function() {
         this._parts = [];        
         return this;
@@ -17,7 +17,7 @@ null, // no statics
     },
 
     append_1: function(x) {
-        var s = (x==null) ? "null" : x._is_java_lang_Object ? x.toString_0() : String(x);
+        var s = (x==null) ? "null" : x._isObject ? x.toString_0() : String(x);
         this._length += s.length;
         this._parts.push(s);
         return this;
@@ -29,7 +29,6 @@ null, // no statics
   
     toString_0: function() {
         return this._parts.join("");
-    }
-      
+    }     
 }); 
  

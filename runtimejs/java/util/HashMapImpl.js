@@ -11,14 +11,14 @@
 //load// java/util/Iterator
 //load// java/util/Enumeration
 
-var java_util_HashMapImpl = _defineClass("java_util_HashMapImpl", java_lang_Object, [java_util_Map], 
-function() {
-    this._stringtable = null;
-    this._commontable = null;
-    this._totalelements = 0;
-},
-null,  // no static
-{    
+var java_util_HashMapImpl = {
+    $: function() {
+        this._stringtable = null;
+        this._commontable = null;
+        this._totalelements = 0;
+    },
+};    
+_class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.HashMapImpl", {
    	_0: function() {
         this._stringtable = {};
         this._commontable = {};
@@ -76,7 +76,7 @@ null,  // no static
 	},
 	
     equals_1: function(h) {
-        if (h==null || !h._is_java_util_Map || this.size_0()!=h.size_0()) {
+        if (h==null || !_implements(h,java_util_Map) || this.size_0()!=h.size_0()) {
             return false;
         }
         for (var it=this.keySet_0().iterator_0(); it.hasNext_0(); ) {
@@ -121,7 +121,7 @@ null,  // no static
 	},
 
 	keySet_0: function() {
-        return (new java_util_HashMapKeyView())._1(this);
+        return new java_util_HashMapKeyView.$()._1(this);
     }, 
 
 	put_2: function(key, value) {
@@ -214,21 +214,21 @@ null,  // no static
 	},
 	  
     values_0: function() {
-        return (new java_util_HashMapValueView())._1(this);
+        return new java_util_HashMapValueView.$()._1(this);
     },        
 });
 
 function _isValidStringKey(s) {
-    return s!=null && s._is_java_lang_String;
+    return s!=null && s._isString;
 }
 
 
-var java_util_HashMapKeyView = _defineClass("java_util_HashMapKeyView", java_util_AbstractCollection, [java_util_Set], 
-function() {
-    this.map = null;
-},
-null,    // no static
-{
+var java_util_HashMapKeyView = {
+    $: function() {
+        this.map = null;
+    },
+};    
+_class(java_util_HashMapKeyView, java_util_AbstractCollection, [java_util_Set], "java.util.HashMapKeyView", {
     _1: function(map) {   
         this.map = map;
         return this;
@@ -263,7 +263,7 @@ null,    // no static
 // boolean	isEmpty()              // implemented by AbstractCollection
 
     iterator_0: function() {
-        return (new java_util_HashMapIterator())._2(this.map, true);
+        return new java_util_HashMapIterator.$()._2(this.map, true);
     },
 
     size_0: function() {
@@ -274,12 +274,12 @@ null,    // no static
 });
 
 
-var java_util_HashMapValueView = _defineClass("java_util_HashMapValueView", java_util_AbstractCollection, [java_util_Collection], 
-function() {
-    this.map = null;
-},
-null,  // no static
-{
+var java_util_HashMapValueView = {
+    $: function() {
+        this.map = null;
+    },
+};
+_class(java_util_HashMapValueView, java_util_AbstractCollection, [java_util_Collection], "java.util.HashMapValueView", {
    	_1: function(map) {
         this.map = map;
         return this;
@@ -295,7 +295,7 @@ null,  // no static
 // boolean	isEmpty()              // implemented by AbstractCollection
 
     iterator_0: function() {
-        return (new java_util_HashMapIterator())._2(this.map, false);     
+        return new java_util_HashMapIterator.$()._2(this.map, false);     
     },
 
     size_0: function() {
@@ -306,16 +306,15 @@ null,  // no static
 });
 
 
-var java_util_HashMapIterator = _defineClass("java_util_MapValueView", 
-    java_lang_Object, [java_util_Iterator, java_util_Enumeration], 
-function() {
-    this.map = null;
-    this.deliverKeys = false;
-    this.keys = null;
-    this.n = 0;
-},
-null,  // no static
-{            
+var java_util_HashMapIterator = {
+    $: function() {
+        this.map = null;
+        this.deliverKeys = false;
+        this.keys = null;
+        this.n = 0;
+    },
+};
+_class(java_util_HashMapIterator, java_lang_Object, [java_util_Iterator, java_util_Enumeration], "java.util.HashMapIterator", {
     _2: function(map, deliverKeys) {
         this.map = map;
         this.deliverKeys = deliverKeys;

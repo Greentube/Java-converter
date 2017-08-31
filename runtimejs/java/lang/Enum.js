@@ -1,11 +1,11 @@
 //load// java/lang/Object
-var java_lang_Enum = _defineClass ("java_lang_Enum", java_lang_Object, null, 
-function() {
-    this._name = null;
-    this._ordinal = 0;
-},
-null,   // no static
-{
+var java_lang_Enum = {
+    $: function() {
+        this._name = null;
+        this._ordinal = 0;
+    },
+};
+_class (java_lang_Enum, java_lang_Object, null, "java.lang.Enum", {
 	_2: function(name,ordinal) {
         this._name = name;
         this._ordinal = ordinal;

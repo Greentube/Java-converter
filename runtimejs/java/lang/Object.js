@@ -1,102 +1,73 @@
 
 // definition of the base class for all java classes
-function java_lang_Object()
-{
-    // no members for allocation of empty object
-};
-
-// internal default constructor
-java_lang_Object.prototype._0 = function()
-{
-    return this;
+var java_lang_Object = {
+    $: function() {}    // allocator function
 };
 
 // add default member functions
-java_lang_Object.prototype.toString_0 = function()
+java_lang_Object.$.prototype._0 = function()
+{
+    return this;
+};
+java_lang_Object.$.prototype.toString_0 = function()
 {
   return this._classname;
 };
-java_lang_Object.prototype.equals_1 = function(a)
+java_lang_Object.$.prototype.equals_1 = function(a)
 {
   return this===a;
 };
-java_lang_Object.prototype.hashCode_0 = function()
+java_lang_Object.$.prototype.hashCode_0 = function()
 {
 // there is no real way to access any true object identity, so use a hash of the class name instead
   return this._classname.hashCode_0();  
 };
 
-// add type detection flag
-java_lang_Object.prototype._is_java_lang_Object = true;
-java_lang_Object.prototype._classname = "java_lang_Object";
-
+// add default attributes 
+java_lang_Object.$.prototype._isObject = true;
+java_lang_Object.$.prototype._interfaces = [];
+java_lang_Object.$.prototype._classname = "java.lang.Object";
 
 // ---- global toolbox functions for classes and arrays ----
 
-// create a new class (that means, its constructor function) and
-// copy existing members to the new prototype. 
-function _defineClass (classname, base, interfaces, allocator, staticmethodsandfields, instancemethods)
+// set up a class to use its instances (set up prototype chain, etc.)
+function _class (classobject, base, interfaces, classname, instancemethods)
+{
+    // connect prototype chain
+    classobject.$.prototype = Object.create(base.$.prototype);
+    classobject.$.prototype.constructor = classobject.$;
+  
+    // add attributes than can be used to check for class/interface type
+    classobject.$.prototype._classname = classname;
+    classobject.$.prototype._interfaces = base.$.prototype._interfaces.slice();
+    collectInterfaces(interfaces);
+    
+    // add/overwrite methods that are newly defined
+    if (instancemethods) {
+        for (var name in instancemethods) {      
+            classobject.$.prototype[name] = instancemethods[name];
+        }
+    }  
+  
+    function collectInterfaces(implementedinterfaces) {   
+        var all = classobject.$.prototype._interfaces;
+        for (var index=0; implementedinterfaces && index<implementedinterfaces.length; index++) {
+            var inf = implementedinterfaces[index];    
+            if (all.indexOf(inf)<0) all.push(inf);
+            collectInterfaces(inf._superinterfaces);
+        }
+    }
+}
+
+// test if an arbitrary java.lang.Object implements a given Interface
+function _implements(x,intrfc)
 {    
-  // copy all static content directly into the allocator function (which also serves as the class object)
-  if (staticmethodsandfields) {
-      for (var name in staticmethodsandfields) {    
-        allocator[name] = staticmethodsandfields[name];
-      }      
-  }
-  
-  // connect prototype chain
-  allocator.prototype = Object.create(base.prototype);
-  allocator.prototype.constructor = allocator;
-  
-  // add/overwrite methods that are newly defined
-  if (instancemethods) {
-      for (var name in instancemethods) {      
-        allocator.prototype[name] = instancemethods[name];
-      }
-  }  
-  
-  // add attributes than can be used to check for class/interface type
-  allocator.prototype['_is_'+classname] = true;
-  allocator.prototype._classname = classname;
-  populateIsInterfaceProperties(interfaces);
-  
-  // done
-  return allocator;
-  
-  function populateIsInterfaceProperties(interfaces) {    
-    for (var index=0; interfaces && index<interfaces.length; index++) {     
-        allocator.prototype['_is_' + interfaces[index]._classname] = true;
-        populateIsInterfaceProperties(interfaces[index]._superinterfaces);
-    }
-  }
+    return (x==null) ? false : (x._interfaces.indexOf(intrfc)>=0);
 }
 
-// create a new interface with possible superinterfaces as well
-function _defineInterface(classname, superinterfaces, staticmethodsandfields)
-{
-    // create the 'interface' object 
-    var i = {
-        _classname: classname,
-        _superinterfaces: superinterfaces,
-    };
-    
-    // copy all static content directly into the interface object
-    if (staticmethodsandfields) {
-        for (var name in staticmethodsandfields) {    
-            i[name] = staticmethodsandfields[name];
-        }      
-    }
-    
-    // done
-    return i;
-}
-
-
-// return the parameter provided, but in case of null, return a 'false' instead.
-// this is necessary to avoid runtime errors when checking for type instance
-function _denullify(x)
-{
-    return (x==null) ? false : x;
+// test if an arbitrary java.lang.Object is a String
+function _isstr(o) {
+    return o!=null && o._isString;
 }
 
 // convert a unicode code number to a string with the corresponding letter 
@@ -164,6 +135,8 @@ function _dimImpl(dimensions,initvalue,cursor)
 
 // do some patching of the built-in array protoype to allow easy
 // integration with other java objects
+Array.prototype._isObject = true;
+Array.prototype._interfaces = [];
 
 Array.prototype.equals_1 = function (o) {
     return this===o;
@@ -177,14 +150,12 @@ Array.prototype.hashCode_0 = function () {
     return 2;
 };
 
-Array.prototype._is_java_lang_Object = true;
-
-
 // extend the javascript String object by monkey-patching in the necessary
-// java methods
+// java methods and attributes
 
-String.prototype._is_java_lang_Object = true;
-String.prototype._is_java_lang_String = true;
+String.prototype._isString = true;
+String.prototype._isObject = true;
+String.prototype._interfaces = [];
 
 String.prototype.charAt_1 = function(x) {
 	return this.charCodeAt(x);
@@ -213,7 +184,7 @@ String.prototype.endsWith_1 = function(suffix) {
 
 String.prototype.equals_1 = function(str) {
     if (str==null) return false;
-    if (!(str._is_java_lang_String)) return false;  
+    if (!(str._isString)) return false;  
 	return this.valueOf() == str.valueOf();
 };
 
@@ -226,7 +197,9 @@ String.prototype.hashCode_0 = function() {
 };   
 
 String.prototype.indexOf_1 = function(str) {
-	if (str._is_java_lang_String) {
+    if (str===null) {
+        return -1;
+	} else if (str._isString) {
 		return this.indexOf(str);
 	} else {
 		return this.indexOf(String.fromCharCode(str));
@@ -234,7 +207,9 @@ String.prototype.indexOf_1 = function(str) {
 };
 
 String.prototype.indexOf_2 = function(str, x) {
-	if (str._is_java_lang_String) {
+    if (str===null) {
+        return -1;
+	} else if (str._isString) {
 		return this.indexOf(str,x);
 	} else {
 		return this.indexOf(String.fromCharCode(str),x);
@@ -246,7 +221,9 @@ String.prototype.isEmpty_0 = function() {
 };   
 
 String.prototype.lastIndexOf_1 = function(str) {
-	if (str._is_java_lang_String) {
+    if (str===null) {
+        return -1;
+	} else if (str._isString) {
         return this.lastIndexOf(str);
     } else {
         return this.lastIndexOf(String.fromCharCode(str));
@@ -254,7 +231,9 @@ String.prototype.lastIndexOf_1 = function(str) {
 };
 
 String.prototype.lastIndexOf_2 = function(str, x) {
-	if (str._is_java_lang_String) {
+    if (str===null) {
+        return -1;
+	} else if (str._isString) {
         return this.lastIndexOf(str, x);
     } else {
         return this.lastIndexOf(String.fromCharCode(str), x);
@@ -301,18 +280,18 @@ String.prototype.trim_0 = function() {
   return this.trim();
 };
 
+
 // Make String object creation easy by providing a dummy string allocator. 
 // This object is not used by itself, but only to call one of the constructor
 // methods, which will then return the proper string.
-function java_lang_String()
-{
+var java_lang_String = { 
+    $ : function() {}
 };
-
-java_lang_String.prototype._1 = function(chararray)
+java_lang_String.$.prototype._1 = function(chararray)
 {
     return String.fromCharCode.apply(String, chararray);     
 };
-java_lang_String.prototype._3 = function(chararray,offset,count)
+java_lang_String.$.prototype._3 = function(chararray,offset,count)
 {
     return String.fromCharCode.apply(String, chararray.slice(offset,offset+count));
 };
