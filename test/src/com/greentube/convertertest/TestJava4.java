@@ -111,6 +111,10 @@ public class TestJava4 {
            		[0][0][0][0][0][0][0][0][0][0] [0][0][0][0][0][0][0][0][0][0]
            		[0][0][0][0][0][0][0][0][0][0] [0][0][0][0][0][0][1][1][1][1]        				
         	,false);
+        	
+        StaticClass sc = new StaticClass();
+        assertI(sc.a, StaticClass.a);
+        assertO(sc.b, StaticClass.b);
     }
     
     public static void constructortest()

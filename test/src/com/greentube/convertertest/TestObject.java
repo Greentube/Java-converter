@@ -50,7 +50,7 @@ public class TestObject extends TestParentIntermediate {
     }
     
     public int accessOwnStatic() {
-    	return staticparentattribute;
+    	return this.staticparentattribute;
     }
     
     // should not be confused with the shadowAttribute method

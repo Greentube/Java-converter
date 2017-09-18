@@ -65,6 +65,9 @@ aspect CheckRestrictions {
 	public boolean ThisAccess.hasPotentialSideEffects() {
 		return false;
 	}
+    public boolean SuperAccess.hasPotentialSideEffects() {
+        return false;
+    }
 	public boolean TypeAccess.hasPotentialSideEffects() {
 		return false;
 	}
@@ -510,22 +513,22 @@ aspect CheckRestrictions {
 	}
 	
 	
-	// Access to static members is not allowed by using an instance
+	// Access to static members is not allowed by using an instance with side effects 
 	public void AbstractDot.checkRestrictions(ArrayList<String> errorlist) {
 		Expr l = getLeft();
 		Access r = getRight();
 		if ((r instanceof MethodAccess) && ((MethodAccess) r).decl().isStatic()) {
-			if (! (l instanceof TypeAccess) && ! (l instanceof SuperAccess)) {
+			if (l.hasPotentialSideEffects()) {
 				 reportRestriction(errorlist, "Can not access static method '"
 				 + ((MethodAccess) r).decl().getID()
-				 +"' with instance expression");
+				 +"' with instance expression that has potential side effects");
 			}
 		}
 		if ((r instanceof VarAccess) && ((VarAccess) r).varDecl().isStatic()) {
-			if (! (l instanceof TypeAccess) && ! (l instanceof SuperAccess)) {
+            if (l.hasPotentialSideEffects()) {
 				 reportRestriction(errorlist, "Can not access static field '"
 				  + ((VarAccess) r).varDecl().name() 
-				  + "' with instance expression");
+				  + "' with instance expression that has potential side effects");
 			}
 		}
 		super.checkRestrictions(errorlist);

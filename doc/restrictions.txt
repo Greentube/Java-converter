@@ -41,12 +41,11 @@
       it is possible to use  a[i]+=5  it is unsupported to write  a[i++]+=4.
       Same thing holds for ++ and --  (i[4]++ is ok, i[get()]++  is not).  
       This is to avoid faulty double-evaluation behavior in all conversion targets. 
- - Access to static members is not allowed by using an instance
-      It is kind of legal in java to call a static method with something like: 
+ - Access to static members is not allowed by using an instance expression with side-effects
+      It is legal in java to call a static method with something like: 
       exp.valueOf(4711)    // where exp is of type Integer 
-      The possible side-effects of the first expression makes it impossible to just always
-      eliminate it for conversion. Therefore this strange construction is not supported.
-      (but you can use 'super' to access static members of superclasses) 
+      Since the expression will just be eliminated during conversion, it must not
+      have any possible side effects.
   - Different default implementation of hashCode()
       Objects not overriding hashCode will provide a default implementation may deliver
       an extremely weak hash (only depending on the object's class). Do not 

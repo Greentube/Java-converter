@@ -24,8 +24,14 @@ aspect GenerateJS {
  	
   	public void AbstractDot.generateJS(CodePrinter out) {
   		Access a = getRight();
-  		if (! (a instanceof ClassInstanceExpr)) {
-  			getLeft().generateJS(out);
+  		if (a instanceof ClassInstanceExpr) {
+  		    // do not generate enclosing instance expression here - must be done by constructor  		    
+  		} else if ((a instanceof MethodAccess) && ((MethodAccess)a).decl().isStatic()) {
+  		    // do not generate instance expression with calling static method
+        } else if ((a instanceof VarAccess) && ((VarAccess)a).decl().isStatic()) {
+            // do not generate instance expression with accessing static variable
+  		} else {
+            getLeft().generateJS(out);
   		}
   		a.generateJS(out);
  	}
@@ -180,8 +186,14 @@ aspect GenerateJS {
   		// do not generate anything - must be implemented by the method or variable access
  	}
   	public void ThisAccess.generateJS(CodePrinter out) {
-  		out.print("this");
- 	}
+        // do not generate anything for static access - must be implemented by the method or variable access
+        if (isLeftChildOfDot()) {
+            Access n = nextAccess();
+            if ((n instanceof MethodAccess) && ((MethodAccess)n).decl().isStatic()) return;
+            if ((n instanceof VarAccess) && ((VarAccess)n).decl().isStatic()) return;
+        }
+        out.print("this");
+    }
   	public void TypeAccess.generateJS(CodePrinter out) {
  	}
   	public void ArrayTypeAccess.generateJS(CodePrinter out) {
@@ -206,9 +218,7 @@ aspect GenerateJS {
   				out.memorizeComplete(t.packageName(),t.uniqueName());
   			}  		  						  			
   		} else if (v.isInstanceVariable()) {
-			if (isRightChildOfDot()) {
-				out.print(".");
-			} else {
+			if (!hasPrevExpr()) {
 				out.print("this.");
 				TypeDecl t = hostType();
 				if (t!=v.hostType() && t.isInnerTypeOf(v.hostType())) {
@@ -217,7 +227,9 @@ aspect GenerateJS {
 						t = t.enclosingType();
 					}
 				}  		
-  			}  		
+  			} else {  		
+                out.print(".");
+            } 
 			out.printJSIdentifier(getID(),"");
         } else if (v.isLocalVariable() || v.isParameter()) 
         {   if (v.hostType() == hostType()) 
