@@ -392,6 +392,12 @@ public class TestJava4 {
     	assertI( (-i)/-5, 3);    
     	assertI( (-i)%-5, -2);
     	assertI( (-i)*-5, 85);
+    	i=1220431789;
+        assertI( i*2000001214, -429991322);
+        assertI( (i+7)*2000051237, 1679701252);
+        assertI(i*-i,1382532375);
+        assertI(i*51233,247950669);        
+        assertI(41233*i,-2067851395);        
     	i = 246;
     	assertI (i<<6, 15744);
         assertI (-(i)>>2, -62);
@@ -498,6 +504,12 @@ public class TestJava4 {
     	assertD(d, 3.5);
     	d %= 2.0;
     	assertD(d, 1.5);
+
+        i = 525434532;
+        i *= 66;
+        assertI(i,318940744);
+        i *= 661855881;
+        assertI(i,641690760);
     	
     	i = 17;
     	int q = (i += 3.2);

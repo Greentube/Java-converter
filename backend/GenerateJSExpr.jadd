@@ -8,6 +8,17 @@ aspect GenerateJS {
  			generateJS(out);
  		}
 	}
+
+    public boolean Expr.hasLessThan20Bits() {
+        TypeDecl t = type();
+        if (t.isChar() || t.isByte() || t.isBoolean()) return true;
+        if (t.isInt() && isConstant()) {
+            int i = constant().intValue();
+            return  i >= 0xfff80000 && i <= 0x7ffff;
+        }
+        return false;
+    }
+    
 	 
  	// --- Access --- 
  	
@@ -298,6 +309,20 @@ aspect GenerateJS {
   		}
   	}
   	public void AssignMulExpr.generateJS(CodePrinter out) {
+        // do some case discrimination if this is an int multiplication with large operands        
+        Expr d = getDest();
+        Expr s = getSource();
+        if (d.type().isInt() && s.type().isInt()) {
+            if (!d.hasLessThan20Bits() && !s.hasLessThan20Bits()) {
+                d.generateJS(out);
+                out.print(" = _imul(");
+                d.generateJS(out);
+                out.print(" , ");
+                s.generateJS(out);
+                out.print(")");
+                return;
+            }
+        }
   		generateWithOptionalCastJS(out,"*");
   	}  	
   	public void AssignDivExpr.generateJS(CodePrinter out) {
@@ -428,12 +453,18 @@ aspect GenerateJS {
 	  		l.generateUsingResultJS(out);
   			out.print(" * ");
   			r.generateUsingResultJS(out);
-  		} else {
-  			out.print("((");
-	  		l.generateUsingResultJS(out);
-  			out.print(" * ");
-  			r.generateUsingResultJS(out);
-  			out.print(")|0)");
+  		} else if (l.hasLessThan20Bits() || r.hasLessThan20Bits()) {
+            out.print("((");
+            l.generateUsingResultJS(out);
+            out.print(" * ");
+            r.generateUsingResultJS(out);
+            out.print(")|0)");
+        } else {
+            out.print("_imul(");
+            l.generateUsingResultJS(out);
+            out.print(" , ");
+            r.generateUsingResultJS(out);
+            out.print(")");  		
   		}
   	}
   	public void ModExpr.generateJS(CodePrinter out) {
