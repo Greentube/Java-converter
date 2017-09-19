@@ -81,6 +81,14 @@ function _str(o) {
     return o.toString_0();    
 }
 
+// string object creation from char array
+function _array2str(chararray) {
+    return String.fromCharCode.apply(null, chararray);
+}
+function _subarray2str(chararray,offset,count) {
+    return String.fromCharCode.apply(null, chararray.slice(offset,offset+count));
+}
+
 // integer multiplication with correct behaviour for large operands
 var _imul = Math.imul || function(a, b) {
   var ah = (a >>> 16) & 0xffff;
@@ -296,18 +304,4 @@ String.prototype.trim_0 = function() {
 };
 
 
-// Make String object creation easy by providing a dummy string allocator. 
-// This object is not used by itself, but only to call one of the constructor
-// methods, which will then return the proper string.
-var java_lang_String = { 
-    $ : function() {}
-};
-java_lang_String.$.prototype._1 = function(chararray)
-{
-    return String.fromCharCode.apply(String, chararray);     
-};
-java_lang_String.$.prototype._3 = function(chararray,offset,count)
-{
-    return String.fromCharCode.apply(String, chararray.slice(offset,offset+count));
-};
 

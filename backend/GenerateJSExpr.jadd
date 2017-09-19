@@ -61,6 +61,17 @@ aspect GenerateJS {
         {   transformed().generateJS(out);
             return;
         }
+        // special construction of string objects
+        if (type().isString()) {
+            out.print(getNumArg()<=1 ? "_array2str" : "_subarray2str");
+            out.print("(");
+            for (int i=0; i<getNumArg(); i++) {
+                if (i>0) out.print(",");
+                getArg(i).generateUsingResultJS(out);
+            }
+            out.print(")");
+            return;
+        }
 
         boolean foundpar=false;
         out.print("(new ");
