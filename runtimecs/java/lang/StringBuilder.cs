@@ -26,12 +26,6 @@ namespace java.lang {
             return this;
 		}
 
-	    public StringBuilder append(sbyte b)
-		{
-            content.Append((int)b);
-            return this;
-		}
-
 	    public StringBuilder append(char c)
 		{
             content.Append(c);

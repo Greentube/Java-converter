@@ -179,16 +179,27 @@ aspect GenerateJS {
             TypeDecl ht = m.hostType();
             String tn = ht.packageName() + "." + ht.uniqueName();
             if 
-            (   i==0 && getNumArg()==1 && getArg(0).type().isChar() && 
+            (   i==0 && getNumArg()==1 && 
                 (   (m.name().equals("append") && tn.equals("java.lang.StringBuffer"))
                     || (m.name().equals("append") && tn.equals("java.lang.StringBuilder"))
                     || (m.name().equals("print") && tn.equals("java.io.PrintStream"))
                     || (m.name().equals("println") && tn.equals("java.io.PrintStream"))
                 ) 
             ) 
-            {   out.print("_c2s(");  	
-                getArg(i).generateUsingResultJS(out);
-                out.print(")");  	
+            {   TypeDecl at = getArg(0).type(); 
+                if (at.isChar()) 
+                {   out.print("_c2s(");  	
+                    getArg(i).generateUsingResultJS(out);
+                    out.print(")");
+                }
+                else if (at.isPrimitiveType()) 
+                {   out.print("_p2s(");     
+                    getArg(i).generateUsingResultJS(out);
+                    out.print(")");
+                }
+                else 
+                {   getArg(i).generateUsingResultJS(out);
+                }	
             } 
             else 
             {  getArg(i).generateUsingResultJS(out);

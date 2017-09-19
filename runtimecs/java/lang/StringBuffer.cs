@@ -26,12 +26,6 @@ namespace java.lang {
             return this;
 		}
 
-	    public StringBuffer append(sbyte b)
-		{
-            content.Append((int)b);
-            return this;
-		}
-
 	    public StringBuffer append(char c)
 		{
             content.Append(c);

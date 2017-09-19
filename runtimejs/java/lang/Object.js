@@ -24,7 +24,6 @@ java_lang_Object.$.prototype.hashCode_0 = function()
 };
 
 // add default attributes 
-java_lang_Object.$.prototype._isObject = true;
 java_lang_Object.$.prototype._interfaces = [];
 java_lang_Object.$.prototype._classname = "java.lang.Object";
 
@@ -39,7 +38,7 @@ function _class (classobject, base, interfaces, classname, instancemethods)
   
     // add attributes than can be used to check for class/interface type
     classobject.$.prototype._classname = classname;
-    classobject.$.prototype._interfaces = base.$.prototype._interfaces.slice();
+    classobject.$.prototype._interfaces = base.$.prototype._interfaces;
     collectInterfaces(interfaces);
     
     // add/overwrite methods that are newly defined
@@ -50,10 +49,10 @@ function _class (classobject, base, interfaces, classname, instancemethods)
     }  
   
     function collectInterfaces(implementedinterfaces) {   
-        var all = classobject.$.prototype._interfaces;
+        var proto = classobject.$.prototype;
         for (var index=0; implementedinterfaces && index<implementedinterfaces.length; index++) {
             var inf = implementedinterfaces[index];    
-            if (all.indexOf(inf)<0) all.push(inf);
+            if (proto._interfaces.indexOf(inf)<0) proto._interfaces = proto._interfaces.concat([inf]);
             collectInterfaces(inf._superinterfaces);
         }
     }
@@ -65,7 +64,7 @@ function _implements(x,intrfc)
     return (x==null) ? false : (x._interfaces.indexOf(intrfc)>=0);
 }
 
-// test if an arbitrary java.lang.Object is a String
+// test if an arbitrary object is a String
 function _isstr(o) {
     return o!=null && o._isString;
 }
@@ -73,6 +72,11 @@ function _isstr(o) {
 // convert a unicode code number to a string with the corresponding letter 
 function _c2s(c) {
     return String.fromCharCode(c);
+}
+
+// convert any primitive type to a string 
+function _p2s(c) {
+    return String(c);
 }
 
 // convert any object to a string - and give "null" for null reference
@@ -154,11 +158,10 @@ function _dimImpl(dimensions,initvalue,cursor)
 
 // do some patching of the built-in array protoype to allow easy
 // integration with other java objects.
-// Be aware that this now messes up any optimization possibility for 
+// Be aware that this now messes up any use of  
 // any  for (x in array) loop on the entirety of the program,
 // DO NOT USE such a loop!
 
-Array.prototype._isObject = true;
 Array.prototype._interfaces = [];
 
 Array.prototype.equals_1 = function (o) {
@@ -176,8 +179,7 @@ Array.prototype.hashCode_0 = function () {
 // extend the javascript String object by monkey-patching in the necessary
 // java methods and attributes
 
-String.prototype._isString = true;
-String.prototype._isObject = true;
+String.prototype._isString = true;  // reliable way to test if anything is a string
 String.prototype._interfaces = [];
 
 String.prototype.charAt_1 = function(x) {
