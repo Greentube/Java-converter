@@ -10,6 +10,7 @@ public class TestObject extends TestParentIntermediate {
     int    somenumber;                  // instance attribute default initializer
 
     TestObject   moreobject;
+    TestObject   self;
     public DummyClass dummyobject;
     public boolean dummyboolean;
     
@@ -20,6 +21,7 @@ public class TestObject extends TestParentIntermediate {
         super();                     // constructor calling superconstructor
         somenumber = 4711;
         somestring = "defaulttext";
+        self = this;
     }
     
     public TestObject(String str) {        // constructor with 1 parametere

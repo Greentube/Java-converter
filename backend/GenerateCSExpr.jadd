@@ -71,12 +71,12 @@ aspect GenerateCS {
 		if (len==2 && (list.get(1) instanceof ClassInstanceExpr)) {
 			skipfirst=true; 
 		}
-		// do not generate the expression for a static method access
-		if (len==2 && (list.get(1) instanceof MethodAccess) && ((MethodAccess)list.get(1)).decl().isStatic()) {
+		// do not generate the leading expression for a static method access
+		if (len>=2 && (list.get(len-1) instanceof MethodAccess) && ((MethodAccess)list.get(len-1)).decl().isStatic()) {
 		  skipfirst=true;
 		}
         // do not generate the expression for a static variable access
-        if (len==2 && (list.get(1) instanceof VarAccess) && ((VarAccess)list.get(1)).decl().isStatic()) {
+        if (len>=2 && (list.get(len-1) instanceof VarAccess) && ((VarAccess)list.get(len-1)).decl().isStatic()) {
           skipfirst=true;
         }
         

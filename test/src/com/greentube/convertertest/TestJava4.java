@@ -115,6 +115,11 @@ public class TestJava4 {
         StaticClass sc = new StaticClass();
         assertI(sc.a, StaticClass.a);
         assertO(sc.b, StaticClass.b);
+        
+        TestObject to = new TestObject();
+        assertI(to.self.self.self.staticparentattribute, 55);
+        assertI(to.self.self.self.shadowAttribute(66), 66);
+        assertO(java.lang.Integer.valueOf(44), new Integer(44));
     }
     
     public static void constructortest()
@@ -2078,6 +2083,8 @@ public class TestJava4 {
     	assertO(x.toString(),"!4711:99,4711");
     	OuterCläss.MemberClass m = x.new MemberClass(44);
     	assertO(m.toString(),"44,4711");
+    	m = x.self.self.self.new MemberClass(33);
+        assertO(m.toString(),"33,4711");
     	
     	assertO(x.workWithLocalClass(), "L4721");
     	assertO(new OuterCläss(33).workWithLocalClass(), "L43");

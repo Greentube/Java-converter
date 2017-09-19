@@ -10,6 +10,7 @@ public class OuterCläss {
 	final int l=77;
 	
 	MemberClass member;
+	public OuterCläss self;
 	
 	public interface Fetcher {
 		void fetch(int[] i);
@@ -44,6 +45,7 @@ public class OuterCläss {
 	public OuterCläss(int p) {
 		this.p = p;
 		member = new MemberClass(99);
+		self = this;
 	}
 	public String toString() {
 		return "!"+p+":"+member;

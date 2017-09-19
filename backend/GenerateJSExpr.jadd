@@ -23,17 +23,25 @@ aspect GenerateJS {
  	// --- Access --- 
  	
   	public void AbstractDot.generateJS(CodePrinter out) {
+  	    // search down the tree to find the end of the AbstactDot sequence  	    
   		Access a = getRight();
-  		if (a instanceof ClassInstanceExpr) {
-  		    // do not generate enclosing instance expression here - must be done by constructor  		    
-  		} else if ((a instanceof MethodAccess) && ((MethodAccess)a).decl().isStatic()) {
-  		    // do not generate instance expression with calling static method
-        } else if ((a instanceof VarAccess) && ((VarAccess)a).decl().isStatic()) {
-            // do not generate instance expression with accessing static variable
-  		} else {
-            getLeft().generateJS(out);
+  		while (a instanceof AbstractDot) {
+  		    a = ((AbstractDot)a).getRight();
   		}
-  		a.generateJS(out);
+  		if (a instanceof ClassInstanceExpr) {
+  		    // do not generate enclosing instance expression here - must be done by constructor
+  		    a.generateJS(out);  		    
+  		} else if ((a instanceof MethodAccess) && ((MethodAccess)a).decl().isStatic()) {
+  		    // do not generate instance expression when calling static method
+            a.generateJS(out);              
+        } else if ((a instanceof VarAccess) && ((VarAccess)a).decl().isStatic()) {
+            // do not generate instance expression when accessing static variable
+            a.generateJS(out);              
+  		} else {
+  		    // generate everything
+            getLeft().generateJS(out);
+            getRight().generateJS(out);
+  		}
  	}
 //  	public void Wildcard.generateJS(CodePrinter out) {
 // 	}
