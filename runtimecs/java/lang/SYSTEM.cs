@@ -13,6 +13,11 @@ namespace java.lang {
         {
             System.Environment.Exit( code );
         }
+        
+        public static long currentTimeMillis() 
+        {
+            return System.DateTimeOffset.Now.ToUnixTimeMilliseconds();
+        }
             
             
         public static T[][] dim<T>(int n0, int n1) {

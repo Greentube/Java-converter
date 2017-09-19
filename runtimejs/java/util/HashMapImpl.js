@@ -22,8 +22,13 @@ var java_util_HashMapImpl = {
 };    
 _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.HashMapImpl", {
    	_0: function() {
-        this._stringtable = {};
-        this._commontable = {};
+        // by removing a key from an object, it will be clear that
+        // this object should be used in dictionary mode from now on         
+        this._stringtable = {x: 0};
+        this._commontable = {x: 0};        
+        delete this._stringtable.x; 
+        delete this._commontable.x;
+        
         this._totalelements = 0;
         return this;
 	},
@@ -44,12 +49,12 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
         if (_isValidStringKey(key)) {
             return this._stringtable.hasOwnProperty(key);
         }
-        var hc = (key==null) ? 0 : key.hashCode_0();
+        var hc = (key===null) ? 0 : key.hashCode_0();
         if (!this._commontable.hasOwnProperty(hc)) return false;
         var kv = this._commontable[hc];
         for (var i=0; i<kv.length; i+=2) {  // scan all key-value pairs for the hashCode
             var k = kv[i];
-            if (key==null ? k==null : key.equals_1(k)) return true;
+            if (key===null ? k===null : key.equals_1(k)) return true;
         }
         return false;
 	},
@@ -59,7 +64,7 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
         for (var s in this._stringtable) {
             if (this._stringtable.hasOwnProperty(s)) {
                 var v = this._stringtable[s];
-                if (value==null ? v==null : value.equals_1(v)) {
+                if (value===null ? v===null : value.equals_1(v)) {
                     return true;
                 }
             }
@@ -70,7 +75,7 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
                 var kv = this._commontable[hc];
                 for (var i=1; i<kv.length; i+=2) {
                     var v = kv[i];
-                    if (value==null ? v==null : value.equals_1(v)) {
+                    if (value===null ? v===null : value.equals_1(v)) {
                         return true;
                     }   
                 }
@@ -80,7 +85,7 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
 	},
 	
     equals_1: function(h) {
-        if (h==null || !_implements(h,java_util_Map) || this.size_0()!=h.size_0()) {
+        if (h===null || !_implements(h,java_util_Map) || this.size_0()!==h.size_0()) {
             return false;
         }
         for (var it=this.keySet_0().iterator_0(); it.hasNext_0(); ) {
@@ -88,21 +93,24 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
             var v = this.get_1(k);
             if (!h.containsKey_1(k)) return false;
             var v2 = h.get_1(k);
-            if (! (v==null ? v2==null : v.equals_1(v2)) ) return false;
+            if (! (v===null ? v2===null : v.equals_1(v2)) ) return false;
         }            
         return true;
     },
 
 	get_1: function(key) {
         if (_isValidStringKey(key)) {
-            return this._stringtable.hasOwnProperty(key) ? this._stringtable[key] : null;
+            var s = this._stringtable;
+            var v = s[key];
+            if (v) return v;
+            return null;
         }
-        var hc = (key==null) ? 0 : key.hashCode_0();
-        if (!this._commontable.hasOwnProperty(hc)) return null;
+        var hc = (key===null) ? 0 : key.hashCode_0();
         var kv = this._commontable[hc];  // scan all key-value pairs for the hashCode
+        if (!kv) return;
         for (var i=0; i<kv.length; i+=2) {  
             var k = kv[i];
-            if (key==null ? k==null : key.equals_1(k)) {
+            if (key===null ? k===null : key.equals_1(k)) {
                 return kv[i+1];
             }
         }
@@ -114,8 +122,8 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
         for (var it=this.keySet_0().iterator_0(); it.hasNext_0(); ) {
             var k = it.next_0();
             var v = this.get_1(k);
-            var c = (k==null ? 0 : k.hashCode_0()) ^
-                    (v==null ? 0 : v.hashCode_0());
+            var c = (k===null ? 0 : k.hashCode_0()) ^
+                    (v===null ? 0 : v.hashCode_0());
             sum = (sum + c) | 0;
         }
         return sum;
@@ -142,7 +150,7 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
             }
         // complex operation, maintaining buckets of key-value pairs 
         } else {
-            var hc = (key==null) ? 0 : key.hashCode_0();
+            var hc = (key===null) ? 0 : key.hashCode_0();
             if (!this._commontable.hasOwnProperty(hc)) {
                 // create new bucket if not yet existing
                 this._commontable[hc] = [key,value]; 
@@ -152,7 +160,7 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
                 for (var i=0; i<kv.length; i+=2) {  // scan all key-value pairs for the hashCode
                     var k = kv[i];
                     // found occurence of the key - overwrite the value
-                    if (key==null ? k==null : key.equals_1(k)) {
+                    if (key===null ? k===null : key.equals_1(k)) {
                         var rtn = kv[i+1];
                         kv[i+1] = value;
                         return rtn;
@@ -168,7 +176,7 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
 	},
     
     putAll_1: function(map) {
-        if (map==null) throw new TypeError("NullPointerException");
+        if (map===null) throw new TypeError("NullPointerException");
         for (var it=map.keySet_0().iterator_0(); it.hasNext_0(); ) {
             var k = it.next_0();
             var v = map.get_1(k);
@@ -186,13 +194,13 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
                 return rtn;
             }
         } else {
-            var hc = (key==null) ? 0 : key.hashCode_0();
+            var hc = (key===null) ? 0 : key.hashCode_0();
             var ct = this._commontable;
             if (ct.hasOwnProperty(hc)) {
                 var kv = ct[hc];
                 for (var i=0; i<kv.length; i+=2) {
                     var k = kv[i];
-                    if (key==null ? k==null : key.equals_1(k)) {
+                    if (key===null ? k===null : key.equals_1(k)) {
                         var rtn = kv[i+1];
                         if (kv.length>2) {
                             kv.splice(i,2);
@@ -220,9 +228,9 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
             if (parts.length>1) {
                 parts.push(", ");
             }
-            parts.push(k==null ? "null" : k.toString_0());
+            parts.push(k===null ? "null" : k.toString_0());
             parts.push("=");
-            parts.push(v==null ? "null" : v.toString_0());
+            parts.push(v===null ? "null" : v.toString_0());
         }
         parts.push("}");
 		return parts.join("");
@@ -234,7 +242,7 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
 });
 
 function _isValidStringKey(s) {
-    return s!=null && s._isString;
+    return !(s===null) && s._isString;
 }
 
 
@@ -256,7 +264,7 @@ _class(java_util_HashMapKeyView, java_util_AbstractCollection, [java_util_Set], 
 // containsAll_1                   // implemented by AbstractCollection
 
     equals_1: function(o) {
-        if (o==null || !(o instanceof java_util_HashMapKeyView.$) || this.size_0()!=o.size_0()) {
+        if (o===null || !(o instanceof java_util_HashMapKeyView.$) || this.size_0()!==o.size_0()) {
             return false;
         }
         for (var it=this.iterator_0(); it.hasNext_0(); ) {
@@ -270,7 +278,7 @@ _class(java_util_HashMapKeyView, java_util_AbstractCollection, [java_util_Set], 
         var hashCode = 0;
         for (var it=this.iterator_0(); it.hasNext_0(); ) {
             var e = it.next_0();
-            hashCode = ( hashCode + (e==null ? 0 : e.hashCode_0()) ) & 0xffffffff;
+            hashCode = ( hashCode + (e===null ? 0 : e.hashCode_0()) ) & 0xffffffff;
         }
         return hashCode;
     },       

@@ -163,6 +163,7 @@ public class LibraryList
             "out",
             "err",
             "void arraycopy(java.lang.Object, int, java.lang.Object, int, int)",
+            "long currentTimeMillis()",
             "void exit(int)",
         },
         { "java.util.AbstractCollection",

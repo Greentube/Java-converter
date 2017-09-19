@@ -25,9 +25,9 @@ _class(java_util_ArrayListImpl, java_util_AbstractList, null, "java.util.ArrayLi
 	},
 	    
 	add_2: function(index, obj) {
-        if(index==this._storage.length) {
+        if(index===this._storage.length) {
             this._storage.push(obj);
-        } else if (index==0) {
+        } else if (index===0) {
             this._storage.unshift(obj);
         } else {
             this._storage.splice (index,0, obj);
@@ -35,9 +35,18 @@ _class(java_util_ArrayListImpl, java_util_AbstractList, null, "java.util.ArrayLi
     },
 
     remove_1: function (idx) {   
+        var s = this._storage;
+        if (idx<0 || idx>=s.length) throw new RangeError();
         var obj = this._storage[idx];
-        if (idx==0) this._storage.shift();
-        else        this._storage.splice(idx,1);
+        if (idx===0) 
+        {   this._storage.shift();
+        }
+        else if (idx===s.length-1)
+        {   this._storage.pop();
+        }
+        else 
+        {   this._storage.splice(idx,1);
+        }
         return obj;                    
     },
 

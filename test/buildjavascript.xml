@@ -31,6 +31,12 @@
     		main="Launcher"
     		>
     </linkJavaScript>		
+    <linkJavaScript 
+            output="${basedir}/build/javascript/mainperformance.js" 
+            searchpath="${basedir}/build/javascript,${basedir}/../runtimejs"
+            main="Performance"
+            >
+    </linkJavaScript>       
 
   </target>
   
