@@ -27,7 +27,7 @@ _class (java_io_PrintStream, java_lang_Object, null, "java.io.PrintStream", {
         this._line = [];
     },
     
-    println_1(x) {
+    println_1: function(x) {
         this.print_1(x);
         this.println_0();
     },       
