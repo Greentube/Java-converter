@@ -1,9 +1,8 @@
 package com.greentube.convertertestjava5;
 
 public enum Type
-{
-  AMPHIBIAN,
-  MAMMAL,
-  REPTILE,
-  BIRD
+{   AMPHIBIAN,
+    MAMMAL,
+    REPTILE,
+    BIRD
 }

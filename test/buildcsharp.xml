@@ -7,7 +7,7 @@
   	
   	<delete dir="${basedir}/csharpproject/build"/>
     <mkdir dir="${basedir}/csharpproject/build" />  	
-    <convertJava cs="${basedir}/csharpproject/build"> <!-- external="${basedir}/runtime"> -->
+    <convertJava cs="${basedir}/csharpproject/build" benchmark="true">
         <fileset dir="${basedir}/src">        
             <include name="**/*.java"/> 
         </fileset>

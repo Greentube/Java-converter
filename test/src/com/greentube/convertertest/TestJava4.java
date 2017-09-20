@@ -1,46 +1,27 @@
 package com.greentube.convertertest;
 
-import com.greentube._convertertest2.TestInterface_X;
-import com.greentube._convertertest2.TestObject2_;
-import com.greentube._convertertest2._TestInterface2;
+import com.greentube._convertertest2.*;
 import com.greentube.convertertestreserved.debugger.arguments;
 import com.greentube.convertertestreserved.event.lock;
-import com.greentube.convertert€st_3.InitSequenceTestA;
-import com.greentube.convertert€st_3.InitSequenceTestB;
-import com.greentube.convertert€st_3.InitSequenceTestC;
-import com.greentube.convertert€st_3.InitializerBlockTest;
-import com.greentube.convertert€st_3.OuterCläss;
-import com.greentube.convertert€st_3.OuterCläss.InnerStatic;
+import com.greentube.convertert€st_3.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 
-// A test class to test the conversion of various features from java to other languages
-
-public class TestJava4 {
-    
+public class TestJava4 
+{
     // class attributes
     static int staticint = 4;           // static attribute with initializer 
     final static int staticint99 = 99;  // final static with initializer
 
     static int static1, static2;       // two variables in one line;
     static boolean static3;
-    
+
     static String initialized = "hello".substring(2);
 
-    public static void main(String[] args) {    	
-        System.out.print ("--");
+    public static void main(String[] args) 
+    {   System.out.print ("--");
         System.out.println(" converter test suite for java 4" );
-        
+
         staticattributestest();
         constructortest();
         arraytest();
@@ -72,13 +53,12 @@ public class TestJava4 {
         initsequencetest();
         innerclasstest();
         identifi€rmangling();
-        
+
         unsupported();
     }
-    
+
     public static void staticattributestest()
-    {
-    	System.out.println("- static attributes");
+    {   System.out.println("- static attributes");
         assertI(staticint, 4);
         assertI(staticint99 ,99);
         
@@ -104,14 +84,16 @@ public class TestJava4 {
         assertI(TestInterface.constant1, 6);
         assertO(TestInterface.constant2, "Hi");
         assertO(TestInterface.constant3, new Integer(44));
-        assertB(TestInterface.ultradeepfield
-        		[0][0][0][0][0][0][0][0][0][0] [0][0][0][0][0][0][0][0][0][0]
-          		[0][0][0][0][0][0][0][0][0][0] [0][0][0][0][0][0][0][0][0][0]
-           		[0][0][0][0][0][0][0][0][0][0] [0][0][0][0][0][0][0][0][0][0]
-           		[0][0][0][0][0][0][0][0][0][0] [0][0][0][0][0][0][0][0][0][0]
-           		[0][0][0][0][0][0][0][0][0][0] [0][0][0][0][0][0][1][1][1][1]        				
-        	,false);
-        	
+        assertB
+        (   TestInterface.ultradeepfield
+            [0][0][0][0][0][0][0][0][0][0] [0][0][0][0][0][0][0][0][0][0]
+            [0][0][0][0][0][0][0][0][0][0] [0][0][0][0][0][0][0][0][0][0]
+            [0][0][0][0][0][0][0][0][0][0] [0][0][0][0][0][0][0][0][0][0]
+            [0][0][0][0][0][0][0][0][0][0] [0][0][0][0][0][0][0][0][0][0]
+            [0][0][0][0][0][0][0][0][0][0] [0][0][0][0][0][0][1][1][1][1]
+            ,false
+        );
+
         StaticClass sc = new StaticClass();
         assertI(sc.a, StaticClass.a);
         assertO(sc.b, StaticClass.b);
@@ -123,10 +105,9 @@ public class TestJava4 {
     }
     
     public static void constructortest()
-    {    	
-    	System.out.println("- constructor");
-    	
-    	TestObject t;
+    {   System.out.println("- constructor");
+
+        TestObject t;
         t = new TestObject();
         assertI(t.somenumber, 4711);
         assertO(t.somestring, "defaulttext");
@@ -148,22 +129,22 @@ public class TestJava4 {
     }
     
 
-    static public void arraytest() {
-    	System.out.println ("- array");
-    	
+    static public void arraytest() 
+    {   System.out.println ("- array");
+    
         // simple array with initializer
-    	int[] ar = new int[0];
+        int[] ar = new int[0];
         assertI(ar.length, 0);
-    	ar = new int[1];
+        ar = new int[1];
         assertI(ar.length, 1);
-    	ar = new int[2];
+        ar = new int[2];
         assertI(ar.length, 2);
-    	ar = new int[]{};
+        ar = new int[]{};
         assertI(ar.length, 0);
-    	ar = new int[]{4};
+        ar = new int[]{4};
         assertI(ar.length, 1);
         assertI(ar[0],4);
-    	ar = new int[]{4,5};
+        ar = new int[]{4,5};
         assertI(ar.length, 2);
         assertI(ar[0],4);
         assertI(ar[1],5);
@@ -233,11 +214,7 @@ public class TestJava4 {
         assertO(tob3[1],null);
         assertB(tob3[0] != null);
         assertB(tob3[0][1]!=null);
-//        assertB(tob3[0] instanceof TestObject[][]);
-//        assertB(!( ((Object)tob3[0]) instanceof TestObject[]));
-//        assertB(tob3[0][1] instanceof TestObject[]);
-//        assertB(!(tob3[0][1][0] instanceof TestObject));
-        
+
         assertB(tob instanceof Object);
         assertB(tob.toString() != null); 
         assertB(new int[2].toString() != null);
@@ -256,39 +233,37 @@ public class TestJava4 {
         tpa[0] = new TestObject();
     }
     
-    private static int getArray()[] {
-        return new int[]{9,8,7,6,5,4,3};
+    private static int getArray()[]
+    {   return new int[]{9,8,7,6,5,4,3};
     }
-    private static TestParent[] passarray(TestParent[] a) {
-    	return a;
+    private static TestParent[] passarray(TestParent[] a) 
+    {   return a;
     }
 
-    public static void shadowingtest() { 
-    	System.out.println ("- shadowing");
+    public static void shadowingtest() 
+    {   System.out.println ("- shadowing");
         
-    	assertI(getShadowed99(), 99);    	
-    	int staticint99 = 44;
-    	assertI(staticint99, 44);
-    	
-    	TestObject t = new TestObject(null,5);
-    	assertI(t.shadowAttributeSum(), 88+123+5);    
+        assertI(getShadowed99(), 99);    	
+        int staticint99 = 44;
+        assertI(staticint99, 44);
+
+        TestObject t = new TestObject(null,5);
+        assertI(t.shadowAttributeSum(), 88+123+5);    
     }
+    
     private static int getShadowed99()
-    {
-    	return staticint99;
+    {   return staticint99;
     }
 
-    public static void casttest() {
-    	System.out.println("- cast");
-    	
-    	// cast between types and test for type inclusion
+    public static void casttest() 
+    {   System.out.println("- cast");
+    
+        // cast between types and test for type inclusion
         int[] a = new int[]{ 5,4,3};
         Object o = a;
         assertB(o instanceof Object);
         assertB(! (o instanceof String));
         assertB(! (o instanceof TestObject));
-//        assertB(! (o instanceof int[][]));
-//        assertB(! (o instanceof String[]));
 
         TestObject t = new TestObject();
         o = t;
@@ -323,7 +298,6 @@ public class TestJava4 {
         Object it2 = it;
         // null is never an instance of anything
         assertB(! (it instanceof Object));        
-//        assertB(! (it2 instanceof String[]));
         
         String s = (String) it2;	// null may be cast to anything
         assertO(s, null); 
@@ -355,12 +329,12 @@ public class TestJava4 {
         d=-77777.2;  assertI ( (int) d, -77777);
     }
     
-    public static void operatortest() {
-    	System.out.println("- operator");
+    public static void operatortest() 
+    {   System.out.println("- operator");
 
-    	boolean bo;
-    	bo=true;
-    	int i=0;
+        boolean bo;
+        bo=true;
+        int i=0;
         int j = 423081234;
         boolean a=true;
         boolean b=true;
@@ -389,26 +363,26 @@ public class TestJava4 {
         assertB ( - -3 > + + +4, false);
         
         i = 17;
-    	assertI( i/5, 3);
-    	assertI( i%5, 2);
-    	assertI( i*5, 85);
-    	assertI( (-i)/5, -3);    
-    	assertI( (-i)%5, -2);
-    	assertI( (-i)*5, -85);
-    	assertI( i/-5, -3);
-    	assertI( i%-5, 2);
-    	assertI( i*-5, -85);
-    	assertI( (-i)/-5, 3);    
-    	assertI( (-i)%-5, -2);
-    	assertI( (-i)*-5, 85);
-    	i=1220431789;
+        assertI( i/5, 3);
+        assertI( i%5, 2);
+        assertI( i*5, 85);
+        assertI( (-i)/5, -3);    
+        assertI( (-i)%5, -2);
+        assertI( (-i)*5, -85);
+        assertI( i/-5, -3);
+        assertI( i%-5, 2);
+        assertI( i*-5, -85);
+        assertI( (-i)/-5, 3);    
+        assertI( (-i)%-5, -2);
+        assertI( (-i)*-5, 85);
+        i=1220431789;
         assertI( i*2000001214, -429991322);
         assertI( (i+7)*2000051237, 1679701252);
         assertI(i*-i,1382532375);
         assertI(i*51233,247950669);        
         assertI(41233*i,-2067851395);        
-    	i = 246;
-    	assertI (i<<6, 15744);
+        i = 246;
+        assertI (i<<6, 15744);
         assertI (-(i)>>2, -62);
         assertI (-(i>>2), -61);
         assertI (-(i)>>>2, 1073741762);
@@ -476,104 +450,103 @@ public class TestJava4 {
         char m = 'A';
         char n = (char) 65530;
         assertI(m+n, 65595);    
-        
     }
     
-    public static void assignoperatortest() {
-    	System.out.println("- assign operator");
-    	
-    	int i = 0;
-    	int[] a = {7};
-    	a[i] = a[i] + 8;
-    	i++;
-    	assertI(a[0], 15);
-    	assertI(i,1);
-    	
-    	String s = null;
-    	s += "hi";
-    	assertO(s, "nullhi");
-    	s = null;
-    	s += null;
-    	assertO(s, "nullnull");
-    	
-    	double d = 1.0;
-    	d += 7;
-    	assertD(d, 8.0);
-    	d -= 4.5;
-    	assertD(d, 3.5);
-    	d *= 3;
-    	assertD(d, 10.5);
-    	d /= 3;
-    	assertD(d, 3.5);
-    	d++;
-    	++d;
-    	assertD(d, 5.5);
-    	d--;
-    	--d;
-    	assertD(d, 3.5);
-    	d %= 2.0;
-    	assertD(d, 1.5);
+    public static void assignoperatortest() 
+    {   System.out.println("- assign operator");
+
+        int i = 0;
+        int[] a = {7};
+        a[i] = a[i] + 8;
+        i++;
+        assertI(a[0], 15);
+        assertI(i,1);
+        
+        String s = null;
+        s += "hi";
+        assertO(s, "nullhi");
+        s = null;
+        s += null;
+        assertO(s, "nullnull");
+    
+        double d = 1.0;
+        d += 7;
+        assertD(d, 8.0);
+        d -= 4.5;
+        assertD(d, 3.5);
+        d *= 3;
+        assertD(d, 10.5);
+        d /= 3;
+        assertD(d, 3.5);
+        d++;
+        ++d;
+        assertD(d, 5.5);
+        d--;
+        --d;
+        assertD(d, 3.5);
+        d %= 2.0;
+        assertD(d, 1.5);
 
         i = 525434532;
         i *= 66;
         assertI(i,318940744);
         i *= 661855881;
         assertI(i,641690760);
-    	
-    	i = 17;
-    	int q = (i += 3.2);
-    	assertI(i,20);
-    	assertI(q,20);
-    	i -= 3.3;
-    	assertI(i,16);
-    	i *= 2.1;
-    	assertI(i, 33);
-    	i /= 4.01;
-    	assertI(i,8);
-    	i %= 16.0001;
-    	assertI(i,8);
-    	i &= 15;
-    	assertI(i, 8);
-    	i |= 3;
-    	assertI(i, 11);
-    	i ^= 0xff;
-    	assertI(i, 0xf4);
-    	i <<= 4;
-    	assertI(i, 0xf40);
-    	i >>= 4;
-    	assertI(i, 0xf4);
-    	i = 0xf0000000;
-    	assertI(i, 0xf0000000);
-    	assertI(i, -268435456);
-    	i >>= 4;
-    	assertI(i, 0xff000000);
-    	assertI(i, -16777216);
-    	i >>>= 4;
-    	assertI(i, 0x0ff00000);   
-    	i /= 0.0;
-    	assertI(i, Integer.MAX_VALUE);
-    	i = -1;
-    	i /= 0.0;
-    	assertI(i, Integer.MIN_VALUE);   
-    	i = 0;
-    	i /= 0.0;
-    	assertI(i, 0);   
-    	i = 5;
-    	i /= 2;
-    	assertI(i, 2);   
-    	i = -5;
-    	i /= 2;
-    	assertI(i, -2);   
-    	
-    	i = 18;
-    	i++;
-    	assertI(i,19);
-    	i = Integer.MAX_VALUE;
-    	assertI(i++, Integer.MAX_VALUE);
-    	assertI(i,Integer.MIN_VALUE);
-    	assertI(--i, Integer.MAX_VALUE);
-    	assertI(i,Integer.MAX_VALUE);
-    	a[0]=0;
+        
+        i = 17;
+        int q = (i += 3.2);
+        assertI(i,20);
+        assertI(q,20);
+        i -= 3.3;
+        assertI(i,16);
+        i *= 2.1;
+        assertI(i, 33);
+        i /= 4.01;
+        assertI(i,8);
+        i %= 16.0001;
+        assertI(i,8);
+        i &= 15;
+        assertI(i, 8);
+        i |= 3;
+        assertI(i, 11);
+        i ^= 0xff;
+        assertI(i, 0xf4);
+        i <<= 4;
+        assertI(i, 0xf40);
+        i >>= 4;
+        assertI(i, 0xf4);
+        i = 0xf0000000;
+        assertI(i, 0xf0000000);
+        assertI(i, -268435456);
+        i >>= 4;
+        assertI(i, 0xff000000);
+        assertI(i, -16777216);
+        i >>>= 4;
+        assertI(i, 0x0ff00000);   
+        i /= 0.0;
+        assertI(i, Integer.MAX_VALUE);
+        i = -1;
+        i /= 0.0;
+        assertI(i, Integer.MIN_VALUE);   
+        i = 0;
+        i /= 0.0;
+        assertI(i, 0);   
+        i = 5;
+        i /= 2;
+        assertI(i, 2);   
+        i = -5;
+        i /= 2;
+        assertI(i, -2);   
+    
+        i = 18;
+        i++;
+        assertI(i,19);
+        i = Integer.MAX_VALUE;
+        assertI(i++, Integer.MAX_VALUE);
+        assertI(i,Integer.MIN_VALUE);
+        assertI(--i, Integer.MAX_VALUE);
+        assertI(i,Integer.MAX_VALUE);
+        a[0]=0;
     	assertI(a[0]++, 0);
     	assertI(a[0]--, 1);
     	a[0] = Integer.MAX_VALUE;
@@ -1913,116 +1886,6 @@ public class TestJava4 {
         assertO(itt.toString(), "[8, 14]");            	
     }
     
-    
-//    public static void converttest() {
-//    	System.out.println("- convert");
-//        	
-//    	assertI(Convert.stringToInt("23"), 23);
-//    	assertI(Convert.stringToInt("+312"), 312);
-//    	assertI(Convert.stringToInt("+x312"), 0);
-//    	assertI(Convert.stringToInt("x23"), 0);
-//    	assertI(Convert.stringToInt("23x"), 0);
-//    	assertI(Convert.stringToInt("4234.12"), 0);
-//    	assertI(Convert.stringToInt("-23", 47), -23);    	
-//    	assertI(Convert.stringToInt("-0023", 47), -23);    	
-//    	assertI(Convert.stringToInt("+0ab", 15), 15);    	
-//    	assertI(Convert.stringToInt("+031", 15), 31);    	
-//    	assertI(Convert.stringToInt("4234.12", 47), 47);
-//    	assertI(Convert.stringToInt("x23", 47), 47);
-//    	
-//    	assertI(Convert.stringToInt("x23", 1,2), 23);
-//    	assertI(Convert.stringToInt("x23", 0,2), 0);
-//    	assertI(Convert.stringToInt("x-23f", 1,3, 99), -23);
-//    	assertI(Convert.stringToInt("x-23f", 1,4, 99), 99);
-//    	
-//    	assertD(Convert.stringToDouble("4234.4"), 4234.4);
-//    	assertD(Convert.stringToDouble("-4123123.4"), -4123123.4);
-//    	assertD(Convert.stringToDouble("4x234.4"), 0);
-//    	assertD(Convert.stringToDouble("4x234.4", 33), 33);
-//    	assertD(Convert.stringToDouble("4234.x4", 33), 33);
-//    	assertD(Convert.stringToDouble("NaN", 5), 5);
-//    	assertD(Convert.stringToDouble("Infinity", 5), 5);
-//    	assertD(Convert.stringToDouble("+Infinity", 5), 5);
-//    	assertD(Convert.stringToDouble("+Nan", 5), 5);
-//    	
-//    	assertO(Convert.charToString('x'), "x");
-//    	
-//    	assertI(Convert.doubleToInt(-0.3), 0);
-//    	assertI(Convert.doubleToInt(1.4), 1);
-//    	assertI(Convert.doubleToInt(-1.4), -1);
-//    	assertI(Convert.doubleToInt(5.5), 6);
-//    	assertI(Convert.doubleToInt(5.9), 6);
-//    	assertI(Convert.doubleToInt(-3.5), -4);
-//    	assertI(Convert.doubleToInt(-3.7), -4);
-//    	
-//    	assertI(Convert.hexToInt("f"), 15);
-//    	assertI(Convert.hexToInt("-a"), -10);
-//    	assertI(Convert.hexToInt("fA"), 16*15+10);
-//    	assertI(Convert.hexToInt("2F"), 32+15);
-//    	assertI(Convert.hexToInt("-002F"), -(32+15));
-//    	assertI(Convert.hexToInt("x"), 0);
-//    	assertI(Convert.hexToInt("13x"), 0);
-//    	assertI(Convert.hexToInt("-013x"), 0);
-//    	assertI(Convert.hexToInt("-0fb.44"), 0);
-//    	assertI(Convert.hexToInt("-0fb.4x"), 0);
-//    	
-//    	assertO(Convert.doubleToStringRounded(1355.11), "1355");
-//    	assertO(Convert.doubleToStringRounded(1355.5), "1356");
-//    	assertO(Convert.doubleToStringRounded(-3.5), "-4");
-//    	assertO(Convert.doubleToStringRounded(423455.7), "423456");
-//    	assertO(Convert.doubleToStringRounded(-423455.7), "-423456");
-//    	assertO(Convert.doubleToStringRounded(-423455.7), "-423456");
-//    	
-//    	assertO(Convert.doubleToStringRounded(14144, "#"), "14#144");
-//    	assertO(Convert.doubleToStringRounded(999999.9, "'"), "1'000'000");
-//    	assertO(Convert.doubleToStringRounded(-999999.5, "'"), "-1'000'000");
-//    }
-//    
-//    public static void encodedecodetest()
-//    {
-//    	Debug.log("- encode/decode");
-//    	    	
-//    	assertBA (ClientConnection.composePacket((byte)27, new String[0]),
-//    			  new byte[]{27}  );
-//    	assertBA (ClientConnection.composePacket((byte)27, new String[]{""}),
-//  			      new byte[]{27,-2}  );
-//    	assertBA (ClientConnection.composePacket((byte)27, new String[]{"hi"}),
-//			      new byte[]{27,104,105}  );
-//    	assertBA (ClientConnection.composePacket((byte)27, new String[]{"hi","there"}),
-//			      new byte[]{27,104,105,-1,116,104,101,114,101}  );
-//    	assertBA (ClientConnection.composePacket((byte)27,  new String[]{"","����","end"}),
-//    			  new byte[]{27,-1,-61,-74,-61,-92,-61,-68,-30,-126,-84,-1,101,110,100} );
-//    	assertBA (ClientConnection.composePacket((byte)27,  new String[]{"","","h", ""}),
-//  			  new byte[]{27,-1,-1,104,-1} );
-//    	
-//    	Vector p = new Vector();
-//    	assertBA (ClientConnection.composePacket((byte)27, p),
-//    			new byte[]{27} );    	
-//    	p.addElement("");
-//    	assertBA (ClientConnection.composePacket((byte)27, p),
-//    			new byte[]{27, -2} );
-//    	p.clear();
-//    	p.addElement("");
-//    	p.addElement("����");
-//    	p.addElement("end");
-//    	assertBA (ClientConnection.composePacket((byte)27, p), 
-//  			  new byte[]{27,-1,-61,-74,-61,-92,-61,-68,-30,-126,-84,-1,101,110,100} );
-//
-//    	assertSA(ClientConnection.decomposePacket(new byte[]{ 33 }), 
-//    				new String[0] );
-//    	assertSA(ClientConnection.decomposePacket(new byte[]{ 33, -2 }), 
-//    				new String[]{""} );
-//    	assertSA(ClientConnection.decomposePacket(new byte[]{ 33, 104,105 }),
-//    				new String[]{"hi"} );
-//    	assertSA(ClientConnection.decomposePacket(new byte[]{ 33, 104,105,-1,116,104,101,114,101 }),
-//    				new String[]{"hi","there"} );
-//    	assertSA(ClientConnection.decomposePacket(new byte[]{ 33, -1,-61,-74,-61,-92,-61,-68,-30,-126,-84,-1,101,110,100 }),
-//    				new String[]{"","����","end"} );    	
-//    	assertSA(ClientConnection.decomposePacket(new byte[]{ 33, -1,-1,-1 }),
-//				new String[]{"","","",""} );    	
-//    	assertSA(ClientConnection.decomposePacket(new byte[]{ 33, -1,65,-1,-1 }),
-//				new String[]{"","A","",""} );    	
-//    }
 
     public static void secondaryclassestest() 
     {
@@ -2073,10 +1936,10 @@ public class TestJava4 {
     	assertI(ib.z,1107);
     }
     
-    public static void innerclasstest() {
-    	System.out.println("- inner classes");
+    public static void innerclasstest() 
+    {   System.out.println("- inner classes");
     	
-    	InnerStatic s = new OuterCläss.InnerStatic(44);
+    	OuterCläss.InnerStatic s = new OuterCläss.InnerStatic(44);
     	assertO(s.toString(), "44,88,99");
     	
     	OuterCläss x = new OuterCläss(4711);
@@ -2116,95 +1979,84 @@ public class TestJava4 {
     	assertO(oc2.accessLocalVariablesOfInstanceMethod(), "77,77");
     }
     
-    public static void identifi€rmangling() {
-    	System.out.println("- identifier mangling");
-    	
-    	assertI(lock.implicit(3),4);
-    	assertI(arguments.yield(5),6);  
-   }
-
+    public static void identifi€rmangling() 
+    {   System.out.println("- identifier mangling");    
+        assertI(lock.implicit(3),4);
+        assertI(arguments.yield(5),6);  
+    }
     
-    public static void unsupported() {
-    	ArrayList<Integer> al= new ArrayList<>();
-    	al.add(Integer.valueOf(4));
-    	al.add(Integer.valueOf(17));
-    	int sum=0;
-    	for (Integer i: al) {
-    		int x=i.intValue();
-//    		x = i;
-//    		sum += i; 
-    		sum = sum + x;
-    	}
-    	assertI(sum, 21);
+    public static void unsupported() 
+    {   ArrayList<Integer> al= new ArrayList<>();
+        al.add(Integer.valueOf(4));
+        al.add(Integer.valueOf(17));
+        int sum=0;
+        for (Integer i: al) 
+        {   int x=i.intValue();
+            sum = sum + x;
+        }
+        assertI(sum, 21);
     }
         
-    public static void assertI(int value, int expected) {
-    	if (value!=expected) {
-    		System.err.println("Received "+value+" instead of "+expected);
-    	}
+    public static void assertI(int value, int expected)
+    {   if (value!=expected) 
+        {   System.err.println("Received "+value+" instead of "+expected);
+        }
     }
-    public static void assertO(Object value, Object expected) {
-    	if (value!=expected) {
-    		if (value!=null && expected!=null && value.equals(expected)) {
-    			// this counts as equal 
-    		}
-    		else {
-    			System.err.println("Received "+value+" instead of "+expected);
-    		}    		
-    	}
+    
+    public static void assertO(Object value, Object expected) 
+    {   if (value!=expected) 
+        {   if (value!=null && expected!=null && value.equals(expected)) 
+            {   // this counts as equal 
+            }
+            else 
+            {   System.err.println("Received "+value+" instead of "+expected);
+            }
+        }
     }
+    
     public static void assertB(boolean value, boolean expected)
-    {
-    	if (value!=expected) {
-    		System.err.println("Received "+value+" instead of "+expected);
-    	}
+    {   if (value!=expected) 
+        {   System.err.println("Received "+value+" instead of "+expected);
+        }
     }
     
     public static void assertB(boolean b)
-    {
-    	if (!b) {
-    		System.err.println("Check failed");
-    	}
+    {   if (!b) 
+        {   System.err.println("Check failed");
+        }
     }
 
     public static void assertD(double value, double expected)
-    {
-    	if (value!=expected) {
-    		System.err.println("Received "+value+" instead of "+expected);
-    	}
-    }
-    public static void assertApproximately(double value, double expected)
-    {
-    	if (Double.isInfinite(value) || Double.isNaN(value)) {
-    		System.err.println("Received "+value+" instead of "+expected);    		
-    	} else 	if (value<expected-0.00000000001 || value>expected+0.00000000001) {
-    		System.err.println("Received "+value+" instead of "+expected);
-    	}
+    {   if (value!=expected) 
+        {   System.err.println("Received "+value+" instead of "+expected);
+        }
     }
     
+    public static void assertApproximately(double value, double expected)
+    {   if (Double.isInfinite(value) || Double.isNaN(value)) 
+        {   System.err.println("Received "+value+" instead of "+expected);    		
+        } else 	if (value<expected-0.00000000001 || value>expected+0.00000000001) 
+        {   System.err.println("Received "+value+" instead of "+expected);
+        }
+    }
+
     public static void assertBA(byte[] value, byte[] expected)
-    {
-    	if (value.length != expected.length) {
-    		System.err.println("Received "+value.length+" bytes instead of "+expected.length);  
-    		return;
-    	}
-    	for (int i=0; i<value.length; i++) {
-    		assertI(value[i],expected[i]);
-    	}
+    {   if (value.length != expected.length) 
+        {   System.err.println("Received "+value.length+" bytes instead of "+expected.length);  
+            return;
+        }
+        for (int i=0; i<value.length; i++) 
+        {   assertI(value[i],expected[i]);
+        }
     }
     
     public static void assertSA(String[] value, String[] expected) 
-    {
-    	if (value.length != expected.length) {
-    		System.err.println("Received "+value.length+" strings instead of "+expected.length);  
-    		return;
-    	}
-    	for (int i=0; i<value.length; i++) {
-    		assertO(value[i],expected[i]);
-    	}
+    {   if (value.length != expected.length) 
+        {   System.err.println("Received "+value.length+" strings instead of "+expected.length);  
+            return;
+        }
+        for (int i=0; i<value.length; i++) 
+        {   assertO(value[i],expected[i]);
+        }
     }
-    
-    
 }
-
-

@@ -28,10 +28,10 @@ public class CodePrinter
         } 
         catch (IOException e) 
         {   e.printStackTrace();
-            throw new RuntimeException(e.getMessage());      			
+            throw new RuntimeException(e.getMessage());
         }
 
-        this.outputfolder = outputfolder;		
+        this.outputfolder = outputfolder;
         this.indent = 0;
         this.linehasstarted = false;
 
@@ -55,13 +55,13 @@ public class CodePrinter
         } 
         catch (IOException e) 
         {   e.printStackTrace();
-            throw new RuntimeException(e.getMessage());      			
+            throw new RuntimeException(e.getMessage());
         }
         if (pendingLabels.size()>0) 
         {   throw new RuntimeException("Unresolved label definitions: "+pendingLabels);
         }
     }
-    
+
     public void increaseIndent() 
     {   indent++;
     }
@@ -73,7 +73,7 @@ public class CodePrinter
     public void print(String s) 
     {   try
         {   if (!linehasstarted) 
-            {   for (int i=0; i<indent; i++) ow.write("    ",0,4);                
+            {   for (int i=0; i<indent; i++) ow.write("    ",0,4);
                 linehasstarted=true;
             }
             ow.write(s,0,s.length());
@@ -124,7 +124,7 @@ public class CodePrinter
 
 
     // --- functionality specific for javascript generation ---  
-    
+
     private static Set<String> javascriptreserved = new HashSet<String>
     (   Arrays.asList
         (   "abstract", "arguments", "await", "boolean", "break", "byte", "case", "catch",
@@ -209,7 +209,7 @@ public class CodePrinter
     }
 
     // --- functionality specific for csharp code generation ---
-    
+
     private static Set<String> csharpreserved = new HashSet<String>
     (   Arrays.asList
         (   "abstract", "as", "base", "bool", "break", "byte", "case", "catch",

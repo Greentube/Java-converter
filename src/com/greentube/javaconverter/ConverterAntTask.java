@@ -22,6 +22,10 @@ public class ConverterAntTask extends Task
     public void setClasspath(String path) 
     {   this.classpath = path;
     }
+    private boolean benchmark = false;
+    public void setBenchmark(String dummy) {
+        this.benchmark = true;
+    }
 
     public void execute() throws BuildException 
     {   Vector args = new Vector();
@@ -36,6 +40,9 @@ public class ConverterAntTask extends Task
         if (classpath!=null) 
         {   args.add("-classpath");
             args.add(classpath);
+        }
+        if (benchmark) 
+        {   args.add("-benchmark");
         }
 
         for (int i=0; i<filesets.size(); i++)

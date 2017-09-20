@@ -1,9 +1,8 @@
 package com.greentube.convertertestjava5;
 
-public class StaticExporter {
-
+public class StaticExporter 
+{
 	final static int XXX = 3;
 	final static int YYY = 4;
-	static int ZZZ = 5;
-	
+	static int ZZZ = 5;	
 }

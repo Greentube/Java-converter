@@ -163,7 +163,6 @@ public class LibraryList
             "out",
             "err",
             "void arraycopy(java.lang.Object, int, java.lang.Object, int, int)",
-            "long currentTimeMillis()",
             "void exit(int)",
         },
         { "java.util.AbstractCollection",
@@ -410,23 +409,30 @@ public class LibraryList
 
     static HashMap<String,HashSet<String>> map = null;
 
-    public static boolean isAllowed(String fullclassname, String membername)
-    {   // generate map at first call for fast retrieval
-        if (map==null) 
-        {   map = new HashMap<>();
-            for (int i=0; i<supported.length; i++) {				
-                HashSet<String> members = new HashSet<>();
-                for (int j=1; j<supported[i].length; j++) 
-                {   members.add(supported[i][j]);
-                }
-                // support these on any object:
-                members.add("boolean equals(java.lang.Object)");	
-                members.add("int hashCode()");
-                members.add("java.lang.String toString()");
-                map.put(supported[i][0],  members);
+    public static void buildList(boolean supportbenchmark) 
+    {   map = new HashMap<>();
+        for (int i=0; i<supported.length; i++) 
+        {   String classname = supported[i][0];
+            HashSet<String> members = new HashSet<>();
+            map.put(classname,  members);
+            
+            for (int j=1; j<supported[i].length; j++) 
+            {   members.add(supported[i][j]);
             }
-        }
+            // support these on any object:
+            members.add("boolean equals(java.lang.Object)");    
+            members.add("int hashCode()");
+            members.add("java.lang.String toString()");
+            // provide support methods for benchmarking only
+            if (supportbenchmark && classname.equals("java.lang.System"))
+            {   members.add("long currentTimeMillis()");
+            }
+        }          
+    }
 
+    public static boolean isAllowed(String fullclassname, String membername)
+    {   // generate map at first call for fast retrieval if not done already
+        if (map==null) buildList(false);
         // unknown classes are not restricted
         if (!map.containsKey(fullclassname)) return true;    
         // provided class only allows whitelisted members

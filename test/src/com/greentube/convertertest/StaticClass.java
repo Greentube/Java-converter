@@ -138,21 +138,20 @@ public class StaticClass {
 				int T = (((int) Tvalues.charAt(2 * j)) << 16) | ((int) Tvalues.charAt(2 * j + 1));
 				
 				int f = 0;
-				switch (j / 16)
-				{
-					case 0:
-						f = (b & c) | ((~b) & d);
-						break;   // XY v not(X) Z
-					case 1:
-						f = (b & d) | (c & ~d);
-						break;   // XZ v Y not(Z)
-					case 2:
-						f = b ^ c ^ d;
-						break;   // X xor Y xor Z
-					case 3:
-						f = c ^ (b | ~d);
-						break;   // Y xor (X v not(Z))
-				}
+                switch (j / 16)
+                {   case 0:
+                        f = (b & c) | ((~b) & d);
+                        break;   // XY v not(X) Z
+                    case 1:
+                        f = (b & d) | (c & ~d);
+                        break;   // XZ v Y not(Z)
+                    case 2:
+                        f = b ^ c ^ d;
+                        break;   // X xor Y xor Z
+                    case 3:
+                        f = c ^ (b | ~d);
+                        break;   // Y xor (X v not(Z))
+                }
 				
 				// Debug.log(j+":"+a+" "+b+" "+c+" "+d+" "+f+" "+X+" "+T);				
 

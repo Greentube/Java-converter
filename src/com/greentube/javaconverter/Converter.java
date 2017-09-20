@@ -1,26 +1,21 @@
 package com.greentube.javaconverter;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Vector;
-
-import org.extendj.ast.CompilationUnit;
-import org.extendj.ast.Frontend;
-import org.extendj.ast.Options;
-import org.extendj.ast.Program;
+import java.io.*;
+import java.net.*;
+import java.util.*;
+import org.extendj.ast.*;
 
 public class Converter extends Frontend 
 {   private File destDirJS;
     private File destDirCS;
+    private boolean benchmark;
     private int err;
 
     public Converter() 
-    {   super("Converter", "0.2.0");
+    {   super("Converter", "2.0.2");
         destDirJS=null;
         destDirCS=null;
+        benchmark = false;
         err = 0;
     }
 
@@ -62,7 +57,8 @@ public class Converter extends Frontend
 
     @Override
     protected void processNoErrors(CompilationUnit unit) 
-    {   ArrayList<String> errorlist = new ArrayList<String>(0);
+    {   LibraryList.buildList(benchmark);
+        ArrayList<String> errorlist = new ArrayList<String>(0);        
         unit.checkRestrictions(errorlist);
         if (errorlist.size()==0) 
         {   if (destDirJS!=null) 
@@ -94,6 +90,7 @@ public class Converter extends Frontend
         Options options = program.options();		
         options.addKeyValueOption("-js");
         options.addKeyValueOption("-cs");
+        options.addKeyOption("-benchmark");
     }
 
     @Override
@@ -123,8 +120,12 @@ public class Converter extends Frontend
                 return EXIT_CONFIG_ERROR;
             }
         }
+        if (program.options().hasOption("-benchmark")) 
+        {   benchmark = true;        
+        }
         return EXIT_SUCCESS;
     }
+
 
     public static void main(String args[]) 
     {   // add possibility to launch the linker instead of the the converter
@@ -161,5 +162,5 @@ public class Converter extends Frontend
             {   System.exit(exitCode);
             }
         }
-    }    
+    }
 }
