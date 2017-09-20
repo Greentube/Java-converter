@@ -16,7 +16,7 @@ _class(java_util_AbstractCollection, java_lang_Object, [java_util_Collection], "
         var i = this.iterator_0();
         while (i.hasNext_0()) {
             var o = i.next_0();
-            if (obj==null ? o==null : obj.equals_1(o)) return true;
+            if (obj===null ? o===null : obj.equals_1(o)) return true;
         }
         return false;
 	},
@@ -55,7 +55,7 @@ _class(java_util_AbstractCollection, java_lang_Object, [java_util_Collection], "
 				parts.push(", ");
 			}       
             var o = i.next_0();
-			parts.push((o==null) ? 'null' : o.toString_0());
+			parts.push((o===null) ? 'null' : o.toString_0());
 		}
 		parts.push("]");
 		return parts.join("");    

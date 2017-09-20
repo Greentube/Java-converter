@@ -21,7 +21,7 @@ _class(java_util_HashSet, java_util_AbstractCollection, [java_util_Set], "java.u
         },
         
         add_1: function(e) { 
-            return this._map.put_2(e, java_util_HashSet._PRESENT)==null;
+            return this._map.put_2(e, java_util_HashSet._PRESENT)===null;
         },           
         
         addAll_1: function(c) {
@@ -46,9 +46,9 @@ _class(java_util_HashSet, java_util_AbstractCollection, [java_util_Set], "java.u
         // containsAll        implemented by AbstractCollection
                     
         equals_1: function(o) { 
-            if (o==null || !_implements(o,java_util_Set)) return false;            
+            if (o===null || !_implements(o,java_util_Set)) return false;            
             var s = o;
-            if (this.size_0() != s.size_0()) return false;
+            if (this.size_0() !== s.size_0()) return false;
             for (var it=s.iterator_0(); it.hasNext_0(); ) {
                 if (! this.contains_1(it.next_0())) return false;
             }            
@@ -66,7 +66,7 @@ _class(java_util_HashSet, java_util_AbstractCollection, [java_util_Set], "java.u
         },
                 
         remove_1: function(key) { 
-            return this._map.remove_1(key)!=null;
+            return this._map.remove_1(key)!==null;
         },
         
         removeAll_1: function(collection) {

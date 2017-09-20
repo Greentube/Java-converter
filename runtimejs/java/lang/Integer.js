@@ -21,7 +21,7 @@ _class(java_lang_Integer, java_lang_Object, null, "java.lang.Integer", {
 		return this.i;
     },    
     equals_1: function(i) {
-        if (i!=null && (i instanceof java_lang_Integer.$) && i.i==this.i) {
+        if (i!==null && (i instanceof java_lang_Integer.$) && i.i===this.i) {
             return true;
         }
         return false;

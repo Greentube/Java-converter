@@ -39,7 +39,7 @@ _class(java_util_LinkedList, java_util_AbstractList, null, "java.util.LinkedList
 	add_2: function(index, element) {
         var n = { element:element, next:null, prev:null };
         var y;
-        if (index==this._len) {
+        if (index===this._len) {
             y = this._head;
         } else {
             y = this.seek_1(index); 
@@ -61,7 +61,7 @@ _class(java_util_LinkedList, java_util_AbstractList, null, "java.util.LinkedList
         y.prev = x;
         this._len--;
         if (this._currentIndex>=index) {
-            if (this._currentIndex==index) {
+            if (this._currentIndex===index) {
                 this._currentNode = x;
             }    
             this._currentIndex--;
@@ -76,13 +76,13 @@ _class(java_util_LinkedList, java_util_AbstractList, null, "java.util.LinkedList
     seek_1: function(index) {
         var len = this._len;
         if (index<0 || index>=len) throw new RangeError();
-        if (index==0) return this._head.next;
-        if (index==this.len-1) return this._head.prev;
+        if (index===0) return this._head.next;
+        if (index===this.len-1) return this._head.prev;
             
         // decide in which direction to traverse the list
         var ci = this._currentIndex;
         // the target node is already found
-        if (index==ci) return this._currentNode;
+        if (index===ci) return this._currentNode;
             
         var n = null;
         // the target node is before the current one

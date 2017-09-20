@@ -32,7 +32,7 @@ _class(java_util_AbstractList, java_util_AbstractCollection, [java_util_List], "
     },
     
     addAll_2: function(index, collection) {
-        if (collection==null) throw new TypeError("NullPointerException");        
+        if (collection===null) throw new TypeError("NullPointerException");        
         var i = collection.iterator_0();
         var pos = index;
         var didappend = false;
@@ -54,13 +54,13 @@ _class(java_util_AbstractList, java_util_AbstractCollection, [java_util_List], "
 
     equals_1: function(o) {
         var s = this.size_0();
-        if (o==null || !_implements(o,java_util_Collection) || s!=o.size_0()) {
+        if (o===null || !_implements(o,java_util_Collection) || s!==o.size_0()) {
             return false;
         }
         for (var it1=this.iterator_0(), it2=o.iterator_0(); it1.hasNext_0(); ) {           
             var e1 = it1.next_0();
             var e2 = it2.next_0();
-            if (! (e1==null ? e2==null : e1.equals_1(e2))) return false;
+            if (! (e1===null ? e2===null : e1.equals_1(e2))) return false;
         }
         return true;  
     },
@@ -69,7 +69,7 @@ _class(java_util_AbstractList, java_util_AbstractCollection, [java_util_List], "
         var hashCode = 1;
         for (var it=this.iterator_0(); it.hasNext_0(); ) {
             var e = it.next_0();
-            hashCode = ( 31*hashCode + (e==null ? 0 : e.hashCode_0()) ) | 0;
+            hashCode = ( 31*hashCode + (e===null ? 0 : e.hashCode_0()) ) | 0;
         }
         return hashCode;
     },       
@@ -77,7 +77,7 @@ _class(java_util_AbstractList, java_util_AbstractCollection, [java_util_List], "
 	indexOf_1: function (o) {
         var s = this.size_0();
         for (var i=0; i<s; i++) {
-            if (o==null ? (this.get_1(i)==null) : o.equals_1(this.get_1(i))) return i;
+            if (o===null ? (this.get_1(i)===null) : o.equals_1(this.get_1(i))) return i;
         }
         return -1;
     },
@@ -88,7 +88,7 @@ _class(java_util_AbstractList, java_util_AbstractCollection, [java_util_List], "
    
 	lastIndexOf_1: function (o) {
         for (var i=this.size_0()-1; i>=0; i--) {
-            if (o==null ? (this.get_1(i)==null) : o.equals_1(this.get_1(i))) return i;
+            if (o===null ? (this.get_1(i)===null) : o.equals_1(this.get_1(i))) return i;
         }
         return -1;
     },
@@ -102,7 +102,7 @@ _class(java_util_AbstractList, java_util_AbstractCollection, [java_util_List], "
     },
     
     filter: function(collection, keep) {
-        if (collection==null) throw new TypeError("NullPointerException");                
+        if (collection===null) throw new TypeError("NullPointerException");                
         var modified=false;
         for (var i=this.size_0()-1; i>=0; i--) {
             var o = this.get_1(i);

@@ -17,7 +17,7 @@ _class(java_lang_StringBuffer, java_lang_Object, null, "java.lang.StringBuffer",
     },
 
     append_1: function(x) {
-        var s = (x==null) ? "null" : x.toString_0();
+        var s = (x===null) ? "null" : x.toString_0();
         this._length += s.length;
         this._parts.push(s);
         return this;

@@ -15,7 +15,8 @@ var java_lang_System = {
     exit_1: function(status) {
     },
     
-    // not properly supported due to lack of datatype "long" - only used for performance testing...
+    // not properly supported due to lack of datatype "long" 
+    // - only used for performance testing...
     currentTimeMillis_0: function() {
         return Date.now();
     },

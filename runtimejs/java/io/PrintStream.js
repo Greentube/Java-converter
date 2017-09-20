@@ -14,7 +14,7 @@ _class (java_io_PrintStream, java_lang_Object, null, "java.io.PrintStream", {
     },
         
 	print_1: function(o) {
-        var s = (o==null) ? "null" : o.toString_0();
+        var s = (o===null) ? "null" : o.toString_0();
         this._line.push(s);
     },
         

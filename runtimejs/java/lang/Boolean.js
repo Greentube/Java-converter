@@ -21,7 +21,7 @@ _class (java_lang_Boolean, java_lang_Object, null, "java_lang_Boolean", {
 		return this.b;
     },
     equals_1: function(b) {
-        if (b!=null && (b instanceof java_lang_Boolean.$) && this.b == b.b) {
+        if (b!==null && (b instanceof java_lang_Boolean.$) && this.b === b.b) {
           return true;
         }
         return false;

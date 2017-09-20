@@ -29,7 +29,7 @@ _class (java_lang_Double, java_lang_Object, null, "java.lang.Double", {
         return this.d;
     },    
     equals_1: function(d) {
-        if (d!=null && (d instanceof java_lang_Double.$) && this.d==d.d) {
+        if (d!==null && (d instanceof java_lang_Double.$) && this.d===d.d) {
             return true;
         }
         return false;

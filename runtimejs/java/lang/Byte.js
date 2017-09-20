@@ -21,7 +21,7 @@ _class(java_lang_Byte, java_lang_Object, null, "java.lang.Byte", {
 		return this.b;
 	},
     equals_1: function(b) {
-        if (b!=null && (b instanceof java_lang_Byte.$) && this.b == b.b) {
+        if (b!==null && (b instanceof java_lang_Byte.$) && this.b === b.b) {
             return true;
         }
         return false;

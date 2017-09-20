@@ -21,7 +21,7 @@ _class(java_lang_Character, java_lang_Object, null, "java.lang.Character", {
 		return this.c;
     },    
     equals_1: function(o) {
-        if (o!=null && (o instanceof java_lang_Character.$) && o.c==this.c) {
+        if (o!==null && (o instanceof java_lang_Character.$) && o.c===this.c) {
             return true;
         }
         return false;

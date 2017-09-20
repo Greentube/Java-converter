@@ -61,12 +61,12 @@ function _class (classobject, base, interfaces, classname, instancemethods)
 // test if an arbitrary java.lang.Object implements a given Interface
 function _implements(x,intrfc)
 {    
-    return (x==null) ? false : (x._interfaces.indexOf(intrfc)>=0);
+    return (x===null) ? false : (x._interfaces.indexOf(intrfc)>=0);
 }
 
 // test if an arbitrary object is a String
 function _isstr(o) {
-    return o!=null && o._isString;
+    return o!==null && o._isString;
 }
 
 // convert a unicode code number to a string with the corresponding letter 
@@ -81,7 +81,7 @@ function _p2s(c) {
 
 // convert any object to a string - and give "null" for null reference
 function _str(o) {
-    if (o==null) return "null";
+    if (o===null) return "null";
     return o.toString_0();    
 }
 
@@ -94,7 +94,7 @@ function _subarray2str(chararray,offset,count) {
 }
 
 // integer multiplication with correct behaviour for large operands
-var _imul = Math.imul || function(a, b) {
+var _imul = (typeof Math.imul === "function") ? Math.imul : function(a, b) {
   var ah = (a >>> 16) & 0xffff;
   var al = a & 0xffff;
   var bh = (b >>> 16) & 0xffff;
@@ -192,7 +192,7 @@ String.prototype.compareTo_1 = function (str) {
     for (var i=0; i<l1 && i<l2; i++) {
         var c1 = this.charCodeAt(i);
         var c2 = str.charCodeAt(i);
-        if (c1!=c2) {
+        if (c1!==c2) {
             return c1-c2;
         }
     }
@@ -208,9 +208,9 @@ String.prototype.endsWith_1 = function(suffix) {
 };
 
 String.prototype.equals_1 = function(str) {
-    if (str==null) return false;
+    if (str===null) return false;
     if (!(str._isString)) return false;  
-	return this.valueOf() == str.valueOf();
+	return this.valueOf() === str.valueOf();
 };
 
 String.prototype.hashCode_0 = function() {
@@ -271,7 +271,7 @@ String.prototype.length_0 = function () {
 
 String.prototype.replace_2 = function (oldChar, newChar) {
 	var s = String.fromCharCode(oldChar);
-	if (s==".") s="\\."; // avoid confusion with regular expression syntax
+	if (s===".") s="\\."; // avoid confusion with regular expression syntax
 	return this.replace(new RegExp(s,"g"),String.fromCharCode(newChar));
 };
 

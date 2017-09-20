@@ -546,12 +546,12 @@ aspect GenerateCS {
   	}
   	public void EQExpr.generateCS(CodePrinter out) {
   		getLeftOperand().generateUsingResultCS(out);
-  		out.print("==");
+  		out.print("===");
   		getRightOperand().generateUsingResultCS(out);  	
   	}
   	public void NEExpr.generateCS(CodePrinter out) {
   		getLeftOperand().generateUsingResultCS(out);
-  		out.print("!=");
+  		out.print("!==");
   		getRightOperand().generateUsingResultCS(out);  	
   	}
   	public void GEExpr.generateCS(CodePrinter out) {

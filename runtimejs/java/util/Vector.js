@@ -38,7 +38,7 @@ _class(java_util_Vector, java_util_ArrayListImpl, null, "java.util.Vector", {
 
     indexOf_2: function (o, index) {
         for (var i=index; i<this.size_0(); i++) {
-            if (o==null ? (this.get_1(i)==null) : o.equals_1(this.get_1(i))) return i;
+            if (o===null ? (this.get_1(i)===null) : o.equals_1(this.get_1(i))) return i;
         }
         return -1;
     },
@@ -53,7 +53,7 @@ _class(java_util_Vector, java_util_ArrayListImpl, null, "java.util.Vector", {
    
     lastIndexOf_2: function (o, index) {
         for (var i=index; i>=0; i--) {
-            if (o==null ? (this.get_1(i)==null) : o.equals_1(this.get_1(i))) return i;
+            if (o===null ? (this.get_1(i)===null) : o.equals_1(this.get_1(i))) return i;
         }
         return -1;
     },
