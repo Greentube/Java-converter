@@ -1,24 +1,27 @@
 //complete// java/io/PrintStream
 //load// java/lang/Object
-var java_lang_System = {    
-    arraycopy_5 : function(src, srcPos, dest, destPos, length) {
-        if (destPos<=srcPos) {
-            for (var i = 0; i < length; i++) {
-                dest[i + destPos] = src[i + srcPos];
+var java_lang_System = 
+{    
+    arraycopy_5 : function(src, srcPos, dest, destPos, length) 
+    {   if (destPos<=srcPos) 
+        {   for (var i = 0; i < length; i++) 
+            {   dest[i + destPos] = src[i + srcPos];
             }
-        } else {
-            for (var i = length-1; i >=0; i--) {
-                dest[i + destPos] = src[i + srcPos];
+        } 
+        else 
+        {   for (var i = length-1; i >=0; i--) 
+            {   dest[i + destPos] = src[i + srcPos];
             }
         }
     },
-    exit_1: function(status) {
+    exit_1: function(status) 
+    {
     },
     
     // not properly supported due to lack of datatype "long" 
     // - only used for performance testing...
-    currentTimeMillis_0: function() {
-        return Date.now();
+    currentTimeMillis_0: function() 
+    {   return Date.now();
     },
     
     out: new java_io_PrintStream.$()._1(false),

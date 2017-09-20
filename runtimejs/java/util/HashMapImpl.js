@@ -13,16 +13,16 @@
 //load// java/util/Iterator
 //load// java/util/Enumeration
 
-var java_util_HashMapImpl = {
-    $: function() {
-        this._stringtable = null;
+var java_util_HashMapImpl = 
+{   $: function() 
+    {   this._stringtable = null;
         this._commontable = null;
         this._totalelements = 0;
     },
 };    
-_class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.HashMapImpl", {
-   	_0: function() {
-        // by removing a key from an object, it will be clear that
+_class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.HashMapImpl", 
+{   _0: function() 
+    {   // by removing a key from an object, it will be clear that
         // this object should be used in dictionary mode from now on         
         this._stringtable = {x: 0};
         this._commontable = {x: 0};        
@@ -31,65 +31,62 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
         
         this._totalelements = 0;
         return this;
-	},
+    },
 
-   	_1: function(map) {
-        this._0();
+    _1: function(map) 
+    {   this._0();
         this.putAll_1(map);
         return this;
-	},
+    },
     
-	clear_0: function() {
-		this._stringtable = {}; 
-		this._commontable = {};
+    clear_0: function() 
+    {   this._stringtable = {}; 
+        this._commontable = {};
         this._totalelements = 0;
-	},
-	
-	containsKey_1: function(key) {
-        if (_isValidStringKey(key)) {
-            return this._stringtable.hasOwnProperty(key);
+    },
+    
+    containsKey_1: function(key) 
+    {   if (_isValidStringKey(key)) 
+        {   return this._stringtable.hasOwnProperty(key);
         }
         var hc = (key===null) ? 0 : key.hashCode_0();
         var kv = this._commontable[hc];
         if (!kv) return false;
-        for (var i=0; i<kv.length; i+=2) {  // scan all key-value pairs for the hashCode
+        for (var i=0; i<kv.length; i+=2) 
+        {   // scan all key-value pairs for the hashCode
             var k = kv[i];
             if (key===null ? k===null : key.equals_1(k)) return true;
         }
         return false;
-	},
+    },
     
-	containsValue_1: function(value) {
-        // search through all string keys
-        for (var s in this._stringtable) {
-//            if (this._stringtable.hasOwnProperty(s)) {
-                var v = this._stringtable[s];
-                if (value===null ? v===null : value.equals_1(v)) {
-                    return true;
-                }
-//            }
+    containsValue_1: function(value) 
+    {   // search through all string keys
+        for (var s in this._stringtable) 
+        {   var v = this._stringtable[s];
+            if (value===null ? v===null : value.equals_1(v)) 
+            {   return true;
+            }
         }
         // search through all hashcode-buckets        
-        for (var hc in this._commontable) { 
-//            if (this._commontable.hasOwnProperty(hc)) {
-                var kv = this._commontable[hc];
-                for (var i=1; i<kv.length; i+=2) {
-                    var v = kv[i];
-                    if (value===null ? v===null : value.equals_1(v)) {
-                        return true;
-                    }   
-                }
-//            }
+        for (var hc in this._commontable) 
+        {   var kv = this._commontable[hc];
+            for (var i=1; i<kv.length; i+=2) 
+            {   var v = kv[i];
+                if (value===null ? v===null : value.equals_1(v)) 
+                {   return true;
+                }   
+            }
         }
         return false;
-	},
-	
-    equals_1: function(h) {
-        if (h===null || !_implements(h,java_util_Map) || this.size_0()!==h.size_0()) {
-            return false;
+    },
+
+    equals_1: function(h) 
+    {   if (h===null || !_implements(h,java_util_Map) || this.size_0()!==h.size_0()) 
+        {   return false;
         }
-        for (var it=this.keySet_0().iterator_0(); it.hasNext_0(); ) {
-            var k = it.next_0();
+        for (var it=this.keySet_0().iterator_0(); it.hasNext_0(); ) 
+        {   var k = it.next_0();
             var v = this.get_1(k);
             if (!h.containsKey_1(k)) return false;
             var v2 = h.get_1(k);
@@ -98,9 +95,9 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
         return true;
     },
 
-	get_1: function(key) {
-        if (_isValidStringKey(key)) {
-            var s = this._stringtable;
+    get_1: function(key) 
+    {   if (_isValidStringKey(key)) 
+        {   var s = this._stringtable;
             var v = s[key];
             if (v) return v;
             return null;
@@ -108,19 +105,19 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
         var hc = (key===null) ? 0 : key.hashCode_0();
         var kv = this._commontable[hc];  // scan all key-value pairs for the hashCode
         if (!kv) return null;
-        for (var i=0; i<kv.length; i+=2) {  
-            var k = kv[i];
-            if (key===null ? k===null : key.equals_1(k)) {
-                return kv[i+1];
+        for (var i=0; i<kv.length; i+=2) 
+        {   var k = kv[i];
+            if (key===null ? k===null : key.equals_1(k)) 
+            {   return kv[i+1];
             }
         }
         return null;        
-	},
+    },
     
-    hashCode_0: function() {
-        var sum = 0;
-        for (var it=this.keySet_0().iterator_0(); it.hasNext_0(); ) {
-            var k = it.next_0();
+    hashCode_0: function() 
+    {   var sum = 0;
+        for (var it=this.keySet_0().iterator_0(); it.hasNext_0(); ) 
+        {   var k = it.next_0();
             var v = this.get_1(k);
             var c = (k===null ? 0 : k.hashCode_0()) ^
                     (v===null ? 0 : v.hashCode_0());
@@ -128,40 +125,44 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
         }
         return sum;
     },
-	
-	isEmpty_0: function() {
-        return this.size_0() <= 0;
-	},
 
-	keySet_0: function() {
-        return new java_util_HashMapKeyView.$()._1(this);
+    isEmpty_0: function() 
+    {   return this.size_0() <= 0;
+    },
+
+    keySet_0: function() 
+    {   return new java_util_HashMapKeyView.$()._1(this);
     }, 
 
-	put_2: function(key, value) {
-        // easy operation when can directly use the javascript object mapping
-        if (_isValidStringKey(key)) {
-            if (this._stringtable.hasOwnProperty(key)) {
-                var rtn = this._stringtable[key];
+    put_2: function(key, value) 
+    {   // easy operation when can directly use the javascript object mapping
+        if (_isValidStringKey(key)) 
+        {   if (this._stringtable.hasOwnProperty(key)) 
+            {   var rtn = this._stringtable[key];
                 this._stringtable[key] = value;
                 return rtn;
-            } else {
-                this._totalelements++;
+            } 
+            else
+            {   this._totalelements++;
                 this._stringtable[key] = value;                
             }
+        }
         // complex operation, maintaining buckets of key-value pairs 
-        } else {
-            var hc = (key===null) ? 0 : key.hashCode_0();
+        else 
+        {   var hc = (key===null) ? 0 : key.hashCode_0();
             var kv = this._commontable[hc];
-            if (!kv) {
-                // create new bucket if not yet existing
+            if (!kv) 
+            {   // create new bucket if not yet existing
                 this._commontable[hc] = [key,value]; 
                 this._totalelements++;
-            } else {
-                for (var i=0; i<kv.length; i+=2) {  // scan all key-value pairs for the hashCode
+            } 
+            else
+            {   for (var i=0; i<kv.length; i+=2) 
+                {  // scan all key-value pairs for the hashCode
                     var k = kv[i];
                     // found occurence of the key - overwrite the value
-                    if (key===null ? k===null : key.equals_1(k)) {
-                        var rtn = kv[i+1];
+                    if (key===null ? k===null : key.equals_1(k)) 
+                    {   var rtn = kv[i+1];
                         kv[i+1] = value;
                         return rtn;
                     }
@@ -173,39 +174,41 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
             }
         }
         return null;
-	},
+    },
     
-    putAll_1: function(map) {
-        if (map===null) throw new TypeError("NullPointerException");
-        for (var it=map.keySet_0().iterator_0(); it.hasNext_0(); ) {
-            var k = it.next_0();
+    putAll_1: function(map) 
+    {   if (map===null) throw new TypeError("NullPointerException");
+        for (var it=map.keySet_0().iterator_0(); it.hasNext_0(); ) 
+        {   var k = it.next_0();
             var v = map.get_1(k);
             this.put_2(k,v);
         }
     },
-	    
-	remove_1: function(key) {
-        if (_isValidStringKey(key)) {  
-            var st = this._stringtable;
-            if (st.hasOwnProperty(key)) {                
-                var rtn = st[key];
+
+    remove_1: function(key) 
+    {   if (_isValidStringKey(key)) 
+        {   var st = this._stringtable;
+            if (st.hasOwnProperty(key))
+            {   var rtn = st[key];
                 delete st[key];
                 this._totalelements--;
                 return rtn;
             }
-        } else {
-            var hc = (key===null) ? 0 : key.hashCode_0();
+        } 
+        else 
+        {   var hc = (key===null) ? 0 : key.hashCode_0();
             var ct = this._commontable;
             var kv = ct[hc];
-            if (kv) {
-                for (var i=0; i<kv.length; i+=2) {
-                    var k = kv[i];
-                    if (key===null ? k===null : key.equals_1(k)) {
-                        var rtn = kv[i+1];
-                        if (kv.length>2) {
-                            kv.splice(i,2);
-                        } else {
-                            delete ct[hc];
+            if (kv) 
+            {   for (var i=0; i<kv.length; i+=2) 
+                {   var k = kv[i];
+                    if (key===null ? k===null : key.equals_1(k)) 
+                    {   var rtn = kv[i+1];
+                        if (kv.length>2) 
+                        {   kv.splice(i,2);
+                        }
+                        else
+                        {   delete ct[hc];
                         }
                         this._totalelements--;
                         return rtn;
@@ -214,70 +217,70 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
             }
         }
         return null;
-	},
-	
-	size_0: function(){
-		return this._totalelements;
-	},
-	
-	toString_0: function(){
-		var parts = ["{"];
-        for (var it=this.keySet_0().iterator_0(); it.hasNext_0(); ) {
-            var k = it.next_0();
+    },
+    
+    size_0: function()
+    {   return this._totalelements;
+    },
+
+    toString_0: function()
+    {   var parts = ["{"];
+        for (var it=this.keySet_0().iterator_0(); it.hasNext_0(); ) 
+        {   var k = it.next_0();
             var v = this.get_1(k);
-            if (parts.length>1) {
-                parts.push(", ");
+            if (parts.length>1) 
+            {   parts.push(", ");
             }
             parts.push(k===null ? "null" : k.toString_0());
             parts.push("=");
             parts.push(v===null ? "null" : v.toString_0());
         }
         parts.push("}");
-		return parts.join("");
-	},
-	  
-    values_0: function() {
-        return new java_util_HashMapValueView.$()._1(this);
+        return parts.join("");
+    },
+  
+    values_0: function() 
+    {   return new java_util_HashMapValueView.$()._1(this);
     },        
 });
 
-function _isValidStringKey(s) {
-    return s!==null && s._isString;
+function _isValidStringKey(s) 
+{   return s!==null && s._isString;
 }
 
 
-var java_util_HashMapKeyView = {
-    $: function() {
-        this.map = null;
+var java_util_HashMapKeyView = 
+{   $: function() 
+    {   this.map = null;
     },
 };    
-_class(java_util_HashMapKeyView, java_util_AbstractCollection, [java_util_Set], "java.util.HashMapKeyView", {
-    _1: function(map) {   
-        this.map = map;
+_class(java_util_HashMapKeyView, java_util_AbstractCollection, [java_util_Set], "java.util.HashMapKeyView", 
+{   _1: function(map) 
+    {   this.map = map;
         return this;
-	},
+    },
     
-    contains_1: function(o) {
-        return this.map.containsKey_1(o);
+    contains_1: function(o) 
+    {   return this.map.containsKey_1(o);
     },        
     
 // containsAll_1                   // implemented by AbstractCollection
 
-    equals_1: function(o) {
-        if (o===null || !(o instanceof java_util_HashMapKeyView.$) || this.size_0()!==o.size_0()) {
-            return false;
+    equals_1: function(o) 
+    {   if (o===null || !(o instanceof java_util_HashMapKeyView.$) || this.size_0()!==o.size_0()) 
+        {   return false;
         }
-        for (var it=this.iterator_0(); it.hasNext_0(); ) {
-            var e = it1.next_0();
+        for (var it=this.iterator_0(); it.hasNext_0(); ) 
+        {   var e = it1.next_0();
             if (! o.map.containsKey_1(e)) return false;
         }
         return true;          
     },
 
-    hashCode_0: function() {
-        var hashCode = 0;
-        for (var it=this.iterator_0(); it.hasNext_0(); ) {
-            var e = it.next_0();
+    hashCode_0: function() 
+    {   var hashCode = 0;
+        for (var it=this.iterator_0(); it.hasNext_0(); ) 
+        {   var e = it.next_0();
             hashCode = ( hashCode + (e===null ? 0 : e.hashCode_0()) ) & 0xffffffff;
         }
         return hashCode;
@@ -285,31 +288,31 @@ _class(java_util_HashMapKeyView, java_util_AbstractCollection, [java_util_Set], 
 
 // boolean	isEmpty()              // implemented by AbstractCollection
 
-    iterator_0: function() {
-        return new java_util_HashMapIterator.$()._2(this.map, true);
+    iterator_0: function() 
+    {   return new java_util_HashMapIterator.$()._2(this.map, true);
     },
 
-    size_0: function() {
-        return this.map._totalelements;
+    size_0: function() 
+    {   return this.map._totalelements;
     },
     
 // Object[]	toArray()              // implemented by AbstractCollection   
 });
 
 
-var java_util_HashMapValueView = {
-    $: function() {
-        this.map = null;
+var java_util_HashMapValueView =
+{   $: function() 
+    {   this.map = null;
     },
 };
-_class(java_util_HashMapValueView, java_util_AbstractCollection, [java_util_Collection], "java.util.HashMapValueView", {
-   	_1: function(map) {
-        this.map = map;
+_class(java_util_HashMapValueView, java_util_AbstractCollection, [java_util_Collection], "java.util.HashMapValueView", 
+{   _1: function(map) 
+    {   this.map = map;
         return this;
-	},
+    },
 
-    contains_1: function(o) {
-        return this.map.containsValue_1(o);
+    contains_1: function(o) 
+    {   return this.map.containsValue_1(o);
     },        
 
 // containsAll_1                   // implemented by AbstractCollection
@@ -317,41 +320,41 @@ _class(java_util_HashMapValueView, java_util_AbstractCollection, [java_util_Coll
 // int	hashCode()                 // implemented by Object
 // boolean	isEmpty()              // implemented by AbstractCollection
 
-    iterator_0: function() {
-        return new java_util_HashMapIterator.$()._2(this.map, false);     
+    iterator_0: function() 
+    {   return new java_util_HashMapIterator.$()._2(this.map, false);     
     },
 
-    size_0: function() {
-        return this.map._totalelements;
+    size_0: function() 
+    {   return this.map._totalelements;
     },
     
 // Object[]	toArray()              // implemented by AbstractCollection
 });
 
 
-var java_util_HashMapIterator = {
-    $: function() {
-        this.map = null;
+var java_util_HashMapIterator = 
+{   $: function() 
+    {   this.map = null;
         this.deliverKeys = false;
         this.keys = null;
         this.n = 0;
     },
 };
-_class(java_util_HashMapIterator, java_lang_Object, [java_util_Iterator, java_util_Enumeration], "java.util.HashMapIterator", {
-    _2: function(map, deliverKeys) {
-        this.map = map;
+_class(java_util_HashMapIterator, java_lang_Object, [java_util_Iterator, java_util_Enumeration], "java.util.HashMapIterator", 
+{   _2: function(map, deliverKeys) 
+    {   this.map = map;
         this.deliverKeys = deliverKeys;
         
         var k = [];
         // search through all string keys
-        for (var s in map._stringtable) {
-            k.push(s);            
+        for (var s in map._stringtable) 
+        {   k.push(s);            
         }
         // search through all hashcode-buckets        
-        for (var hc in map._commontable) { 
-            var kv = map._commontable[hc];
-            for (var i=0; i<kv.length; i+=2) { 
-                k.push(kv[i]);
+        for (var hc in map._commontable) 
+        {   var kv = map._commontable[hc];
+            for (var i=0; i<kv.length; i+=2) 
+            {   k.push(kv[i]);
             }
         }
         
@@ -360,22 +363,22 @@ _class(java_util_HashMapIterator, java_lang_Object, [java_util_Iterator, java_ut
         
         return this;
     },
-    hasNext_0: function() {
-        return this.n<this.keys.length;
+    hasNext_0: function() 
+    {   return this.n<this.keys.length;
     },
             
-    next_0: function() {
-        var k = this.keys[this.n++];
+    next_0: function() 
+    {   var k = this.keys[this.n++];
         return this.deliverKeys ? k : this.map.get_1(k);
     },           
-    remove_0: function() {
-        this.map.remove_1(this.keys[this.n-1]);
+    remove_0: function() 
+    {   this.map.remove_1(this.keys[this.n-1]);
     },   
     
-    hasMoreElements_0: function() {
-        return this.hasNext_0();
+    hasMoreElements_0: function() 
+    {   return this.hasNext_0();
     },    
-    nextElement_0: function() {  
-        return this.next_0();
+    nextElement_0: function() 
+    {   return this.next_0();
     },        
 });

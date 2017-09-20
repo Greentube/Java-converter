@@ -1,19 +1,19 @@
 //load// java/lang/Object
 var java_lang_Enum = {
-    $: function() {
-        this._name = null;
+    $: function()
+    {   this._name = null;
         this._ordinal = 0;
     },
 };
-_class (java_lang_Enum, java_lang_Object, null, "java.lang.Enum", {
-	_2: function(name,ordinal) {
-        this._name = name;
+_class (java_lang_Enum, java_lang_Object, null, "java.lang.Enum", 
+{   _2: function(name,ordinal) 
+    {   this._name = name;
         this._ordinal = ordinal;
         return this;
-    },
-    
-    equals_1 : function(other) {
-        return this===other;
+    },    
+
+    equals_1 : function(other) 
+    {   return this===other;
     },
     
     hashCode_0 : function() {

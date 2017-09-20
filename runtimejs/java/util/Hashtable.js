@@ -1,28 +1,28 @@
 //load// java/util/HashMapImpl
-var java_util_Hashtable = {
-    $: function() {
-        java_util_HashMapImpl.$.call(this);
+var java_util_Hashtable = 
+{   $: function() 
+    {   java_util_HashMapImpl.$.call(this);
     },
 };
-_class(java_util_Hashtable, java_util_HashMapImpl, null, "java.util.Hashtable", {
+_class(java_util_Hashtable, java_util_HashMapImpl, null, "java.util.Hashtable", 
+{
     // legacy methods only supported by Hashtable, but not the Map interface 
     // everything can be easily implemented by just using the methods of the
     // Map interface
     
-    clone_0: function() {
-        return new java_util_Hashtable.$()._1(this);
+    clone_0: function() 
+    {   return new java_util_Hashtable.$()._1(this);
     },
     
-    contains_1: function(value) {
-        return this.containsValue_1(value);
+    contains_1: function(value) 
+    {   return this.containsValue_1(value);
     },
     
-    elements_0: function() {
-        return new java_util_HashMapIterator.$()._2(this, false);
+    elements_0: function() 
+    {   return new java_util_HashMapIterator.$()._2(this, false);
     },
     
-	keys_0: function(){
-        return new java_util_HashMapIterator.$()._2(this, true);
-	},      
+    keys_0: function()
+    {   return new java_util_HashMapIterator.$()._2(this, true);
+    },      
 });
-

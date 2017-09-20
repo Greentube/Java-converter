@@ -546,7 +546,7 @@ aspect GenerateJS {
   	}
   	public void NEExpr.generateJS(CodePrinter out) {
   		getLeftOperand().generateUsingResultJS(out);
-  		out.print(" != ");
+  		out.print(" !== ");
   		getRightOperand().generateUsingResultJS(out);  	
   	}
   	public void GEExpr.generateJS(CodePrinter out) {
