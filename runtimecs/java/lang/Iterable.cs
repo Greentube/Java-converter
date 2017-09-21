@@ -1,8 +1,4 @@
-
-namespace java.lang
+namespace java.lang { public interface Iterable
 {
-    public interface Iterable
-    {
-        java.util.Iterator iterator();
-    }
-}
+    java.util.Iterator iterator();
+}}

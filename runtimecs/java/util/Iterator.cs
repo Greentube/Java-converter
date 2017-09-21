@@ -1,9 +1,6 @@
-namespace java.util 
+namespace java.util { public interface Iterator
 {
-	public interface Iterator
-	{
-		bool hasNext();		
-		System.Object next();
-        void remove();
-	}	
-}
+    bool hasNext();
+    System.Object next();
+    void remove();
+}}
