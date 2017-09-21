@@ -94,7 +94,17 @@ public class TestJava5 extends TestJava4
             if (v.size()==4) break x;
             v.add(x);
         }
-        assertO(v.toString(), "[7, 4, 47, 8]");    
+        assertO(v.toString(), "[7, 4, 47, 8]");
+        
+        v.clear();
+        for (Integer x:l) v.add(x);
+        assertO(v.toString(), "[7, 4, 1, 8, 12]");
+                 
+        v.clear();
+        for (Integer x:l) 
+        {   v.add(x);
+        }
+        assertO(v.toString(), "[7, 4, 1, 8, 12]");         
     }
 
     public static void enumtest() 

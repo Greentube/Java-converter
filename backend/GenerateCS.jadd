@@ -28,42 +28,42 @@ aspect GenerateCS {
 			out.finish();    	
     	}
   	}
-    	
-	public void ClassDecl.generateCS(CodePrinter out) {
-		for (TypeDecl t:nestedTypes()) {			
-			CodePrinter o2 = new CodePrinter(out, 
-					CodePrinter.escapePackagePath(t.packageName()) 
-				    + CodePrinter.escapeIdentifier(t.uniqueName(), true) + ".cs"
-			);
-	    	t.generateCS(o2);
-			o2.finish();    		
-		}
-	  
-		if (packageName().length()>0) {
-			out.print("namespace ");
-			String n = getNameCS();
-			out.print(n.substring(0,n.lastIndexOf('.')));			
-			out.print(" {");
-			out.increaseIndent();
-			out.println();
-		}
-		out.print("using java.lang;");  
-		out.println();
-		out.print("public class ");
-		out.printCSIdentifier(uniqueName());
-		out.print(": ");
 
-    	if (hasSuperClass()) {
-    		out.print(superclass().getNameCS());
-    	} else {
-    		out.print("System.Object");
-    	}
-   		for (Iterator<TypeDecl> iter = interfacesIterator(); iter.hasNext(); ) {
-   			out.print(", ");
-   			TypeDecl td = iter.next();
-      		out.print(td.getNameCS());
-   		}			
-    	
+    public void ClassDecl.generateCS(CodePrinter out) 
+    {   for (TypeDecl t:nestedTypes()) 
+        {   CodePrinter o2 = new CodePrinter(out, 
+                  CodePrinter.escapePackagePath(t.packageName()) 
+                + CodePrinter.escapeIdentifier(t.uniqueName(), true) + ".cs"
+            );
+            t.generateCS(o2);
+            o2.finish();
+        }
+
+        out.print("using java.lang;");  
+        out.println();
+
+        if (packageName().length()>0) 
+        {   out.print("namespace ");
+            String n = getNameCS();
+            out.print(n.substring(0,n.lastIndexOf('.')));			
+            out.print(" { ");
+        }
+        out.print("public class ");
+        out.printCSIdentifier(uniqueName());
+        out.print(": ");
+
+        if (hasSuperClass()) 
+        {   out.print(superclass().getNameCS());
+        }
+        else
+        {   out.print("System.Object");
+        }
+        for (Iterator<TypeDecl> iter = interfacesIterator(); iter.hasNext(); ) 
+        {   out.print(", ");
+            TypeDecl td = iter.next();
+            out.print(td.getNameCS());
+        }  
+
     	out.println();
     	out.print ("{");
     	out.println();
@@ -143,7 +143,9 @@ aspect GenerateCS {
 						if (!havestaticconstructor) {
 							out.print("static ");
 							out.printCSIdentifier(uniqueName());
-							out.print("() {");
+							out.print("()");
+							out.println();
+							out.print("{");
 							out.println();
 							out.increaseIndent();
 							havestaticconstructor=true;
@@ -194,7 +196,9 @@ aspect GenerateCS {
 			}	
 			out.print("public static ");
 			out.printCSIdentifier(uniqueName());
-			out.print("[] values() {");
+			out.print("[] values()");
+			out.println();
+			out.print("{");
 			out.println();
 			out.increaseIndent();
 			out.print("return new ");
@@ -215,14 +219,12 @@ aspect GenerateCS {
 	
 		out.printAndForgetDims();
 	
-		out.decreaseIndent(); 
-		out.print("}");
-		out.println();
-		if (packageName().length()>0) {
-			out.decreaseIndent(); 
-			out.print("}");
-			out.println();
-		}
+        out.decreaseIndent(); 
+        out.print("}");
+        if (packageName().length()>0) 
+        {   out.print("}");
+        }
+        out.println();
   	}
   	  	
   	  	

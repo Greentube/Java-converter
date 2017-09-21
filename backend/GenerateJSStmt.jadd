@@ -1,42 +1,44 @@
 import com.greentube.javaconverter.CodePrinter;
 aspect GenerateJS {
- 
- 	// --- AssertStmt ---
- 	
- 	// --- BasicTWR ---
- 	
- 	// --- Block ---
- 	
-	public void Block.generateJS(CodePrinter out) {
-		out.print("{");
-		out.increaseIndent();
-		out.println();
-  		int n = getNumStmt();
-  		for (int i=0; i<n; i++) {
-  			getStmt(i).generateJS(out);
-  		}
-		out.decreaseIndent();
-		out.print("}");
-		out.println();		  		
-  	}
+
+    // --- AssertStmt ---
+
+    // --- BasicTWR ---
+
+    // --- Block ---
+
+    public void Block.generateJS(CodePrinter out) 
+    {   
+        out.print("{");
+        out.increaseIndent();
+        out.println();
+        int n = getNumStmt();
+        for (int i=0; i<n; i++) 
+        {   getStmt(i).generateJS(out);
+        }
+        out.decreaseIndent();
+        out.print("}");
+        out.println();
+    }
   
-  	// --- BranchTargetStmt ---
-  	
-	public void DoStmt.generateJS(CodePrinter out) {
-		out.print("do ");
-		getStmt().generateJS(out);
-		out.print("while (");	
-		getCondition().generateUsingResultJS(out);
-		out.print(");");	
-		out.println();
- 	}
- 	
-	public void EnhancedForStmt.generateJS(CodePrinter out) {
-		String vname = getVariableDecl().name();
-		Expr e = getExpr();
-		if (e.type().isArrayDecl()) {
-			out.print("for (var ");
-			out.printJSIdentifier(vname, "");
+    // --- BranchTargetStmt ---
+
+    public void DoStmt.generateJS(CodePrinter out) 
+    {   out.print("do ");
+        if (getStmt() instanceof Block) out.println();
+        getStmt().generateJS(out);
+        out.print("while (");
+        getCondition().generateUsingResultJS(out);
+        out.print(");");
+        out.println();
+    }
+
+    public void EnhancedForStmt.generateJS(CodePrinter out) 
+    {   String vname = getVariableDecl().name();
+        Expr e = getExpr();
+        if (e.type().isArrayDecl()) 
+        {   out.print("for (var ");
+            out.printJSIdentifier(vname, "");
 			out.print(", ");
 			out.printJSIdentifier(vname, "_i");
 			out.print("=0, ");
@@ -58,9 +60,9 @@ aspect GenerateJS {
 			out.print("])||true); ");
 			out.printJSIdentifier(vname, "_i");
 			out.print("++)");
-			getStmt().generateJS(out);
-		} else if (e.type().isIterable()) {
-			out.print("for (var ");
+		} 
+		else if (e.type().isIterable()) 
+        {   out.print("for (var ");
 			out.printJSIdentifier(vname, "");
 			out.print(", ");
 			out.printJSIdentifier(vname, "_i");
@@ -74,82 +76,109 @@ aspect GenerateJS {
 			out.printJSIdentifier(vname, "_i");
 			out.print(".next_0())||true)");			
 			out.print(";)");   
-			getStmt().generateJS(out);				
-		} else {
-			throw new RuntimeException("Expression is neither an array or an Iterable");
-		}
-		out.println();
- 	}
- 	
-	public void ForStmt.generateJS(CodePrinter out) {
-		out.print("for (");
-		if (getNumInitStmt()==0) {
-			out.print("; ");
-		} else {					
-			for (int i=0; i<getNumInitStmt(); i++) {
-				if (i>0) out.print(",");
-				getInitStmt(i).generateJS(out);
-			}
-		}
-		if (hasCondition()) {
-			getCondition().generateUsingResultJS(out);
-		}
-		out.print("; ");
-		for (int i=0; i<getNumUpdateStmt(); i++) {
-			if (i>0) out.print(",");
-			((ExprStmt)getUpdateStmt(i)).getExpr().generateJS(out);
-		}
-		out.print(") ");
-		getStmt().generateJS(out);
- 	}
- 	
-	public void LabeledStmt.generateJS(CodePrinter out) {
-		out.printJSIdentifier(getLabel(),"");
-		out.print(": ");
-		getStmt().generateJS(out);
- 	}
- 	
-	public void SwitchStmt.generateJS(CodePrinter out) {
-		out.print("switch (");
-		getExpr().generateUsingResultJS(out);
-		out.print(")");
-		getBlock().generateJS(out);	
- 	}
+		} 
+        else 
+        {   throw new RuntimeException("Expression is neither an array or an Iterable");
+        }
+        if (getStmt() instanceof Block) out.println();
+        getStmt().generateJS(out);              
+        out.println();
+    }
+ 
+    public void ForStmt.generateJS(CodePrinter out) 
+    {   out.print("for (");
+        if (getNumInitStmt()==0) 
+        {   out.print("; ");
+        }
+        else
+        {   for (int i=0; i<getNumInitStmt(); i++) 
+            {   if (i>0) out.print(",");
+                getInitStmt(i).generateJS(out);
+            }
+        }
+        if (hasCondition()) 
+        {   getCondition().generateUsingResultJS(out);
+        }
+        out.print("; ");
+        for (int i=0; i<getNumUpdateStmt(); i++) 
+        {   if (i>0) out.print(",");
+            ((ExprStmt)getUpdateStmt(i)).getExpr().generateJS(out);
+        }
+        out.print(") ");
+        if (getStmt() instanceof Block) out.println();
+        getStmt().generateJS(out);
+    }
 
-	public void WhileStmt.generateJS(CodePrinter out) {
-		out.print("while (");
-		getCondition().generateUsingResultJS(out);
-		out.print(") ");
-		getStmt().generateJS(out);	
- 	}
-  	
-  	// --- BreakStmt ---
-  	
-	public void BreakStmt.generateJS(CodePrinter out) {
-		out.print("break");
-		String label = getLabel();
-		if (label!=null && label.length()>0) {
-			out.print(" ");
-			out.printJSIdentifier(getLabel(), "");
-		}
-		out.print(";");	
-		out.println();			
-	}
-  	
-  	// --- Case ---
-  	
-	public void ConstCase.generateJS(CodePrinter out) {
-		out.print("case ");
-		getValue().generateUsingResultJS(out);
-		out.print(":");
-		out.println();
-	}
-	public void DefaultCase.generateJS(CodePrinter out) {
-		out.print("default:");
-		out.println();
-	}
-  	
-  	// --- ContinueStmt ---
+    public void LabeledStmt.generateJS(CodePrinter out) 
+    {   out.printJSIdentifier(getLabel(),"");
+        out.print(": ");
+        getStmt().generateJS(out);
+    }
+    
+    public void SwitchStmt.generateJS(CodePrinter out) 
+    {   out.print("switch (");
+        getExpr().generateUsingResultJS(out);
+        out.print(")");
+        out.println();
+        out.print("{");
+        out.println();
+        out.increaseIndent();
+
+        Block b = getBlock();
+        int n = b.getNumStmt();
+        for (int i=0; i<n; i++) 
+        {   Stmt stmt = b.getStmt(i);
+            if ((stmt instanceof ConstCase) || (stmt instanceof DefaultCase) || (stmt instanceof Block)) 
+            {   stmt.generateJS(out);
+            }
+            else
+            {   out.increaseIndent();
+                stmt.generateJS(out);
+                out.decreaseIndent();
+            }
+        }
+
+        out.decreaseIndent();
+        out.print("}");
+        out.println();
+    }
+
+    public void WhileStmt.generateJS(CodePrinter out) 
+    {   out.print("while (");
+        getCondition().generateUsingResultJS(out);
+        out.print(") ");
+        if (getStmt() instanceof Block) out.println();
+        getStmt().generateJS(out);
+    }
+
+    // --- BreakStmt ---
+
+    public void BreakStmt.generateJS(CodePrinter out) 
+    {   out.print("break");
+        String label = getLabel();
+        if (label!=null && label.length()>0) 
+        {   out.print(" ");
+            out.printJSIdentifier(getLabel(), "");
+        }
+        out.print(";");	
+        out.println();			
+    }
+
+    // --- Case ---
+    
+    public void ConstCase.generateJS(CodePrinter out) 
+    {   out.print("case ");
+        getValue().generateUsingResultJS(out);
+        out.print(":");
+        out.println();
+    }
+    
+    public void DefaultCase.generateJS(CodePrinter out) 
+    {   out.print("default:");
+        out.println();
+    }
+
+    // --- ContinueStmt ---
 
   	public void ContinueStmt.generateJS(CodePrinter out) {
 		out.print("continue");
@@ -174,18 +203,20 @@ aspect GenerateJS {
 	
 	// --- IfStmt ---
 	
-	public void IfStmt.generateJS(CodePrinter out) {
-		out.print("if (");
-		getCondition().generateUsingResultJS(out);
-		out.print(") ");
-		getThen().generateJS(out);
-		Stmt e = getElse();
-		if (e!=null) {
-			out.println();
-			out.print("else ");
-			e.generateJS(out);
-		}
-	}  	
+    public void IfStmt.generateJS(CodePrinter out) 
+    {   Stmt t = getThen();
+        Stmt e = getElse();
+        out.print("if (");
+        getCondition().generateUsingResultJS(out);
+        out.print(") ");
+        if (t instanceof Block) out.println();
+        t.generateJS(out);
+        if (e!=null) 
+        {   if (!(t instanceof Block)) out.println();
+            out.print("else ");
+            e.generateJS(out);
+        }
+    }
 	
 	// --- LocalClassDeclStmt ---
 	public void LocalClassDeclStmt.generateJS(CodePrinter out) {

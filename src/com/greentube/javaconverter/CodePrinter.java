@@ -4,11 +4,14 @@ import java.io.*;
 import java.util.*;
 
 public class CodePrinter 
-{   // general code generation
+{   final static boolean horstmanStyle=true; // experimental bracing
+
+    // general code generation
     File outputfolder;
     OutputStreamWriter ow;
     boolean linehasstarted;
     int indent;
+    boolean afteropeningbrace;
 
     // for javascript code
     private HashSet<String> reference;
@@ -34,7 +37,8 @@ public class CodePrinter
         this.outputfolder = outputfolder;
         this.indent = 0;
         this.linehasstarted = false;
-
+        this.afteropeningbrace = false;
+        
         reference = new HashSet();
         load = new HashSet();
         complete = new HashSet();
@@ -71,12 +75,18 @@ public class CodePrinter
     }
 
     public void print(String s) 
-    {   try
-        {   if (!linehasstarted) 
+    {   try        
+        {   if (horstmanStyle && s.startsWith("}") && afteropeningbrace && linehasstarted) {
+                ow.write("\n");
+                linehasstarted=false;
+                afteropeningbrace=false;
+            }
+            if (!linehasstarted) 
             {   for (int i=0; i<indent; i++) ow.write("    ",0,4);
                 linehasstarted=true;
             }
             ow.write(s,0,s.length());
+            afteropeningbrace = s.endsWith("{");
         } 
         catch (IOException e) 
         {   e.printStackTrace();
@@ -85,8 +95,21 @@ public class CodePrinter
     }
 
     public void println() 
-    {   print("\n");
-        linehasstarted=false;
+    {
+        try 
+        {   if (horstmanStyle && afteropeningbrace) 
+            {   ow.write("   ");
+                linehasstarted=true;
+            } 
+            else 
+            {   ow.write("\n");
+                linehasstarted=false;
+            }
+        }
+        catch (IOException e) 
+        {   e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     public static String escapeIdentifier(String id, boolean allowDollarSign) 
@@ -250,12 +273,12 @@ public class CodePrinter
         pendingLabels.add(l);
     }
 
-    public void printAndForgetLabel(String l) 
+    public boolean hasPendingLabel(String l) 
     {   if (pendingLabels.contains(l)) 
-        {   print(l);
-            print(":;");
-            pendingLabels.remove(l);
+        {   pendingLabels.remove(l);
+            return true;
         }
+        return false;
     }
 
     public int memorizeDim(String elementtype, int depth) 

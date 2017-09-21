@@ -853,26 +853,32 @@ public class TestJava4
 		assertO(swtst(6),"MUCH");
 		assertO(swtst(7),"?");
     }
-    private static String swtst(int i) {
-    	int n=0;
-    	switch (i) {
-    	case 1: 
-    		n++; 
-    	case 2: 
-    		n++;
-    	case 3: 
-    	{
-    		n++;
-    		return "V"+n;
-    	}
-    	case 4:
-    		return "FOUR";
-    	default:
-    		return "?";			
-    	case 5:
-    	case 6:
-    		return "MUCH";
-    	}
+    private static String swtst(int i) 
+    {
+        x: {
+            if (i>99) break x;
+        }
+        y: break y;
+
+        int n=0;
+        l: switch (i) 
+        {   case 1: 
+                n++; 
+            case 2: 
+                n++;
+            case 3: 
+            {   n++;
+                return "V"+n;
+            }
+            case 4:
+                return "FOUR";
+            default:
+                return "?";			
+            case 5:
+            case 6:
+                break l;
+        }
+        return "MUCH";
     }
         
     public static void booleantest() {

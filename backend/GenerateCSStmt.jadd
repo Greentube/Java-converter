@@ -1,348 +1,347 @@
 import com.greentube.javaconverter.CodePrinter;
 
 aspect GenerateCS {
- 
- 	// --- AssertStmt ---
- 	
- 	// --- BasicTWR ---
- 	
- 	// --- Block ---
- 	
-	public void Block.generateCS(CodePrinter out) {
-		boolean hadNonDeclStatements=false;
-		int extraBraces = 0;
-		
-		out.print("{");
-		out.increaseIndent();
-		out.println();
-  		int n = getNumStmt();
-  		for (int i=0; i<n; i++) {
-  			Stmt s = getStmt(i);
-  			if (s instanceof VarDeclStmt) {
-  				if (hadNonDeclStatements) {
-  					out.print("{ ");
-  					extraBraces++;
-  					hadNonDeclStatements = false;
-  				}
-  			} else {
-  				hadNonDeclStatements = true;
-  			}
-  			s.generateCS(out);
-  		}
-  		if ((getParent() instanceof SwitchStmt) && executionCanReachBottom()) {
-  			out.print("break;");
-  			out.println();
-  		}
-		out.decreaseIndent();
-		out.print("}");
-		for (int i=0; i<extraBraces; i++) {
-			out.print(" }");
-		}
-		out.println();
-  	}
-  
-  	public boolean Block.executionCanReachBottom() {
-  		if (getNumStmt()<1) return true;
-  		Stmt stmt = getStmt(getNumStmt()-1);
-  		if (stmt instanceof Block) {
-  			return ((Block) stmt).executionCanReachBottom();
-  		} 
-  		if (stmt instanceof ReturnStmt 
-  		||  stmt instanceof BreakStmt
-  		||  stmt instanceof ContinueStmt) return false;
-  		return true;
-  	} 
-  
-  	// --- BranchTargetStmt ---
 
-	public void BranchTargetStmt.generateCS(CodePrinter out) {
-		generateCS(out,null);
-	}
-  	
-	public void BranchTargetStmt.generateCS(CodePrinter out, String label) {		
-	}
-  	
-	public void DoStmt.generateCS(CodePrinter out, String label) {			
-		if (label==null) {
-			out.print("do ");
-			getStmt().generateCS(out);
-			out.print("while(");	
-			getCondition().generateUsingResultCS(out);
-			out.print(");");			
-		} else {
-			out.print("{ do { ");
-			out.println();
-			out.increaseIndent();
-			getStmt().generateCS(out);
-			out.printAndForgetLabel(CodePrinter.escapeIdentifier(label,false)+"_c");
-			out.println();
-			out.print("}");
-			out.print("while(");	
-			getCondition().generateUsingResultCS(out);
-			out.print(");");
-			out.println();
-			out.printAndForgetLabel(CodePrinter.escapeIdentifier(label,false)+"_b");
-			out.println();
-			out.decreaseIndent();
-			out.print("}");
-		}	
-		out.println();		
- 	}
- 	
-	public void EnhancedForStmt.generateCS(CodePrinter out, String label) {
-		if (label!=null) {
-			out.print("{ ");
-		}
-		
-		boolean isiterator=false;
-		Expr e = getExpr();
-		String vname = getVariableDecl().name();
-		if (e.type().isArrayDecl()) {
-			out.print("foreach (");
-			getVariableDecl().getTypeAccess().generateCS(out);
-			out.print(" ");
-			out.printCSIdentifier(vname, "");
-			out.print(" in ");
-			e.generateUsingResultCS(out);
-			out.print(") ");
-		} else if (e.type().isIterable()) {
-			out.print("for (java.util.Iterator ");
-			out.printCSIdentifier(vname, "_i");
-			out.print(" = ");
-			e.generateUsingResultCS(out);
-			out.print(".iterator(); ");
-			out.printCSIdentifier(vname, "_i");
-			out.print(".hasNext(); ) ");	
-			isiterator = true;		
-		} else {
-			throw new RuntimeException("Expression is neither an array or an Iterable");
-		}
-		
-		if (label!=null) {
-			out.print("{");
-			out.println();
-			out.increaseIndent();
-		}
-		
-		if (isiterator) {
-			out.print("{ ");
-			out.println();
-			out.increaseIndent();
-			getVariableDecl().getTypeAccess().generateCS(out);
-			out.print(" ");
-			out.printCSIdentifier(vname, "");
-			out.print(" = ");
-			out.print("(");
-			getVariableDecl().getTypeAccess().generateCS(out);
-			out.print(") ");
-			out.printCSIdentifier(vname, "_i");
-			out.print(".next();");
-			out.println();
-			getStmt().generateCS(out);
-			out.decreaseIndent();
-			out.print("}");
-			out.println();
-		} else {
-			getStmt().generateCS(out);
-		}
-		if (label!=null) {
-			out.decreaseIndent();
-			out.printAndForgetLabel(CodePrinter.escapeIdentifier(label,false)+"_c");
-			out.print(" } ");
-			out.printAndForgetLabel(CodePrinter.escapeIdentifier(label,false)+"_b");
-			out.print(" }");
-			out.println(); 
-		}							
- 	}
- 	
-	public void ForStmt.generateCS(CodePrinter out, String label) {
-		if (label!=null) {
-			out.print("{ ");
-		}
+    // --- AssertStmt ---
 
-		out.print("for (");
-		
-		if (getNumInitStmt()==0) {
-			out.print("; ");
-		} else {			
-			for (int i=0; i<getNumInitStmt(); i++) {
-				if (i>0) out.print(", ");
-				getInitStmt(i).generateCS(out);
-			}
-			out.print(" ");
-		}
-		if (hasCondition()) {
-			getCondition().generateUsingResultCS(out);
-		} 
-		out.print("; ");
-		
-		for (int i=0; i<getNumUpdateStmt(); i++) {
-			if (i>0) out.print(", ");
-			((ExprStmt)getUpdateStmt(i)).getExpr().generateUsingResultCS(out);
-		}
-		out.print(") ");
-		
-		if (label!=null) {
-			out.print("{");
-			out.println();
-			out.increaseIndent();
-		}
-		
-		getStmt().generateCS(out);	
+    // --- BasicTWR ---
 
-		if (label!=null) {
-			out.decreaseIndent();
-			out.printAndForgetLabel(CodePrinter.escapeIdentifier(label,false)+"_c");
-			out.print(" } ");
-			out.printAndForgetLabel(CodePrinter.escapeIdentifier(label,false)+"_b");
-			out.print(" }");
-			out.println(); 
-		}					
- 	}
- 	
-	public void LabeledStmt.generateCS(CodePrinter out) {
-		((BranchTargetStmt)getStmt()).generateCS(out, getLabel());
- 	}
- 	
-	public void SwitchStmt.generateCS(CodePrinter out, String label) {	
-		out.print("switch (");
-		
-		Expr e = getExpr();
-		e.generateUsingResultCS(out);
-		if (e.type().isEnumDecl()) {
-			out.print(".ordinal()");
-		} 
-		out.print(") ");
-		getBlock().generateCS(out);	
-		out.println();
- 	}
+    // --- Block ---
 
-	public void WhileStmt.generateCS(CodePrinter out, String label) {
-		if (label!=null) {
-			out.print("{ ");
-		}
-		
-		out.print("while (");
-		getCondition().generateUsingResultCS(out);
-		out.print(") ");
+    public void Block.generateCS(CodePrinter out) {
+        generateCS(out,null);
+    }
+    
+    public void Block.generateCS(CodePrinter out, String continuelabel) 
+    {
+        boolean hadNonDeclStatements=false;
+        int extraBraces = 0;
 
-		if (label!=null) {
-			out.print("{");
-			out.println();
-			out.increaseIndent();
-		}
-		
-		getStmt().generateCS(out);
+        out.print("{");
+        out.increaseIndent();
+        out.println();
+        int n = getNumStmt();
+        for (int i=0; i<n; i++) 
+        {   Stmt s = getStmt(i);
+            if (s instanceof VarDeclStmt) 
+            {   if (hadNonDeclStatements) 
+                {   out.print("{");
+                    extraBraces++;
+                    hadNonDeclStatements = false;
+                }
+            } 
+            else 
+            {   hadNonDeclStatements = true;
+            }
+            s.generateCS(out);
+        }
+        if (continuelabel!=null && out.hasPendingLabel(continuelabel)) 
+        {   out.print(continuelabel);
+            out.print(":;");
+            out.println();
+        }
+        out.decreaseIndent();
+        out.print("}");
+        for (int i=0; i<extraBraces; i++) 
+        {   out.print("}");
+        }
+        out.println();
+    }
 
-		if (label!=null) {
-			out.decreaseIndent();
-			out.printAndForgetLabel(CodePrinter.escapeIdentifier(label,false)+"_c");
-			out.print(" } ");
-			out.printAndForgetLabel(CodePrinter.escapeIdentifier(label,false)+"_b");
-			out.print(" }");
-			out.println(); 
-		}			
- 	}
-  	
-  	// --- BreakStmt ---
-  	
-	public void BreakStmt.generateCS(CodePrinter out) {
-		String label = getLabel();
-		if (label==null || label.length()==0) {
-			out.print("break;");
-		} else {
-			out.printJumpToLabel(CodePrinter.escapeIdentifier(label,false)+"_b");
-		}		
-		out.println();
-	}
-  	
-  	// --- Case ---
-  	
-  	public boolean Case.canBeReachedByFallThrough() {
-  		ASTNode b = getParent();
-  		int idx = b.getIndexOfChild(this);
-  		if (idx<1) return false;
-  		ASTNode prev = b.getChild(idx-1);
-  		 
-  		if (prev instanceof Block && ! ((Block) prev).executionCanReachBottom()) return false; 
-  		if (prev instanceof ReturnStmt 
-  		||  prev instanceof BreakStmt
-  		||  prev instanceof ContinueStmt
-  		||  prev instanceof Case) return false;
-  		 
-  		return true;
-  	}
-  	
-	public void ConstCase.generateCS(CodePrinter out) {
-		Expr e = getValue();				
-		if (canBeReachedByFallThrough()) {
-			out.print("goto case ");
-			if (e.isEnumConstant()) {
-				out.print("" + ((EnumDecl)e.type()).determineOrdinal(((VarAccess)e).name()) );
-			} else {
-				e.generateUsingResultCS(out);
-			}
-			out.print(";");
-			out.println();
-		}
-		out.decreaseIndent();
-		out.print("case ");
-		if (e.isEnumConstant()) {
-			out.print("" + ((EnumDecl)e.type()).determineOrdinal(((VarAccess)e).name()) );
-		} else {
-			e.generateUsingResultCS(out);
-		}
-		out.print(":");
-		out.println();
-		out.increaseIndent();
+    public boolean Block.executionCanReachBottom() 
+    {
+        if (getNumStmt()<1) return true;
+        Stmt stmt = getStmt(getNumStmt()-1);
+        if (stmt instanceof Block) 
+        {   return ((Block) stmt).executionCanReachBottom();
+        }
+        if (stmt instanceof ReturnStmt 
+        ||  stmt instanceof BreakStmt
+        ||  stmt instanceof ContinueStmt) return false;
+        return true;
+    }
+
+    // --- BranchTargetStmt ---
+    public void BranchTargetStmt.generateCS(CodePrinter out)
+    {   generateCS(out,null);
+    }
+    public void BranchTargetStmt.generateCS(CodePrinter out, String continuelabel)    
+    {   System.err.print("UNEXPECTED:");
+        this.dumpTree(System.err);           
+    }
+
+    public void BranchTargetStmt.generateInnerStmtCS(CodePrinter out, Stmt stmt, String continuelabel) 
+    {   
+        if (stmt instanceof Block)
+        {   out.println();
+            ((Block)stmt).generateCS(out, continuelabel);
+        }
+        else if (continuelabel!=null) 
+        {   out.println();
+            out.print("{");
+            out.increaseIndent();
+            stmt.generateCS(out);
+            if (out.hasPendingLabel(continuelabel))
+            {   out.print(continuelabel);
+                out.print(":;");
+                out.println();   
+            }            
+            out.decreaseIndent();
+        } 
+        else 
+        {   stmt.generateCS(out);
+        }
+    }
+
+    public void DoStmt.generateCS(CodePrinter out, String continuelabel) 
+    {
+        out.print("do ");
+        generateInnerStmtCS(out, getStmt(), continuelabel);
+        out.print("while(");
+        getCondition().generateUsingResultCS(out);
+        out.print(");");
+        out.println();
+    }
+
+    public void EnhancedForStmt.generateCS(CodePrinter out, String continuelabel) 
+    {
+        Expr e = getExpr();
+        String vname = getVariableDecl().name();
+        if (e.type().isArrayDecl()) 
+        {   out.print("foreach (");
+            getVariableDecl().getTypeAccess().generateCS(out);
+            out.print(" ");
+            out.printCSIdentifier(vname, "");
+            out.print(" in ");
+            e.generateUsingResultCS(out);
+            out.print(") ");
+            generateInnerStmtCS(out, getStmt(), continuelabel);
+        }
+        else if (e.type().isIterable()) 
+        {   out.print("for (java.util.Iterator ");
+            out.printCSIdentifier(vname, "_i");
+            out.print(" = ");
+            e.generateUsingResultCS(out);
+            out.print(".iterator(); ");
+            out.printCSIdentifier(vname, "_i");
+            out.print(".hasNext(); ) ");
+
+            out.println();
+            out.print("{");
+            out.println();
+            out.increaseIndent();
+            getVariableDecl().getTypeAccess().generateCS(out);
+            out.print(" ");
+            out.printCSIdentifier(vname, "");
+            out.print(" = ");
+            out.print("(");
+            getVariableDecl().getTypeAccess().generateCS(out);
+            out.print(") ");
+            out.printCSIdentifier(vname, "_i");
+            out.print(".next();");
+
+            generateInnerStmtCS(out,getStmt(),continuelabel);
+
+            out.decreaseIndent();
+            out.print("}");
+            out.println();
+        }
+        else 
+        {   throw new RuntimeException("Expression is neither an array or an Iterable");
+        }
+    }
+
+    public void ForStmt.generateCS(CodePrinter out, String continuelabel) 
+    {   out.print("for (");
+
+        if (getNumInitStmt()==0) 
+        {   out.print("; ");
+        } 
+        else 
+        {   for (int i=0; i<getNumInitStmt(); i++) 
+            {   if (i>0) out.print(", ");
+                getInitStmt(i).generateCS(out);
+            }
+            out.print(" ");
+        }
+        if (hasCondition()) {
+            getCondition().generateUsingResultCS(out);
+        } 
+        out.print("; ");
+    
+        for (int i=0; i<getNumUpdateStmt(); i++) 
+        {   if (i>0) out.print(", ");
+            ((ExprStmt)getUpdateStmt(i)).getExpr().generateUsingResultCS(out);
+        }
+        out.print(") ");
+
+        generateInnerStmtCS(out, getStmt(), continuelabel);
+    }
+
+    public void LabeledStmt.generateCS(CodePrinter out) 
+    {
+        Stmt stmt = getStmt();
+        if (stmt instanceof BranchTargetStmt) 
+        {   ((BranchTargetStmt) stmt).generateCS(out, getLabel()+"_c");
+        }
+        else 
+        {   stmt.generateCS(out);
+        }
+        
+        String breaklabel = getLabel()+"_b";
+        if (out.hasPendingLabel(breaklabel))
+        {   out.print(breaklabel);
+            out.print(":;");
+            out.println();   
+        }            
+    }
+
+	public void SwitchStmt.generateCS(CodePrinter out, String continuelabel)
+    {   
+        Expr e = getExpr();
+        out.print("switch (");
+        e.generateUsingResultCS(out);
+        if (e.type().isEnumDecl()) {
+            out.print(".ordinal()");
+        }         
+        out.print(")");
+        out.println();
+        out.print("{");
+        out.println();
+        out.increaseIndent();
+
+        Block b = getBlock();
+        int n = b.getNumStmt();
+        for (int i=0; i<n; i++) 
+        {   Stmt stmt = b.getStmt(i);
+            if ((stmt instanceof ConstCase) || (stmt instanceof DefaultCase) || (stmt instanceof Block)) 
+            {   stmt.generateCS(out);
+            }
+            else
+            {   out.increaseIndent();
+                stmt.generateCS(out);
+                out.decreaseIndent();
+            }
+        }
+
+        if (b.executionCanReachBottom()) 
+        {   out.print("    break;");
+            out.println();
+        }
+
+        out.decreaseIndent();
+        out.print("}");
+        out.println();
+    }
+
+    public void WhileStmt.generateCS(CodePrinter out, String continuelabel) 
+    {   out.print("while (");
+        getCondition().generateUsingResultCS(out);
+        out.print(") ");
+        generateInnerStmtCS(out, getStmt(), continuelabel);
+    }
+
+    // --- BreakStmt ---
+
+    public void BreakStmt.generateCS(CodePrinter out) 
+    {   String label = getLabel();
+        if (label==null || label.length()==0) 
+        {   out.print("break;");
+        }
+        else
+        {   out.printJumpToLabel(CodePrinter.escapeIdentifier(label,false)+"_b");
+        }
+        out.println();
+    }
+
+    // --- Case ---
+    
+    public boolean Case.canBeReachedByFallThrough() 
+    {   ASTNode b = getParent();
+        int idx = b.getIndexOfChild(this);
+        if (idx<1) return false;
+        ASTNode prev = b.getChild(idx-1);
+
+        if (prev instanceof Block && ! ((Block) prev).executionCanReachBottom()) return false; 
+        if (prev instanceof ReturnStmt 
+        ||  prev instanceof BreakStmt
+        ||  prev instanceof ContinueStmt
+        ||  prev instanceof Case) return false;
+
+        return true;
+    }
+
+    public void ConstCase.generateCS(CodePrinter out) 
+    {   Expr e = getValue();
+        if (canBeReachedByFallThrough()) 
+        {   out.print("    goto case ");
+            if (e.isEnumConstant()) 
+            {   out.print("" + ((EnumDecl)e.type()).determineOrdinal(((VarAccess)e).name()) );
+            } 
+            else 
+            {   e.generateUsingResultCS(out);
+            }
+            out.print(";");
+            out.println();
+        }
+        out.print("case ");
+        if (e.isEnumConstant()) 
+        {   out.print("" + ((EnumDecl)e.type()).determineOrdinal(((VarAccess)e).name()) );
+        }
+        else 
+        {   e.generateUsingResultCS(out);
+        }
+        out.print(":");
+        out.println();
 	}
 	
-	public void DefaultCase.generateCS(CodePrinter out) {
-		if (canBeReachedByFallThrough()) {
-			out.print("goto default;");
-			out.println();
-		}
-		out.decreaseIndent();
-		out.print("default:");
-		out.println();
-		out.increaseIndent();
-	}
-  	
-  	// --- ContinueStmt ---
+    public void DefaultCase.generateCS(CodePrinter out) 
+    {   if (canBeReachedByFallThrough()) 
+        { out.print("goto default;");
+            out.println();
+        }
+        out.print("default:");
+        out.println();
+    }
 
-  	public void ContinueStmt.generateCS(CodePrinter out) {
-		String label = getLabel();
-		if (label==null || label.length()==0) {
-			out.print("continue;");
-		} else {
-			out.printJumpToLabel(CodePrinter.escapeIdentifier(label,false)+"_c");
-		}
-		out.println();
-	}
+    // --- ContinueStmt ---
+
+    public void ContinueStmt.generateCS(CodePrinter out) 
+    {   String label = getLabel();
+        if (label==null || label.length()==0) 
+        {   out.print("continue;");
+        }
+        else
+        {   out.printJumpToLabel(CodePrinter.escapeIdentifier(label,false)+"_c");
+        }
+        out.println();
+    }
   
     // --- EmptyStmt ---
     
     // --- ExprStmt ---
   
-	public void ExprStmt.generateCS(CodePrinter out) {
-		getExpr().generateCS(out);   // intentionally do no post-processing
-		out.print(";");
-		out.println();		
-	}  	
+    public void ExprStmt.generateCS(CodePrinter out) 
+    {   getExpr().generateCS(out);   // intentionally do no post-processing
+        out.print(";");
+        out.println();
+    }
 	
 	// --- IfStmt ---
 	
-	public void IfStmt.generateCS(CodePrinter out) {
-		out.print("if (");
-		getCondition().generateUsingResultCS(out);
-		out.print(") ");
-		getThen().generateCS(out);
-		Stmt e = getElse();
-		if (e!=null) {
-			out.print("else ");
-			e.generateCS(out);
-		}
-	}  	
+    public void IfStmt.generateCS(CodePrinter out) 
+    {   out.print("if (");
+        getCondition().generateUsingResultCS(out);
+        out.print(") ");
+        out.println();
+        getThen().generateCS(out);
+        Stmt e = getElse();
+        if (e!=null) 
+        {   out.print("else ");
+            out.println();
+            e.generateCS(out);
+        }
+	}
 	
 	// --- LocalClassDeclStmt ---
 	public void LocalClassDeclStmt.generateCS(CodePrinter out) {
