@@ -71,6 +71,10 @@ _class(java_util_ArrayListImpl, java_util_AbstractList, null, "java.util.ArrayLi
     },      
     
     toArray_0: function () 
-    {   return this._storage.slice();
+    {   return _arr("[Ljava/lang/Object;", this._storage.slice());
+    },    
+    
+    toArray_1: function (a) 
+    {   return _arr(a._t, this._storage.slice());
     },    
 }); 

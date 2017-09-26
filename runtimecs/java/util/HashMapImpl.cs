@@ -200,6 +200,7 @@ namespace java.util { class HashMapKeyView : AbstractCollection, Set
     }          
         
     // Object[]	toArray()              // implemented by AbstractCollection        
+    // Object[]	toArray(Object[]a)     // implemented by AbstractCollection        
 }}
         
 namespace java.util { class HashMapValueView : AbstractCollection 
@@ -228,6 +229,7 @@ namespace java.util { class HashMapValueView : AbstractCollection
     }       
 
     // Object[]	toArray()              // implemented by AbstractCollection        
+    // Object[]	toArray(Object[]a)     // implemented by AbstractCollection        
 }}
     
 namespace java.util { class HashMapIterator : Iterator, Enumeration 

@@ -67,6 +67,10 @@ function _isstr(o)
 {   return o!==null && o._isString;
 }
 
+function _isarray(o,typedescriptor) 
+{   return o!==null && o._t===typedescriptor;
+}        
+
 // convert a unicode code number to a string with the corresponding letter 
 function _c2s(c) 
 {   return String.fromCharCode(c);
@@ -131,30 +135,39 @@ function _castTOint(a)
 }
 
 
-// create a (possible multidimensional) array with a initialization value for
-// all elements.
+// attach runtime type information to an already created javascript array.
+// returns the array itself for easy chaining
+function _arr(typedescriptor,a)
+{   a._t = typedescriptor;
+    return a;
+}
+
+// create a (possible multidimensional) array with a single 
+// initialization value for all elements.
 // the sizes for the dimensions are given as arguments 1 to n, and the 
 // initialization value is the last call argument.
 
-function _dim(dimensions,initvalue) 
-{   return _dimImpl(dimensions,initvalue,0);
+function _dim(typedescriptor,dimensions,initvalue) 
+{   return _dimImpl(typedescriptor,dimensions,initvalue,0);
 }
 
-function _dimImpl(dimensions,initvalue,cursor)
+function _dimImpl(typedescriptor,dimensions,initvalue,cursor)
 {   if (cursor>=dimensions.length-1) 
     {   var len = dimensions[cursor];
         var a = new Array(len);
         for (var i=0; i<len; i++) 
         {   a[i] = initvalue;
         }
+        a._t = typedescriptor;
         return a;
     }
     else 
     {   var len = dimensions[cursor];
         var a = new Array(len);
         for (var i=0; i<len; i++) 
-        {   a[i] = _dimImpl(dimensions,initvalue, cursor+1);
+        {   a[i] = _dimImpl(typedescriptor.substring(1), dimensions,initvalue, cursor+1);
         }
+        a._t = typedescriptor;
         return a;    
     }
 }
@@ -172,7 +185,7 @@ Array.prototype.equals_1 = function (o)
 };
 
 Array.prototype.toString_0 = function () 
-{   return "[";
+{   return this._t;
 };
 
 Array.prototype.hashCode_0 = function () 

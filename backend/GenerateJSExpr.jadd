@@ -300,15 +300,19 @@ aspect GenerateJS {
   	
   	// --- ArrayInit ---
   	
-  	public void ArrayInit.generateJS(CodePrinter out) {
-  		out.print("[");
-  		for (int i=0; i<getNumInit(); i++) {
-  			if (i>0) out.print(",");
-  			getInit(i).generateUsingResultJS(out);
-  		}
-  		out.print("]");
-  	}
-  	
+    public void ArrayInit.generateJS(CodePrinter out) 
+    {   out.print("_arr(");
+        out.print("\"");
+        out.print(type().typeDescriptor());
+        out.print("\",");
+        out.print("[");
+        for (int i=0; i<getNumInit(); i++) {
+            if (i>0) out.print(",");
+            getInit(i).generateUsingResultJS(out);
+        }
+        out.print("])");
+    }
+
   	// --- AssignExpr ---
 
 	public void AssignExpr.generateWithOptionalCastJS(CodePrinter out, String operator) {
@@ -650,8 +654,11 @@ aspect GenerateJS {
     public void InstanceOfExpr.generateJS(CodePrinter out) {
         TypeDecl t = getTypeAccess().type();
         if (t.isArrayDecl()) 
-        {   out.print("false");
-            throw new RuntimeException("Can not create type check for array types");
+        {   out.print("_isarray(");
+            getExpr().generateUsingResultJS(out);
+            out.print(",\"");
+            out.print(t.typeDescriptor());
+            out.print("\")");
         }
         else if (!t.isReferenceType()) 
         {   out.print("false");
@@ -689,8 +696,12 @@ aspect GenerateJS {
   		if (hasArrayInit()) {
   			getArrayInit().generateJS(out);
   		} else {
-  			Access ta = getTypeAccess();
-	  		out.print("_dim([");  		
+            Access ta = getTypeAccess();
+            out.print("_dim(");
+            out.print("\"");
+            out.print(ta.type().typeDescriptor());
+            out.print("\"");
+	  		out.print(",[");
 			ta.generateJS(out);
 			out.print("],");
 			if ((ta instanceof ArrayTypeWithSizeAccess) 

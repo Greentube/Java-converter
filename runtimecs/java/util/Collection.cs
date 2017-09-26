@@ -7,5 +7,6 @@ namespace java.util { public interface Collection: java.lang.Iterable
 //  Iterator iterator();
     int size();
     System.Object[] toArray();
+    System.Object[] toArray(System.Object[]a);
     System.String ToString();
 }}

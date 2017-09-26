@@ -85,5 +85,12 @@ namespace java.util { public class ArrayListImpl: AbstractList
     {   System.Object[] copy = new System.Object[len];
         System.Array.Copy(buffer,0,copy,0,len);
         return copy;
-    }        
+    }       
+    
+    public override System.Object[] toArray(System.Object[]a)
+    {   System.Object[] copy = (System.Object[]) 
+            System.Array.CreateInstance(a.GetType().GetElementType(),len);
+        System.Array.Copy(buffer,0,copy,0,len);
+        return copy;
+    }
 }}

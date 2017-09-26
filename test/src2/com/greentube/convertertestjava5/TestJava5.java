@@ -40,6 +40,9 @@ public class TestJava5 extends TestJava4
         Byte b = l.get(0);
         assertI(b.byteValue(), 77);
         assertI(l.get(1).byteValue(), 11);
+        assertB(l.toArray() instanceof Object[]);
+        Byte[] ba = l.toArray(new Byte[0]);
+        assertB(ba instanceof Byte[]);
 
         Entry<TimeStamp,String> e2 = new Entry<TimeStamp,String>(new TimeStamp(99),"hi");
         assertO(e2.getValue(), "hi");
@@ -47,7 +50,7 @@ public class TestJava5 extends TestJava4
         ToDoEntry<TimeStamp,Runnable> e3 = new ToDoEntry<TimeStamp,Runnable>(new TimeStamp(101),r);
         assertO(e3.toString(), "TS101-work");    	
         ToDoEntry<TimeStamp,Runnable> e4 = new ToDoEntry<TimeStamp,Runnable>(new TimeStamp2(47),r);
-        assertO(e4.toString(), "TS47:00-work");    	    	
+        assertO(e4.toString(), "TS47:00-work");
     }
 
     private static <T> Entry<T, T> twice(T value) 

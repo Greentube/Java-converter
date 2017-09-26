@@ -264,7 +264,8 @@ public class TestJava4
         assertB(o instanceof Object);
         assertB(! (o instanceof String));
         assertB(! (o instanceof TestObject));
-
+        assertB( o instanceof int[]);
+        
         TestObject t = new TestObject();
         o = t;
         assertB(o instanceof Object);
@@ -301,6 +302,23 @@ public class TestJava4
         
         String s = (String) it2;	// null may be cast to anything
         assertO(s, null); 
+
+        // check for array types
+        Object a3 = new int[1][1][1];
+        Object a2 = ((int[][][])a3)[0];
+        assertB(a3 instanceof int[][][]);
+        assertB(!(a3 instanceof int[][]));
+        assertB((a2 instanceof int[][]));
+        Object sa2 = new String[1][2];
+        assertB(sa2 instanceof String[][]);
+        assertB(!(sa2 instanceof String[][][][]));
+        assertB(!(sa2 instanceof String[]));
+        assertB(!(sa2 instanceof String));
+        assertB(!(sa2 instanceof TestInterface));
+        assertB(((String[][])sa2)[0] instanceof String[]);
+        Object ta2 = new TestInterface[2][2];
+        assertB(ta2 instanceof TestInterface[][]);
+        assertB(!(ta2 instanceof TestInterface[]));
         
         // check if the toString operation delivers at least some string
         assertB(new Object().toString()!=null);
@@ -1715,6 +1733,8 @@ public class TestJava4
         assertO(oa[0],"first");
         assertO(oa[1],"corbin");
         assertO(oa[2],"more");
+        assertB(oa instanceof Object[]);
+        assertB(!(oa instanceof String[]));
         
         List itt = new ArrayList();
         itt.add(Integer.valueOf(5));
@@ -1824,7 +1844,11 @@ public class TestJava4
     	assertB(cl.equals(ht));
     	assertB(!ht.equals(new Hashtable()));
     	assertB(!ht.equals("dummy"));
-    	
+        assertB(ht.keySet().toArray() instanceof Object[]);
+        assertB(ht.keySet().toArray(new String[0]) instanceof String[]);
+        assertB(ht.values().toArray() instanceof Object[]);
+        assertB(ht.values().toArray(new Integer[0]) instanceof Integer[]);
+
     	ht.remove("Test2");
     	assertI(ht.size(), 1);
     	assertB(ht.containsKey("Test"));

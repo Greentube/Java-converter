@@ -37,6 +37,15 @@ namespace java.util { public abstract class AbstractCollection : Collection
         }
         return a;        
     }
+    public virtual System.Object[] toArray(System.Object[] ta) 
+    {   System.Object[] a = (System.Object[]) 
+            System.Array.CreateInstance(ta.GetType().GetElementType(),size());
+        int cursor=0;
+        for (Iterator i=this.iterator(); i.hasNext(); ) 
+        {   a[cursor++] = i.next();
+        }
+        return a;        
+    }
                 
     public override System.String ToString() 
     {   System.Text.StringBuilder b = new System.Text.StringBuilder("[");

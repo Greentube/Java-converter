@@ -173,7 +173,8 @@ public class LibraryList
             "boolean isEmpty()",
             "java.util.Iterator iterator()",        
             "int size()",
-            "java.lang.Object[] toArray()",			
+            "java.lang.Object[] toArray()",
+            "java.lang.Object[] toArray(java.lang.Object[])",
         },
         { "java.util.AbstractList",
             "boolean contains(java.lang.Object)",
@@ -182,6 +183,7 @@ public class LibraryList
             "java.util.Iterator iterator()",
             "int size()",
             "java.lang.Object[] toArray()",	
+            "java.lang.Object[] toArray(java.lang.Object[])",
 
             "java.lang.Object get(int)",
             "java.lang.Object set(int, java.lang.Object)",
@@ -203,6 +205,7 @@ public class LibraryList
             "java.util.Iterator iterator()",
             "int size()",
             "java.lang.Object[] toArray()",	
+            "java.lang.Object[] toArray(java.lang.Object[])",
 
             "java.lang.Object get(int)",
             "java.lang.Object set(int, java.lang.Object)",        
@@ -228,6 +231,7 @@ public class LibraryList
             "java.util.Iterator iterator()",
             "int size()",
             "java.lang.Object[] toArray()",
+            "java.lang.Object[] toArray(java.lang.Object[])",
         },
         { "java.util.Comparator",
             "int compare(java.lang.Object, java.lang.Object)",
@@ -259,6 +263,7 @@ public class LibraryList
             "java.util.Iterator iterator()",
             "int size()",
             "java.lang.Object[] toArray()",
+            "java.lang.Object[] toArray(java.lang.Object[])",
 
             "<init>()",
             "<init>(java.util.Collection)",
@@ -301,6 +306,7 @@ public class LibraryList
             "java.util.Iterator iterator()",
             "int size()",
             "java.lang.Object[] toArray()",	
+            "java.lang.Object[] toArray(java.lang.Object[])",
 
             "java.lang.Object get(int)",
             "java.lang.Object set(int,java.lang.Object)",
@@ -331,6 +337,7 @@ public class LibraryList
             "java.util.Iterator iterator()",
             "int size()",
             "java.lang.Object[] toArray()",
+            "java.lang.Object[] toArray(java.lang.Object[])",
 
             "boolean add(java.lang.Object)",
             "void add(int, java.lang.Object)",
@@ -365,6 +372,7 @@ public class LibraryList
             "java.util.Iterator iterator()",
             "int size()",
             "java.lang.Object[] toArray()",
+            "java.lang.Object[] toArray(java.lang.Object[])",
         },
         { "java.util.Vector",
             "boolean contains(java.lang.Object)",
@@ -373,6 +381,7 @@ public class LibraryList
             "java.util.Iterator iterator()",
             "int size()",
             "java.lang.Object[] toArray()",	
+            "java.lang.Object[] toArray(java.lang.Object[])",
 
             "java.lang.Object get(int)",
             "java.lang.Object set(int, java.lang.Object)",        

@@ -88,6 +88,7 @@ namespace java.util { public class HashSet : AbstractCollection, Set
     {   return map.size();
     }
        
-    // toArray   implemented by AbstractCollection 
-    // toString  implemented by AbstractCollection
+    // toArray             implemented by AbstractCollection 
+    // toArray(Object[])   implemented by AbstractCollection 
+    // toString            implemented by AbstractCollection
 }}

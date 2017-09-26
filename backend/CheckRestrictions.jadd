@@ -180,13 +180,13 @@ aspect CheckRestrictions {
   	}
   	
 
-	// no instanceof with arrays
-  	public void InstanceOfExpr.checkRestrictions(ArrayList<String> errorlist) {
-  	  	if (getTypeAccess().type().isArrayDecl()) {
-  	  		reportRestriction(errorlist, "Can not create type check for array types");
-  	  	}
-		super.checkRestrictions(errorlist);
-	}
+//	// no instanceof with arrays
+//  	public void InstanceOfExpr.checkRestrictions(ArrayList<String> errorlist) {
+//  	  	if (getTypeAccess().type().isArrayDecl()) {
+//  	  		reportRestriction(errorlist, "Can not create type check for array types");
+//  	  	}
+//		super.checkRestrictions(errorlist);
+//	}
 		   	  	
 		   	  			   	    	  
 	// method overloading rules
@@ -326,7 +326,7 @@ aspect CheckRestrictions {
 	
 	// Autoboxing/unboxing in method call parameters
 	public void MethodAccess.checkRestrictions(ArrayList<String> errorlist) {
-  		MethodDecl m = decl();
+  		MethodDecl m = decl().erasedMethod();
   		
   		// check if this is a call using the variable arguments syntax
   		int straightargs = 0;
@@ -349,18 +349,17 @@ aspect CheckRestrictions {
   		}
   		
   		// test for availability in supported core libraries
-  		MethodDecl orig = (m instanceof MethodDeclSubstituted) ? ((MethodDeclSubstituted)m).getOriginal() : m;
-  		StringBuffer b = new StringBuffer(orig.type().erasure().typeName());
+  		StringBuffer b = new StringBuffer(m.type().erasure().typeName());
   		b.append(" ");
-  		b.append(orig.name());
+  		b.append(m.name());
   		b.append("(");
-  		for (int i=0; i<orig.getNumParameter(); i++) {
+  		for (int i=0; i<m.getNumParameter(); i++) {
   			if (i!=0) b.append(", ");
-  			b.append(orig.getParameter(i).type().erasure().typeName());
+  			b.append(m.getParameter(i).type().erasure().typeName());
   		}
 		b.append(")");  		
 		String sig = b.toString();
-		String tn = orig.hostType().packageName() + "." + orig.hostType().uniqueName();
+		String tn = m.hostType().packageName() + "." + m.hostType().uniqueName();
 		if (!LibraryList.isAllowed(tn, sig)) {
 			reportRestriction(errorlist, "Unsupported core library method in "
 				+ tn + ": " + sig);
