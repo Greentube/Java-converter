@@ -78,6 +78,7 @@ Nevertheless, the meaning should be clear:
         },
         { "java.lang.Math",
             "double abs(double)",
+            "int abs(int)",
             "double acos(double)", 
             "double asin(double)", 
             "double atan(double)", 
@@ -91,14 +92,15 @@ Nevertheless, the meaning should be clear:
             "double hypot(double, double)",
             "double IEEEremainder(double, double)",
             "double log(double)", 
-            "double log1p(double)", 
             "double log10(double)", 
+            "double log1p(double)", 
             "double max(double, double)", 
-            "double min(double, double)", 
             "int max(int, int)", 
+            "double min(double, double)", 
             "int min(int, int)", 
             "double pow(double, double)", 
             "double rint(double)", 
+            "long round(double)",  // only allowed if immediately casting the result to int or double 
             "double signum(double)",
             "double sin(double)", 
             "double sinh(double)", 
@@ -171,7 +173,8 @@ Nevertheless, the meaning should be clear:
             "boolean isEmpty()",
             "java.util.Iterator iterator()",        
             "int size()",
-            "java.lang.Object[] toArray()",         
+            "java.lang.Object[] toArray()",
+            "java.lang.Object[] toArray(java.lang.Object[])",
         },
         { "java.util.AbstractList",
             "boolean contains(java.lang.Object)",
@@ -180,6 +183,7 @@ Nevertheless, the meaning should be clear:
             "java.util.Iterator iterator()",
             "int size()",
             "java.lang.Object[] toArray()", 
+            "java.lang.Object[] toArray(java.lang.Object[])",
 
             "java.lang.Object get(int)",
             "java.lang.Object set(int, java.lang.Object)",
@@ -201,6 +205,7 @@ Nevertheless, the meaning should be clear:
             "java.util.Iterator iterator()",
             "int size()",
             "java.lang.Object[] toArray()", 
+            "java.lang.Object[] toArray(java.lang.Object[])",
 
             "java.lang.Object get(int)",
             "java.lang.Object set(int, java.lang.Object)",        
@@ -226,6 +231,7 @@ Nevertheless, the meaning should be clear:
             "java.util.Iterator iterator()",
             "int size()",
             "java.lang.Object[] toArray()",
+            "java.lang.Object[] toArray(java.lang.Object[])",
         },
         { "java.util.Comparator",
             "int compare(java.lang.Object, java.lang.Object)",
@@ -257,6 +263,7 @@ Nevertheless, the meaning should be clear:
             "java.util.Iterator iterator()",
             "int size()",
             "java.lang.Object[] toArray()",
+            "java.lang.Object[] toArray(java.lang.Object[])",
 
             "<init>()",
             "<init>(java.util.Collection)",
@@ -270,7 +277,6 @@ Nevertheless, the meaning should be clear:
         { "java.util.Hashtable",
             "<init>()",
             "<init>(java.util.Map)",
-
             "void clear()",        
             "boolean containsKey(java.lang.Object)", 
             "boolean containsValue(java.lang.Object)",                    
@@ -300,6 +306,7 @@ Nevertheless, the meaning should be clear:
             "java.util.Iterator iterator()",
             "int size()",
             "java.lang.Object[] toArray()", 
+            "java.lang.Object[] toArray(java.lang.Object[])",
 
             "java.lang.Object get(int)",
             "java.lang.Object set(int,java.lang.Object)",
@@ -330,6 +337,7 @@ Nevertheless, the meaning should be clear:
             "java.util.Iterator iterator()",
             "int size()",
             "java.lang.Object[] toArray()",
+            "java.lang.Object[] toArray(java.lang.Object[])",
 
             "boolean add(java.lang.Object)",
             "void add(int, java.lang.Object)",
@@ -364,6 +372,7 @@ Nevertheless, the meaning should be clear:
             "java.util.Iterator iterator()",
             "int size()",
             "java.lang.Object[] toArray()",
+            "java.lang.Object[] toArray(java.lang.Object[])",
         },
         { "java.util.Vector",
             "boolean contains(java.lang.Object)",
@@ -372,6 +381,7 @@ Nevertheless, the meaning should be clear:
             "java.util.Iterator iterator()",
             "int size()",
             "java.lang.Object[] toArray()", 
+            "java.lang.Object[] toArray(java.lang.Object[])",
 
             "java.lang.Object get(int)",
             "java.lang.Object set(int, java.lang.Object)",        
@@ -385,8 +395,6 @@ Nevertheless, the meaning should be clear:
             "int lastIndexOf(java.lang.Object)",
             "boolean removeAll(java.lang.Collection)",
             "boolean retainAll(java.lang.Collection)",
-
-            "void trimToSize()",                        
 
             "<init>()",
             "<init>(java.util.Collection)",
@@ -405,4 +413,5 @@ Nevertheless, the meaning should be clear:
             "void removeElementAt(int)",
             "void setElementAt(java.lang.Object, int)",
             "void setSize(int)",
+            "void trimToSize()",                                    
         }

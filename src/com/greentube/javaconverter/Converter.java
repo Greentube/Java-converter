@@ -12,7 +12,7 @@ public class Converter extends Frontend
     private int err;
 
     public Converter() 
-    {   super("Converter", "2.0.2");
+    {   super("Converter", "2.0.3");
         destDirJS=null;
         destDirCS=null;
         benchmark = false;
