@@ -134,9 +134,30 @@ aspect GenerateJS {
         MethodDecl m = decl();
         if (m.isStatic()) 
         {   TypeDecl t = m.hostType();
+            String n = m.name();
+            // special handling of the Math.round and Math.abs method
+            if (t.packageName().equals("java.lang") && t.uniqueName().equals("Math")) 
+            {   if (n.equals("round") ) 
+                {   Expr parentexp = (Expr) getParent();
+                    while (parentexp instanceof AbstractDot) 
+                    {   parentexp = (Expr) parentexp.getParent();
+                    }            
+                    if (parentexp instanceof CastExpr) 
+                    {   if (parentexp.type().isInt()) 
+                        {   n = "roundToInt";
+                        }
+                        else if (parentexp.type().isDouble()) 
+                        {   n = "roundToDouble";
+                        }
+                    }
+                }
+                else if (n.equals("abs") && m.type().isInt()) 
+                {   n = "absInt";
+                }
+            }        
             out.printAndMemorizeReference(t.packageName(),t.uniqueName());
             out.print(".");
-            out.printJSIdentifier(m.name(),"_"+m.getNumParameter());
+            out.printJSIdentifier(n,"_"+m.getNumParameter());
             out.print("(");
 
             // check if this is inside a static initializer - 
@@ -705,11 +726,17 @@ aspect GenerateJS {
   		out.print(" ! ");
   		getOperand().generateUsingResultJS(out);  	
   	}
-  	public void MinusExpr.generateJS(CodePrinter out) {
-  		out.print("(-(");
-  		getOperand().generateUsingResultJS(out);  	
-  		out.print(")|0)");
-  	}
+    public void MinusExpr.generateJS(CodePrinter out) {
+        if (type().isDouble()) 
+        {   out.print("-");
+            getOperand().generateUsingResultJS(out);
+        } 
+        else     
+        {   out.print("(-(");
+            getOperand().generateUsingResultJS(out);  	
+            out.print(")|0)");
+        }
+    }
   	public void PlusExpr.generateJS(CodePrinter out) {
   		getOperand().generateUsingResultJS(out);  	
   	}

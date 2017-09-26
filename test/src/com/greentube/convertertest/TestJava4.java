@@ -418,12 +418,14 @@ public class TestJava4
         double d = 5.1d;
         assertD( e/d, 19.411764705882355);        
         assertD(31.0/2, 15.5);
-        e = 1.0/0.0;
+        e = 1.0;
+        e = e/0.0;
         assertD(e, Double.POSITIVE_INFINITY);
-        d = -1.0/0.0;
+        d = -1.0;
+        d = d/0.0;
         assertD(d, Double.NEGATIVE_INFINITY);
         assertB(e-e != 0.0);
-        assertB(d-d != 0.0);
+        assertNaN(d-d);
         assertB(e+d != 0.0);
         assertB(e/e != 0.0);
         assertD(2*e, Double.POSITIVE_INFINITY);
@@ -431,7 +433,11 @@ public class TestJava4
         assertB(0.0/0.0 != Double.NEGATIVE_INFINITY);
         assertB(0.0/0.0 != Double.POSITIVE_INFINITY);
         assertB(0.0/0.0 != 0);        
-                
+        d = 0;
+        assertPositiveZero(d);
+        assertNegativeZero(-d);
+        assertNegativeZero(-0.0);
+        
         // test numerical overflows
         assertI ( Integer.MAX_VALUE+1, Integer.MIN_VALUE);
         int x = 2000000000;
@@ -767,15 +773,19 @@ public class TestJava4
     	assertI((int)d, 0);
     	d = -Double.MAX_VALUE;
     	assertI((int)d, Integer.MIN_VALUE);
-    	d = 0.0/0.0;
+    	d = 0.0;
+    	d = d/0.0;
     	assertI((int)d, 0);
-    	d = 1.0 / 0.0;
+    	d = 1.0;
+    	d = d / 0.0;
     	assertB(d == Double.POSITIVE_INFINITY);
     	assertI((int)d, Integer.MAX_VALUE);
-    	d = -1.0 / 0.0;
+    	d = -1.0;
+    	d = d / 0.0;
     	assertB(d == Double.NEGATIVE_INFINITY);
     	assertI((int)d, Integer.MIN_VALUE);
-    	d = 0.0 / 0.0;
+    	d = 0.0;
+    	d = d / 0.0;
     	assertI((int)d, 0);
     	assertI((int)0.1, 0);
     	assertI((int)17.9, 17);
@@ -1020,56 +1030,198 @@ public class TestJava4
 
     public static void mathtest() {
     	System.out.println("- math");
+    	double nan = 0.0;
+    	nan = nan / 0.0;
+    	double pzero = 0.0;
+        double nzero = -pzero;
+    	assertNaN(nan);
+    	assertPositiveZero(pzero);
+    	assertNegativeZero(nzero);
     	
     	assertApproximately(Math.E, 2.718281828459045); 
-        assertApproximately(Math.PI, 3.141592653589793);    	
+        assertApproximately(Math.PI, 3.141592653589793);
+        
+        assertD(Math.abs(0.005),0.005);
         assertD(Math.abs(-0.5),0.5);
+        assertPositiveZero(Math.abs(pzero));
+        assertPositiveZero(Math.abs(nzero));
+        assertNaN(Math.abs(nan));
+        assertD(Math.abs(Double.POSITIVE_INFINITY), Double.POSITIVE_INFINITY);
+        assertD(Math.abs(Double.NEGATIVE_INFINITY), Double.POSITIVE_INFINITY);
+        assertD(Math.abs((double)Integer.MAX_VALUE), (double)Integer.MAX_VALUE);
+        assertD(Math.abs((double)Integer.MIN_VALUE), -(double)Integer.MIN_VALUE);
+        
+        assertI(Math.abs(0),0);
+        assertI(Math.abs(3),3);
+        assertI(Math.abs(-3),3);
+        assertI(Math.abs(Integer.MAX_VALUE), Integer.MAX_VALUE);
+        assertI(Math.abs(Integer.MIN_VALUE), Integer.MIN_VALUE);
+        
         assertD(Math.acos(1), 0.0);
+        assertApproximately(Math.acos(0.5), Math.PI/3);
+        assertNaN(Math.acos(2.0));
+        assertNaN(Math.acos(-2));
+        assertNaN(Math.acos(nan));
+        assertNaN(Math.acos(Double.POSITIVE_INFINITY));
+        assertNaN(Math.acos(Double.NEGATIVE_INFINITY));
+        
         assertApproximately(Math.asin(0.5), 0.5235987755982989);
+        assertNaN(Math.asin(2.0));
+        assertNaN(Math.asin(-2));
+        assertNaN(Math.asin(nan));
+        assertNaN(Math.asin(Double.POSITIVE_INFINITY));
+        assertNaN(Math.asin(Double.NEGATIVE_INFINITY));
+        
+        assertApproximately(Math.atan(0), 0);
         assertApproximately(Math.atan(1), Math.PI/4.0);
+        assertApproximately(Math.atan(-1.0), -Math.PI/4.0);
+        assertApproximately(Math.atan(10), 1.4711276743037347);
+        assertApproximately(Math.atan(Double.POSITIVE_INFINITY), Math.PI/2);
+        assertApproximately(Math.atan(Double.NEGATIVE_INFINITY), -Math.PI/2);
+        assertNaN(Math.atan(nan));
+        
         assertApproximately(Math.atan2(1.0,1.0), Math.PI/4.0);
+        assertNaN(Math.atan2(1.0,nan));
+        assertNaN(Math.atan2(nan,1.0));
+        assertNaN(Math.atan2(nan,nan));
+        assertPositiveZero(Math.atan2(pzero, 2.0));  
+        assertPositiveZero(Math.atan2(1.0, Double.POSITIVE_INFINITY));        
+        assertNegativeZero(Math.atan2(nzero, 2.0));
+        assertNegativeZero(Math.atan2(-3, Double.POSITIVE_INFINITY));
+        
+        assertApproximately(Math.atan2(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY), Math.PI/4);
+        assertApproximately(Math.atan2(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY), 3*Math.PI/4);
+        assertApproximately(Math.atan2(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY), -Math.PI/4);
+        assertApproximately(Math.atan2(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY), -3*Math.PI/4);
+        
         assertD(Math.ceil(0.5), 1.0);
+        assertD(Math.ceil(-0.5), 0.0);
+        assertD(Math.ceil(5.5), 6.0);
+        assertD(Math.ceil(-5.1), -5);
+        assertD(Math.ceil(2.8), 3);
+        assertD(Math.ceil(0), 0);
+        assertD(Math.ceil(Double.POSITIVE_INFINITY), Double.POSITIVE_INFINITY);
+        assertD(Math.ceil(Double.NEGATIVE_INFINITY), Double.NEGATIVE_INFINITY);
+        assertNaN(Math.ceil(nan));
+        
         assertApproximately(Math.cos(4.3), -0.40079917207997545);
         assertApproximately(Math.cosh(0.2), 1.020066755619076);
+        
         assertApproximately(Math.exp(0),1);
+        
         assertApproximately(Math.expm1(2),6.38905609893065);
         assertApproximately(Math.expm1(0.2),0.22140275816016985);        
-        assertApproximately(Math.expm1(-3.1),-0.9549507976064422);        
+        assertApproximately(Math.expm1(-3.1),-0.9549507976064422);    
+            
         assertD(Math.floor(0.5), 0);
+        assertD(Math.floor(0.3), 0);
+        assertD(Math.floor(3.8), 3);
+        assertD(Math.floor(-0.8), -1);
+        assertD(Math.floor(-2.8), -3.0);
+        assertD(Math.floor(-2.5), -3.0);
+        assertD(Math.floor(-3.5), -4.0);
+        
+        assertD(Math.hypot(3.0,4.0),5.0);
+        assertD(Math.hypot(-3.0,4.0),5.0);        
+        assertApproximately(Math.hypot(-4.5,-4),6.020797289396148);
+        
         assertD(Math.IEEEremainder(4.25,2.0),0.25);
         assertD(Math.IEEEremainder(-4.25,2.0),-0.25);
-        assertD(Math.hypot(3.0,4.0),5.0);
-        assertApproximately(Math.hypot(-4.5,-4),6.020797289396148);
+        assertD(Math.IEEEremainder(-4.25,-3.0),-1.25);
+        assertD(Math.IEEEremainder(-3,2),1);
+        assertD(Math.IEEEremainder(-5,2),-1);
+        assertD(Math.IEEEremainder(3,2),-1);
+        assertD(Math.IEEEremainder(5,2),1);
+        assertD(Math.IEEEremainder(7.5,3),1.5);
+        assertD(Math.IEEEremainder(10.5,3),-1.5);
+        assertNaN(Math.IEEEremainder(nan,3));
+        assertNaN(Math.IEEEremainder(3,nan));
+        assertNaN(Math.IEEEremainder(nan,nan));
+        assertNaN(Math.IEEEremainder(Double.POSITIVE_INFINITY,1));
+        assertNaN(Math.IEEEremainder(1,0));
+        assertNaN(Math.IEEEremainder(2,-0));
+        assertD(Math.IEEEremainder(2,Double.NEGATIVE_INFINITY), 2);
+        assertD(Math.IEEEremainder(-4.3,Double.NEGATIVE_INFINITY),-4.3);
+                
         assertApproximately(Math.log(Math.E), 1);
+        
         assertD(Math.log10(100.0),2.0);
-        assertApproximately(Math.log1p(99.0),4.605170185988092);
-        assertB(Double.isNaN(Math.log1p(-2)));        
+        
+        assertApproximately(Math.log1p(99.0),4.605170185988092);        
+        assertNaN(Math.log1p(-2));       
+         
         assertD(Math.max(4.3,6.7), 6.7);        
+        
         assertI(Math.max(4,6), 6);        
-        assertD(Math.min(-124.0,5.0), -124);        
+        
+        assertD(Math.min(-124.0,5.0), -124);   
+             
         assertI(Math.min(124,5), 5);        
+        
         assertD(Math.pow(2,3), 8);
         assertD(Math.pow(2,-3), 0.125);
+        
+        assertI((int)Math.round(4.3), 4);
+        assertI((int)Math.round(-4.3), -4);
+        assertI((int)Math.round(2.5), 3);
+        assertI((int)Math.round(3.5), 4);
+        assertI((int)Math.round(4.5), 5);
+        assertI((int)Math.round(-2.5), -2);
+        assertI((int)Math.round(-3.5), -3);
+        assertI((int)Math.round(-4.5), -4);
+        assertI((int)Math.round(0.2), 0);
+        assertI((int)Math.round(-0.2), 0);
+        assertI((int)Math.round(nan), 0);
+        assertI((int)Math.round(Double.POSITIVE_INFINITY), -1);
+        assertI((int)Math.round(Double.NEGATIVE_INFINITY), 0);
+        assertD((double)Math.round(4.3), 4);
+        assertD((double)Math.round(-4.3), -4);
+        assertD((double)Math.round(2.5), 3);
+        assertD((double)Math.round(3.5), 4);
+        assertD((double)Math.round(4.5), 5);
+        assertD((double)Math.round(-2.5), -2);
+        assertD((double)Math.round(-3.5), -3);
+        assertD((double)Math.round(-4.5), -4);
+        assertD((double)Math.round(0.2), 0);
+        assertD((double)Math.round(-0.2), 0);
+        assertD((double)Math.round(nan), 0);
+        assertApproximately((double)Math.round(Double.POSITIVE_INFINITY), 9.223372036854776E18);
+        assertApproximately((double)Math.round(Double.NEGATIVE_INFINITY), -9.223372036854776E18);
+        
+        assertD(Math.rint(0.0), 0.0);
         assertD(Math.rint(6.3), 6.0);
         assertD(Math.rint(-16.3), -16.0);
         assertD(Math.rint(-16.5), -16.0);
         assertD(Math.rint(16.5), 16.0);
-        assertD(Math.rint(-17.5), -18.0);
         assertD(Math.rint(17.5), 18.0);
+        assertD(Math.rint(-17.5), -18.0);
+        
         assertD(Math.signum(-113.1),-1);
         assertD(Math.signum(5354.1),1);
+        assertD(Math.signum(pzero),0);
+        assertPositiveZero(Math.signum(pzero));
+        assertNegativeZero(Math.signum(nzero));
+        
         assertApproximately(Math.sin(Math.PI/2.0), 1);
         assertApproximately(Math.sin(1.41), 0.9871001010138504);
+        
         assertApproximately(Math.sinh(-4.3), -36.843112570291794);
         assertApproximately(Math.sinh(1.41), 1.9259060604588694);
+        
         assertD(Math.sqrt(4),2);
         assertD(Math.sqrt(9),3);
+        
         assertApproximately(Math.tan(Math.PI/6.0), 0.5773502691896257);
         assertApproximately(Math.tan(Math.PI/4.0), 1);
+        
         assertApproximately(Math.tanh(Math.PI/4.0), 0.6557942026326724);
         assertApproximately(Math.tanh(Math.PI/6.0), 0.4804727781564516);
+        
         assertApproximately(Math.toRadians(60), Math.PI/3);
+        assertApproximately(Math.toRadians(-60), -Math.PI/3);
+        
         assertApproximately(Math.toDegrees(Math.PI), 180);
+        assertApproximately(Math.toDegrees(79*Math.PI), 79*180);
     }
     
     public static void objecttest() {
@@ -2031,7 +2183,7 @@ public class TestJava4
         {   System.err.println("Check failed");
         }
     }
-
+    
     public static void assertD(double value, double expected)
     {   if (value!=expected) 
         {   System.err.println("Received "+value+" instead of "+expected);
@@ -2041,8 +2193,24 @@ public class TestJava4
     public static void assertApproximately(double value, double expected)
     {   if (Double.isInfinite(value) || Double.isNaN(value)) 
         {   System.err.println("Received "+value+" instead of "+expected);    		
-        } else 	if (value<expected-0.00000000001 || value>expected+0.00000000001) 
+        } else if (value!=expected && value/expected>1.000000000001 || value/expected<0.999999999999) 
         {   System.err.println("Received "+value+" instead of "+expected);
+        }
+    }
+
+    public static void assertNaN(double value)
+    {   if (!Double.isNaN(value)) 
+        {   System.err.println("Received "+value+" instead of NaN");
+        }
+    }
+    public static void assertPositiveZero(double value)
+    {   if (!(value==0.0 && 1/value==Double.POSITIVE_INFINITY)) 
+        {   System.err.println("Received "+value+" instead of positive 0");
+        }
+    }
+    public static void assertNegativeZero(double value)
+    {   if (!(value==0.0 && 1/value==Double.NEGATIVE_INFINITY)) 
+        {   System.err.println("Received "+value+" instead of negative 0");
         }
     }
 

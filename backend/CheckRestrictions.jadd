@@ -350,20 +350,35 @@ aspect CheckRestrictions {
   		
   		// test for availability in supported core libraries
   		MethodDecl orig = (m instanceof MethodDeclSubstituted) ? ((MethodDeclSubstituted)m).getOriginal() : m;
-  		StringBuffer sig = new StringBuffer(orig.type().erasure().typeName());
-  		sig.append(" ");
-  		sig.append(orig.name());
-  		sig.append("(");
+  		StringBuffer b = new StringBuffer(orig.type().erasure().typeName());
+  		b.append(" ");
+  		b.append(orig.name());
+  		b.append("(");
   		for (int i=0; i<orig.getNumParameter(); i++) {
-  			if (i!=0) sig.append(", ");
-  			sig.append(orig.getParameter(i).type().erasure().typeName());
+  			if (i!=0) b.append(", ");
+  			b.append(orig.getParameter(i).type().erasure().typeName());
   		}
-		sig.append(")");  		
-		if (!LibraryList.isAllowed(orig.hostType().packageName() + "." + orig.hostType().uniqueName(), sig.toString())) {
+		b.append(")");  		
+		String sig = b.toString();
+		String tn = orig.hostType().packageName() + "." + orig.hostType().uniqueName();
+		if (!LibraryList.isAllowed(tn, sig)) {
 			reportRestriction(errorlist, "Unsupported core library method in "
-				+ orig.hostType().packageName() + "." + orig.hostType().uniqueName() + ": " + sig);
+				+ tn + ": " + sig);
 		}
-  		
+        // test for correct usage of the Math.round method
+        if (tn.equals("java.lang.Math") && sig.equals("long round(double)")) 
+        {   Expr parentexp = (Expr) getParent();
+            while ((parentexp instanceof AbstractDot) && (parentexp.getParent() instanceof Expr)) 
+            {   parentexp = (Expr) parentexp.getParent();
+            }
+            if (!(parentexp instanceof CastExpr) 
+            ||  !(parentexp.type().isInt() || parentexp.type().isDouble()) )
+            {   reportRestriction(errorlist, 
+                    "Can only use Math.round when casting result immediately to int or double"                
+                );  
+            }  		
+  		}
+  		 
 		super.checkRestrictions(errorlist);					  		
 	}
 	// Autoboxing/unboxing in super/this-constructor call parameters

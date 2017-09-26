@@ -4,6 +4,10 @@ namespace java.lang { public class Math {
     {   return System.Math.Abs(a);
     }
     
+    public static int abs(int a)
+    {   return a<0 ? -a:a;
+    }
+    
     public static double acos(double a) 
     {   return System.Math.Acos(a);
     }        
@@ -16,9 +20,55 @@ namespace java.lang { public class Math {
     {   return System.Math.Atan(a);
     }
     
-    public static double atan2(double x,double y) 
-    {   return System.Math.Atan2(x,y);
-    }
+    public static double atan2(double y,double x) 
+    {   if (System.Double.IsNaN(x) || System.Double.IsNaN(y)) return 0.0/0.0;
+//        if (x==0.0)  // positive or negative 0
+//        {   if (y>0)
+//            {   return x;
+//            }
+//            else
+//            {   return -x;
+//            }
+//        }
+//        if (y==0.0) {  // positive or negative 0
+//            if (x>0)
+//            {   return x;
+//            }
+//            else
+//            {   return -x;
+//            }
+//        }
+        if (y==Double.POSITIVE__INFINITY_f) 
+        {   if (x==Double.POSITIVE__INFINITY_f) 
+            {   return PI_f/4;
+            } 
+            else if (x==Double.NEGATIVE__INFINITY_f) 
+            {   return 3*PI_f/4;
+            }
+            else 
+            {   return PI_f/2;                
+            }
+        }
+        if (y==Double.NEGATIVE__INFINITY_f) 
+        {   if (x==Double.POSITIVE__INFINITY_f) 
+            {   return -PI_f/4;
+            }
+            else if (x==Double.NEGATIVE__INFINITY_f) 
+            {   return -3*PI_f/4;
+            }
+            else 
+            {   return PI_f/2;                
+            }
+        }
+        if (x==Double.POSITIVE__INFINITY_f) 
+        {   return (y==0) ? y : ((y>0) ? 0.0 : -0.0);
+        }
+        if (x==Double.NEGATIVE__INFINITY_f) 
+        {   return PI_f;            
+        }
+        
+        return System.Math.Atan2(y,x);
+    }    
 
     public static double ceil(double a) 
     {   return System.Math.Ceiling(a);
@@ -84,6 +134,22 @@ namespace java.lang { public class Math {
     {   return System.Math.Pow(a,b);
     }
     
+    public static int roundToInt(double x)
+    {
+        if (System.Double.IsNaN(x)) return 0;
+        if (x==Double.POSITIVE__INFINITY_f) return -1;
+        if (x==Double.NEGATIVE__INFINITY_f) return 0;
+        return (int) System.Math.Floor(x+0.5);
+    }
+    
+    public static double roundToDouble(double x)
+    {
+        if (System.Double.IsNaN(x)) return 0;
+        if (x==Double.POSITIVE__INFINITY_f) return 9.223372036854776E18;
+        if (x==Double.NEGATIVE__INFINITY_f) return -9.22337203685478E+18;
+        return System.Math.Floor(x+0.5);
+    }
+    
     public static double rint(double x) 
     {
         if (x % 0.5 != 0) 
@@ -95,7 +161,7 @@ namespace java.lang { public class Math {
     }
 
     public static double signum(double a)
-    {   return System.Math.Sign(a);
+    {   return a==0 ? a : System.Math.Sign(a);
     }
     
     public static double sin(double a) 

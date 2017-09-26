@@ -1,5 +1,5 @@
 
-// definition of the base class for all java classes
+// definition of the base class for all java classes except for String and arrays
 var java_lang_Object = 
 {   $: function() {}    // allocator function
 };

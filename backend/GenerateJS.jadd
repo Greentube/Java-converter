@@ -50,7 +50,7 @@ aspect GenerateJS {
         }
         out.print(")");
         out.println();
-        out.print("{");
+        out.print("{");        
         out.println();
         out.increaseIndent();   
         if (!superclass().isObject()) 
@@ -342,7 +342,7 @@ aspect GenerateJS {
         }
         out.print(")");
         out.println();
-        out.print("{");  		
+        out.print("{");
         out.println();
         out.increaseIndent();
 

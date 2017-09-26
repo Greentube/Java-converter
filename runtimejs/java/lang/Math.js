@@ -2,6 +2,9 @@
 var java_lang_Math = 
 {    
     abs_1: Math.abs,
+    absInt_1: function(x) 
+    {   return (x>=0) ? x : (-x)|0;
+    },
     
     acos_1: Math.acos,
     
@@ -27,8 +30,15 @@ var java_lang_Math =
     
     floor_1: Math.floor,
     
-    IEEEremainder_2:  function(a,b) 
-    {   return a % b;
+    IEEEremainder_2:  function(a,b)
+    {   if (isNaN(a) || isNaN(b) || !isFinite(a) || b===0) 
+        {   return NaN;     
+        }
+        if (!isFinite(b)) 
+        {   return a;
+        }
+        var n = java_lang_Math.rint_1(a/b);
+        return a - n * b;
     },
     
     hypot_2: (typeof Math.hypot === "function") ? Math.hypot : function(a,b) 
@@ -60,6 +70,22 @@ var java_lang_Math =
         else 
         {   return (Math.floor(x) % 2 === 0) ? Math.floor(x) : Math.round(x);
         }
+    },
+    
+    roundToInt_1: function (x) 
+    {   if (isNaN(x)) return 0;
+        if (!isFinite(x)) 
+        {   return x>0 ? -1 : 0;
+        }
+        return Math.floor(x+0.5) | 0;
+    },
+    
+    roundToDouble_1: function (x) 
+    {   if (isNaN(x)) return 0;
+        if(!isFinite(x)) 
+        {   return x>0 ? 9.223372036854776E18 : -9.22337203685478E+18;
+        }
+        return Math.floor(x+0.5);
     },
     
     signum_1: (typeof Math.sign === "function") ? Math.sign : function(x) 

@@ -186,10 +186,26 @@ aspect GenerateCS {
 
         MethodDecl m = decl();
         if (m.isStatic()) 
-        {   TypeDecl ht = m.hostType();
-            out.print(ht.getNameCS());
+        {   String htn = m.hostType().getNameCS();
+            String n = m.name();
+            // special handling of the Math.round method
+            if (htn.equals("java.lang.Math") && n.equals("round"))
+            {   Expr parentexp = (Expr) getParent();
+                while (parentexp instanceof AbstractDot) 
+                {   parentexp = (Expr) parentexp.getParent();
+                }            
+                if (parentexp instanceof CastExpr) 
+                {   if (parentexp.type().isInt()) 
+                    {   n = "roundToInt";
+                    }
+                    else if (parentexp.type().isDouble()) 
+                    {   n = "roundToDouble";
+                    }
+                }
+            }
+            out.print(htn);
             out.print(".");
-            out.printCSIdentifier(renameMethod(m.name(),true), "");
+            out.printCSIdentifier(renameMethod(n,true), "");
         }
         else if (isRightChildOfDot()) 
         {   if (prevExpr().isSuperAccess()) {
