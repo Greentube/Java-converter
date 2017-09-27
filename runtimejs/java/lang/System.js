@@ -24,7 +24,6 @@ var java_lang_System =
     {   return Date.now();
     },
     
-    out: new java_io_PrintStream.$()._1(false),
-    err: new java_io_PrintStream.$()._1(true),       
+    out: new java_io_PrintStream.$()._1(console.log),
+    err: new java_io_PrintStream.$()._1(console.warn),       
 };
-

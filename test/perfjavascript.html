@@ -1,10 +1,24 @@
 <!DOCTYPE html>
-<html><head> <meta charset="utf-8"/></head>
+<html>
+<head> <meta charset="utf-8"/></head>
+<title>Java script converter performance benchmark</title>
 <body style="margin: 0px">
-See javascript console output...
 
 <script src="build/javascript/mainperformance.js">
 </script>
+<script type="text/javascript">
+    java_lang_System.out = new java_io_PrintStream.$()._1(function(line) {
+        var p = document.getElementById('p');
+        p.appendChild(document.createElement("br"));
+        p.appendChild(document.createTextNode(line));          
+    });
+</script>
+
+<button onclick="document.getElementById('p').innerHTML = '';">Clear</button>
+<button onclick="__Performance.smalltest_0();">Small benchmark</button>
+<button onclick="__Performance.fulltest_0()">Full benchmark</button>
+
+<p id ="p"></p>
 
 </body>
 </html>

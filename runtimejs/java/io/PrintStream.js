@@ -2,13 +2,13 @@
 //load// java/lang/Object
 var java_io_PrintStream = 
 {   $: function() 
-    {   this._iserr = false;
+    {   this._logfunction = null;
         this._line = null;
     },
 };
 _class (java_io_PrintStream, java_lang_Object, null, "java.io.PrintStream", 
-{   _1: function(iserr) 
-    {   this._iserr = iserr;
+{   _1: function(logfunction) 
+    {   this._logfunction = logfunction;
         this._line = [];
         return this;
     },     
@@ -19,13 +19,9 @@ _class (java_io_PrintStream, java_lang_Object, null, "java.io.PrintStream",
     },
     
     println_0: function() 
-    {   if (this._iserr) 
-        {   console.warn(this._line.join(""));
-        } 
-        else
-        {   console.log(this._line.join(""));
-        }
+    {   var l = this._line.join("");
         this._line = [];
+        this._logfunction(l);
     },
     
     println_1: function(x) 

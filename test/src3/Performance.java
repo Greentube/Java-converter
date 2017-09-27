@@ -2,18 +2,32 @@ import java.util.*;
 
 public class Performance 
 {
-    public static void main(String[] args) 
-    {   System.out.println("Warming up...");    
-
-        // warm up the JIT 
-        for (int i=0; i<200; i++) 
-        {   testArrayList();
-            testHashMap(new Object[]{"a","b","c",Integer.valueOf(5),Byte.valueOf((byte)10)});        
+    public static void main(String[] args)
+    {
+    }
+    
+    public static void smalltest() 
+    {   
+        System.out.println("Running...");
+        double s1 = System.currentTimeMillis();
+        for (int i=0; i<1000; i++) 
+        {   testArrayList();        
+        }
+        double s2 = System.currentTimeMillis();        
+        System.out.println("ArrayList            " + ((int)(s2-s1)) +" ms");
+    }
+        
+    public static void fulltest() 
+    {   
+        System.out.println("Warming up...");
+        for (int i=0; i<100; i++) {
+            testArrayList();  
+            testHashMap(new Object[]{ "hi", "ho", Integer.valueOf(5), Byte.valueOf((byte)10)});
             testLinkedList();
             testArrays();
             testPolymorphism();
         }
-
+    
         System.out.println("Performance test...");
 
         // do each test multiple times for higher accuracy
@@ -72,7 +86,8 @@ public class Performance
 
     public static void testArrayList()
     {   for (int j=0; j<75; j++) 
-        {   ArrayList<String> a = new ArrayList<>();
+        {
+            ArrayList<String> a = new ArrayList<>();
             for (int i=0; i<1000; i++) 
             {   a.add(i%2==0?"hi":"go");
             }

@@ -18,10 +18,6 @@
  - Auto-boxing, Auto-unboxing not supported
       This feature would be a horror to get right in all conversion targets. Since its use
       is already quite disfavored in the first place, the converter does not allow it at all.
- - no 'instanceof' with array types.  
-      In the javascript target, all arrays have the same runtime type. In theory it would be 
-      possible to detect at runtime if an object is _some_ type of array, but this can
-      not be directly written in java syntax.  
  - Method/constructor overloading only based on number of parameters
       Instead of implementing the java way of using the full type signatures
       of all parameters, the javascript target uses a simpler system that 
