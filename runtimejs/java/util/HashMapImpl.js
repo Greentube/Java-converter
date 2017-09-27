@@ -22,13 +22,20 @@ var java_util_HashMapImpl =
 };    
 _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.HashMapImpl", 
 {   _0: function() 
-    {   // by removing a key from an object, it will be clear that
-        // this object should be used in dictionary mode from now on         
-        this._stringtable = {x: 0};
-        this._commontable = {x: 0};        
+    {   // I hope, the javascript engine understands, that I want to have 
+        // objects in dictionary mode, bypassing any hidden class generation.
+        this._stringtable = Object.create(null); 
+        this._commontable = Object.create(null);
+/*        
+        this._stringtable.x = "?"; 
+        this._stringtable.y = "!"; 
+        this._commontable.x = "/";
+        this._commontable.y = "#";
         delete this._stringtable.x; 
+        delete this._stringtable.y; 
         delete this._commontable.x;
-        
+        delete this._commontable.y;
+*/        
         this._totalelements = 0;
         return this;
     },
@@ -47,7 +54,7 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
     
     containsKey_1: function(key) 
     {   if (_isValidStringKey(key)) 
-        {   return this._stringtable.hasOwnProperty(key);
+        {   return this._stringtable[key] !== undefined;
         }
         var hc = (key===null) ? 0 : key.hashCode_0();
         var kv = this._commontable[hc];
@@ -137,7 +144,7 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
     put_2: function(key, value) 
     {   // easy operation when can directly use the javascript object mapping
         if (_isValidStringKey(key)) 
-        {   if (this._stringtable.hasOwnProperty(key)) 
+        {   if (this._stringtable[key] !== undefined) 
             {   var rtn = this._stringtable[key];
                 this._stringtable[key] = value;
                 return rtn;
@@ -188,7 +195,7 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
     remove_1: function(key) 
     {   if (_isValidStringKey(key)) 
         {   var st = this._stringtable;
-            if (st.hasOwnProperty(key))
+            if (st[key] != undefined)
             {   var rtn = st[key];
                 delete st[key];
                 this._totalelements--;
@@ -247,7 +254,6 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
 function _isValidStringKey(s) 
 {   return s!==null && s._isString;
 }
-
 
 var java_util_HashMapKeyView = 
 {   $: function() 

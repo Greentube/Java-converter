@@ -224,15 +224,15 @@ String.prototype.endsWith_1 = function(suffix)
 };
 
 String.prototype.equals_1 = function(str) 
-{   if (str===null) return false;
-    if (!(str._isString)) return false;  
-	return this.valueOf() === str.valueOf();
+{   if (!str || !(str._isString)) return false;  
+	return this == str;
 };
 
 String.prototype.hashCode_0 = function()
 {   var h = 0;
-    for (var i=0; i<this.length; i++) {
-       h = (h*31 + this.charCodeAt(i)) & 0xffffffff;
+    var l = this.length;
+    for (var i=0; i<l; i++) {
+       h = (h*31 + this.charCodeAt(i)) | 0;
     }
     return h;
 };   

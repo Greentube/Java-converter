@@ -4,6 +4,7 @@ public class Performance
 {
     public static void main(String[] args)
     {
+//        fulltest();
     }
     
     public static void smalltest() 
@@ -19,10 +20,19 @@ public class Performance
         
     public static void fulltest() 
     {   
+        Object[] keys = new Object[1000];
+        for (int i=1; i<keys.length; i++) 
+        {   keys[i] = (i<128) ? ((Object)Byte.valueOf((byte)i)) : ((Object)Integer.valueOf(i));
+        }
+        Object[] skeys = new Object[1000];
+        for (int i=1; i<skeys.length; i++) {
+            skeys[i] = "str"+i+"x";
+        }
+        
         System.out.println("Warming up...");
         for (int i=0; i<100; i++) {
             testArrayList();  
-            testHashMap(new Object[]{ "hi", "ho", Integer.valueOf(5), Byte.valueOf((byte)10)});
+            testHashMap(new Object[]{ "hi", "ho", Integer.valueOf(5), Byte.valueOf((byte)10), "?"}, i);
             testLinkedList();
             testArrays();
             testPolymorphism();
@@ -38,21 +48,19 @@ public class Performance
         }
 
         double s2 = System.currentTimeMillis();
-
-        // test hashtable with string keys
-        Object[] skeys = new Object[]{ "hi", "ho", "nope", "foo", "bar" };
+        
+        // test hashtable with integer keys
         for (int i=0; i<1000; i++) 
-        {   testHashMap(skeys);
+        {   testHashMap(keys, i);
         }
 
         double s3 = System.currentTimeMillis();
-        
-        // test hashtable with arbitrary keys
-        Object[] keys = new Object[]{ Integer.valueOf(55), Integer.valueOf(99), Integer.valueOf(4),
-                                      Byte.valueOf((byte)5), Byte.valueOf((byte)77) };
+
+        // test hashtable with string keys
         for (int i=0; i<1000; i++) 
-        {   testHashMap(keys);
+        {   testHashMap(skeys, i);
         }
+
 
         double s4 = System.currentTimeMillis();
 
@@ -76,8 +84,8 @@ public class Performance
 
         double sx = System.currentTimeMillis();        
         System.out.println("ArrayList            " + ((int)(s2-s1)) +" ms"); 
-        System.out.println("HashMap (strings)    " + ((int)(s3-s2)) +" ms");
-        System.out.println("HashMap (any object) " + ((int)(s4-s3)) +" ms");
+        System.out.println("HashMap (Integer)    "  + ((int)(s3-s2)) +" ms");
+        System.out.println("HashMap (String)     " + ((int)(s4-s3)) +" ms");
         System.out.println("LinkedList           " + ((int)(s5-s4)) +" ms");
         System.out.println("Arrays               " + ((int)(s6-s5)) +" ms");
         System.out.println("Polymorphism         " + ((int)(s7-s6)) +" ms");
@@ -102,19 +110,20 @@ public class Performance
         }
     }
         
-    public static void testHashMap(Object[] keys)
-    {   for (int j=0; j<10; j++) 
+    public static void testHashMap(Object[] keys, int rnd)
+    {   for (int j=0; j<2; j++) 
         {   HashMap<Object,String> m = new HashMap<>();
-            for (int i=0; i<1000; i++) 
-            {   m.put(keys[i%keys.length], "something");
+            // differently ordered insertion
+            for (int i=0; i<keys.length; i++) 
+            {   m.put(keys[(rnd*7+i)%keys.length], "something");
             }
-            for (int k=0; k<5; k++) 
-            {   for (int i=0; i<1000; i++) 
-                {   m.get(keys[i%keys.length]);
-                }
+            m.remove(keys[4]);
+            m.remove(keys[1]);
+            for (int i=0; i<5000; i++) 
+            {   m.get(keys[i%keys.length]);                
             }
-            for (int i=0; i<1000; i++) 
-            {   m.remove(keys[i%keys.length]);
+            for (int i=0; i<keys.length; i++) 
+            {   m.remove(keys[i]);
             }
         }
     } 
