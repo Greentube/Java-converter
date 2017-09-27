@@ -36,7 +36,7 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
     },
     
     containsKey_1: function(key) 
-    {   var hc = key===null ? 0 : key.hashCode_0();
+    {   var hc = key===null ? 0 : key.hashCode_0()*3999971;
         var kv = this._table.get(hc);
         if (!kv) return false;
         for (var i=0; i<kv.length; i+=2) 
@@ -77,7 +77,7 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
     },
 
     get_1: function(key) 
-    {   var hc = key===null ? 0 : key.hashCode_0();
+    {   var hc = key===null ? 0 : key.hashCode_0()*3999971;
         var kv = this._table.get(hc);  // scan all key-value pairs for the hashCode
         if (!kv) return null;
         for (var i=0; i<kv.length; i+=2) 
@@ -110,7 +110,7 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
     }, 
 
     put_2: function(key, value) 
-    {   var hc = (key===null) ? 0 : key.hashCode_0();
+    {   var hc = (key===null) ? 0 : key.hashCode_0()*3999971;
         var kv = this._table.get(hc);
         if (!kv) 
         {   // create new bucket if not yet existing
@@ -146,7 +146,7 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
     },
 
     remove_1: function(key) 
-    {   var hc = (key===null) ? 0 : key.hashCode_0();
+    {   var hc = (key===null) ? 0 : key.hashCode_0()*3999971;
         var ct = this._table;
         var kv = ct.get(hc);
         if (kv) 

@@ -9,13 +9,18 @@ public class Performance
     
     public static void smalltest() 
     {   
+        Object[] keys = new Object[1000];
+        for (int i=1; i<keys.length; i++) 
+        {   keys[i] = (i<128) ? ((Object)Byte.valueOf((byte)i)) : ((Object)Integer.valueOf(i));
+        }
+
         System.out.println("Running...");
         double s1 = System.currentTimeMillis();
-        for (int i=0; i<1000; i++) 
-        {   testArrayList();        
+        for (int i=0; i<100; i++) 
+        {   testHashMap(keys,i);        
         }
         double s2 = System.currentTimeMillis();        
-        System.out.println("ArrayList            " + ((int)(s2-s1)) +" ms");
+        System.out.println("Total         " + ((int)(s2-s1)) +" ms");
     }
         
     public static void fulltest() 
@@ -51,7 +56,7 @@ public class Performance
         
         // test hashtable with integer keys
         for (int i=0; i<1000; i++) 
-        {   testHashMap(keys, i);
+        {   testHashMap(keys, i+1);
         }
 
         double s3 = System.currentTimeMillis();
@@ -115,7 +120,7 @@ public class Performance
         {   HashMap<Object,String> m = new HashMap<>();
             // differently ordered insertion
             for (int i=0; i<keys.length; i++) 
-            {   m.put(keys[(rnd*7+i)%keys.length], "something");
+            {   m.put(keys[(rnd*7+keys.length-i)%keys.length], "something");
             }
             m.remove(keys[4]);
             m.remove(keys[1]);
