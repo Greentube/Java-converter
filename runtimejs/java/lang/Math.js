@@ -88,8 +88,8 @@ var java_lang_Math =
         return Math.floor(x+0.5);
     },
     
-    signum_1: (typeof Math.sign === "function") ? Math.sign : function(x) 
-    {   return x<0 ? -1 : x>0 ? 1 : 0;
+    signum_1: function(x) 
+    {   return x<0 ? -1 : x>0 ? 1 : x;
     },
     
     sin_1: Math.sin,
