@@ -328,5 +328,27 @@ _class(java_util_HashMapIterator, java_lang_Object, [java_util_Iterator, java_ut
 
 // implement a simple Map object if not supported by framework already
 // (may be slow but will work)
-if (!Map) console.log("Map is not supported");
-
+if (!Map) 
+{   Map = function() 
+    {   this.table = {};
+    }
+    Map.prototype.clear = function()
+    {   this.table = {};
+    }
+    Map.prototype.get = function(key)
+    {   return this.table[key];
+    }
+    Map.prototype.set = function(key,value)
+    {   this.table[key] = value;
+    }
+    Map.prototype.delete = function(key)
+    {   delete this.table[key];
+    }
+    Map.prototype.forEach = function(callback)
+    {   for (var k in this.table) 
+        {   if (this.table.hasOwnProperty(k)) 
+            {   callback(this.table[k],k,this);
+            }
+        }
+    }
+}
