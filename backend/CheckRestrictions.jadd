@@ -260,6 +260,7 @@ aspect CheckRestrictions {
 				}
 			}
 		}
+		super.checkRestrictions(errorlist);     		
 	}
 	
 	// shadowing field identifiers
