@@ -19,7 +19,7 @@
             <include name="**/*.java"/>
         </fileset>
     </convertJava>
-    <convertJava js="${basedir}/build/javascript" classpath="${basedir}/../bin" benchmark="true">
+    <convertJava js="${basedir}/build/javascript" classpath="${basedir}/../bin">
         <fileset dir="${basedir}/src3">
             <include name="**/*.java"/>
         </fileset>

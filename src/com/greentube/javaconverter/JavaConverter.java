@@ -5,42 +5,43 @@ import java.net.*;
 import java.util.*;
 import org.extendj.ast.*;
 
-public class Converter extends Frontend 
+public class JavaConverter extends Frontend 
 {   private File destDirJS;
     private File destDirCS;
-    private boolean benchmark;
     private int err;
 
-    public Converter() 
-    {   super("Converter", "2.0.4");
+    public JavaConverter() 
+    {   super("JavaConverter", JavaConverter.class.getPackage().getImplementationVersion());
         destDirJS=null;
         destDirCS=null;
-        benchmark = false;
         err = 0;
     }
-
+    
     public int run(String args[]) 
     {   Vector<String> argv= new Vector<String>(Arrays.asList(args));
 
-        URL res = getClass().getResource("/com/greentube/javaconverter/Converter.class");
-        if (res!=null) 
-        {   String p = res.toString();
-            if (p.startsWith("jar:")) 
-            {   int idx = p.indexOf("file:");   
-                if (idx>=0) p=p.substring(idx+5);
-                idx = p.indexOf('!');
-                if (idx>=0) p=p.substring(0, idx);			
-                argv.add("-bootclasspath");                
-                argv.add(p);
-            }
-            else 
-            {   p = res.getPath();
-                if (p.startsWith("file:")) p = p.substring(5);
-                int idx = p.lastIndexOf('/');
-                if (idx>0) p=p.substring(0, idx);
-                p = p+"/../../../../rt.jar";
-                argv.add("-bootclasspath");
-                argv.add(p);
+        // use default bootclasspath from the converter itself if not defined otherwise
+        if (!argv.contains("-bootclasspath"))
+        {   URL res = JavaConverter.class.getResource("/com/greentube/javaconverter/JavaConverter.class");
+            if (res!=null) 
+            {   String p = res.toString();
+                if (p.startsWith("jar:")) 
+                {   int idx = p.indexOf("file:");   
+                    if (idx>=0) p=p.substring(idx+5);
+                    idx = p.indexOf('!');
+                    if (idx>=0) p=p.substring(0, idx);			
+                    argv.add("-bootclasspath");                
+                    argv.add(p);
+                }
+                else 
+                {   p = res.getPath();
+                    if (p.startsWith("file:")) p = p.substring(5);
+                    int idx = p.lastIndexOf('/');
+                    if (idx>0) p=p.substring(0, idx);
+                    p = p+"/../../../../rt.jar";
+                    argv.add("-bootclasspath");
+                    argv.add(p);
+                }
             }
         }
 
@@ -57,7 +58,7 @@ public class Converter extends Frontend
 
     @Override
     protected void processNoErrors(CompilationUnit unit) 
-    {   LibraryList.buildList(benchmark);
+    {   LibraryList.buildList();
         ArrayList<String> errorlist = new ArrayList<String>(0);        
         unit.checkRestrictions(errorlist);
         if (errorlist.size()==0) 
@@ -120,12 +121,29 @@ public class Converter extends Frontend
                 return EXIT_CONFIG_ERROR;
             }
         }
-        if (program.options().hasOption("-benchmark")) 
-        {   benchmark = true;        
-        }
         return EXIT_SUCCESS;
     }
 
+    protected void printUsage() {
+        super.printUsage();
+        
+      System.out.println(name() + " " + version());
+      System.out.println("\n"
+          + "Usage: java " + name() + " <options> <source files>\n"
+          + "  -verbose                  Output messages about what the compiler is doing\n"
+          + "  -classpath <path>         Specify where to find user class files\n"
+          + "  -sourcepath <path>        Specify where to find input source files\n"
+          + "  -bootclasspath <path>     Override location of bootstrap class files\n"
+          + "  -extdirs <dirs>           Override location of installed extensions\n"
+          + "  -d <directory>            Specify where to place generated class files\n"
+          + "  -nowarn                   Disable warning messages\n"
+          + "  -help                     Print a synopsis of standard options\n"
+          + "  -version                  Print version information");
+        System.out.println(
+            "  -js                       Directory where to store javascript files\n"
+          + "  -cs                       Directory where to store c# files" );
+          
+    }
 
     public static void main(String args[]) 
     {   // add possibility to launch the linker instead of the the converter
@@ -157,7 +175,7 @@ public class Converter extends Frontend
         }
         // converter operation
         else 
-        {   int exitCode = new Converter().run(args);
+        {   int exitCode = new JavaConverter().run(args);
             if (exitCode != 0) 
             {   System.exit(exitCode);
             }

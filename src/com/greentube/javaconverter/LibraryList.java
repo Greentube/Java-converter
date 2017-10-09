@@ -166,6 +166,7 @@ public class LibraryList
             "err",
             "void arraycopy(java.lang.Object, int, java.lang.Object, int, int)",
             "void exit(int)",
+            "long currentTimeMillis()",
         },
         { "java.util.AbstractCollection",
             "boolean contains(java.lang.Object)",
@@ -420,7 +421,7 @@ public class LibraryList
 
     static HashMap<String,HashSet<String>> map = null;
 
-    public static void buildList(boolean supportbenchmark) 
+    public static void buildList() 
     {   map = new HashMap<>();
         for (int i=0; i<supported.length; i++) 
         {   String classname = supported[i][0];
@@ -434,16 +435,12 @@ public class LibraryList
             members.add("boolean equals(java.lang.Object)");    
             members.add("int hashCode()");
             members.add("java.lang.String toString()");
-            // provide support methods for benchmarking only
-            if (supportbenchmark && classname.equals("java.lang.System"))
-            {   members.add("long currentTimeMillis()");
-            }
         }          
     }
 
     public static boolean isAllowed(String fullclassname, String membername)
     {   // generate map at first call for fast retrieval if not done already
-        if (map==null) buildList(false);
+        if (map==null) buildList();
         // unknown classes are not restricted
         if (!map.containsKey(fullclassname)) return true;    
         // provided class only allows whitelisted members

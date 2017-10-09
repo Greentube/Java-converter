@@ -15,11 +15,11 @@ public class Performance
         }
 
         System.out.println("Running...");
-        double s1 = System.currentTimeMillis();
+        double s1 = (double) System.currentTimeMillis();
         for (int i=0; i<100; i++) 
         {   testHashMap(keys,i);        
         }
-        double s2 = System.currentTimeMillis();        
+        double s2 = (double) System.currentTimeMillis();        
         System.out.println("Total         " + ((int)(s2-s1)) +" ms");
     }
         
@@ -46,20 +46,20 @@ public class Performance
         System.out.println("Performance test...");
 
         // do each test multiple times for higher accuracy
-        double s1 = System.currentTimeMillis();
+        double s1 = (double) System.currentTimeMillis();
 
         for (int i=0; i<1000; i++) 
         {   testArrayList();        
         }
 
-        double s2 = System.currentTimeMillis();
+        double s2 = (double) System.currentTimeMillis();
         
         // test hashtable with integer keys
         for (int i=0; i<1000; i++) 
         {   testHashMap(keys, i+1);
         }
 
-        double s3 = System.currentTimeMillis();
+        double s3 = (double) System.currentTimeMillis();
 
         // test hashtable with string keys
         for (int i=0; i<1000; i++) 
@@ -67,27 +67,27 @@ public class Performance
         }
 
 
-        double s4 = System.currentTimeMillis();
+        double s4 = (double) System.currentTimeMillis();
 
         for (int i=0; i<1000; i++) 
         {   testLinkedList();
         }
 
-        double s5 = System.currentTimeMillis();
+        double s5 = (double) System.currentTimeMillis();
 
         for (int i=0; i<1000; i++) 
         {   testArrays();
         }
 
-        double s6 = System.currentTimeMillis();
+        double s6 = (double) System.currentTimeMillis();
 
         for (int i=0; i<1000; i++) 
         {   testPolymorphism();
         }
 
-        double s7 = System.currentTimeMillis();
+        double s7 = (double) System.currentTimeMillis();
 
-        double sx = System.currentTimeMillis();        
+        double sx = (double) System.currentTimeMillis();        
         System.out.println("ArrayList            " + ((int)(s2-s1)) +" ms"); 
         System.out.println("HashMap (Integer)    "  + ((int)(s3-s2)) +" ms");
         System.out.println("HashMap (String)     " + ((int)(s4-s3)) +" ms");

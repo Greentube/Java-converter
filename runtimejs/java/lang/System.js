@@ -18,8 +18,6 @@ var java_lang_System =
     {
     },
     
-    // not properly supported due to lack of datatype "long" 
-    // - only used for performance testing...
     currentTimeMillis_0: function() 
     {   return Date.now();
     },

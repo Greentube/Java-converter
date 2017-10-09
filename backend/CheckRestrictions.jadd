@@ -17,7 +17,10 @@ aspect CheckRestrictions {
   	
   	// --- generate utility query methods ---
   	public void ASTNode.reportRestriction(ArrayList<String> errorlist, String message) {
-  		int s = getStart();
+        int s = 0;
+        for (ASTNode n=this; s==0 && n!=null; n=n.getParent()) 
+        {   s = n.getStart();
+        }
   		errorlist.add(getLine(s)+","+getColumn(s)+": "+message);
   	}
   	
@@ -374,10 +377,22 @@ aspect CheckRestrictions {
             if (!(parentexp instanceof CastExpr) 
             ||  !(parentexp.type().isInt() || parentexp.type().isDouble()) )
             {   reportRestriction(errorlist, 
-                    "Can only use Math.round when casting result immediately to int or double"                
+                    "Can only use Math.round when casting result explicitly to int or double"                
                 );  
             }  		
   		}
+        // test for correct usage of the System.currentTimeMillis method
+        if (tn.equals("java.lang.System") && sig.equals("long currentTimeMillis()")) 
+        {   Expr parentexp = (Expr) getParent();
+            while ((parentexp instanceof AbstractDot) && (parentexp.getParent() instanceof Expr)) 
+            {   parentexp = (Expr) parentexp.getParent();
+            }
+            if (!(parentexp instanceof CastExpr) ||  !(parentexp.type().isDouble()) )
+            {   reportRestriction(errorlist, 
+                    "Can only use System.currentTimeMillis when casting result explicitly to double"                
+                );  
+            }       
+        }
   		 
 		super.checkRestrictions(errorlist);					  		
 	}

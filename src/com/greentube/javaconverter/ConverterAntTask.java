@@ -58,7 +58,7 @@ public class ConverterAntTask extends Task
         try 
         {   String[] aa = new String[args.size()];
             args.copyInto(aa);
-            int err = (new Converter()).run(aa);
+            int err = (new JavaConverter()).run(aa);
             if (err>0) throw new BuildException("Converter terminated with "+err+" errors");
         } 
         catch (Exception e) 

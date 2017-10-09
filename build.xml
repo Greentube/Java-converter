@@ -153,14 +153,14 @@
 	  	<jar destfile="${basedir}/build/converter.jar">
 	  		<fileset dir="${basedir}/build/package"/>
 	        <manifest>
-	             <attribute name="Main-Class" value="com.greentube.javaconverter.Converter"/>
-	             <attribute name="Implementation-Version" value="2.0.4"/>
+	             <attribute name="Main-Class" value="com.greentube.javaconverter.JavaConverter"/>
+	             <attribute name="Implementation-Version" value="2.0.5"/>
 	             <attribute name="Version-Date" value="${timestamp}"/>
 	        </manifest>         
 	  	</jar>  		
 	</target>	
 	
-	<target name="clean" description="Clean all builded files">
+	<target name="clean" description="Clean all built files">
 		<delete dir="${basedir}/gen"/>
 		<delete dir="${basedir}/build"/>
 	</target>
