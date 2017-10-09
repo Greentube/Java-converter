@@ -166,6 +166,7 @@ Nevertheless, the meaning should be clear:
             "err",
             "void arraycopy(java.lang.Object, int, java.lang.Object, int, int)",
             "void exit(int)",
+            "long currentTimeMillis()",
         },
         { "java.util.AbstractCollection",
             "boolean contains(java.lang.Object)",

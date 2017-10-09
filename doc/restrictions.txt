@@ -15,6 +15,8 @@
  - no 'long', 'short', 'float'
       These datatypes are either impossible to implement (javascript only supports a generic 
       Number type that can not hold a 64 bit quantity) or quite useless anyway (short, float).
+      In some cases a java library method that returns a 'long' is supported. To use this 
+      method, the java code needs to convert the result to a double immediately.  
  - Auto-boxing, Auto-unboxing not supported
       This feature would be a horror to get right in all conversion targets. Since its use
       is already quite disfavored in the first place, the converter does not allow it at all.
