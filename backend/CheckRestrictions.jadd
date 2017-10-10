@@ -368,33 +368,20 @@ aspect CheckRestrictions {
 			reportRestriction(errorlist, "Unsupported core library method in "
 				+ tn + ": " + sig);
 		}
-        // test for correct usage of the Math.round method
-        if (tn.equals("java.lang.Math") && sig.equals("long round(double)")) 
-        {   Expr parentexp = (Expr) getParent();
-            while ((parentexp instanceof AbstractDot) && (parentexp.getParent() instanceof Expr)) 
-            {   parentexp = (Expr) parentexp.getParent();
-            }
-            if (!(parentexp instanceof CastExpr) 
-            ||  !(parentexp.type().isInt() || parentexp.type().isDouble()) )
-            {   reportRestriction(errorlist, 
-                    "Can only use Math.round when casting result explicitly to int or double"                
-                );  
-            }  		
-  		}
-        // test for correct usage of the System.currentTimeMillis method
-        if (tn.equals("java.lang.System") && sig.equals("long currentTimeMillis()")) 
+        // test for correct usage of library methods returning a 'long'
+        if (sig.startsWith("long ")) 
         {   Expr parentexp = (Expr) getParent();
             while ((parentexp instanceof AbstractDot) && (parentexp.getParent() instanceof Expr)) 
             {   parentexp = (Expr) parentexp.getParent();
             }
             if (!(parentexp instanceof CastExpr) ||  !(parentexp.type().isDouble()) )
             {   reportRestriction(errorlist, 
-                    "Can only use System.currentTimeMillis when casting result explicitly to double"                
+                    "Can only use this library method when casting the result explicitly to double"                
                 );  
-            }       
+            }
         }
-  		 
-		super.checkRestrictions(errorlist);					  		
+     
+        super.checkRestrictions(errorlist);					  		
 	}
 	// Autoboxing/unboxing in super/this-constructor call parameters
 	public void ConstructorAccess.checkRestrictions(ArrayList<String> errorlist) {

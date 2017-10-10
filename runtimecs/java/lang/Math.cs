@@ -133,20 +133,13 @@ namespace java.lang { public class Math {
     public static double pow(double a, double b) 
     {   return System.Math.Pow(a,b);
     }
-    
-    public static int roundToInt(double x)
+        
+    public static double round(double x)
     {
+        double large = 9.223372036854776E18;
         if (System.Double.IsNaN(x)) return 0;
-        if (x==Double.POSITIVE__INFINITY_f) return -1;
-        if (x==Double.NEGATIVE__INFINITY_f) return 0;
-        return (int) System.Math.Floor(x+0.5);
-    }
-    
-    public static double roundToDouble(double x)
-    {
-        if (System.Double.IsNaN(x)) return 0;
-        if (x==Double.POSITIVE__INFINITY_f) return 9.223372036854776E18;
-        if (x==Double.NEGATIVE__INFINITY_f) return -9.22337203685478E+18;
+        if (x>=large) return large;
+        if (x<=-large) return -large;
         return System.Math.Floor(x+0.5);
     }
     

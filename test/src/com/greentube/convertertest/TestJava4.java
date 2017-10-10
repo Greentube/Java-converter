@@ -1179,19 +1179,19 @@ public class TestJava4
         assertD(Math.pow(2,3), 8);
         assertD(Math.pow(2,-3), 0.125);
         
-        assertI((int)Math.round(4.3), 4);
-        assertI((int)Math.round(-4.3), -4);
-        assertI((int)Math.round(2.5), 3);
-        assertI((int)Math.round(3.5), 4);
-        assertI((int)Math.round(4.5), 5);
-        assertI((int)Math.round(-2.5), -2);
-        assertI((int)Math.round(-3.5), -3);
-        assertI((int)Math.round(-4.5), -4);
-        assertI((int)Math.round(0.2), 0);
-        assertI((int)Math.round(-0.2), 0);
-        assertI((int)Math.round(nan), 0);
-        assertI((int)Math.round(Double.POSITIVE_INFINITY), -1);
-        assertI((int)Math.round(Double.NEGATIVE_INFINITY), 0);
+        assertI((int)(double)Math.round(4.3), 4);
+        assertI((int)(double)Math.round(-4.3), -4);
+        assertI((int)(double)Math.round(2.5), 3);
+        assertI((int)(double)Math.round(3.5), 4);
+        assertI((int)(double)Math.round(4.5), 5);
+        assertI((int)(double)Math.round(-2.5), -2);
+        assertI((int)(double)Math.round(-3.5), -3);
+        assertI((int)(double)Math.round(-4.5), -4);
+        assertI((int)(double)Math.round(0.2), 0);
+        assertI((int)(double)Math.round(-0.2), 0);
+        assertI((int)(double)Math.round(nan), 0);
+        assertI((int)(double)Math.round(Double.POSITIVE_INFINITY), 2147483647);
+        assertI((int)(double)Math.round(Double.NEGATIVE_INFINITY), -2147483648);
         assertD((double)Math.round(4.3), 4);
         assertD((double)Math.round(-4.3), -4);
         assertD((double)Math.round(2.5), 3);
@@ -1203,6 +1203,8 @@ public class TestJava4
         assertD((double)Math.round(0.2), 0);
         assertD((double)Math.round(-0.2), 0);
         assertD((double)Math.round(nan), 0);
+        assertApproximately((double)Math.round(1E20), 9.223372036854776E18);
+        assertApproximately((double)Math.round(-1.1111111111111111111E20), -9.223372036854776E18);
         assertApproximately((double)Math.round(Double.POSITIVE_INFINITY), 9.223372036854776E18);
         assertApproximately((double)Math.round(Double.NEGATIVE_INFINITY), -9.223372036854776E18);
         

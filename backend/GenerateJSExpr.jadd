@@ -135,23 +135,9 @@ aspect GenerateJS {
         if (m.isStatic()) 
         {   TypeDecl t = m.hostType();
             String n = m.name();
-            // special handling of the Math.round and Math.abs method
+            // special handling of the Math.abs method
             if (t.packageName().equals("java.lang") && t.uniqueName().equals("Math")) 
-            {   if (n.equals("round") ) 
-                {   Expr parentexp = (Expr) getParent();
-                    while (parentexp instanceof AbstractDot) 
-                    {   parentexp = (Expr) parentexp.getParent();
-                    }            
-                    if (parentexp instanceof CastExpr) 
-                    {   if (parentexp.type().isInt()) 
-                        {   n = "roundToInt";
-                        }
-                        else if (parentexp.type().isDouble()) 
-                        {   n = "roundToDouble";
-                        }
-                    }
-                }
-                else if (n.equals("abs") && m.type().isInt()) 
+            {   if (n.equals("abs") && m.type().isInt()) 
                 {   n = "absInt";
                 }
             }        
