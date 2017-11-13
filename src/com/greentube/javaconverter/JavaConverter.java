@@ -126,19 +126,6 @@ public class JavaConverter extends Frontend
 
     protected void printUsage() {
         super.printUsage();
-        
-      System.out.println(name() + " " + version());
-      System.out.println("\n"
-          + "Usage: java " + name() + " <options> <source files>\n"
-          + "  -verbose                  Output messages about what the compiler is doing\n"
-          + "  -classpath <path>         Specify where to find user class files\n"
-          + "  -sourcepath <path>        Specify where to find input source files\n"
-          + "  -bootclasspath <path>     Override location of bootstrap class files\n"
-          + "  -extdirs <dirs>           Override location of installed extensions\n"
-          + "  -d <directory>            Specify where to place generated class files\n"
-          + "  -nowarn                   Disable warning messages\n"
-          + "  -help                     Print a synopsis of standard options\n"
-          + "  -version                  Print version information");
         System.out.println(
             "  -js                       Directory where to store javascript files\n"
           + "  -cs                       Directory where to store c# files" );
