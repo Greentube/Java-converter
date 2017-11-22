@@ -31,9 +31,10 @@ Workflow Javascript
 
 2. Link all .js to a single .js program
 
-1.2 using command line
+2.1 using command line
    java -jar converter.jar link -searchpath <path> -main <mainprogram> -output <output file>
 
+2.2 using ant   
    <taskdef name="linkJavaScript" classname="com.greentube.javaconverter.JavaScriptLinkerAntTask"/> 
    <linkJavaScript 
             searchpath="${basedir}/build/javascript"
