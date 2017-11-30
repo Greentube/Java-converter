@@ -104,10 +104,12 @@ public class JavaConverter extends Frontend
         {   String d = program.options().getValueForOption("-js");
             destDirJS = new File(d);
             if (!destDirJS.isDirectory()) 
-            {   System.err.println
-                (   "Error: output directory for javascript files not found: " 
-                    + destDirJS
-                );
+            {   if (!destDirJS.mkdirs()) 
+                {   System.err.println
+                    (   "Error: output directory for javascript files not found and could not be created: " 
+                        + destDirJS
+                    );
+                }
                 return EXIT_CONFIG_ERROR;
             }
         }
@@ -115,9 +117,12 @@ public class JavaConverter extends Frontend
         {   String d = program.options().getValueForOption("-cs");
             destDirCS = new File(d);
             if (!destDirCS.isDirectory()) 
-            {   System.err.println
-                (   "Error: output directory for csharp files not found: " + destDirCS
-                );
+            {   if (!destDirCS.mkdirs())
+                {   System.err.println
+                    (   "Error: output directory for csharp files not found and could not be created: " 
+                        + destDirCS
+                    );
+                }
                 return EXIT_CONFIG_ERROR;
             }
         }
