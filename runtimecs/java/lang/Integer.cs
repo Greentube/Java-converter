@@ -26,6 +26,10 @@ namespace java.lang { public class Integer
     public static System.String toString(int i)
     {   return i.ToString("d");
     }
+    
+    public static System.String toHexString(int i)
+    {   return i.ToString("x");
+    }
         
     public static java.lang.Integer valueOf(int i)
     {   return new java.lang.Integer(i);

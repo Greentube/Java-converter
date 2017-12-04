@@ -1043,6 +1043,12 @@ public class TestJava4
     	assertI(i.hashCode(), 5);
     	
     	assertI(Integer.valueOf(-23523523).hashCode(), -23523523);
+    	
+    	assertO(Integer.toHexString(4711), "1267");
+        assertO(Integer.toHexString(-134711), "fffdf1c9");
+        assertO(Integer.toHexString(0), "0");
+        assertO(Integer.toHexString(1535621512), "5b87b988");
+        assertO(Integer.toHexString(-2135621512), "80b50078");
     }
     
 

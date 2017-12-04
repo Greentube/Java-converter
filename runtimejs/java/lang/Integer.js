@@ -8,6 +8,10 @@ var java_lang_Integer = {
     {   return i.toString();
     },
     
+    toHexString_1 : function(i) 
+    {   return (i<0 ? 4294967296+i : i).toString(16);
+    },
+    
     valueOf_1: function(i) 
     {   return new java_lang_Integer.$()._1(i);
     },    

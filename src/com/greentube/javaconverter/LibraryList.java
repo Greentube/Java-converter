@@ -66,6 +66,7 @@ public class LibraryList
             "<init>(int)",
             "int intValue()",
             "java.lang.String toString(int)",
+            "java.lang.String toHexString(int)",
             "java.lang.Integer valueOf(int)",
             "MIN_VALUE",
             "MAX_VALUE",
