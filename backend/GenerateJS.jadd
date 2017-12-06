@@ -524,8 +524,8 @@ aspect GenerateJS {
             {   out.print("((-1.0)/0.0)");
             }
             else 
-            {   out.print(""+d);
-            }                       
+            {   out.print(""+doubleValue());   
+            }   
         }
         else if (this instanceof ConstantInt) 
         {   out.print(""+intValue());
@@ -539,4 +539,11 @@ aspect GenerateJS {
             out.print("\"");
         }
     }
+    
+   public String DoubleLiteral.normalizedDigits() 
+   {
+        String lit = getLITERAL();
+        if (lit.equals("Infinity")||lit.equals("-Infinity")||lit.equals("NaN")) return lit;        
+        return super.normalizedDigits();
+   }
 }
