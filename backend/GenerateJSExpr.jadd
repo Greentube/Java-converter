@@ -3,9 +3,9 @@ aspect GenerateJS {
  
  	public void Expr.generateUsingResultJS(CodePrinter out) {	
 		if (isConstant() && !type().isEnumDecl()) {
-			constant().generateJS(out);  		
- 		} else {
- 			generateJS(out);
+			constant().generateJS(out);  					
+ 		} else { 	
+            generateJS(out);
  		}
 	}
 
@@ -22,11 +22,11 @@ aspect GenerateJS {
 	 
  	// --- Access --- 
  	
-  	public void AbstractDot.generateJS(CodePrinter out) {
+  	public void Dot.generateJS(CodePrinter out) {
   	    // search down the tree to find the end of the AbstactDot sequence  	    
   		Access a = getRight();
-  		while (a instanceof AbstractDot) {
-  		    a = ((AbstractDot)a).getRight();
+  		while (a instanceof Dot) {
+  		    a = ((Dot)a).getRight();
   		}
   		if (a instanceof ClassInstanceExpr) {
   		    // do not generate enclosing instance expression here - must be done by constructor

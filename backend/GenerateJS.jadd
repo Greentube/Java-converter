@@ -516,7 +516,16 @@ aspect GenerateJS {
         {   out.print(""+intValue());
         }
         else if (this instanceof ConstantDouble) 
-        {   out.print(""+doubleValue());
+        {   double d = doubleValue();
+            if (d==Double.POSITIVE_INFINITY) 
+            {   out.print("(1.0/0.0)");
+            }
+            else if (d==Double.NEGATIVE_INFINITY)
+            {   out.print("((-1.0)/0.0)");
+            }
+            else 
+            {   out.print(""+d);
+            }                       
         }
         else if (this instanceof ConstantInt) 
         {   out.print(""+intValue());

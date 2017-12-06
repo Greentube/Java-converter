@@ -23,6 +23,8 @@ public class StaticClass {
     static DummyClass e;
     static int f;
     static final String nostring = b + " " + a;
+    static final double inf = 1.0/0.0;
+    static final double nan = 0.0/0.0;
 
     // table of 32-bit integer values coded as two chars (high 16 bit first)
 	static final String Tvalues =

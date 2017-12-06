@@ -26,22 +26,22 @@ aspect GenerateCS {
 
  	// --- Access --- 
  	
- 	public void AbstractDot.generateUsingResultCS(CodePrinter out) {
+ 	public void Dot.generateUsingResultCS(CodePrinter out) {
  		generateCS(out, true, null,0);
  	}
  	
-  	public void AbstractDot.generateCS(CodePrinter out) {
+  	public void Dot.generateCS(CodePrinter out) {
  		generateCS(out, false, null,0);
   	}
   	  	
-  	public void AbstractDot.generateCS(CodePrinter out, boolean useresult, ArrayList<Expr>list, int len) {  		
-  		// unwind the order in which the AbstractDot elements are nested
+  	public void Dot.generateCS(CodePrinter out, boolean useresult, ArrayList<Expr>list, int len) {  		
+  		// unwind the order in which the Dot elements are nested
   		if (list==null) {  		
   			list = new ArrayList<>();		// decomposition into Expression
-  			AbstractDot a = this;
-  			while (a.getRight() instanceof AbstractDot) {
+  			Dot a = this;
+  			while (a.getRight() instanceof Dot) {
   				list.add(a.getLeft());  		    				  		  	
-				a = (AbstractDot) a.getRight();
+				a = (Dot) a.getRight();
 			}
 			list.add(a.getLeft());
 			list.add(a.getRight());

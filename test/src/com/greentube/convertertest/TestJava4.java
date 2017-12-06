@@ -74,6 +74,9 @@ public class TestJava4
         assertO(StaticClass.e, null);
         assertI(StaticClass.f, 0);    
         assertO(StaticClass.nostring, "hello kitty 17");
+        assertD(StaticClass.inf, Double.POSITIVE_INFINITY);        
+        assertD(-StaticClass.inf, Double.NEGATIVE_INFINITY);        
+        assertNaN(StaticClass.nan);        
         
         TestObject t = new TestObject();	       
         assertI(t.accessParentStatic(), 66);

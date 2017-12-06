@@ -23,15 +23,16 @@
 			<fileset dir="${extendjpath}/java4/grammar">
 				<include name="*.ast"/>
 				<exclude name="CatchClause.ast"/>
-				<exclude name="Literals.ast"/>
 			</fileset>
+			<fileset dir="${extendjpath}/java8/frontend">
+				   <include name="Variable.jadd"/>
+		    </fileset>			
 			<fileset dir="${extendjpath}/java4/frontend">
 				<include name="*.jrag"/>
 				<include name="*.jadd"/>
 				<exclude name="BytecodeAttributes.jrag"/>
 				<exclude name="BytecodeDescriptor.jrag"/>
 				<exclude name="BytecodeReader.jrag"/>
-				<exclude name="Constant.jadd"/>
 				<exclude name="Literals.jrag"/>
 				<exclude name="Variable.jadd"/>
 			</fileset>			
@@ -45,6 +46,7 @@
 			<fileset dir="${extendjpath}/java5/frontend">
 				<include name="*.jrag"/>
 				<include name="*.jadd"/>
+				<exclude name="BytecodeReader.jrag"/>				
 			</fileset>				
 			<fileset dir="${extendjpath}/java5/backend">
 				<include name="*.jrag"/>
@@ -60,12 +62,25 @@
 			<fileset dir="${extendjpath}/java7/frontend">
 				<include name="*.jrag"/>
 				<include name="*.jadd"/>
+                <exclude name="Variable.jadd"/>               
 			</fileset>				
 			<fileset dir="${extendjpath}/java7/backend">
 				<include name="*.jrag"/>
 				<include name="*.jadd"/>
 			</fileset>
-			
+	        <fileset dir="${extendjpath}/java8/grammar">
+	                <include name="*.ast"/>
+	        </fileset>
+            <fileset dir="${extendjpath}/java8/frontend">
+                <include name="*.jadd"/>
+                <include name="*.jrag"/>
+                <exclude name="Variable.jadd"/>
+            </fileset>
+	        <fileset dir="${extendjpath}/java8/backend">
+	                <include name="*.jrag"/>
+	                <include name="*.jadd"/>
+	        </fileset>          
+
 			<fileset dir="${basedir}/backend">
 				<include name="*.jrag"/>
 				<include name="*.jadd"/>

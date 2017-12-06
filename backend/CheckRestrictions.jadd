@@ -50,7 +50,7 @@ aspect CheckRestrictions {
  		System.err.print("Side effect test encountered:"+this.getClass().getName());	
   		return false;
 	}
-  	public boolean AbstractDot.hasPotentialSideEffects() {
+  	public boolean Dot.hasPotentialSideEffects() {
   		return getLeft().hasPotentialSideEffects() || getRight().hasPotentialSideEffects();  		
 	}
 	public boolean ArrayAccess.hasPotentialSideEffects() {
@@ -371,7 +371,7 @@ aspect CheckRestrictions {
         // test for correct usage of library methods returning a 'long'
         if (sig.startsWith("long ")) 
         {   Expr parentexp = (Expr) getParent();
-            while ((parentexp instanceof AbstractDot) && (parentexp.getParent() instanceof Expr)) 
+            while ((parentexp instanceof Dot) && (parentexp.getParent() instanceof Expr)) 
             {   parentexp = (Expr) parentexp.getParent();
             }
             if (!(parentexp instanceof CastExpr) ||  !(parentexp.type().isDouble()) )
@@ -531,7 +531,7 @@ aspect CheckRestrictions {
 	
 	
 	// Access to static members is not allowed by using an instance with side effects 
-	public void AbstractDot.checkRestrictions(ArrayList<String> errorlist) {
+	public void Dot.checkRestrictions(ArrayList<String> errorlist) {
 		Expr l = getLeft();
 		Access r = getRight();
 		if ((r instanceof MethodAccess) && ((MethodAccess) r).decl().isStatic()) {
