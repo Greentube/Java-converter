@@ -48,19 +48,6 @@ aspect GenerateCS {
         out.println();
     }
 
-    public boolean Block.executionCanReachBottom() 
-    {
-        if (getNumStmt()<1) return true;
-        Stmt stmt = getStmt(getNumStmt()-1);
-        if (stmt instanceof Block) 
-        {   return ((Block) stmt).executionCanReachBottom();
-        }
-        if (stmt instanceof ReturnStmt 
-        ||  stmt instanceof BreakStmt
-        ||  stmt instanceof ContinueStmt) return false;
-        return true;
-    }
-
     // --- BranchTargetStmt ---
     public void BranchTargetStmt.generateCS(CodePrinter out)
     {   generateCS(out,null);
@@ -256,21 +243,6 @@ aspect GenerateCS {
 
     // --- Case ---
     
-    public boolean Case.canBeReachedByFallThrough() 
-    {   ASTNode b = getParent();
-        int idx = b.getIndexOfChild(this);
-        if (idx<1) return false;
-        ASTNode prev = b.getChild(idx-1);
-
-        if (prev instanceof Block && ! ((Block) prev).executionCanReachBottom()) return false; 
-        if (prev instanceof ReturnStmt 
-        ||  prev instanceof BreakStmt
-        ||  prev instanceof ContinueStmt
-        ||  prev instanceof Case) return false;
-
-        return true;
-    }
-
     public void ConstCase.generateCS(CodePrinter out) 
     {   Expr e = getValue();
         if (canBeReachedByFallThrough()) 

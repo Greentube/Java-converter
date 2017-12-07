@@ -1,0 +1,74 @@
+
+aspect Util {
+    
+    public boolean Expr.hasLessThan20Bits() {
+        TypeDecl t = type();
+        if (t.isChar() || t.isByte() || t.isBoolean()) return true;
+        if (t.isInt() && isConstant()) {
+            int i = constant().intValue();
+            return  i >= 0xfff80000 && i <= 0x7ffff;
+        }
+        return false;
+    }
+
+    public TypeDecl Expr.neededDownCast() {
+        return null;
+    }
+
+    public TypeDecl VarAccess.neededDownCast() {
+        if (isFieldAccess() && (varDecl() instanceof FieldDeclarator)) {
+            FieldDeclarator fd = (FieldDeclarator) varDecl();
+            if (fd.isInstanceVariable() && fd.type() != fd.erasedField().type()) {
+                return fd.type();
+            }       
+        }
+        return null;        
+    }
+    
+    public TypeDecl MethodAccess.neededDownCast() {
+        MethodDecl m = decl();
+        if (m.erasedMethod().type()!=m.type()) {
+            return m.type();
+        }
+        return null;
+    }
+    
+    
+    
+   public String DoubleLiteral.normalizedDigits() 
+   {
+        String lit = getLITERAL();
+        if (lit.equals("Infinity")||lit.equals("-Infinity")||lit.equals("NaN")) return lit;        
+        return super.normalizedDigits();
+   }
+   
+    public boolean Block.executionCanReachBottom() 
+    {
+        if (getNumStmt()<1) return true;
+        Stmt stmt = getStmt(getNumStmt()-1);
+        if (stmt instanceof Block) 
+        {   return ((Block) stmt).executionCanReachBottom();
+        }
+        if (stmt instanceof ReturnStmt 
+        ||  stmt instanceof BreakStmt
+        ||  stmt instanceof ContinueStmt) return false;
+        return true;
+    }
+    
+    public boolean Case.canBeReachedByFallThrough() 
+    {   ASTNode b = getParent();
+        int idx = b.getIndexOfChild(this);
+        if (idx<1) return false;
+        ASTNode prev = b.getChild(idx-1);
+
+        if (prev instanceof Block && ! ((Block) prev).executionCanReachBottom()) return false; 
+        if (prev instanceof ReturnStmt 
+        ||  prev instanceof BreakStmt
+        ||  prev instanceof ContinueStmt
+        ||  prev instanceof Case) return false;
+
+        return true;
+    }
+
+   
+}

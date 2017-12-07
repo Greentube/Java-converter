@@ -3,7 +3,7 @@ import com.greentube.javaconverter.CodePrinter;
 aspect GenerateJS {
   	  	
   	public void ASTNode.generateJS(CodePrinter out) {
-  		System.err.print("UNEXPECTED:"+this.getClass().getName());
+  		System.err.println("Can not create JS for:"+this.getClass().getName());
 		this.dumpTree(System.err);
   	}
 
@@ -171,12 +171,16 @@ aspect GenerateJS {
 		out.println();
         out.increaseIndent();                                     
 
+        Collection<MethodDecl> bridgemethods = localBridgeMethods();
 		// instance methods    	    	        	    	  		      	    	    
       	for (BodyDecl bd : methodsAndConstructors()) {
-      		// check if need to suppress auto-generated methods related to Enums
+      	     // check if need to suppress auto-generated bridge methods 
+      	     if (bridgemethods.contains(bd)) continue;
+      	      
+      		// check if need to suppress auto-generated methods related to Enums      		
 			if (bd instanceof MethodDecl) {
       			MethodDecl md = (MethodDecl) bd;
-      			if (md.isStatic()) continue;   		
+      			if (md.isStatic()) continue;      			
       		}
       		else if (bd instanceof ConstructorDecl) {
       			ConstructorDecl cd = (ConstructorDecl) bd;
@@ -539,11 +543,4 @@ aspect GenerateJS {
             out.print("\"");
         }
     }
-    
-   public String DoubleLiteral.normalizedDigits() 
-   {
-        String lit = getLITERAL();
-        if (lit.equals("Infinity")||lit.equals("-Infinity")||lit.equals("NaN")) return lit;        
-        return super.normalizedDigits();
-   }
 }

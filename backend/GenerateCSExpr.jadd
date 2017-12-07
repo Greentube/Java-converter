@@ -20,9 +20,6 @@ aspect GenerateCS {
   			}
   		}
   	}   	
-  	public TypeDecl Expr.neededDownCast() {
-  		return null;
-  	}
 
  	// --- Access --- 
  	
@@ -220,14 +217,6 @@ aspect GenerateCS {
         out.print(")");
     }
        
- 	public TypeDecl MethodAccess.neededDownCast() {
-  		MethodDecl m = decl();
-		if (m.erasedMethod().type()!=m.type()) {
-      		return m.type();
-    	}
-    	return null;
- 	}
- 	
  	
 //  	public void PackageAccess.generateCS(CodePrinter out) {
 // 	}
@@ -307,16 +296,6 @@ aspect GenerateCS {
 			throw new RuntimeException("Unknown type of variable access");
   		}  		
  	}
- 	public TypeDecl VarAccess.neededDownCast() {
-  		if (isFieldAccess() && (varDecl() instanceof FieldDeclarator)) {
-  			FieldDeclarator fd = (FieldDeclarator) varDecl();
-  			if (fd.isInstanceVariable() && fd.type() != fd.erasedField().type()) {
-    	  		return fd.type();
-    		}  		
-  		}
-		return null; 		
- 	}
-  	
   	
   	// --- ArrayInit ---
   	
@@ -743,6 +722,19 @@ aspect GenerateCS {
   		out.print(" ++ ");    
   		getOperand().generateCS(out);  	
   	}
+
+	public void LambdaExpr.generateCS(CodePrinter out) 
+    {    
+         toClass().generateCS(out); 
+    }
+    public void TypeMethodReference.generateCS(CodePrinter out)
+    {    
+         toClass().generateCS(out); 
+    }
 	
+	public void SyntheticTypeAccess.generateCS(CodePrinter out)
+	{
+	   out.print(type().getNameCS());
+	}
 }
 

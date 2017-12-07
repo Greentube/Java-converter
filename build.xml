@@ -160,6 +160,7 @@
 			<src path="${extendjpath}/src/backend-main"/>
 			<src path="${extendjpath}/src/gen/org/extendj/parser"/>
 			<src path="${extendjpath}/src/gen/org/extendj/scanner"/>
+            <src path="${extendjpath}/java8/src"/>
 		</javac>	
 
 		<!-- add documentation files -->

@@ -416,7 +416,10 @@ public class LibraryList
             "void setElementAt(java.lang.Object, int)",
             "void setSize(int)",
             "void trimToSize()",                                    
-        }
+        },
+        { "java.util.function.Function",
+            "java.lang.Object apply(java.lang.Object)",
+        },
     };
 
 

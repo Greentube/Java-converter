@@ -3,7 +3,7 @@ import com.greentube.javaconverter.CodePrinter;
 aspect GenerateCS {
   	  	
   	public void ASTNode.generateCS(CodePrinter out) {
-  		System.err.print("UNEXPECTED:");
+        System.err.println("Can not create CS for:"+this.getClass().getName());
 		this.dumpTree(System.err);
   	}
   	

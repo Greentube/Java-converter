@@ -10,6 +10,6 @@ public class Launcher
             }
             System.out.println();
         }
-        com.greentube.convertertestjava7.TestJava7.main(args);
+        com.greentube.convertertestjava8.TestJava8.main(args);
     }
 }

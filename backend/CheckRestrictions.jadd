@@ -182,15 +182,6 @@ aspect CheckRestrictions {
   		reportRestriction(errorlist, "Type 'long' not supported");
   	}
   	
-
-//	// no instanceof with arrays
-//  	public void InstanceOfExpr.checkRestrictions(ArrayList<String> errorlist) {
-//  	  	if (getTypeAccess().type().isArrayDecl()) {
-//  	  		reportRestriction(errorlist, "Can not create type check for array types");
-//  	  	}
-//		super.checkRestrictions(errorlist);
-//	}
-		   	  	
 		   	  			   	    	  
 	// method overloading rules
 	public void MethodDecl.checkRestrictions(ArrayList<String> errorlist) {
@@ -203,9 +194,16 @@ aspect CheckRestrictions {
 			reportRestriction(errorlist, "Exceptions are not supported");
 		}
 		
-		// do not check for interfaces 
-		if (hostType() instanceof ClassDecl) { 
-			
+		// restrictions for Interface methods
+		if (hostType() instanceof InterfaceDecl)
+		{  if (hasBlock())
+		   {  reportRestriction(errorlist, 
+                 "Static or default interface methods are not supported");
+		   }
+		}
+        // restrictions for class methods 
+		else if (hostType() instanceof ClassDecl) 
+		{ 
 			// check method name collisions	in same class 		
 			ClassDecl cd = (ClassDecl)hostType();
 			for (BodyDecl bd:cd.getBodyDeclList()) {
