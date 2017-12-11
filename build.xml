@@ -75,6 +75,7 @@
                 <include name="*.jadd"/>
                 <include name="*.jrag"/>
                 <exclude name="Variable.jadd"/>
+            	<exclude name="UnsupportedFeaturesCheck.jrag"/>
             </fileset>
 	        <fileset dir="${extendjpath}/java8/backend">
 	                <include name="*.jrag"/>

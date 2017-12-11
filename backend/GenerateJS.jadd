@@ -315,6 +315,7 @@ aspect GenerateJS {
 		out.print(",");
 		out.println();
 				
+	    Vector<MethodDecl> defaults = new Vector<>();
 		for (BodyDecl bd:getBodyDeclList()) {
 			if (bd.isField()) {
 				for (FieldDeclarator fd:bd.fieldDeclarations()) {
@@ -326,6 +327,29 @@ aspect GenerateJS {
 						out.println();
 				}
 			}
+            else if (bd instanceof MethodDecl) 
+            {   MethodDecl md = (MethodDecl) bd;
+                if (md.isStatic())
+                {   md.generateJS(out);
+                }
+                else
+                {   defaults.add(md);
+                }                
+			}
+		}
+		if (defaults.size()>0) 
+		{     out.print("_defaults:");
+		      out.println();
+		      out.print("{   ");
+		      out.increaseIndent();		      
+              for (MethodDecl md:defaults)
+              {     md.generateJS(out);
+              }		
+              out.decreaseIndent();
+		      out.print("}");
+		      out.println();
+              out.print(",");
+              out.println();
 		}	
 		
 		out.decreaseIndent();

@@ -25,10 +25,11 @@ public class TestJava8 extends TestJava7
         
         List<String> l = makelist("hey", "this", "is", "nice");
         assertO(l.toString(), "[hey, this, is, nice]");
-                
-        List<String> d = apply(l, s -> s+s);
         
-        assertO(d.toString(), "[heyhey, thisthis, isis, nicenice]");   
+        String seperator = "/";        
+        List<String> d = apply(l, s -> s+seperator+s);
+        
+        assertO(d.toString(), "[hey/hey, this/this, is/is, nice/nice]");   
     }
     
     public static void methodreferencetest()
@@ -71,10 +72,18 @@ public class TestJava8 extends TestJava7
     {
         System.out.println("- interface methods");
         
-        TeaProvider tp = new EarlGrey();
-        
+        assertI(TeaProvider.more(7), 21);
+
+        TeaProvider tp = new EarlGrey();        
         assertO(tp.makeTea(100), "100ml of earl grey");
-//        assertI(TeaProvider.more(7), 21);
-//        assertO(tp.makeMoreTea(50), "150ml of earl grey");
+        assertO(tp.makeMoreTea(50), "150ml of earl grey");
+        
+        TeaProvider tp2 = new BigPot();
+        assertO(tp2.makeTea(70), "70ml of generic tea");
+        assertO(tp2.makeMoreTea(70), "700ml of generic tea");
+        
+        TeaProvider tp3 = new DarjeelingPot();
+        assertO(tp3.makeTea(90), "90ml of darjeeling");
+        assertO(tp3.makeMoreTea(90), "180ml of darjeeling");
     }
 }

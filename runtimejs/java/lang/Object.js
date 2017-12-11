@@ -38,7 +38,6 @@ function _class (classobject, base, interfaces, classname, instancemethods)
     // add attributes than can be used to check for class/interface type
     classobject.$.prototype._classname = classname;
     classobject.$.prototype._interfaces = base.$.prototype._interfaces;
-    collectInterfaces(interfaces);
     
     // add/overwrite methods that are newly defined
     if (instancemethods) 
@@ -46,12 +45,27 @@ function _class (classobject, base, interfaces, classname, instancemethods)
         {   classobject.$.prototype[name] = instancemethods[name];
         }
     }  
+    
+    // recursively traverse all interfaces/super-interfaces and memorize what this object implements
+    // also set up the default methods that are defined by the interface if they are not yet 
+    // provided by the class itself
+    collectInterfaces(interfaces);
   
     function collectInterfaces(implementedinterfaces) 
     {   var proto = classobject.$.prototype;
         for (var index=0; implementedinterfaces && index<implementedinterfaces.length; index++) 
         {   var inf = implementedinterfaces[index];
-            if (proto._interfaces.indexOf(inf)<0) proto._interfaces = proto._interfaces.concat([inf]);
+            // memorize that the object implements the interface
+            if (proto._interfaces.indexOf(inf)<0) proto._interfaces = proto._interfaces.concat([inf]);            
+            // wire up missing default methods
+            if (inf._defaults)
+            {   for (var mname in inf._defaults)
+                {   if (!proto[mname]) 
+                    {   proto[mname] = inf._defaults[mname];
+                    }
+                }
+            }            
+            // recursively scan all superinterfaces
             collectInterfaces(inf._superinterfaces);
         }
     }
