@@ -186,7 +186,7 @@ function _dimImpl(typedescriptor,dimensions,initvalue,cursor)
     }
 }
 
-// do some patching of the built-in array protoype to allow easy
+// do some patching of the built-in array prototype to allow easy
 // integration with other java objects.
 // Be aware that this now messes up any use of  
 // any  for (x in array) loop on the entirety of the program,

@@ -72,7 +72,8 @@ public class LibraryList
             "MAX_VALUE",
         },
         { "java.lang.Iterable",
-            "java.util.Iterator iterator()"
+            "java.util.Iterator iterator()",
+            "void forEach(java.util.function.Consumer)",
         },
         { "java.lang.Object",
             "<init>()",
@@ -435,18 +436,31 @@ public class LibraryList
             for (int j=1; j<supported[i].length; j++) 
             {   members.add(supported[i][j]);
             }
-            // support these on any object:
-            members.add("boolean equals(java.lang.Object)");    
-            members.add("int hashCode()");
-            members.add("java.lang.String toString()");
         }          
     }
 
     public static boolean isAllowed(String fullclassname, String membername)
-    {   // generate map at first call for fast retrieval if not done already
+    {   
+        // support these on any object:
+        if (membername.equals("boolean equals(java.lang.Object)")
+        ||  membername.equals("int hashCode()")
+        ||  membername.equals("java.lang.String toString()") )
+        {   return true;
+        }
+        // support these on the abstract intermediary classes
+        if (fullclassname.equals("java.lang.AbstractStringBuilder") && membername.equals("int length()"))
+        {    return true;
+        } 
+        if (fullclassname.equals("java.util.AbstractSequentialList") && membername.equals("java.util.Iterator iterator()"))
+        {    return true;
+        } 
+        
+        // generate map at first call for fast retrieval if not done already
         if (map==null) buildList();
-        // unknown classes are not restricted
-        if (!map.containsKey(fullclassname)) return true;    
+        // everything from outside any java. package is assumed to be valid
+        if (!fullclassname.startsWith("java.")) return true;
+        // only allow white-listed classes
+        if (!map.containsKey(fullclassname)) return false;            
         // provided class only allows whitelisted members
         return map.get(fullclassname).contains(membername);	
     }

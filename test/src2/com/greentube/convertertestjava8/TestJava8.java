@@ -17,6 +17,7 @@ public class TestJava8 extends TestJava7
         lambdatest();
         methodreferencetest();
         interfacemethodstest();
+        foreachtest();
     }
     
     public static void lambdatest()
@@ -85,5 +86,16 @@ public class TestJava8 extends TestJava7
         TeaProvider tp3 = new DarjeelingPot();
         assertO(tp3.makeTea(90), "90ml of darjeeling");
         assertO(tp3.makeMoreTea(90), "180ml of darjeeling");
+    }
+    
+    public static void foreachtest()
+    {
+        System.out.println("- forEach");
+    
+        List<String> l = makelist("hey", "this", "is", "nice");
+        List<String> target = new ArrayList<>();
+        
+        l.forEach(e -> target.add(e+"!"));
+        assertO(target.toString(), "[hey!, this!, is!, nice!]");
     }
 }

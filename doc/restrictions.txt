@@ -1,7 +1,7 @@
  Restrictions
  ------------
  
- Basically the language features of java 1.7 are provided with the following restrictions
+ Basically the language features of java 8 are provided with the following restrictions
  (which will be checked by the converter at compile time):
  
  - Threads   
