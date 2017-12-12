@@ -86,6 +86,11 @@ public class TestJava8 extends TestJava7
         TeaProvider tp3 = new DarjeelingPot();
         assertO(tp3.makeTea(90), "90ml of darjeeling");
         assertO(tp3.makeMoreTea(90), "180ml of darjeeling");
+        
+        assertO((new BigPot()).makeMoreTea(5), "50ml of generic tea");
+        assertO((new DarjeelingPot()).makeMoreTea(5), "10ml of darjeeling");
+        assertO((new EarlGrey()).makeMoreTea(5), "15ml of earl grey");
+        assertO((new SmallPot()).makeMoreTea(5), "10ml of some tea");
     }
     
     public static void foreachtest()

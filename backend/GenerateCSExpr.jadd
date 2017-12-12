@@ -186,6 +186,7 @@ aspect GenerateCS {
         {   String htn = m.hostType().getNameCS();
             String n = m.name();
             out.print(htn);
+            if (m.hostType() instanceof InterfaceDecl) out.print("_c");
             out.print(".");
             out.printCSIdentifier(renameMethod(n,true), "");
         }
@@ -197,7 +198,8 @@ aspect GenerateCS {
             out.printCSIdentifier(renameMethod(m.name(),false), "");
         }
         else 
-        {   out.print("this.");
+        {   out.print(m.hostType().isClassDecl() ? "this":"_t");
+            out.print(".");
             TypeDecl t = hostType();
             if (t!=m.hostType() && t.isInnerTypeOf(m.hostType())) 
             {   while (t!=m.hostType()) 
@@ -231,7 +233,7 @@ aspect GenerateCS {
 // 	}
 
   	public void ThisAccess.generateCS(CodePrinter out) {
-  		out.print("this");
+  	     out.print(hostType().isClassDecl() ? "this":"_t");
  	}
 	
   	public void TypeAccess.generateCS(CodePrinter out) {

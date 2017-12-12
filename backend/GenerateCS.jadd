@@ -62,6 +62,20 @@ aspect GenerateCS {
         {   out.print(", ");
             TypeDecl td = iter.next();
             out.print(td.getNameCS());
+            
+            for (BodyDecl bd:td.getBodyDeclList()) {
+                if (bd instanceof MethodDecl) {
+                    MethodDecl md = (MethodDecl) bd;
+                    if (md.isDefault() && this.hasMethodWithSignature(md.signature())) 
+                    {   out.print(", ");
+                        out.print(td.getNameCS());
+                        out.print("_");
+                        out.print(md.name());
+                        out.print("_");
+                        out.print(""+md.getNumParameter());
+                    }
+                }
+             }   
         }  
 
     	out.println();
@@ -226,20 +240,31 @@ aspect GenerateCS {
         }
         out.println();
   	}
+  	
+  	public boolean ClassDecl.hasMethodWithSignature(String sig)
+  	{
+         for (BodyDecl bd:getBodyDeclList()) {
+            if (bd instanceof MethodDecl) 
+            {   if (((MethodDecl) bd).signature().equals(sig)) return true;
+            }
+  	     }
+  	     if (hasSuperClass())
+  	     {   return ((ClassDecl)superclass()).hasMethodWithSignature(sig);
+  	     }
+  	     return false;
+  	}
   	  	
   	  	
   	  	
 	public void InterfaceDecl.generateCS(CodePrinter out) {
+        out.print("using java.lang;");  
+        out.println();      
+        String namespaceheader = "";
 		if (packageName().length()>0) {
-			out.print("namespace ");
 			String n = getNameCS();
-			out.print(n.substring(0,n.lastIndexOf('.')));						
-			out.print(" {");
-			out.increaseIndent();
-			out.println();
+			namespaceheader = "namespace " + n.substring(0,n.lastIndexOf('.')) + " { ";						
 		}
-		out.print("using java.lang;");  
-		out.println();		
+		out.print(namespaceheader);
 		out.print("public interface ");
 		out.printCSIdentifier(uniqueName());
 
@@ -252,27 +277,70 @@ aspect GenerateCS {
         		out.print(td.getNameCS());
       		}			
 		}
-		out.print(" {");
+		
+        out.println();
+		out.print("{");
 		out.println();
 		out.increaseIndent();
 		
-		boolean hasfields = false;
+		boolean needstatic = false;
 		for (BodyDecl bd:getBodyDeclList()) {
 			if (bd.isField()) {
-				hasfields = true;
+				needstatic = true;
 			} else if (bd instanceof MethodDecl) {
-				bd.generateCS(out);
+			   MethodDecl md = (MethodDecl) bd;
+	           if (md.getBlock()!=null) 
+	           {   needstatic = true;
+	           }
+	           else 
+			   {   bd.generateCS(out);
+			   }
 			}
-		}		
+		}
 
 		out.decreaseIndent();
 		out.print("}");
+        if (namespaceheader.length()>0) out.print("}");     
 		out.println();
 		
-		if (hasfields) {
+
+		// create extra interface for each default method defined 
+        for (BodyDecl bd:getBodyDeclList()) {
+            if (bd instanceof MethodDecl) {
+               MethodDecl md = (MethodDecl) bd;
+               if (md.isDefault()) 
+               {   
+                    out.print(namespaceheader);
+                    out.print("public interface ");
+                    out.printCSIdentifier(uniqueName());
+                    out.print("_");
+                    out.printCSIdentifier(md.name());
+                    out.print("_");
+                    out.print(""+md.getNumParameter());
+                    out.println();
+                    out.print("{");
+                    out.println();
+                    out.increaseIndent();
+                    
+                    md.generateCS(out, true);
+                    
+                    out.decreaseIndent();
+                    out.print("}");
+                    if (namespaceheader.length()>0) out.print("}");  
+                    out.println();   
+               }
+            }
+        }
+		
+		
+		// add special class for static fields and static/default methods 
+		if (needstatic) {
+            out.print(namespaceheader);
 			out.print("public static class ");
 			out.printCSIdentifier(uniqueName());
-			out.print("_c { ");
+			out.print("_c ");
+			out.println();
+			out.print("{");
 			out.println();
 			out.increaseIndent();
 			
@@ -290,21 +358,22 @@ aspect GenerateCS {
 							out.println();			
 						}
 					}
-				}
+				} 
+				else if (bd instanceof MethodDecl) 
+				{   MethodDecl md = (MethodDecl) bd;
+				    if (md.getBlock()!=null) 
+                    {   md.generateCS(out);
+                    }
+                }				
 			}	
 			
 			out.printAndForgetDims();
 						
 			out.decreaseIndent();
 			out.print("}");	
+    	    if (namespaceheader.length()>0) out.print("}");		
 			out.println();						
 		}		
-		
-		if (packageName().length()>0) {
-			out.decreaseIndent();
-			out.print("}");		
-			out.println();
-		}
 	}  
   	
 
@@ -424,47 +493,65 @@ aspect GenerateCS {
 //	public void MemberInterfaceDecl.generateCS(CodePrinter out) {
 //	}
 
-  	public void MethodDecl.generateCS(CodePrinter out) {
-		if (isStatic()) {
-  			// test if this method shadows a static super method
-  			boolean isoverriding = false;
-  			ClassDecl c = (ClassDecl)(hostType());
-  			while (!c.isObject()) {
-  				c = (ClassDecl) (c.superclass());
-				for (BodyDecl b : c.methodsAndConstructors()) {
-					if (b instanceof MethodDecl && ((MethodDecl)b).isStatic() 
-				    && signature().equals(((MethodDecl)b).signature()) ) { 
-						isoverriding = true;
-					}
-		    	}    	    	      				
-  			} 			 		
-			out.print("public static ");		
-			if (isoverriding) out.print("new ");
-			  								
-		} else if (hostType().isClassDecl()) {  			
-  			// test if this method overrides a super method
-  			boolean isoverriding = false;
-  			ClassDecl c = (ClassDecl)(hostType());
-  			while (!c.isObject()) {
-  				c = (ClassDecl) (c.superclass());
-				for (BodyDecl b : c.methodsAndConstructors()) {
+    public void MethodDecl.generateCS(CodePrinter out) {
+        generateCS(out,false);
+    }    
+  	public void MethodDecl.generateCS(CodePrinter out, boolean omitbody) {
+  	    boolean isinterfaceextension = false;
+  	    // perform some checks for class methods
+  	    if (hostType().isClassDecl())
+		{   if (isStatic()) {
+  			   // test if this method shadows a static super method
+  			   boolean isoverriding = false;
+  			   ClassDecl c = (ClassDecl)(hostType());
+  			   while (!c.isObject()) {
+  				  c = (ClassDecl) (c.superclass());
+				    for (BodyDecl b : c.methodsAndConstructors()) {
+					   if (b instanceof MethodDecl && ((MethodDecl)b).isStatic() 
+				        && signature().equals(((MethodDecl)b).signature()) ) { 
+						  isoverriding = true;
+					   }
+		    	 }    	    	      				
+  			   } 			 		
+			   out.print("public static ");		
+			   if (isoverriding) out.print("new ");			  								
+		    } else {  			
+  			   // test if this method overrides a super method
+  			   boolean isoverriding = false;
+  			   ClassDecl c = (ClassDecl)(hostType());
+  			   while (!c.isObject()) {
+  				  c = (ClassDecl) (c.superclass());
+				  for (BodyDecl b : c.methodsAndConstructors()) {
 					if (b instanceof MethodDecl && overrides((MethodDecl)b) ) { 
 						isoverriding = true;
 					}
-		    	}    	    	      				
-  			} 			 		
-  			out.print("public ");
-  			out.print(isoverriding ? "override " : "virtual ");  			
-  		}  		
+		    	  }    	    	      				
+  			   } 			 		
+  			   out.print("public ");
+  			   out.print(isoverriding ? "override " : "virtual ");  			
+  		    }  		
+  		}
+  		// perform some checks for interface methods
+  		else
+  		{   if (getBlock()!=null && !omitbody)   // static or default interface method
+  		    {   out.print("public static ");
+  		        isinterfaceextension = ! isStatic();
+  		    }  		
+  		}
   		
 		String n = renameMethod(name(), isStatic());
   		getTypeAccess().generateCS(out);
   		out.print(" ");
   		out.printCSIdentifier(n, "");
   		out.print("(");
+  		if (isinterfaceextension) 
+  		{   out.print("this ");
+  		    out.print(hostType().getNameCS());
+  		    out.print(" _t");
+  		}
   		int numpar = getNumParameter();
   		for (int i=0; i<numpar; i++) {
-  			if (i>0) out.print(",");
+  			if (i>0 || isinterfaceextension) out.print(",");
   			getParameter(i).getTypeAccess().generateCS(out);
   			if (i==numpar-1 && isVariableArity()) {
   				out.print("[]");
@@ -474,7 +561,7 @@ aspect GenerateCS {
   		}
   		out.print(")");
   		
-  		if (getBlock()!=null) {
+  		if (getBlock()!=null && !omitbody) {
 	  		out.println();
   			getBlock().generateCS(out);
   		} else {
