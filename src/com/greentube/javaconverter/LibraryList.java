@@ -78,6 +78,8 @@ public class LibraryList
         { "java.lang.Object",
             "<init>()",
         },
+        { "java.lang.Override"
+        },
         { "java.lang.Math",
             "double abs(double)",
             "int abs(int)",
@@ -418,8 +420,25 @@ public class LibraryList
             "void setSize(int)",
             "void trimToSize()",                                    
         },
+        { "java.util.function.Consumer",
+            "void accept(java.lang.Object)",
+            "java.util.function.Consumer andThen(java.util.function.Consumer)",
+        },
         { "java.util.function.Function",
+            "java.util.function.Function andThen(java.util.function.Function)",
             "java.lang.Object apply(java.lang.Object)",
+            "java.util.function.Function compose(java.util.function.Function)",
+            "java.util.function.Function identity()",            
+        },
+        { "java.util.function.Predicate",
+            "java.util.function.Predicate and(java.util.function.Predicate)",
+            "java.util.function.Predicate isEqual(java.lang.Object)",
+            "java.util.function.Predicate negate()",
+            "java.util.function.Predicate or(java.util.function.Predicate)",        
+            "boolean test(java.lang.Object)",
+        },
+        { "java.util.function.Supplier",
+            "java.lang.Object get()",
         },
     };
 
@@ -439,8 +458,22 @@ public class LibraryList
         }          
     }
 
+    public static boolean isAllowed(String fullclassname)
+    {
+        // generate map at first call for fast retrieval if not done already
+        if (map==null) buildList();
+        
+        // everything from outside any java. package is assumed to be valid
+        if (!fullclassname.startsWith("java.")) return true;
+        // only allow white-listed classes
+        return map.containsKey(fullclassname);            
+    }
+
     public static boolean isAllowed(String fullclassname, String membername)
     {   
+        // generate map at first call for fast retrieval if not done already
+        if (map==null) buildList();
+
         // support these on any object:
         if (membername.equals("boolean equals(java.lang.Object)")
         ||  membername.equals("int hashCode()")
@@ -455,8 +488,6 @@ public class LibraryList
         {    return true;
         } 
         
-        // generate map at first call for fast retrieval if not done already
-        if (map==null) buildList();
         // everything from outside any java. package is assumed to be valid
         if (!fullclassname.startsWith("java.")) return true;
         // only allow white-listed classes

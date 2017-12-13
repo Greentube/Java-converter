@@ -220,6 +220,14 @@ aspect GenerateJS {
             if ((n instanceof VarAccess) && ((VarAccess)n).decl().isStatic()) return;
         }
         out.print("this");
+        // check if accessing the instance of an outer class
+        TypeDecl t = hostType();
+        if (t!=type() && t.isInnerTypeOf(type())) {
+            while (t!=type()) {
+                out.print("._o");
+                t = t.enclosingType();
+            }
+        }       
     }
   	public void TypeAccess.generateJS(CodePrinter out) {
  	}
@@ -820,6 +828,10 @@ aspect GenerateJS {
   	{    
   	     toClass().generateJS(out); 
   	}
+    public void ExprMethodReference.generateJS(CodePrinter out)
+    {    
+         toClass().generateJS(out); 
+    }
   	
 }
 

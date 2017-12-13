@@ -161,7 +161,12 @@ aspect CheckRestrictions {
 		TypeDecl t = type();
 		if (t.isLong())  reportRestriction(errorlist, "Type 'long' not supported");
 		if (t.isFloat()) reportRestriction(errorlist, "Type 'float' not supported");
-		if (t.isShort()) reportRestriction(errorlist, "Type 'short' not supported");		
+		if (t.isShort()) reportRestriction(errorlist, "Type 'short' not supported");
+		if (t.isClassDecl() || t.isInterfaceDecl())
+		{     if (!LibraryList.isAllowed(t.erasure().typeName()))
+		      {   reportRestriction(errorlist, "Unsupported type:"+t.erasure().typeName());
+		      }
+		}
 		super.checkRestrictions(errorlist);
 	}
 
@@ -572,6 +577,10 @@ aspect CheckRestrictions {
          toClass().checkRestrictions(errorlist); 
     }
     public void TypeMethodReference.checkRestrictions(ArrayList<String> errorlist)
+    {    
+         toClass().checkRestrictions(errorlist); 
+    }
+    public void ExprMethodReference.checkRestrictions(ArrayList<String> errorlist)
     {    
          toClass().checkRestrictions(errorlist); 
     }

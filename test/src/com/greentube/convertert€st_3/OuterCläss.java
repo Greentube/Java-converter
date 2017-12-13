@@ -37,7 +37,11 @@ public class OuterCläss {
 			this.x = x;
 		}
 		public String toString() {
-			return x + "," + getP();
+			return x + "," + getOuter().getP();
+		}
+		public OuterCläss getOuter()
+		{
+		  return OuterCläss.this;
 		}
 	}
 	

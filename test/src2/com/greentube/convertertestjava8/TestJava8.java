@@ -15,9 +15,11 @@ public class TestJava8 extends TestJava7
         System.out.println ("-- converter test suite for java 8" );
         
         lambdatest();
+        nonstaticlambdatest();
         methodreferencetest();
         interfacemethodstest();
         foreachtest();
+        customsignaturetest();
     }
     
     public static void lambdatest()
@@ -33,6 +35,7 @@ public class TestJava8 extends TestJava7
         assertO(d.toString(), "[hey/hey, this/this, is/is, nice/nice]");   
     }
     
+    
     public static void methodreferencetest()
     {
         System.out.println("- method reference");
@@ -45,6 +48,15 @@ public class TestJava8 extends TestJava7
         assertO(d.toString(), "[heyhey, thisthis, isis, nicenice]");
     }
     
+    public static void nonstaticlambdatest()
+    {
+        System.out.println("- non-static lambda expression");
+    
+        NonstaticLambdas n = new NonstaticLambdas();
+        assertI(n.makesum(), (3+4*2+5*3+4*3)+3+5);
+        assertI(n.makesum2(), (3*4*5*3*5)+3+5);
+    }
+
     
     private static List<String> makelist(String... elements)
     {
@@ -102,5 +114,25 @@ public class TestJava8 extends TestJava7
         
         l.forEach(e -> target.add(e+"!"));
         assertO(target.toString(), "[hey!, this!, is!, nice!]");
+    }
+    
+    public static void customsignaturetest()
+    {
+        System.out.println("- custom signature");
+        
+        assertI(useternary((a,b,c) -> (a+b+c)), 11);
+        assertI(useternary((a,b,c) -> (a*b*c)), 21);
+        
+        assertI(useternary(TestJava8::sumthree), 11);        
+    }
+    
+    public static int useternary(TernaryFunction f)
+    {
+        return f.compute(1,3,7);
+    }
+    
+    public static int sumthree(int a, int b, int c)
+    {
+        return a+b+c;
     }
 }

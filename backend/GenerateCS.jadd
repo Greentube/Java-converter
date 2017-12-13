@@ -361,7 +361,7 @@ aspect GenerateCS {
 				} 
 				else if (bd instanceof MethodDecl) 
 				{   MethodDecl md = (MethodDecl) bd;
-				    if (md.getBlock()!=null) 
+				    if (md.isStatic() || md.isDefault()) 
                     {   md.generateCS(out);
                     }
                 }				
@@ -535,7 +535,7 @@ aspect GenerateCS {
   		else
   		{   if (getBlock()!=null && !omitbody)   // static or default interface method
   		    {   out.print("public static ");
-  		        isinterfaceextension = ! isStatic();
+  		        isinterfaceextension = isDefault();
   		    }  		
   		}
   		
@@ -562,8 +562,52 @@ aspect GenerateCS {
   		out.print(")");
   		
   		if (getBlock()!=null && !omitbody) {
-	  		out.println();
+	  		out.println();	  		
+	  		if (isinterfaceextension)
+	  		{  out.print("{");
+               out.increaseIndent();
+	  		   out.println();
+               out.printCSIdentifier(hostType().uniqueName());
+               out.print("_");
+               out.printCSIdentifier(n);
+               out.print("_");
+               out.print(""+getNumParameter());
+	  		   out.print(" _t2 = _t as ");
+               out.printCSIdentifier(hostType().uniqueName());
+               out.print("_");
+               out.printCSIdentifier(n);
+               out.print("_");
+               out.print(""+getNumParameter());
+               out.print(";");
+	  		   out.println();
+	  		   out.print("if (_t2!=null)");
+	  		   out.println();
+	  		   out.print("{   ");
+	  		   if (!isVoid()) out.print("return ");
+	  		   out.print("_t2.");
+	  		   out.printCSIdentifier(n);
+	  		   out.print("(");
+               for (int i=0; i<numpar; i++) {
+                    if (i>0) out.print(",");
+                    out.printCSIdentifier(getParameter(i).name(), "");
+               }	  		   
+	  		   out.print(");");
+	  		   if (isVoid()) {
+	  		       out.println();
+	  		       out.print("return;");
+	  		   }
+	  		   out.println();
+               out.print("}");
+               out.println();
+	  		   out.decreaseIndent();
+	  		}
+  			
   			getBlock().generateCS(out);
+  			
+  			if (isinterfaceextension)
+  			{  out.print("}");
+  			   out.println();
+  			}
   		} else {
   			out.print(";");
   			out.println();  		

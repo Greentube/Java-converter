@@ -233,7 +233,20 @@ aspect GenerateCS {
 // 	}
 
   	public void ThisAccess.generateCS(CodePrinter out) {
-  	     out.print(hostType().isClassDecl() ? "this":"_t");
+        TypeDecl t = hostType();
+        // inside an interface default method, need to rename the this  
+  	     if (!t.isClassDecl()) 
+  	     {   out.print("_t");
+  	         return;
+  	     }
+  	     out.print("this");
+  	     // check if accessing the instance of an outer class
+        if (t!=type() && t.isInnerTypeOf(type())) {
+            while (t!=type()) {
+                out.print("._o");
+                t = t.enclosingType();
+            }
+        }       
  	}
 	
   	public void TypeAccess.generateCS(CodePrinter out) {
@@ -730,6 +743,10 @@ aspect GenerateCS {
          toClass().generateCS(out); 
     }
     public void TypeMethodReference.generateCS(CodePrinter out)
+    {    
+         toClass().generateCS(out); 
+    }
+    public void ExprMethodReference.generateCS(CodePrinter out)
     {    
          toClass().generateCS(out); 
     }
