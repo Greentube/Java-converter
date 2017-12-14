@@ -60,5 +60,7 @@
       Mainly the most crucial parts of java.lang and java.util are provided and a
       minimal version of java.io.PrintStream to make 'System.out' and 'System.err' available 
       for simple output. 
-
-      
+      The whole java 8 Stream API is not provided, but similar functionality can be created
+      using generics and lambda expressions. The Supplier, Function, Consumer, Predicate
+      interfaces are provided to allow basic generic data transformation operations.
+      See the document libraries.txt for a complete list.

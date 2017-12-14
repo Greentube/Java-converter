@@ -59,4 +59,9 @@ namespace java.util { public abstract class AbstractCollection : Collection
         b.Append("]");
         return b.ToString();
     }
+    
+    // redirect default interface method
+    public virtual void forEach(java.util.function.Consumer consumer)
+    {   java.lang.Iterable_c.forEach(this,consumer);
+    }
 }}

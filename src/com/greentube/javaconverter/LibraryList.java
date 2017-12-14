@@ -170,7 +170,7 @@ public class LibraryList
             "err",
             "void arraycopy(java.lang.Object, int, java.lang.Object, int, int)",
             "void exit(int)",
-            "long currentTimeMillis()",
+            "long currentTimeMillis()", // only allowed if immediately casting the result to int or double
         },
         { "java.util.AbstractCollection",
             "boolean contains(java.lang.Object)",
