@@ -1,6 +1,7 @@
 package com.greentube.convertertestjava8;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.*;
@@ -23,6 +24,7 @@ public class TestJava8 extends TestJava7
         customsignaturetest();
         supplierconsumertest();
         customiterator();
+        customcomparator();
     }
     
     public static void lambdatest()
@@ -145,12 +147,13 @@ public class TestJava8 extends TestJava7
         
         ArrayList<String> l = new ArrayList<>();
         int[] n = new int[]{0};
+        Consumer<String> putInL = o -> l.add(o); 
         // create numbers 0 to 9 / allow only even / multiply by 3 / collect
         TestJava8.<Integer,String>process ( 
             () -> n[0]<10?Integer.valueOf(n[0]++):null, 
             (o) -> o.intValue()%2==0, 
             (o) -> ""+o.intValue()*3, 
-            o -> l.add(o) 
+            putInL 
         );
         assertO(l.toString(), "[0, 6, 12, 18, 24]");
 
@@ -204,8 +207,7 @@ public class TestJava8 extends TestJava7
         // create numbers 0 to 4 / .. / convert to String / collect twice
         l.clear();
         n[0] = 0;
-        Consumer<String> putInL = o -> l.add(o); 
-        TestJava8.<Integer,String>process ( 
+        process ( 
             () -> n[0]<5?Integer.valueOf(n[0]++):null, 
             null, 
             o -> o.toString(), 
@@ -239,5 +241,37 @@ public class TestJava8 extends TestJava7
         {   l.add(o.toString());
         }        
         assertO(l.toString(), "[4, 5, 6, 7, 8]");
+    }
+    
+    public static void customcomparator()
+    {
+        System.out.println("- custom comparator");
+    
+        String[] l1 = {"asdf","xx","flasdkjjdfas","dd", "xyz"};
+        String[] l2 = {"f","xy","fdfas","döööd", "äüö"};
+
+        // use explicitly defined comparator 
+        Comparator<String> lc = new StringLengthComparator();
+        assertO(compareAll(l1,l2,lc), "3,0,7,-3,0,");
+        
+        // pre-define a comparator with a lambda expression 
+        Comparator<String> sc = (a,b) -> a.compareTo(b);
+        assertO(compareAll(l1,l2,sc), "-5,-1,8,-146,-108,");
+
+        // construct comparators by inversion and chaining
+        assertO(compareAll(l1,l2,lc.reversed()), "-3,0,-7,3,0,");      
+        assertO(compareAll(l1,l2,lc.reversed().thenComparing(sc)), "-3,-1,-7,3,-108,");      
+        
+        // nonsense-comparator as lambda expression inlined into the call
+        assertO(compareAll(l1,l2, (a,b)->a.length()*b.length()), "4,4,60,10,9,");      
+    }
+    
+    private static String compareAll(String[]a, String[] b, Comparator<String>c)
+    {
+        String res = "";
+        for (int i=0; i<a.length; i++) 
+        {   res += c.compare(a[i],b[i])+",";
+        }
+        return res;
     }
 }

@@ -120,7 +120,8 @@ aspect GenerateCS {
         ArrayList<MethodDecl> removedbridgemethods = new ArrayList<>();
         for (BodyDecl b : methodsAndConstructors()) {
              // check if need to suppress auto-generated bridge methods 
-             if (bridgemethods.contains(b) && ((MethodDecl)b).getNumParameter()==0) 
+             if (bridgemethods.contains(b)  
+                && hasMethodWithSignature(((MethodDecl)b).signature(), bridgemethods) ) 
              {  removedbridgemethods.add((MethodDecl)b);
              }
         }
@@ -250,7 +251,7 @@ aspect GenerateCS {
                 if (bd instanceof MethodDecl) {
                     MethodDecl md = (MethodDecl) bd;
                     if (md.isDefault() 
-                        && !this.hasMethodWithSignature(md.signature())
+                        && !this.hasMethodWithSignature(md.signature(), null)
                         && md.isSupportedInLibraries() ) 
                     {   out.print("public virtual ");
                         md.getTypeAccess().generateCS(out);
@@ -298,15 +299,16 @@ aspect GenerateCS {
         out.println();
   	}
   	
-  	public boolean ClassDecl.hasMethodWithSignature(String sig)
+  	public boolean ClassDecl.hasMethodWithSignature(String sig, Collection<MethodDecl> ignore)
   	{
          for (BodyDecl bd:getBodyDeclList()) {
             if (bd instanceof MethodDecl) 
-            {   if (((MethodDecl) bd).signature().equals(sig)) return true;
+            {   if (((MethodDecl) bd).signature().equals(sig)
+                    && (ignore==null || !ignore.contains(bd)) ) return true;
             }
   	     }
   	     if (hasSuperClass())
-  	     {   return ((ClassDecl)superclass()).hasMethodWithSignature(sig);
+  	     {   return ((ClassDecl)superclass()).hasMethodWithSignature(sig,ignore);
   	     }
   	     return false;
   	}
