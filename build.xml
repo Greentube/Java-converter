@@ -104,7 +104,7 @@
 	        <fileset dir="${basedir}/runtimejs"/>
 	    </copy>		
 		
-		<!-- extract necessary bootstrap classes (file format of java 1.7) for use with the converter -->
+		<!-- extract necessary bootstrap classes (file format of java 1.8) for use with the converter -->
 		<unzip src="${basedir}/rt.jar" dest="${basedir}/build/package">
 			<patternset>
 				<include name="java/lang/AbstractStringBuilder.class" />
@@ -145,6 +145,10 @@
 			    <include name="java/util/Set.class" />
 			    <include name="java/util/Vector.class" />
 			    <include name="java/util/Dictionary.class" />
+                <include name="java/util/function.Supplier.class" />
+                <include name="java/util/function.Predicate.class" />
+                <include name="java/util/function.Function.class" />
+                <include name="java/util/function.Consumer.class" />
 			    <include name="java/io/PrintStream.class" />
 			    <include name="java/io/FilterOutputStream.class" />
 			    <include name="java/io/OutputStream.class" />

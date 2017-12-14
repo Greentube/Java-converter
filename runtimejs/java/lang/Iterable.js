@@ -14,3 +14,4 @@ var java_lang_Iterable =
 
 // methods:
 // Iterator<T> iterator()
+// default void forEach(Consumer<T> consumer)

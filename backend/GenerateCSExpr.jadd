@@ -3,7 +3,6 @@ import com.greentube.javaconverter.CodePrinter;
 
 aspect GenerateCS {
 
-	
 	public void Expr.generateUsingResultCS(CodePrinter out) {	
 		if (isConstant() && !type().isEnumDecl()) {
 			constant().generateCS(out);  		
@@ -183,12 +182,10 @@ aspect GenerateCS {
 
         MethodDecl m = decl();
         if (m.isStatic()) 
-        {   String htn = m.hostType().getNameCS();
-            String n = m.name();
-            out.print(htn);
+        {   out.print(m.hostType().getNameCS());
             if (m.hostType() instanceof InterfaceDecl) out.print("_c");
             out.print(".");
-            out.printCSIdentifier(renameMethod(n,true), "");
+            out.printCSIdentifier(renameMethod(m.name(),true), "");
         }
         else if (isRightChildOfDot()) 
         {   if (prevExpr().isSuperAccess()) {
@@ -198,7 +195,7 @@ aspect GenerateCS {
             out.printCSIdentifier(renameMethod(m.name(),false), "");
         }
         else 
-        {   out.print(m.hostType().isClassDecl() ? "this":"_t");
+        {   out.print(m.hostType().isClassDecl() ? "this":"@this");
             out.print(".");
             TypeDecl t = hostType();
             if (t!=m.hostType() && t.isInnerTypeOf(m.hostType())) 
@@ -236,7 +233,7 @@ aspect GenerateCS {
         TypeDecl t = hostType();
         // inside an interface default method, need to rename the this  
   	     if (!t.isClassDecl()) 
-  	     {   out.print("_t");
+  	     {   out.print("@this");
   	         return;
   	     }
   	     out.print("this");

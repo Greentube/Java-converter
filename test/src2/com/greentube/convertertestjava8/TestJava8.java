@@ -2,7 +2,7 @@ package com.greentube.convertertestjava8;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.*;
 
 import com.greentube.convertertestjava7.TestJava7;
 
@@ -20,6 +20,7 @@ public class TestJava8 extends TestJava7
         interfacemethodstest();
         foreachtest();
         customsignaturetest();
+        supplierconsumertest();
     }
     
     public static void lambdatest()
@@ -135,4 +136,90 @@ public class TestJava8 extends TestJava7
     {
         return a+b+c;
     }
+    
+    public static void supplierconsumertest()
+    {
+        System.out.println("- supplier/predicate/function/consumer test");
+        
+        ArrayList<String> l = new ArrayList<>();
+        int[] n = new int[]{0};
+        // create numbers 0 to 9 / allow only even / multiply by 3 / collect
+        TestJava8.<Integer,String>process ( 
+            () -> n[0]<10?Integer.valueOf(n[0]++):null, 
+            (o) -> o.intValue()%2==0, 
+            (o) -> ""+o.intValue()*3, 
+            o -> l.add(o) 
+        );
+        assertO(l.toString(), "[0, 6, 12, 18, 24]");
+
+        // create numbers 0 to 9 / remove only even and divisible by 3 plus the 5 / .. / collect
+        l.clear();
+        n[0] = 0;
+        Predicate<Integer> iseven = (o) -> o.intValue()%2==0;
+        TestJava8.<Integer,Integer>process ( 
+            () -> n[0]<20?Integer.valueOf(n[0]++):null, 
+            iseven.and((o) -> o.intValue()%3==0).or((o) -> o.intValue()==5).negate(), 
+            Function.identity(), 
+            o -> l.add(""+o) 
+        );
+        assertO(l.toString(), "[1, 2, 3, 4, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 19]");
+        
+        // create numbers 0 to 9 / remove 3 and 7 / .. / collect
+        l.clear();
+        n[0] = 0;
+        Predicate<Integer> eq7 = (o) -> o.intValue()==7;
+        TestJava8.<Integer,Integer>process ( 
+            () -> n[0]<10?Integer.valueOf(n[0]++):null, 
+            eq7.or((o)->o.intValue()==3).negate(), 
+            Function.identity(), 
+            o -> l.add(""+o) 
+        );
+        assertO(l.toString(), "[0, 1, 2, 4, 5, 6, 8, 9]");
+        
+        // create numbers 0 to 9 / .. / multiply and add / collect
+        l.clear();
+        n[0] = 0;
+        Function<Integer,Integer> mul = (o) -> Integer.valueOf(o.intValue()*7);
+        TestJava8.<Integer,Integer>process ( 
+            () -> n[0]<10?Integer.valueOf(n[0]++):null, 
+            null, 
+            mul.andThen( (o) -> Integer.valueOf(o.intValue()+9) ), 
+            o -> l.add(""+o) 
+        );
+        assertO(l.toString(), "[9, 16, 23, 30, 37, 44, 51, 58, 65, 72]");
+        
+        // create numbers 0 to 9 / .. / multiply, but before that add / collect
+        l.clear();
+        n[0] = 0;
+        TestJava8.<Integer,Integer>process ( 
+            () -> n[0]<10?Integer.valueOf(n[0]++):null, 
+            null, 
+            mul.compose( (o) -> Integer.valueOf(o.intValue()+9) ), 
+            o -> l.add(""+o) 
+        );
+        assertO(l.toString(), "[63, 70, 77, 84, 91, 98, 105, 112, 119, 126]");
+        
+        // create numbers 0 to 4 / .. / convert to String / collect twice
+        l.clear();
+        n[0] = 0;
+        Consumer<String> putInL = o -> l.add(o); 
+        TestJava8.<Integer,String>process ( 
+            () -> n[0]<5?Integer.valueOf(n[0]++):null, 
+            null, 
+            o -> o.toString(), 
+            putInL.andThen(o -> putInL.accept("!"+o)).andThen(putInL) 
+        );
+        assertO(l.toString(), "[0, !0, 0, 1, !1, 1, 2, !2, 2, 3, !3, 3, 4, !4, 4]");
+    }
+    
+    private static <T,U> void process(Supplier<T> s, Predicate<T> p, Function<T,U> f, Consumer<U> c)
+    {
+        T o;
+        while ( (o = s.get()) != null) 
+        {   if (p==null || p.test(o)) 
+            {   c.accept(f.apply(o));
+            }
+        }
+    }
+    
 }

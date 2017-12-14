@@ -61,21 +61,7 @@ aspect GenerateCS {
         for (Iterator<TypeDecl> iter = interfacesIterator(); iter.hasNext(); ) 
         {   out.print(", ");
             TypeDecl td = iter.next();
-            out.print(td.getNameCS());
-            
-            for (BodyDecl bd:td.getBodyDeclList()) {
-                if (bd instanceof MethodDecl) {
-                    MethodDecl md = (MethodDecl) bd;
-                    if (md.isDefault() && this.hasMethodWithSignature(md.signature())) 
-                    {   out.print(", ");
-                        out.print(td.getNameCS());
-                        out.print("_");
-                        out.print(md.name());
-                        out.print("_");
-                        out.print(""+md.getNumParameter());
-                    }
-                }
-             }   
+            out.print(td.getNameCS());               
         }  
 
     	out.println();
@@ -129,7 +115,20 @@ aspect GenerateCS {
 			}
 		}		
     	    	        	    	        	    	    
-      	for (BodyDecl b : methodsAndConstructors()) {
+    	// determine which bridge methods need to be suppressed 
+        Collection<MethodDecl> bridgemethods = localBridgeMethods();
+        ArrayList<MethodDecl> removedbridgemethods = new ArrayList<>();
+        for (BodyDecl b : methodsAndConstructors()) {
+             // check if need to suppress auto-generated bridge methods 
+             if (bridgemethods.contains(b) && ((MethodDecl)b).getNumParameter()==0) 
+             {  removedbridgemethods.add((MethodDecl)b);
+             }
+        }
+    	    	        	    	        	    	    
+        // instance methods                                                             
+        for (BodyDecl b : methodsAndConstructors()) {
+             if (removedbridgemethods.contains(b)) continue;
+
       		// check if need to suppress auto-generated methods related to Enums
 			if (b instanceof MethodDecl) {
       			MethodDecl md = (MethodDecl) b;
@@ -138,15 +137,28 @@ aspect GenerateCS {
       				if (md.getID().equals("valueOf") && md.getNumParameter()==1 )  continue;
       			}
 				if (md.getID().startsWith("$SwitchMap$") && md.getNumParameter()==0) continue;      		
+                
+                // check if there was a removed bridge method with the same signature
+                // - need to use its return type for the non-bridge method also
+                Access ta = null; 
+                for (MethodDecl bm : removedbridgemethods)
+                {   if (bm.signature().equals(md.signature())) 
+                    {   ta = bm.getTypeAccess();
+                    }
+                }
+                
+                md.generateCS(out, false, ta);
       		}
-      		else if (b instanceof ConstructorDecl) {
-      			ConstructorDecl cd = (ConstructorDecl) b;
-      			if (this instanceof EnumDecl) {
-      				if (cd.isSynthetic() && cd.getNumParameter()==2 
-      				&&  cd.getParameter(1).type()==this) continue;
-      			}      		
+      		else
+      		{   if (b instanceof ConstructorDecl) {
+      			   ConstructorDecl cd = (ConstructorDecl) b;
+      			   if (this instanceof EnumDecl) {
+      				  if (cd.isSynthetic() && cd.getNumParameter()==2 
+      				  &&  cd.getParameter(1).type()==this) continue;
+          			}
+          	    }      		
+                b.generateCS(out);
       		}
-	        b.generateCS(out);
     	}    	    	    
     	    	    	
 		boolean havestaticconstructor = false;		
@@ -231,7 +243,50 @@ aspect GenerateCS {
 			out.println();
 		}
 	
-		out.printAndForgetDims();
+	    // add redirects for interface default methods
+        for (Iterator<TypeDecl> iter = interfacesIterator(); iter.hasNext(); ) 
+        {   TypeDecl td = iter.next();
+            for (BodyDecl bd:td.getBodyDeclList()) {
+                if (bd instanceof MethodDecl) {
+                    MethodDecl md = (MethodDecl) bd;
+                    if (md.isDefault() && !this.hasMethodWithSignature(md.signature())) 
+                    {   out.print("public virtual ");
+                        md.getTypeAccess().generateCS(out);
+                        out.print(" ");
+                        out.printCSIdentifier(md.name());
+                        out.print("(");
+                        int numpar = md.getNumParameter();
+                        for (int i=0; i<numpar; i++)
+                        {   if (i!=0) out.print(", ");
+                            md.getParameter(i).getTypeAccess().generateCS(out);
+                            if (i==numpar-1 && md.isVariableArity()) {
+                                out.print("[]");
+                            }        
+                            out.print(" p"+i);                     
+                        }
+                        out.print(")");                        
+                        out.println();
+                        out.print("{   ");
+                        if (!md.isVoid()) out.print("return ");
+                        out.print(td.getNameCS());
+                        out.print("_c.");
+                        out.printCSIdentifier(renameMethod(md.name(),true), "");
+                        out.print("(this");
+                        for (int i=0; i<numpar; i++) 
+                        {   out.print(", ");
+                            out.print("p"+i);                            
+                        }
+                        out.print(");");                        
+                        out.println();
+                        out.print("}");
+                        out.println();
+                    }
+                }
+             }                
+        }  
+	    
+	    // add synthetic methods for array dimensioning of needed
+        out.printAndForgetDims();    
 	
         out.decreaseIndent(); 
         out.print("}");
@@ -291,9 +346,10 @@ aspect GenerateCS {
 			   MethodDecl md = (MethodDecl) bd;
 	           if (md.getBlock()!=null) 
 	           {   needstatic = true;
+	               if (md.isDefault()) md.generateCS(out,true,null); 
 	           }
 	           else 
-			   {   bd.generateCS(out);
+			   {   md.generateCS(out);
 			   }
 			}
 		}
@@ -302,37 +358,7 @@ aspect GenerateCS {
 		out.print("}");
         if (namespaceheader.length()>0) out.print("}");     
 		out.println();
-		
-
-		// create extra interface for each default method defined 
-        for (BodyDecl bd:getBodyDeclList()) {
-            if (bd instanceof MethodDecl) {
-               MethodDecl md = (MethodDecl) bd;
-               if (md.isDefault()) 
-               {   
-                    out.print(namespaceheader);
-                    out.print("public interface ");
-                    out.printCSIdentifier(uniqueName());
-                    out.print("_");
-                    out.printCSIdentifier(md.name());
-                    out.print("_");
-                    out.print(""+md.getNumParameter());
-                    out.println();
-                    out.print("{");
-                    out.println();
-                    out.increaseIndent();
-                    
-                    md.generateCS(out, true);
-                    
-                    out.decreaseIndent();
-                    out.print("}");
-                    if (namespaceheader.length()>0) out.print("}");  
-                    out.println();   
-               }
-            }
-        }
-		
-		
+				
 		// add special class for static fields and static/default methods 
 		if (needstatic) {
             out.print(namespaceheader);
@@ -361,7 +387,7 @@ aspect GenerateCS {
 				} 
 				else if (bd instanceof MethodDecl) 
 				{   MethodDecl md = (MethodDecl) bd;
-				    if (md.isStatic() || md.isDefault()) 
+				    if (md.getBlock()!=null) 
                     {   md.generateCS(out);
                     }
                 }				
@@ -494,9 +520,10 @@ aspect GenerateCS {
 //	}
 
     public void MethodDecl.generateCS(CodePrinter out) {
-        generateCS(out,false);
+        generateCS(out,false,null);
     }    
-  	public void MethodDecl.generateCS(CodePrinter out, boolean omitbody) {
+  	public void MethodDecl.generateCS(CodePrinter out, 
+  	     boolean omitbody, Access overwritereturntype) {
   	    boolean isinterfaceextension = false;
   	    // perform some checks for class methods
   	    if (hostType().isClassDecl())
@@ -540,18 +567,22 @@ aspect GenerateCS {
   		}
   		
 		String n = renameMethod(name(), isStatic());
-  		getTypeAccess().generateCS(out);
+		if (overwritereturntype!=null)
+		{   overwritereturntype.generateCS(out);
+		}
+		else
+  		{   getTypeAccess().generateCS(out);
+  		}
   		out.print(" ");
   		out.printCSIdentifier(n, "");
   		out.print("(");
   		if (isinterfaceextension) 
-  		{   out.print("this ");
-  		    out.print(hostType().getNameCS());
-  		    out.print(" _t");
+  		{   out.print(hostType().getNameCS());
+  		    out.print(" @this");
   		}
   		int numpar = getNumParameter();
   		for (int i=0; i<numpar; i++) {
-  			if (i>0 || isinterfaceextension) out.print(",");
+  			if (i>0 || isinterfaceextension) out.print(", ");
   			getParameter(i).getTypeAccess().generateCS(out);
   			if (i==numpar-1 && isVariableArity()) {
   				out.print("[]");
@@ -563,51 +594,7 @@ aspect GenerateCS {
   		
   		if (getBlock()!=null && !omitbody) {
 	  		out.println();	  		
-	  		if (isinterfaceextension)
-	  		{  out.print("{");
-               out.increaseIndent();
-	  		   out.println();
-               out.printCSIdentifier(hostType().uniqueName());
-               out.print("_");
-               out.printCSIdentifier(n);
-               out.print("_");
-               out.print(""+getNumParameter());
-	  		   out.print(" _t2 = _t as ");
-               out.printCSIdentifier(hostType().uniqueName());
-               out.print("_");
-               out.printCSIdentifier(n);
-               out.print("_");
-               out.print(""+getNumParameter());
-               out.print(";");
-	  		   out.println();
-	  		   out.print("if (_t2!=null)");
-	  		   out.println();
-	  		   out.print("{   ");
-	  		   if (!isVoid()) out.print("return ");
-	  		   out.print("_t2.");
-	  		   out.printCSIdentifier(n);
-	  		   out.print("(");
-               for (int i=0; i<numpar; i++) {
-                    if (i>0) out.print(",");
-                    out.printCSIdentifier(getParameter(i).name(), "");
-               }	  		   
-	  		   out.print(");");
-	  		   if (isVoid()) {
-	  		       out.println();
-	  		       out.print("return;");
-	  		   }
-	  		   out.println();
-               out.print("}");
-               out.println();
-	  		   out.decreaseIndent();
-	  		}
-  			
   			getBlock().generateCS(out);
-  			
-  			if (isinterfaceextension)
-  			{  out.print("}");
-  			   out.println();
-  			}
   		} else {
   			out.print(";");
   			out.println();  		
@@ -617,10 +604,6 @@ aspect GenerateCS {
 	public void StaticInitializer.generateCS(CodePrinter out) {
 		getBlock().generateCS(out);
 	}
-
-//	public void SubstitutedBodyDecl.generateCS(CodePrinter out) {
-//	}
-
 
 	public String TypeDecl.getNameCS() {
 		if (isPrimitiveType()) {
