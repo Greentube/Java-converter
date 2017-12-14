@@ -212,7 +212,12 @@ public class TestJava5 extends TestJava4
         assertI((new VarArgConstructor2(2)).sum(), 2);
         assertI((new VarArgConstructor2(1,2,3)).sum(), 6);
         assertI((new VarArgConstructor2("hoho",2)).sum(), 6);
-        assertI((new VarArgConstructor2("hoho",2,19)).sum(), 25);    
+        assertI((new VarArgConstructor2("hoho",2,19)).sum(), 25);
+        // call instance methods with varargs
+        VarArgConstructor c = new VarArgConstructor();    
+        assertO(c.joinobjects("X", "some", Integer.valueOf(55), Boolean.FALSE), "Xsome55false");
+        assertO(c.joinobjects("Y", Integer.valueOf(4)), "Y4");
+        assertO(c.joinobjects("Z", new Object[]{Integer.valueOf(4)}), "Z4");
     }
 
     private static int sum(int... a) 
@@ -272,6 +277,15 @@ public class TestJava5 extends TestJava4
             System.arraycopy(more, 0, d, 1, more.length);
             return d;
         }
+        
+        private String joinobjects(String prefix, Object... o)
+        {
+            StringBuilder b = new StringBuilder(prefix);
+            for (Object e:o) 
+            {   b.append(e.toString());
+            }
+            return b.toString();
+        } 
     }
 
     static class VarArgConstructor2 extends VarArgConstructor 

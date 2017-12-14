@@ -2,6 +2,10 @@ import com.greentube.javaconverter.CodePrinter;
 aspect GenerateJS {
 
     // --- AssertStmt ---
+    
+    public void AssertStmt.generateJS(CodePrinter out)
+    {   // do not generate any assertion code   
+    }
 
     // --- BasicTWR ---
 

@@ -3,6 +3,10 @@ import com.greentube.javaconverter.CodePrinter;
 aspect GenerateCS {
 
     // --- AssertStmt ---
+    
+    public void AssertStmt.generateCS(CodePrinter out)
+    {   // do not generate any assertion code   
+    }
 
     // --- BasicTWR ---
 

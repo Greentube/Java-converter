@@ -53,8 +53,12 @@ public class TestJava4
         initsequencetest();
         innerclasstest();
         identifi€rmangling();
-
-        unsupported();
+        
+        // have some assert statements that are just eliminated in conversion
+        int i=staticint;
+        assert i == 4;
+        i = staticint99;
+        assert i == 99 : "Strangley, "+staticint99+" but not 99"; 
     }
 
     public static void staticattributestest()
@@ -2178,17 +2182,6 @@ public class TestJava4
         assertI(arguments.yield(5),6);  
     }
     
-    public static void unsupported() 
-    {   ArrayList<Integer> al= new ArrayList<>();
-        al.add(Integer.valueOf(4));
-        al.add(Integer.valueOf(17));
-        int sum=0;
-        for (Integer i: al) 
-        {   int x=i.intValue();
-            sum = sum + x;
-        }
-        assertI(sum, 21);
-    }
         
     public static void assertI(int value, int expected)
     {   if (value!=expected) 
