@@ -249,7 +249,9 @@ aspect GenerateCS {
             for (BodyDecl bd:td.getBodyDeclList()) {
                 if (bd instanceof MethodDecl) {
                     MethodDecl md = (MethodDecl) bd;
-                    if (md.isDefault() && !this.hasMethodWithSignature(md.signature())) 
+                    if (md.isDefault() 
+                        && !this.hasMethodWithSignature(md.signature())
+                        && md.isSupportedInLibraries() ) 
                     {   out.print("public virtual ");
                         md.getTypeAccess().generateCS(out);
                         out.print(" ");

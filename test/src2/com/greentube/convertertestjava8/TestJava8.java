@@ -1,6 +1,7 @@
 package com.greentube.convertertestjava8;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.*;
 
@@ -21,6 +22,7 @@ public class TestJava8 extends TestJava7
         foreachtest();
         customsignaturetest();
         supplierconsumertest();
+        customiterator();
     }
     
     public static void lambdatest()
@@ -222,4 +224,20 @@ public class TestJava8 extends TestJava7
         }
     }
     
+    public static void customiterator()
+    {
+        System.out.println("- custom iterator");
+
+        CustomIterable c = new CustomIterable();
+
+        ArrayList<String> l = new ArrayList<>();
+        c.forEach( o -> l.add(o.toString()) );        
+        assertO(l.toString(), "[4, 5, 6, 7, 8]");
+        
+        l.clear(); 
+        for (Integer o:c) 
+        {   l.add(o.toString());
+        }        
+        assertO(l.toString(), "[4, 5, 6, 7, 8]");
+    }
 }

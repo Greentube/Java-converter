@@ -251,6 +251,23 @@ aspect CheckRestrictions {
 		super.checkRestrictions(errorlist);		
 	}
 	
+	public boolean MethodDecl.isSupportedInLibraries()
+	{
+        // test for availability in supported core libraries
+        StringBuffer b = new StringBuffer(type().erasure().typeName());
+        b.append(" ");
+        b.append(name());
+        b.append("(");
+        for (int i=0; i<getNumParameter(); i++) {
+            if (i!=0) b.append(", ");
+            b.append(getParameter(i).type().erasure().typeName());
+        }
+        b.append(")");          
+        String sig = b.toString();
+        String tn = hostType().packageName() + "." + hostType().uniqueName();
+        return LibraryList.isAllowed(tn, sig);
+	}
+	
 	// check constructor overloading  (and exception declaration) 
 	public void ConstructorDecl.checkRestrictions(ArrayList<String> errorlist) {
 		if (hasException()) {
@@ -357,23 +374,13 @@ aspect CheckRestrictions {
   		}
   		
   		// test for availability in supported core libraries
-  		StringBuffer b = new StringBuffer(m.type().erasure().typeName());
-  		b.append(" ");
-  		b.append(m.name());
-  		b.append("(");
-  		for (int i=0; i<m.getNumParameter(); i++) {
-  			if (i!=0) b.append(", ");
-  			b.append(m.getParameter(i).type().erasure().typeName());
-  		}
-		b.append(")");  		
-		String sig = b.toString();
-		String tn = m.hostType().packageName() + "." + m.hostType().uniqueName();
-		if (!LibraryList.isAllowed(tn, sig)) {
+		if (!m.isSupportedInLibraries()) {
 			reportRestriction(errorlist, "Unsupported core library method in "
-				+ tn + ": " + sig);
+				+ m.hostType().packageName() + "." + m.hostType().uniqueName() + ": " + m.name());
 		}
+		
         // test for correct usage of library methods returning a 'long'
-        if (sig.startsWith("long ")) 
+        if (m.type().isLong()) 
         {   Expr parentexp = (Expr) getParent();
             while ((parentexp instanceof Dot) && (parentexp.getParent() instanceof Expr)) 
             {   parentexp = (Expr) parentexp.getParent();
