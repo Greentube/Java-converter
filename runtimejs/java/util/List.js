@@ -1,5 +1,18 @@
 //load// java/util/Collection
-var java_util_List = { _superinterfaces: [java_util_Collection] }; 
+var java_util_List = { 
+    _superinterfaces: [java_util_Collection] ,
+    _defaults: {
+        sort_1: function(comparator) 
+        {   var a = this.toArray_0();
+            var l = a.length;
+            this.clear_0();
+            java_util_Arrays.sort_4(a,0,l,comparator);
+            for (var i=0; i<l; i++) 
+            {   this.add_1(a[i]);
+            }
+        }
+    }
+}; 
 
 // -- methods:
 // boolean add(E e)                        
@@ -22,4 +35,5 @@ var java_util_List = { _superinterfaces: [java_util_Collection] };
 // E	set(int index, E element)
 // int	size()                                         // inherited from Collection
 // Object[]	toArray()                                  // inherited from Collection
+// Object[]	toArray(Object[] template)                 // inherited from Collection
 // String	toString()                                 // inherited from Collection

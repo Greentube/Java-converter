@@ -2,7 +2,7 @@ package com.greentube.convertertestjava8;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.*;
 
@@ -25,6 +25,7 @@ public class TestJava8 extends TestJava7
         supplierconsumertest();
         customiterator();
         customcomparator();
+        sortliststest();
     }
     
     public static void lambdatest()
@@ -274,4 +275,28 @@ public class TestJava8 extends TestJava7
         }
         return res;
     }
+    
+    
+    public static void sortliststest()
+    {
+        List l = new ArrayList();
+        l.add("nixi");
+        l.add("trixi");
+        l.add("hubert");
+        l.add("sucker");
+        l.sort( (a,b)->((String)a).compareTo((String)b) );
+        assertO(l.toString(), "[hubert, nixi, sucker, trixi]");
+        
+        l = new LinkedList();
+        l.add("nixi");
+        l.add("trixi");
+        l.add("hubert");
+        l.add("sucker");
+        l.add("queer");
+        l.add("horr");
+        l.sort( (a,b)->((String)a).compareTo((String)b) );
+        assertO(l.toString(), "[horr, hubert, nixi, queer, sucker, trixi]");
+    }
+
+
 }

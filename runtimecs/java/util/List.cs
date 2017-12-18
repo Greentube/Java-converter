@@ -18,7 +18,21 @@ namespace java.util { public interface List: Collection
     bool removeAll(Collection c);
     bool retainAll(Collection c);
     System.Object set(int index, System.Object element);
+    void sort(java.util.Comparator c);
 //   int size();
 //   System.Object[]	toArray();    
+//   System.Object[]	toArray(System.Object[] template);    
 //   System.String ToString();    
+}}
+namespace java.util { public static class List_c
+{
+    public static void sort(List @this, Comparator c)
+    {   System.Object[] a = @this.toArray();
+        int l = a.Length;
+        @this.clear();
+        java.util.Arrays.sort(a,0,l,c);
+        for (int i=0; i<l; i++) 
+        {   @this.add(a[i]);
+        }
+    }
 }}

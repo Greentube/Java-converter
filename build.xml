@@ -132,6 +132,7 @@
 			    <include name="java/util/AbstractMap.class" />
 			    <include name="java/util/AbstractSet.class" />
 			    <include name="java/util/ArrayList.class" />
+                <include name="java/util/Arrays.class" />				
 			    <include name="java/util/Collection.class" />
 			    <include name="java/util/Comparator.class" />
 			    <include name="java/util/Enumeration.class" />
@@ -178,7 +179,7 @@
 	  		<fileset dir="${basedir}/build/package"/>
 	        <manifest>
 	             <attribute name="Main-Class" value="com.greentube.javaconverter.JavaConverter"/>
-	             <attribute name="Implementation-Version" value="2.2.0"/>
+	             <attribute name="Implementation-Version" value="2.3.0"/>
 	             <attribute name="Version-Date" value="${timestamp}"/>
 	        </manifest>         
 	  	</jar>  		

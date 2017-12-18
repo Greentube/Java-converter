@@ -90,6 +90,10 @@ namespace java.util { public abstract class AbstractList : AbstractCollection, L
     public virtual bool retainAll(Collection c) 
     {   return filter(c,true); 
     }
+        
+    public virtual void sort(java.util.Comparator c)
+    {   java.util.List_c.sort(this,c);
+    }    
  
     private bool filter(Collection collection, bool keep) 
     {   bool modified=false;

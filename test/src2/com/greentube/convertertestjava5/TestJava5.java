@@ -14,6 +14,7 @@ public class TestJava5 extends TestJava4
         enumtest();
         varargstest();
         staticimportstest();
+        arraystest();
     }
 
     public static void genericstest() 
@@ -246,6 +247,24 @@ public class TestJava5 extends TestJava4
         assertI(ZZZ, 7);
     }
 
+    public static void arraystest()
+    {
+        System.out.println("- Arrays");
+    
+        List l = Arrays.asList((Object)"so","long","and","thanks","for","all","the","fish");
+        assertO(l.toString(), "[so, long, and, thanks, for, all, the, fish]");
+        l.set(4, Integer.valueOf(4));
+        assertO(l.toString(), "[so, long, and, thanks, 4, all, the, fish]");
+        
+        Object[] a = new Object[]{ "we", "see", "thee", "bee", "lee", "me" };
+        Arrays.sort(a, 1, 4, new StringComparator());
+        assertO(Arrays.asList(a).toString(), "[we, bee, see, thee, lee, me]");
+        
+        Arrays.sort(a, new StringComparator());
+        assertO(Arrays.asList(a).toString(), "[bee, lee, me, see, thee, we]");
+    }
+
+
 
     static class VarArgConstructor 
     {
@@ -302,4 +321,13 @@ public class TestJava5 extends TestJava4
         {   super("!!!", 7,8,9,10);
         }
     }
+    
+    
+    static class StringComparator implements Comparator
+    {
+        public int compare(Object a, Object b)
+        {
+            return ((String)a).compareTo((String)b);
+        }
+    } 
 }

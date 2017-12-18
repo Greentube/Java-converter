@@ -21,7 +21,7 @@ namespace java.util { public class ComparatorReversed: Comparator
     {   this.other = other;
     }
     public virtual int compare(System.Object o1, System.Object o2)
-    {   return -other.compare(o1,o2);
+    {   return other.compare(o2,o1);
     }    
     
     public virtual Comparator thenComparing(Comparator other)

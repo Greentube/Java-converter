@@ -2083,7 +2083,6 @@ public class TestJava4
         assertO(itt.toString(), "[8, 14]");            	
     }
     
-
     public static void secondaryclassestest() 
     {
     	System.out.println("- secondary classes");
