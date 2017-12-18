@@ -41,6 +41,7 @@ public class Performance
             testLinkedList();
             testArrays();
             testPolymorphism();
+            testSort();
         }
     
         System.out.println("Performance test...");
@@ -84,16 +85,23 @@ public class Performance
         for (int i=0; i<1000; i++) 
         {   testPolymorphism();
         }
-
+        
         double s7 = (double) System.currentTimeMillis();
 
-        double sx = (double) System.currentTimeMillis();        
+        for (int i=0; i<1000; i++) 
+        {   testSort();
+        }
+
+        double s8 = (double) System.currentTimeMillis();
+        double sx = s8;
+                
         System.out.println("ArrayList            " + ((int)(s2-s1)) +" ms"); 
-        System.out.println("HashMap (Integer)    "  + ((int)(s3-s2)) +" ms");
+        System.out.println("HashMap (Integer)    " + ((int)(s3-s2)) +" ms");
         System.out.println("HashMap (String)     " + ((int)(s4-s3)) +" ms");
         System.out.println("LinkedList           " + ((int)(s5-s4)) +" ms");
         System.out.println("Arrays               " + ((int)(s6-s5)) +" ms");
         System.out.println("Polymorphism         " + ((int)(s7-s6)) +" ms");
+        System.out.println("Sort                 " + ((int)(s8-s7)) +" ms");
         System.out.println("Total                " + ((int)(sx-s1)) +" ms");
     }
 
@@ -223,5 +231,25 @@ public class Performance
         public int get() 
         {   return base() - d;
         }
+    }
+    
+    public static void testSort()
+    {
+        List<String> l = Arrays.asList(
+            "afsd","zsl","flas","föadksfjdkj","ögla","asdf","gl", "falsdkf5","llg0","fla1",
+            "afs5","zs1","fla1","föadksfjdk1","ögl1","asdf","gl3","falsdkf4","llg0","fla1",
+            "afs6","zs2","fla2","föadksfjdk2","ögl2","asdf","gl2","falsdkf3","llg0","fla1",
+            "afs2","zs3","fla3","föadksfjdk2","ögl3","asdf","gl3","falsdkf2","llg0","fla1",
+            "afs2","zs3","fla3","föadksfjdk2","ögl3","asdf","gl3","falsdkf2","llg0","fla1",
+            "afsd","zsl","flas","föadksfjdkj","ögla","asdf","gl", "falsdkf5","llg0","fla1",
+            "afs5","zs1","fla1","föadksfjdk1","ögl1","asdf","gl3","falsdkf4","llg0","fla1",
+            "afs6","zs2","fla2","föadksfjdk2","ögl2","asdf","gl2","falsdkf3","llg0","fla1",
+            "afs2","zs3","fla3","föadksfjdk2","ögl3","asdf","gl3","falsdkf2","llg0","fla1",
+            "afs2","zs3","fla3","föadksfjdk2","ögl3","asdf","gl3","falsdkf2","llg0","fla1");
+        Comparator<Object> c = (a,b) -> ((String)a).compareTo((String)b);
+        for (int i=0; i<100; i++)
+        {   List<String> x = new ArrayList<String>(l);
+            x.sort(c);
+        }    
     }
 }

@@ -419,7 +419,8 @@ aspect CheckRestrictions {
   		}
 
   		// test for availability in supported core libraries
-  		String sig = m.signature();  		
+  		String sig = m.signature();  
+  		
 		if (!LibraryList.isAllowed(m.hostType().packageName() + "." + m.hostType().uniqueName(), sig)) {
 			reportRestriction(errorlist, "Unsupported core library constructor in "
 				+ m.hostType().packageName() + "." + m.hostType().uniqueName() + ": " + sig);
@@ -452,11 +453,13 @@ aspect CheckRestrictions {
   		}
   		
   		// test for availability in supported core libraries
+        String sig = m.signature();  
+
 		if (!LibraryList.isAllowed(m.hostType().packageName() + "." + m.hostType().uniqueName(), 
-								   m.signature())) {
+								   sig)) {
 			reportRestriction(errorlist, "Unsupported core library constructor in "
 				+ m.hostType().packageName() + "." + m.hostType().uniqueName() + ": " 
-				+ m.signature());
+				+ sig);
 		}
   		
 		super.checkRestrictions(errorlist);					  		  			

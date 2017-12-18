@@ -481,6 +481,13 @@ public class LibraryList
         // generate map at first call for fast retrieval if not done already
         if (map==null) buildList();
 
+        // trim away the generic signature part
+        int idx;
+        while ( (idx = membername.indexOf("<?"))>=0) 
+        {   membername = membername.substring(0,idx) 
+                + membername.substring(membername.indexOf('>',idx)+1);
+        }
+
         // support these on any object:
         if (membername.equals("boolean equals(java.lang.Object)")
         ||  membername.equals("int hashCode()")

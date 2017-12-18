@@ -279,12 +279,13 @@ public class TestJava8 extends TestJava7
     
     public static void sortliststest()
     {
+        Comparator<String> c = (a,b)->((String)a).compareTo((String)b);
         List l = new ArrayList();
         l.add("nixi");
         l.add("trixi");
         l.add("hubert");
         l.add("sucker");
-        l.sort( (a,b)->((String)a).compareTo((String)b) );
+        l.sort(c);
         assertO(l.toString(), "[hubert, nixi, sucker, trixi]");
         
         l = new LinkedList();
@@ -294,8 +295,18 @@ public class TestJava8 extends TestJava7
         l.add("sucker");
         l.add("queer");
         l.add("horr");
-        l.sort( (a,b)->((String)a).compareTo((String)b) );
+        l.sort(c);
         assertO(l.toString(), "[horr, hubert, nixi, queer, sucker, trixi]");
+        
+        // sorting by length needs to keep other sort criteria stable
+        l.sort( (a,b)->((String)a).length() - ((String)b).length() );  
+        assertO(l.toString(), "[horr, nixi, queer, trixi, hubert, sucker]");
+        // other try: first sort by name descending 
+        l.sort(c.reversed());  
+        assertO(l.toString(), "[trixi, sucker, queer, nixi, hubert, horr]");
+        // sorting by length needs to keep other sort criteria stable
+        l.sort( (a,b)->((String)a).length() - ((String)b).length() );  
+        assertO(l.toString(), "[nixi, horr, trixi, queer, sucker, hubert]");        
     }
 
 
