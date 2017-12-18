@@ -251,7 +251,7 @@ public class TestJava5 extends TestJava4
     {
         System.out.println("- Arrays");
     
-        List l = Arrays.asList((Object)"so","long","and","thanks","for","all","the","fish");
+        List<Object> l = Arrays.<Object>asList("so","long","and","thanks","for","all","the","fish");
         assertO(l.toString(), "[so, long, and, thanks, for, all, the, fish]");
         l.set(4, Integer.valueOf(4));
         assertO(l.toString(), "[so, long, and, thanks, 4, all, the, fish]");
