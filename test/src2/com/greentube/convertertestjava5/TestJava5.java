@@ -15,6 +15,7 @@ public class TestJava5 extends TestJava4
         varargstest();
         staticimportstest();
         arraystest();
+        extendedstringtest();
     }
 
     public static void genericstest() 
@@ -329,5 +330,52 @@ public class TestJava5 extends TestJava4
         {
             return ((String)a).compareTo((String)b);
         }
+    } 
+    
+    public static void extendedstringtest()
+    {
+        System.out.println("- extended string");
+    
+        String s = "hello, this,contains, commas,...";
+        
+        assertB(s.contains("this"));
+        assertB(s.contains("..."));
+        assertB(!s.contains("foo"));
+
+        assertO(String.join(",", "a","b","and much more"), "a,b,and much more");
+        String[] sl = new String[]{ "higgs", "boson", "nonsense" };
+        assertO(String.join("-", sl), "higgs-boson-nonsense");
+
+        assertO(s.replace("o", "x"), "hellx, this,cxntains, cxmmas,...");
+        assertO(s.replace("ll", ""), "heo, this,contains, commas,...");
+        assertO(s.replace("co", "?"), "hello, this,?ntains, ?mmas,...");
+
+        s = s.replace(".",",");
+        assertSA(s.split(","), new String[]{"hello"," this", "contains", " commas"});
+        assertSA(s.split("co"), new String[]{"hello, this,", "ntains, ","mmas,,,,"});
+        assertSA(s.split("ö"), new String[]{"hello, this,contains, commas,,,,"});        
+        assertSA(s.split("h"), new String[]{"", "ello, t", "is,contains, commas,,,,"});        
+        assertSA(s.split("l"), new String[]{"he", "", "o, this,contains, commas,,,,"});        
+        assertI(s.split("").length, 32);
+        assertI(s.split("",0).length, 32);
+        assertI(s.split("",100).length, 33);
+        assertI(s.split("",33).length, 33);
+        assertI(s.split("",32).length, 32);
+        assertSA(s.split("",4), new String[]{"h","e","l", "lo, this,contains, commas,,,,"});        
+        assertI(s.split("",-99).length, 33);
+        assertSA("".split("",0), new String[]{""});
+        assertSA("".split("hey",0), new String[]{""});
+        assertSA(s.split(",", 2), new String[]{"hello", " this,contains, commas,,,,"});
+        assertSA(s.split(",", -1), new String[]{"hello", " this","contains"," commas", "", "", "", ""});
+        assertSA(s.split(",", 0), new String[]{"hello", " this","contains"," commas"});
+        assertSA(s.split("contains", -1), new String[]{"hello, this,", ", commas,,,,"});
+        assertSA(s.split("co", 2), new String[]{"hello, this,", "ntains, commas,,,,"});
+        String x = "na,x.,abf,..fa,..";
+        assertSA(x.split(","), new String[]{"na","x.","abf","..fa",".."});
+        assertSA(x.split("a"), new String[]{"n",",x.,","bf,..f",",.."});   
+        
+        assertO(s, String.join(",", s.split(",",-1)));     
+        assertO(s, String.join("co", s.split("co",-1)));     
+        assertO(s, String.join("", s.split("",-1)));     
     } 
 }

@@ -638,6 +638,7 @@ aspect GenerateCS {
   			if (s.equals("java.lang.String")) return "System.String";
   			if (s.equals("java.lang.Object")) return "System.Object";
   			if (s.equals("java.lang.System")) return "java.lang.SYSTEM";
+  			if (s.equals("java.lang.CharSequence")) return "System.String";
   			
   			StringBuffer sb = new StringBuffer();
 			StringTokenizer t = new StringTokenizer(s,".");

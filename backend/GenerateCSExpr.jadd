@@ -182,10 +182,15 @@ aspect GenerateCS {
 
         MethodDecl m = decl();
         if (m.isStatic()) 
-        {   out.print(m.hostType().getNameCS());
-            if (m.hostType() instanceof InterfaceDecl) out.print("_c");
-            out.print(".");
-            out.printCSIdentifier(renameMethod(m.name(),true), "");
+        {   if (m.hostType().isString() && m.name().equals("join")) 
+            {   out.print("System.String.Join");
+            }
+            else 
+            {   out.print(m.hostType().getNameCS());
+                if (m.hostType() instanceof InterfaceDecl) out.print("_c");
+                out.print(".");
+                out.printCSIdentifier(renameMethod(m.name(),true), "");
+            }
         }
         else if (isRightChildOfDot()) 
         {   if (prevExpr().isSuperAccess()) {

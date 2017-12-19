@@ -126,6 +126,10 @@ namespace java.lang { public static class StringExtensions
     public static System.String concat(this System.String str, System.String other) 
     {   return System.String.Concat(str==null ? "null":str, other==null ? "null":other);
     }
+    
+    public static bool contains(this System.String @this, System.String other)
+    {   return @this.indexOf(other)>=0;        
+    }
         
     public static bool endsWith(this System.String str, System.String other) 
     {   return str.EndsWith(other);
@@ -174,9 +178,56 @@ namespace java.lang { public static class StringExtensions
     public static System.String replace(this System.String str, char oldchar, char newchar) 
     {   return str.Replace(oldchar,newchar);
     }
+    
+    public static System.String replace(this System.String str, System.String oldstr, System.String newstr) 
+    {   return str.Replace(oldstr,newstr);
+    }
         
     public static bool startsWith(this System.String str, System.String other) 
     {   return str.StartsWith(other);
+    }
+    
+    public static System.String[] split(this System.String str, System.String delim) 
+    {   return str.split(delim,0);
+    }
+    
+    public static System.String[] split(this System.String str, System.String delim, int limit) 
+    {   
+        // short-cut for empty string
+        if (str==null || str.Length<1) 
+        {   return new System.String[]{""};
+        }
+        
+        // special behaviour for empty delimiter string
+        if (delim==null || delim.Length<1)
+        {   
+            System.String[] l;
+            if (limit<0) 
+            {   l = new System.String[str.Length+1];
+            } else if (limit==0) 
+            {   l = new System.String[str.Length];
+            } else 
+            {   l = new System.String[Math.min(str.Length+1,limit)];
+            }
+            for (int i=0; i<l.Length; i++) 
+            {   l[i] = i>=str.Length ? "" : (i<l.Length-1 ? str.Substring(i,1) : str.Substring(i));
+            }
+            return l;                
+        }
+    
+        // normal operation
+        if (limit>0) 
+        {   return str.Split(new System.String[]{delim}, limit, System.StringSplitOptions.None);
+        }
+        else
+        {   System.String[] l = str.Split(new System.String[]{delim}, System.StringSplitOptions.None );
+            if (limit==0) 
+            {   int len = l.Length;
+                while (len>1 && l[len-1].Length<1) len--;
+                if (len<l.Length) System.Array.Resize(ref l, len);
+            }
+            return l;
+        }
     }
         
     public static System.String substring(this System.String str, int beginIndex) 
@@ -194,4 +245,5 @@ namespace java.lang { public static class StringExtensions
     public static System.String trim(this System.String str) 
     {   return str.Trim();
     }        
+        
 }}

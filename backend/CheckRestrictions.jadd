@@ -260,7 +260,10 @@ aspect CheckRestrictions {
         b.append("(");
         for (int i=0; i<getNumParameter(); i++) {
             if (i!=0) b.append(", ");
-            b.append(getParameter(i).type().erasure().typeName());
+            String typename = getParameter(i).type().erasure().typeName();
+            if (typename.equals("java.lang.CharSequence")) typename="java.lang.String";
+            if (typename.equals("java.lang.CharSequence[]")) typename="java.lang.String[]";
+            b.append(typename);
         }
         b.append(")");          
         String sig = b.toString();

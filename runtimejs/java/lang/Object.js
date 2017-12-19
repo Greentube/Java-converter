@@ -229,6 +229,11 @@ String.prototype.compareTo_1 = function (str)
     return l1-l2;
 };
 
+String.prototype.contains_1 = function(s)
+{
+    return this.indexOf(s) >= 0;
+}
+
 String.prototype.concat_1 = function (str) 
 {   return this.concat(str);
 };
@@ -307,10 +312,67 @@ String.prototype.length_0 = function ()
 {   return this.length;
 };
 
-String.prototype.replace_2 = function (oldChar, newChar) 
-{   var s = String.fromCharCode(oldChar);
-    if (s===".") s="\\."; // avoid confusion with regular expression syntax
-    return this.replace(new RegExp(s,"g"),String.fromCharCode(newChar));
+String.prototype.replace_2 = function (find, substitute) 
+{   if (!substitute._isString) substitute = String.fromCharCode(substitute);
+    if (!find._isString) find = String.fromCharCode(find);
+    
+    var findlength = find.length;
+    var s = this;
+    var cursor = 0;
+    var idx;
+    while ((idx = s.indexOf(find,cursor)) >= 0) 
+    {   s = s.substring(0,idx).concat(substitute, s.substring(idx+findlength));
+        cursor += findlength;
+    }
+    return s;    
+};
+
+String.prototype.split_1 = function(delimiter)
+{
+    return this.split_2(delimiter,0);
+};
+
+String.prototype.split_2 = function(delimiter, limit)
+{
+    // short cut for completely empty string
+    if (this.length<1) 
+    {   return [""];
+    }
+    
+    // special handling of empty delimiter
+    if (delimiter==null || delimiter.length<1)
+    {   if (limit>0) 
+        {   var l = this.split("", limit); 
+            if (limit>l.length)
+            {   l.push("");
+            }
+            else if (limit==l.length)
+            {   l[limit-1] = this.substring(limit-1);
+            }
+            return l;
+        } 
+        else if (limit==0) 
+        {   return this.split("");  
+        }
+        else 
+        {   var l = this.split("");
+            l.push("");            
+            return l;
+        }
+    }
+    
+    // normal splitting with a real delimiter
+    var l = this.split(delimiter);
+    if (limit>0)
+    {   if (l.length>limit) 
+        {   l[limit-1] = l.slice(limit-1).join(delimiter);
+            l.length = limit;
+        }
+    }
+    else if (limit==0) 
+    {   while (l.length>1 && l[l.length-1]=="") l.pop();        
+    }
+    return l;
 };
 
 String.prototype.startsWith_1 = function(prefix) 
@@ -341,4 +403,11 @@ String.prototype.toString_0 = function()
 
 String.prototype.trim_0 = function() 
 {   return this.trim();
+};
+
+var java_lang_String = {
+    join_2: function(delim, parts) 
+    {   
+        return parts.join(delim);
+    }
 };
