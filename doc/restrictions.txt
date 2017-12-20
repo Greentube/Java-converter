@@ -53,7 +53,11 @@
  - Different default implementation of toString()
       Objects not overriding toString will provide a default implementation
       that is conversion target specific. Do only use to create a human readable debug output and
-      do not rely on any specific format.   
+      do not rely on any specific format.
+ - String.split() only accepts a simple search string
+      Instead of supporting the whole regular expression framework for just this method, 
+      the functionality is limited to have regular expressions that only match a single static
+      string. To enforce this, the regex parameter must be a compile-time constant. 
  - Limited subset of java core classes
       The converter core itself provides a very limited subset of the java core classes and
       also a limited number of methods in each. 
@@ -64,3 +68,4 @@
       using generics and lambda expressions. The Supplier, Function, Consumer, Predicate
       interfaces are provided to allow basic generic data transformation operations.
       See the document libraries.txt for a complete list.
+      

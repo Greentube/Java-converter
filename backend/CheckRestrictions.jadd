@@ -368,7 +368,7 @@ aspect CheckRestrictions {
 	  	for (int i=0; i<straightargs; i++) {
 	  		checkAutoBoxing(getArg(i).type(), m.getParameter(i).type(), errorlist);
   		}
-  		// test for boxing of the parameters that are packaged into array
+  	    // test for boxing of the parameters that are packaged into array
   		for (int i=straightargs; i<getNumArg(); i++) {
 	  		checkAutoBoxing(getArg(i).type(), 
 	  		               ((ArrayDecl)m.getParameter(straightargs).type()).elementType(),
@@ -393,7 +393,19 @@ aspect CheckRestrictions {
                 );  
             }
         }
-     
+        
+        // test if regular expression parameter is used correctly
+        if (m.hostType().packageName().equals("java.lang") 
+            && m.hostType().uniqueName().equals("String") && m.name().equals("split")
+            && getNumArg()>0)
+        {   try
+            {   getArg(0).regexToSearchString();
+            }
+            catch (Exception e) 
+            {   reportRestriction(errorlist, e.getMessage());
+            }        
+        }
+        
         super.checkRestrictions(errorlist);					  		
 	}
 	// Autoboxing/unboxing in super/this-constructor call parameters

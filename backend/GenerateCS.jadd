@@ -659,37 +659,46 @@ aspect GenerateCS {
 		return 0;
 	}
 	
-  	public static void Constant.generateCharacterCS(CodePrinter out, char c) {
-  			switch(c) {
-  			case '\b': 	out.print("\\b");
-  						break;
-  			case '\f':  out.print("\\f");	
-  			            break;
-  			case '\n':  out.print("\\n"); 
-  			            break;
-  			case '\r':  out.print("\\r");
-  			            break;
-  			case '\t':  out.print("\\t");
-  			            break;
-  			case '\\':  out.print("\\\\");
-  			            break;
-  			case '"':   out.print("\\\"");
-  			            break;  			
-  			case '\'':  out.print("\\'");
-  			            break;  			
-  			default: 
-  				if (c>=32 && c<=126) {
-  				 	out.print(""+c);
-  				} else {
-  					String hx = Integer.toHexString((int)c);
-  					out.print("\\u");
-  					for (int j=hx.length(); j<4; j++) {
-  						out.print("0");
-  					} 
-  					out.print(hx);
-  				}
-  				break;
-  			}  	
+    public static void Constant.generateCharacterCS(CodePrinter out, char c) 
+    {
+            switch(c) {
+            case '\b':  out.print("\\b");
+                        break;
+            case '\f':  out.print("\\f");   
+                        break;
+            case '\n':  out.print("\\n"); 
+                        break;
+            case '\r':  out.print("\\r");
+                        break;
+            case '\t':  out.print("\\t");
+                        break;
+            case '\\':  out.print("\\\\");
+                        break;
+            case '"':   out.print("\\\"");
+                        break;              
+            case '\'':  out.print("\\'");
+                        break;              
+            default: 
+                if (c>=32 && c<=126) {
+                    out.print(""+c);
+                } else {
+                    String hx = Integer.toHexString((int)c);
+                    out.print("\\u");
+                    for (int j=hx.length(); j<4; j++) {
+                        out.print("0");
+                    } 
+                    out.print(hx);
+                }
+                break;
+            } 
+    }   
+  	public static void Constant.generateStringCS(CodePrinter out, String s) 
+  	{
+  	     out.print("\"");
+  	     for (int i=0; i<s.length(); i++)
+         {	generateCharacterCS(out,s.charAt(i));
+  	     }
+  	     out.print("\""); 	
   	}  	
   	public void Constant.generateCS(CodePrinter out) {
 		if (this instanceof	ConstantBoolean) {
@@ -711,12 +720,7 @@ aspect GenerateCS {
 		} else if (this instanceof ConstantInt) {
 			out.print(""+intValue());
 		} else if (this instanceof ConstantString) {
-	  		String v = stringValue();
-	  		out.print("\"");
-	  		for (int i=0; i<v.length(); i++) {
-	  			generateCharacterCS(out,v.charAt(i));
-	  		}
-	  		out.print("\"");	
+	  		generateStringCS(out,stringValue());	
 		}
   	}		
 }

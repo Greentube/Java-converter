@@ -354,6 +354,10 @@ public class TestJava5 extends TestJava4
         assertO(s.replace("ll", ""), "heo, this,contains, commas,...");
         assertO(s.replace("co", new StringBuffer("?")), "hello, this,?ntains, ?mmas,...");
 
+        assertSA(s.split("\\Q.",-1), new String[]{"hello, this,contains, commas,","","",""}); 
+        assertSA("[mor[and[this".split("\\Q["), new String[]{"","mor","and","this"});
+        assertSA("xxxxx".split("x"+"",-1), new String[]{"","","","","",""}); 
+
         s = s.replace(".",",");
         assertSA(s.split(","), new String[]{"hello"," this", "contains", " commas"});
         assertSA(s.split("co"), new String[]{"hello, this,", "ntains, ","mmas,,,,"});

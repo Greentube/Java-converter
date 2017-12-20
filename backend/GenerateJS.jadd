@@ -234,12 +234,9 @@ aspect GenerateJS {
 				out.print(" = ");
 				out.print("new ");
 				out.printJSName(packageName(), uniqueName());
-				out.print(".$()._"+(ec.getNumArg()+2)+"(\"");
-				String id = ec.getID();
-				for (int i=0; i<id.length(); i++) {
-					Constant.generateCharacterJS(out, id.charAt(i)); 
-				}
-				out.print("\","+ordinal);				
+				out.print(".$()._"+(ec.getNumArg()+2)+"(");
+				Constant.generateStringJS(out, ec.getID());
+				out.print(","+ordinal);				
 				for (int i=0; i<ec.getNumArg(); i++) {
 					out.print(",");
 					ec.getArg(i).generateJS(out);
@@ -270,12 +267,9 @@ aspect GenerateJS {
 						o2.print("new ");
 						TypeDecl t = ec.getInit().type();
 						o2.printAndMemorizeComplete(t.packageName(),t.uniqueName());
-						o2.print(".$()._"+(ec.getNumArg()+2)+"(\"");
-						String id = ec.getID();
-						for (int i=0; i<id.length(); i++) {
-							Constant.generateCharacterJS(o2,id.charAt(i));
-						}
-						o2.print("\","+ordinal);
+						o2.print(".$()._"+(ec.getNumArg()+2)+"(");
+						Constant.generateStringJS(o2, ec.getID());
+						o2.print(","+ordinal);
 						for (int i=0; i<ec.getNumArg(); i++) {
 							o2.print(",");
 							ec.getArg(i).generateJS(o2);
@@ -485,55 +479,60 @@ aspect GenerateJS {
   		}
 	}		
   	
-    public static void Constant.generateCharacterJS(CodePrinter out, char c) 
-    {   switch(c) 
-        {   case '\b':
-            {   out.print("\\b");
-                break;
-            }
-            case '\f':
-            {   out.print("\\f"); 
-                break;
-            }
-            case '\n':
-            {   out.print("\\n");
-                break;
-            }
-            case '\r':
-            {   out.print("\\r");
-                break;
-            }
-            case '\t':
-            {   out.print("\\t");
-                break;
-            }
-            case '\\':
-            {   out.print("\\\\");
-                break;
-            }
-            case '"':
-            {   out.print("\\\"");
-                break;
-            }
-            case '\'':
-            {   out.print("\\'");
-                break;
-            }
-            default:
-            {   if (c>=32 && c<=126) 
-                {   out.print(""+c);
-                } 
-                else 
-                {   String hx = Integer.toHexString((int)c);
-                    out.print("\\u");
-                    for (int j=hx.length(); j<4; j++) 
-                    {   out.print("0");
-                    }
-                    out.print(hx);
+    public static void Constant.generateStringJS(CodePrinter out, String s) 
+    {   out.print("\"");
+        for (int i=0; i<s.length(); i++)
+        {   char c = s.charAt(i);        
+            switch(c) 
+            {   case '\b':
+                {   out.print("\\b");
+                    break;
                 }
-                break;
+                case '\f':
+                {   out.print("\\f"); 
+                    break;
+                }
+                case '\n':
+                {   out.print("\\n");
+                    break;
+                }
+                case '\r':
+                {   out.print("\\r");
+                    break;
+                }
+                case '\t':
+                {   out.print("\\t");
+                    break;
+                }
+                case '\\':
+                {   out.print("\\\\");
+                    break;
+                }
+                case '"':
+                {   out.print("\\\"");
+                    break;
+                }
+                case '\'':
+                {   out.print("\\'");
+                    break;
+                }
+                default:
+                {   if (c>=32 && c<=126) 
+                    {   out.print(""+c);
+                    } 
+                    else 
+                    {   String hx = Integer.toHexString((int)c);
+                        out.print("\\u");
+                        for (int j=hx.length(); j<4; j++) 
+                        {   out.print("0");
+                        }
+                        out.print(hx);
+                    }
+                    break;
+                }
             }
         }
+        out.print("\"");
     }
 
     public void Constant.generateJS(CodePrinter out) 
@@ -559,12 +558,7 @@ aspect GenerateJS {
         {   out.print(""+intValue());
         }
         else if (this instanceof ConstantString) 
-        {   String v = stringValue();
-            out.print("\"");
-            for (int i=0; i<v.length(); i++) 
-            {   generateCharacterJS(out, v.charAt(i));
-            }
-            out.print("\"");
+        {   generateStringJS(out, stringValue());
         }
     }
 }

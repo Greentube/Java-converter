@@ -199,6 +199,11 @@ aspect GenerateJS {
                 {   getArg(i).generateUsingResultJS(out);
                 }	
             } 
+            // do conversion of regex parameter for the String.split method
+            else if (i==0 && m.name().equals("split") && tn.equals("java.lang.String"))
+            {   String ss = getArg(0).regexToSearchString();
+                Constant.generateStringJS(out,ss);
+            }
             else 
             {  getArg(i).generateUsingResultJS(out);
             }

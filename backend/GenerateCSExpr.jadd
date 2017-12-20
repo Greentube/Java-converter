@@ -216,7 +216,14 @@ aspect GenerateCS {
         out.print("(");
         for (int i=0; i<getNumArg(); i++) 
         {   if (i>0) out.print(",");
-            getArg(i).generateUsingResultCS(out);
+            // do conversion of regex parameter for the String.split method
+            if (i==0 && m.name().equals("split") && m.hostType().isString())
+            {   String ss = getArg(0).regexToSearchString();
+                Constant.generateStringCS(out,ss);
+            }
+            else
+            {   getArg(i).generateUsingResultCS(out);
+            }
         }
         out.print(")");
     }

@@ -1,3 +1,4 @@
+import java.util.regex.Pattern;
 
 aspect Util {
     
@@ -70,5 +71,66 @@ aspect Util {
         return true;
     }
 
+    public String Expr.regexToSearchString()
+    {
+        if (!isConstant()) 
+        {   throw new RuntimeException("Regular expression must be compile-time constant");
+        }
+        String regex = constant().stringValue();
+    
+        // check if this is a well-formed Pattern at all
+        try 
+        {   Pattern.compile(regex);
+        } catch (Exception e) 
+        {   throw new RuntimeException("Malformed regular expression");
+        }
+    
+        int l = regex.length();
+        StringBuilder b = new StringBuilder();
+
+        scanall: for (int i=0; i<l; i++)
+        {   char c = regex.charAt(i);
+            switch (c)
+            {   // start of backslash escape
+                case '\\':
+                    i++;
+                    c = regex.charAt(i);
+                    switch (c)
+                    {   case '\\':
+                            b.append(c);
+                            break;
+                        case 'Q':       // start of quote
+                        {   int cidx = regex.indexOf("\\E",i+1);
+                            if (cidx<0) // unterminated quote extends to the end
+                            {   b.append(regex.substring(i+1));
+                                break scanall;
+                            }   
+                            b.append(regex.substring(i+1,cidx));
+                            i = cidx+1;
+                            break;
+                        }                              
+                        default:  // no other esacpe character is supported
+                            throw new RuntimeException("Unsupported escape int regular expression");                                 
+                    }
+                    break;
+                // characters with special meaning that are not supported
+                case '[': 
+                case '(':
+                case '{':
+                case '|':
+                case '.': 
+                case '^':
+                case '$':
+                case '?':
+                case '*':
+                case '+':
+                    throw new RuntimeException("Unsupported functionality in regular expression");
+                default:
+                    b.append(c);
+            }
+        }
+        
+        return b.toString();
+    }
    
 }
