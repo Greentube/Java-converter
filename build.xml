@@ -111,6 +111,7 @@
 			    <include name="java/lang/Boolean.class" />				
 			    <include name="java/lang/Byte.class" />
 			    <include name="java/lang/Character.class" />
+                <include name="java/lang/CharSequence.class" />
 				<include name="java/lang/Double.class" />
 				<include name="java/lang/Enum.class" />
 				<include name="java/lang/Integer.class" />

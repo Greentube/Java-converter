@@ -229,9 +229,9 @@ String.prototype.compareTo_1 = function (str)
     return l1-l2;
 };
 
-String.prototype.contains_1 = function(s)
+String.prototype.contains_1 = function(o)
 {
-    return this.indexOf(s) >= 0;
+    return this.indexOf(o.toString_0()) >= 0;
 }
 
 String.prototype.concat_1 = function (str) 
@@ -313,18 +313,18 @@ String.prototype.length_0 = function ()
 };
 
 String.prototype.replace_2 = function (find, substitute) 
-{   if (!substitute._isString) substitute = String.fromCharCode(substitute);
-    if (!find._isString) find = String.fromCharCode(find);
+{   var s = substitute.toString_0 ? substitute.toString_0() : String.fromCharCode(substitute);
+    var f = find.toString_0 ? find.toString_0() : String.fromCharCode(find);
     
-    var findlength = find.length;
-    var s = this;
+    var findlength = f.length;
+    var r = this;
     var cursor = 0;
     var idx;
-    while ((idx = s.indexOf(find,cursor)) >= 0) 
-    {   s = s.substring(0,idx).concat(substitute, s.substring(idx+findlength));
+    while ((idx = r.indexOf(f,cursor)) >= 0) 
+    {   r = r.substring(0,idx).concat(s, r.substring(idx+findlength));
         cursor += findlength;
     }
-    return s;    
+    return r;    
 };
 
 String.prototype.split_1 = function(delimiter)
@@ -332,15 +332,17 @@ String.prototype.split_1 = function(delimiter)
     return this.split_2(delimiter,0);
 };
 
-String.prototype.split_2 = function(delimiter, limit)
+String.prototype.split_2 = function(delimiter_o, limit)
 {
     // short cut for completely empty string
     if (this.length<1) 
     {   return [""];
     }
     
+    var delimiter = delimiter_o.toString_0();
+    
     // special handling of empty delimiter
-    if (delimiter==null || delimiter.length<1)
+    if (delimiter.length<1)
     {   if (limit>0) 
         {   var l = this.split("", limit); 
             if (limit>l.length)
@@ -406,8 +408,18 @@ String.prototype.trim_0 = function()
 };
 
 var java_lang_String = {
-    join_2: function(delim, parts) 
+    join_2: function(delim_o, parts_o) 
     {   
-        return parts.join(delim);
+        var delim = delim_o.toString_0();
+        // check if the array contains only Strings or other objects also
+        for (var i=0; i<parts_o.length; i++)
+        {   if (!parts_o[i]._isString)
+            {   // encountered non-string. must perfrom compliated join
+                return parts_o.map(function(o){return o.toString_0();}).join(delim);
+            }
+        }        
+        // if not encountered non-strings, the join is easy
+        return parts_o.join(delim);
     }
 };
+

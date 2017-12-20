@@ -1,4 +1,4 @@
-namespace java.lang { public class StringBuffer 
+namespace java.lang { public class StringBuffer
 {        
     private readonly System.Text.StringBuilder content;
 

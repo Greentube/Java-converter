@@ -341,14 +341,18 @@ public class TestJava5 extends TestJava4
         assertB(s.contains("this"));
         assertB(s.contains("..."));
         assertB(!s.contains("foo"));
-
+        assertB(s.contains(new StringBuffer("...")));
+        
         assertO(String.join(",", "a","b","and much more"), "a,b,and much more");
         String[] sl = new String[]{ "higgs", "boson", "nonsense" };
+        assertO(String.join(new StringBuilder("-"), sl), "higgs-boson-nonsense");
+        assertO(String.join("-", "a", new StringBuffer("b"), new StringBuilder("c")), "a-b-c");
         assertO(String.join("-", sl), "higgs-boson-nonsense");
+        assertO(String.join("-", new String[]{"is","good"}), "is-good");
 
-        assertO(s.replace("o", "x"), "hellx, this,cxntains, cxmmas,...");
+        assertO(s.replace(new StringBuilder("o"), "x"), "hellx, this,cxntains, cxmmas,...");
         assertO(s.replace("ll", ""), "heo, this,contains, commas,...");
-        assertO(s.replace("co", "?"), "hello, this,?ntains, ?mmas,...");
+        assertO(s.replace("co", new StringBuffer("?")), "hello, this,?ntains, ?mmas,...");
 
         s = s.replace(".",",");
         assertSA(s.split(","), new String[]{"hello"," this", "contains", " commas"});

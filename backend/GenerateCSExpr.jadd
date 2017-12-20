@@ -183,7 +183,7 @@ aspect GenerateCS {
         MethodDecl m = decl();
         if (m.isStatic()) 
         {   if (m.hostType().isString() && m.name().equals("join")) 
-            {   out.print("System.String.Join");
+            {   out.print("java.lang.StringExtensions.join");
             }
             else 
             {   out.print(m.hostType().getNameCS());

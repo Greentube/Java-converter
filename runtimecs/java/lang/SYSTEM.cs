@@ -127,8 +127,8 @@ namespace java.lang { public static class StringExtensions
     {   return System.String.Concat(str==null ? "null":str, other==null ? "null":other);
     }
     
-    public static bool contains(this System.String @this, System.String other)
-    {   return @this.indexOf(other)>=0;        
+    public static bool contains(this System.String @this, System.Object other)
+    {   return @this.indexOf(other.ToString())>=0;        
     }
         
     public static bool endsWith(this System.String str, System.String other) 
@@ -153,6 +153,17 @@ namespace java.lang { public static class StringExtensions
   
     public static bool isEmpty(this System.String str) 
     {   return str.Length<=0;
+    }
+    
+    public static System.String join(System.Object delim, System.Object[] parts)
+    {   
+        System.String d = SYSTEM.str(delim);
+        System.Text.StringBuilder b = new System.Text.StringBuilder();
+        for (int i=0; i<parts.Length; i++)
+        {   if (i>0) b.Append(d);
+            b.Append(SYSTEM.str(parts[i]));
+        }
+        return b.ToString();
     }
         
     public static int lastIndexOf(this System.String str, System.String other) 
@@ -179,8 +190,8 @@ namespace java.lang { public static class StringExtensions
     {   return str.Replace(oldchar,newchar);
     }
     
-    public static System.String replace(this System.String str, System.String oldstr, System.String newstr) 
-    {   return str.Replace(oldstr,newstr);
+    public static System.String replace(this System.String str, System.Object oldstr, System.Object newstr) 
+    {   return str.Replace(oldstr.ToString(),newstr.ToString());
     }
         
     public static bool startsWith(this System.String str, System.String other) 

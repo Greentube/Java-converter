@@ -206,7 +206,7 @@ public class CodePrinter
     {    mem(complete, packagename, uniquename);	
     }
     private void mem(HashSet<String>storage, String packagename, String uniquename) 
-    {   if (! (packagename.equals("java.lang") && uniquename.equals("String") )) 
+    {   if (! (packagename.equals("java.lang") && (uniquename.equals("String")||uniquename.equals("CharSequence")) )) 
         {   storage.add(escapePackagePath(packagename) + escapeIdentifier(uniquename,true));
         }
     }

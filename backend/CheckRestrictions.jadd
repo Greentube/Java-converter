@@ -1,6 +1,6 @@
 /**
  * Check the various restrictions that are imposed on the java code when converting.
- * All of those restrictions are checked a compile time to guarantee correct behavior
+ * All of those restrictions are checked at compile time to guarantee correct behavior
  * if the conversion succeeds.
  * See the documentation file 'restrictions.txt' for details.
  */
@@ -202,10 +202,6 @@ aspect CheckRestrictions {
 		// restrictions for Interface methods
 		if (hostType() instanceof InterfaceDecl)
 		{  
-// 		  if (hasBlock())
-//		   {  reportRestriction(errorlist, 
-//                 "Static or default interface methods are not supported");
-//		   }
 		}
         // restrictions for class methods 
 		else if (hostType() instanceof ClassDecl) 
@@ -261,8 +257,6 @@ aspect CheckRestrictions {
         for (int i=0; i<getNumParameter(); i++) {
             if (i!=0) b.append(", ");
             String typename = getParameter(i).type().erasure().typeName();
-            if (typename.equals("java.lang.CharSequence")) typename="java.lang.String";
-            if (typename.equals("java.lang.CharSequence[]")) typename="java.lang.String[]";
             b.append(typename);
         }
         b.append(")");          
@@ -354,6 +348,11 @@ aspect CheckRestrictions {
 	
 	// Autoboxing/unboxing in method call parameters
 	public void MethodAccess.checkRestrictions(ArrayList<String> errorlist) {
+//        if (transformed()!=this)
+//        {   transformed().checkRestrictions(errorlist);
+//            return;
+//        }
+        	
   		MethodDecl m = decl().erasedMethod();
   		
   		// check if this is a call using the variable arguments syntax
@@ -399,6 +398,11 @@ aspect CheckRestrictions {
 	}
 	// Autoboxing/unboxing in super/this-constructor call parameters
 	public void ConstructorAccess.checkRestrictions(ArrayList<String> errorlist) {
+//        if (transformed()!=this)
+//        {   transformed().checkRestrictions(errorlist);
+//            return;
+//        }
+
   		ConstructorDecl m = decl();
   		
   		// check if this is a call using the variable arguments syntax
@@ -584,6 +588,18 @@ aspect CheckRestrictions {
         }
         super.checkRestrictions(errorlist);
     }
+        
+//    public void Expr.checkRestrictions(ArrayList<String> errorlist) 
+//    {
+//        TypeDecl t = type();
+//        if (t.isClassDecl() || t.isInterfaceDecl())
+//        {     String n = t.erasure().typeName();
+//              if (!LibraryList.isAllowed(n))
+//              {   reportRestriction(errorlist, "Unsupported type:"+t.erasure().typeName());
+//              }
+//        }        
+//        super.checkRestrictions(errorlist);
+//    }
     
     public void LambdaExpr.checkRestrictions(ArrayList<String> errorlist) 
     {    
