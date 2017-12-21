@@ -150,6 +150,7 @@
                 <include name="java/util/function.Supplier.class" />
                 <include name="java/util/function.Predicate.class" />
                 <include name="java/util/function.Function.class" />
+                <include name="java/util/function.UnaryOperator.class" />
                 <include name="java/util/function.Consumer.class" />
 			    <include name="java/io/PrintStream.class" />
 			    <include name="java/io/FilterOutputStream.class" />
