@@ -5,6 +5,7 @@ namespace java.util { public interface Map
     bool containsValue(System.Object value);
     bool Equals(System.Object o);
     System.Object get(System.Object key);
+    System.Object getOrDefault(System.Object key, System.Object def);
     int GetHashCode();
     bool isEmpty();
     Set keySet();
@@ -14,4 +15,10 @@ namespace java.util { public interface Map
     int size();
     Collection values();
     System.String ToString();
+}}
+namespace java.util { public static class Map_c
+{
+    public static System.Object getOrDefault(Map @this, System.Object key, System.Object def)
+    {   return @this.containsKey(key) ? @this.get(key) : def;
+    }
 }}

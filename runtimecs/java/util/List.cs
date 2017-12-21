@@ -16,6 +16,7 @@ namespace java.util { public interface List: Collection
     int lastIndexOf(System.Object o);
     System.Object remove(int index);
     bool removeAll(Collection c);
+    void replaceAll(java.util.function.UnaryOperator unaryoperator);
     bool retainAll(Collection c);
     System.Object set(int index, System.Object element);
     void sort(java.util.Comparator c);
@@ -35,4 +36,10 @@ namespace java.util { public static class List_c
         {   @this.add(a[i]);
         }
     }
+    public static void replaceAll(List @this, java.util.function.UnaryOperator unaryoperator)
+    {   int s = @this.size();
+        for (int i=0; i<s; i++)
+        {   @this.set(i,unaryoperator.apply(@this.get(i)));
+        }
+    }    
 }}

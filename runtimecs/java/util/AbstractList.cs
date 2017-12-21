@@ -86,6 +86,10 @@ namespace java.util { public abstract class AbstractList : AbstractCollection, L
     public virtual bool removeAll(Collection c) 
     {   return filter(c,false); 
     }
+
+    public virtual void replaceAll(java.util.function.UnaryOperator unaryoperator)
+    {   java.util.List_c.replaceAll(this,unaryoperator);        
+    }
         
     public virtual bool retainAll(Collection c) 
     {   return filter(c,true); 

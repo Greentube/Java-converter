@@ -20,6 +20,11 @@ namespace java.util { public abstract class AbstractCollection : Collection
     }
 
     // Equals        // default object behaviour
+    
+    public virtual bool removeIf(java.util.function.Predicate predicate)
+    {   return java.util.Collection_c.removeIf(this,predicate);
+    }
+        
     // GetHashCode   // default object behaviour        
         
     public virtual bool isEmpty() 

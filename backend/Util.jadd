@@ -133,4 +133,18 @@ aspect Util {
         return b.toString();
     }
    
+    public ArrayList<BodyDecl> InterfaceDecl.recursivelyGetBodyDecl()
+    {   ArrayList<BodyDecl> allm = new ArrayList<BodyDecl>();
+        for (BodyDecl bd:getBodyDeclList())
+        {   allm.add(bd);
+        }
+        for (TypeDecl si:superInterfaces())
+        {   for (BodyDecl sm:((InterfaceDecl)si).recursivelyGetBodyDecl()) 
+            {   if (!allm.contains(sm)) 
+                {   allm.add(sm);
+                }
+            }
+        }    
+        return allm;
+    }
 }

@@ -63,6 +63,10 @@ namespace java.util { public class HashMapImpl : Map
         data.TryGetValue(key, out v);
         return v;
     }
+    
+    public virtual System.Object getOrDefault(System.Object key, System.Object def)
+    {   return java.util.Map_c.getOrDefault(this,key,def);
+    }
         
     public override int GetHashCode() 
     {   int sum = 0;

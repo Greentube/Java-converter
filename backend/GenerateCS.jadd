@@ -245,15 +245,22 @@ aspect GenerateCS {
 		}
 	
 	    // add redirects for interface default methods
+	    ArrayList<MethodDecl> neededredirects = new ArrayList<MethodDecl>();
         for (Iterator<TypeDecl> iter = interfacesIterator(); iter.hasNext(); ) 
-        {   TypeDecl td = iter.next();
-            for (BodyDecl bd:td.getBodyDeclList()) {
-                if (bd instanceof MethodDecl) {
+        {   for(BodyDecl bd: ((InterfaceDecl)iter.next()).recursivelyGetBodyDecl())
+            {   if (bd instanceof MethodDecl) {
                     MethodDecl md = (MethodDecl) bd;
                     if (md.isDefault() 
                         && !this.hasMethodWithSignature(md.signature(), null)
-                        && md.isSupportedInLibraries() ) 
-                    {   out.print("public virtual ");
+                        && md.isSupportedInLibraries() 
+                        && !neededredirects.contains(md))
+                    {   neededredirects.add(md); 
+                    }
+                }
+            }
+        }
+        for (MethodDecl md:neededredirects) 
+        {   out.print("public virtual ");
                         md.getTypeAccess().generateCS(out);
                         out.print(" ");
                         out.printCSIdentifier(md.name());
@@ -271,7 +278,7 @@ aspect GenerateCS {
                         out.println();
                         out.print("{   ");
                         if (!md.isVoid()) out.print("return ");
-                        out.print(td.getNameCS());
+                        out.print(md.hostType().getNameCS());
                         out.print("_c.");
                         out.printCSIdentifier(renameMethod(md.name(),true), "");
                         out.print("(this");
@@ -283,9 +290,6 @@ aspect GenerateCS {
                         out.println();
                         out.print("}");
                         out.println();
-                    }
-                }
-             }                
         }  
 	    
 	    // add synthetic methods for array dimensioning of needed

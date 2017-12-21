@@ -11,6 +11,13 @@ var java_util_List = {
             {   this.add_1(a[i]);
             }
         }
+        ,
+        replaceAll_1: function(unaryoperator) 
+        {   var s = this.size_0();
+            for (var i=0; i<s; i++)
+            {   this.set_2(i, unaryoperator.apply_1(this.get_1(i)));
+            }
+        }
     }
 }; 
 

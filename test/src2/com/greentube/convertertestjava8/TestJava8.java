@@ -1,9 +1,12 @@
 package com.greentube.convertertestjava8;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.*;
 
 import com.greentube.convertertestjava7.TestJava7;
@@ -21,6 +24,11 @@ public class TestJava8 extends TestJava7
         methodreferencetest();
         interfacemethodstest();
         foreachtest();
+        removeiftest();
+        getordefaulttest();
+        getordefaulttest();
+        replacealltest();
+        composinglambdastest();
         customsignaturetest();
         supplierconsumertest();
         customiterator();
@@ -121,6 +129,104 @@ public class TestJava8 extends TestJava7
         l.forEach(e -> target.add(e+"!"));
         assertO(target.toString(), "[hey!, this!, is!, nice!]");
     }
+    
+    public static void removeiftest()
+    {
+        System.out.println("- removeIf");
+    
+        List<String> l = makelist("hey", "this", "is", "nice");
+        l.removeIf(o->o.startsWith("h"));
+        assertO(l.toString(), "[this, is, nice]");
+        l.removeIf(o->o.contains("s"));
+        assertO(l.toString(), "[nice]");    
+    }
+    
+    public static void getordefaulttest()
+    {
+        System.out.println("- getOrDefault");
+
+        Map<String,String> m = new HashMap<>();
+        m.put("see", "yes");
+        m.put("look", "no");
+        assertO(m.getOrDefault("see", "x"), "yes");
+        assertO(m.getOrDefault("september", "x"), "x");
+        assertO(m.getOrDefault("fluke", null), null);
+        assertO(m.getOrDefault("look", null), "no");
+    }
+    
+    public static void replacealltest()
+    {
+        System.out.println("- replaceAll");
+        
+        List<String> l = makelist("this","are","some","words");
+        l.replaceAll(s->s.concat(s));
+        assertO(l.toString(), "[thisthis, areare, somesome, wordswords]");        
+    }
+    
+    public static void composinglambdastest()
+    {
+        class Filter<T> implements Consumer<T> 
+        {   Predicate<T> p;
+            Consumer<T> c;
+            Filter(Predicate<T> p, Consumer<T>c)
+            {   this.p = p;
+                this.c = c;
+            }
+            public void accept(T o)
+            {   if (p.test(o)) c.accept(o);
+            }
+        }       
+        class Processor<T> implements Consumer<T> 
+        {   Function<T,T> f;
+            Consumer<T> c;
+            Processor(Function<T,T>f, Consumer<T>c)
+            {   this.f = f;
+                this.c = c;
+            }
+            public void accept(T o)
+            {   c.accept(f.apply(o));
+            }
+        }       
+    
+        System.out.println("- composing lambdas");
+        ArrayList<String> target = new ArrayList<>();
+        
+        // some generic building blocks
+        Predicate<String> hasEE = (s) -> s.contains("ee");        
+        Function<String,String> reverse = (s) -> 
+        {   StringBuilder b = new StringBuilder();
+            for (int i=s.length()-1; i>=0; i--) b.append(s.charAt(i));
+            return b.toString();
+        };
+        Consumer<String> collect = s -> target.add(s);
+        
+        // building a (reusable) pipeline from the blocks
+        Consumer<String> processing = (o) -> 
+        {   if (hasEE.test(o))
+            {   String r = reverse.apply(o);
+                collect.accept(r);
+            }   
+        };
+        // build the same pipeline using different means
+        Consumer<String> proc2 = new Filter<String>(hasEE, 
+                           new Processor<String>(reverse, collect));
+                 
+                 
+        Arrays.<String>asList("see","the","bee","buzzing","in","the","tree")
+              .forEach( processing );  
+        assertO(target.toString(), "[ees, eeb, eert]"); 
+        
+        target.clear();
+        Arrays.<String>asList("wee","free","men")
+              .forEach( processing );  
+        assertO(target.toString(), "[eew, eerf]");         
+        
+        target.clear();
+        Arrays.<String>asList("eepson","memory","mastermeend", "lee", "bravo")
+              .forEach( proc2 );  
+        assertO(target.toString(), "[nospee, dneemretsam, eel]");   
+        
+    }   
     
     public static void customsignaturetest()
     {
