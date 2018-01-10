@@ -127,6 +127,18 @@ public class TestJava8 extends TestJava7
         
         l.forEach(e -> target.add(e+"!"));
         assertO(target.toString(), "[hey!, this!, is!, nice!]");
+        
+        HashMap<String,Integer> m = new HashMap<>();
+        m.put("a",Integer.valueOf(17));
+        m.put("b",Integer.valueOf(4));
+        m.put("c",Integer.valueOf(8));
+        m.put("d",Integer.valueOf(15));
+        HashMap<String,Integer> x = new HashMap<>();
+        int[] count = new int[1];
+        BiConsumer<String,Integer> bc = (k,v) -> x.put(k,v);
+        m.forEach(bc.andThen((k,v) -> count[0]++));
+        assertO(m,x);
+        assertI(count[0], 4);
     }
     
     public static void removeiftest()

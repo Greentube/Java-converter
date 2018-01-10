@@ -6,6 +6,14 @@ var java_util_Map = {
         {   return this.containsKey_1(key) ? this.get_1(key) : def;
         }
         ,
+        forEach_1: function(biconsumer)
+        {   var i = this.keySet_0().iterator_0();
+            while (i.hasNext_0()) 
+            {   var k = i.next_0();
+                var v = this.get_1(k);
+                biconsumer.accept_2(k,v);
+            }
+        },
     }    
 };  
 

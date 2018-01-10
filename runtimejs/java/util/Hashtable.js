@@ -19,10 +19,10 @@ _class(java_util_Hashtable, java_util_HashMapImpl, null, "java.util.Hashtable",
     },
     
     elements_0: function() 
-    {   return new java_util_HashMapIterator.$()._2(this, false);
+    {   return new java_util_HashMapIterator.$(this, false, this._collectKeys_0());
     },
     
     keys_0: function()
-    {   return new java_util_HashMapIterator.$()._2(this, true);
+    {   return new java_util_HashMapIterator.$(this, true, this._collectKeys_0());
     },      
 });

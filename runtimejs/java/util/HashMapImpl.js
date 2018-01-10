@@ -106,7 +106,7 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
     },
 
     keySet_0: function() 
-    {   return new java_util_HashMapKeyView.$()._1(this);
+    {   return new java_util_HashMapKeyView.$(this);
     }, 
 
     put_2: function(key, value) 
@@ -189,7 +189,7 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
     },
   
     values_0: function() 
-    {   return new java_util_HashMapValueView.$()._1(this);
+    {   return new java_util_HashMapValueView.$(this);
     },      
     
     _collectKeys_0: function() 
@@ -205,16 +205,12 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
 });
 
 var java_util_HashMapKeyView = 
-{   $: function() 
-    {   this.map = null;
+{   $: function(map)         // internal use only - can merge allocator with constructor
+    {   this.map = map;
     },
 };    
 _class(java_util_HashMapKeyView, java_util_AbstractCollection, [java_util_Set], "java.util.HashMapKeyView", 
-{   _1: function(map) 
-    {   this.map = map;
-        return this;
-    },
-    
+{    
     contains_1: function(o) 
     {   return this.map.containsKey_1(o);
     },        
@@ -244,7 +240,7 @@ _class(java_util_HashMapKeyView, java_util_AbstractCollection, [java_util_Set], 
 // boolean	isEmpty()              // implemented by AbstractCollection
 
     iterator_0: function() 
-    {   return new java_util_HashMapIterator.$()._2(this.map, true);
+    {   return new java_util_HashMapIterator.$(this.map, true, this.map._collectKeys_0());
     },
 
     size_0: function() 
@@ -256,16 +252,12 @@ _class(java_util_HashMapKeyView, java_util_AbstractCollection, [java_util_Set], 
 
 
 var java_util_HashMapValueView =
-{   $: function() 
-    {   this.map = null;
+{   $: function(map)    // internal use only - can merge allocator with constructor
+    {   this.map = map;
     },
 };
 _class(java_util_HashMapValueView, java_util_AbstractCollection, [java_util_Collection], "java.util.HashMapValueView", 
-{   _1: function(map) 
-    {   this.map = map;
-        return this;
-    },
-
+{ 
     contains_1: function(o) 
     {   return this.map.containsValue_1(o);
     },        
@@ -276,7 +268,7 @@ _class(java_util_HashMapValueView, java_util_AbstractCollection, [java_util_Coll
 // boolean	isEmpty()              // implemented by AbstractCollection
 
     iterator_0: function() 
-    {   return new java_util_HashMapIterator.$()._2(this.map, false);     
+    {   return new java_util_HashMapIterator.$(this.map, false, this.map._collectKeys_0());     
     },
 
     size_0: function() 
@@ -288,22 +280,15 @@ _class(java_util_HashMapValueView, java_util_AbstractCollection, [java_util_Coll
 
 
 var java_util_HashMapIterator = 
-{   $: function() 
-    {   this.map = null;
-        this.deliverKeys = false;
-        this.keys = null;
+{   $: function(map, deliverKeys, keys)     // internal use only - may merge allocator with constructor
+    {   this.map = map;
+        this.deliverKeys = deliverKeys;
+        this.keys = keys;
         this.n = 0;
     },
 };
 _class(java_util_HashMapIterator, java_lang_Object, [java_util_Iterator, java_util_Enumeration], "java.util.HashMapIterator", 
-{   _2: function(map, deliverKeys) 
-    {   this.map = map;
-        this.deliverKeys = deliverKeys;
-        this.keys = map._collectKeys_0();
-        this.n = 0;         
-        return this;
-    },
-    
+{       
     hasNext_0: function() 
     {   return this.n<this.keys.length;
     },

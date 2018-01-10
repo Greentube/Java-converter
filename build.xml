@@ -152,6 +152,7 @@
                 <include name="java/util/function.Function.class" />
                 <include name="java/util/function.UnaryOperator.class" />
                 <include name="java/util/function.Consumer.class" />
+                <include name="java/util/function.BiConsumer.class" />
 			    <include name="java/io/PrintStream.class" />
 			    <include name="java/io/FilterOutputStream.class" />
 			    <include name="java/io/OutputStream.class" />
@@ -181,7 +182,7 @@
 	  		<fileset dir="${basedir}/build/package"/>
 	        <manifest>
 	             <attribute name="Main-Class" value="com.greentube.javaconverter.JavaConverter"/>
-	             <attribute name="Implementation-Version" value="2.4.1"/>
+	             <attribute name="Implementation-Version" value="2.4.2"/>
 	             <attribute name="Version-Date" value="${timestamp}"/>
 	        </manifest>         
 	  	</jar>  		

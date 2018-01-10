@@ -158,6 +158,11 @@ namespace java.util { public class HashMapImpl : Map
     public virtual Collection values() 
     {   return new HashMapValueView(this);
     }        
+    
+    // redirect default interface method
+    public virtual void forEach(java.util.function.BiConsumer biconsumer)
+    {   java.util.Map_c.forEach(this,biconsumer);
+    }    
 }}
         
 namespace java.util { class HashMapKeyView : AbstractCollection, Set 

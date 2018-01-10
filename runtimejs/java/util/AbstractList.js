@@ -83,7 +83,7 @@ _class(java_util_AbstractList, java_util_AbstractCollection, [java_util_List], "
     },
 
     iterator_0: function() 
-    {   return new java_util_AbstractListIterator.$()._1(this);
+    {   return new java_util_AbstractListIterator.$(this);
     },
    
     lastIndexOf_1: function (o) 
@@ -120,20 +120,14 @@ _class(java_util_AbstractList, java_util_AbstractCollection, [java_util_List], "
 
 
 var java_util_AbstractListIterator = 
-{   $: function() 
-    {   this.list = null;
+{   $: function(list)   // internal use only - merge allocator with constructor
+    {   this.list = list;
         this.n = 0;
     },
 };
 _class(java_util_AbstractListIterator, java_lang_Object, 
        [java_util_Iterator, java_util_Enumeration], "java.util.AbstractListIterator",
-{
-    _1: function(list) 
-    {   this.list = list;
-        this.n = 0;
-        return this;
-    },
-    
+{    
     hasNext_0: function() 
     {   return this.n < this.list.size_0();
     },

@@ -32,20 +32,20 @@
       Same holds for methods - but there the "name" is considered to be the 
       identifier in conjunction with the number-of-parameters.
       Static fields or methods do not have this restriction.
-      Also local variables may shadow fields.
+      Also local variables may shadow fields just as normally.
  - Compound assignments and increment/decrement operators must not have side-effects in the target 
       When using any of the operators +=,-=,*=,... it is only possible to use 
       a target that is guaranteed to have no side effects on evaluation. While 
       it is possible to use  a[i]+=5  it is unsupported to write  a[i++]+=4.
       Same thing holds for ++ and --  (i[4]++ is ok, i[get()]++  is not).  
-      This is to avoid faulty double-evaluation behavior in all conversion targets. 
+      This is to avoid faulty double-evaluation behavior in any conversion target. 
  - Access to static members is not allowed by using an instance expression with side-effects
       It is legal in java to call a static method with something like: 
       exp.valueOf(4711)    // where exp is of type Integer 
       Since the expression will just be eliminated during conversion, it must not
       have any possible side effects.
   - Different default implementation of hashCode()
-      Objects not overriding hashCode will provide a default implementation may deliver
+      Objects not overriding hashCode will provide a default implementation that may deliver
       an extremely weak hash (only depending on the object's class). Do not 
       use these as keys in any Hashtable/HashMap/HashSet. 
       The String and Double objects will create a good hash, but a different one as is specified 
@@ -65,7 +65,7 @@
       minimal version of java.io.PrintStream to make 'System.out' and 'System.err' available 
       for simple output. 
       The whole java 8 Stream API is not provided, but similar functionality can be created
-      using generics and lambda expressions. The Supplier, Function, Consumer, Predicate
-      interfaces are provided to allow basic generic data transformation operations.
+      using generics and lambda expressions. The Supplier, Function, Consumer, BiConsumer, 
+      Predicate interfaces are provided to allow basic generic data transformation operations.
       See the document libraries.txt for a complete list.
       

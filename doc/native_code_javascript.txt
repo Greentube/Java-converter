@@ -62,13 +62,14 @@ Interface definitions are like so:
 
 var i = { 
     _superinterfaces: [ ... ], 
+    _defaults: { ... },
     staticmember1: xx,
     staticmember2: yy,     
 }; 
 
 Interfaces are very light-weight in javascript. They mainly consist of static fields
 and some references to super-interfaces for the type-inclusion checks.
-
+Optionally you can provide a set of default method implementations.
 
 There is no specific implementation class for java.lang.String, because 
 the existing javascript-strings are directly used, but enhanced with many 

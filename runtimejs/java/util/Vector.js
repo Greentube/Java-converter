@@ -29,7 +29,7 @@ _class(java_util_Vector, java_util_ArrayListImpl, null, "java.util.Vector",
     },
 
     elements_0: function() 
-    {   return new java_util_AbstractListIterator.$()._1(this);
+    {   return new java_util_AbstractListIterator.$(this);
     },
     
     firstElement_0: function () 
