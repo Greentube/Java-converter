@@ -206,8 +206,11 @@ Array.prototype.hashCode_0 = function ()
 {   return 2;
 };
 
-// extend the javascript String object by monkey-patching in the necessary
-// java methods and attributes
+// Extend the javascript String object by monkey-patching in the necessary
+// java methods and attributes.
+// Actually only string literals are used throughout the implementation,
+// but adding methods to the String prototype makes the literals
+// know the methods and properties just as well.
 
 String.prototype._isString = true;  // reliable way to test if anything is a string
 String.prototype._interfaces = [];
@@ -390,12 +393,12 @@ String.prototype.substring_2 = function(start,end)
 };  
 
 String.prototype.toCharArray_0 = function () 
-{   var chararray = this.split('');
-    var i = 0;
-    chararray.forEach(function(entry) {
-        chararray[i] = entry.charCodeAt();
-        i++;
-    });
+{   var chararray = [];
+    var l = this.length;
+    for (var i=0; i<l; i++)
+    {
+        chararray[i]= this.charCodeAt(i);
+    }
     return chararray;
 };
 
@@ -414,7 +417,7 @@ var java_lang_String = {
         // check if the array contains only Strings or other objects also
         for (var i=0; i<parts_o.length; i++)
         {   if (!parts_o[i]._isString)
-            {   // encountered non-string. must perfrom compliated join
+            {   // encountered non-string. must perform compliated join
                 return parts_o.map(function(o){return o.toString_0();}).join(delim);
             }
         }        

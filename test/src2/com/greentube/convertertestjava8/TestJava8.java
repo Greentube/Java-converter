@@ -26,7 +26,6 @@ public class TestJava8 extends TestJava7
         foreachtest();
         removeiftest();
         getordefaulttest();
-        getordefaulttest();
         replacealltest();
         composinglambdastest();
         customsignaturetest();
