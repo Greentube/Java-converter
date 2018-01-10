@@ -123,8 +123,10 @@ namespace java.lang { public static class StringExtensions
         return l1-l2;
     }
         
-    public static System.String concat(this System.String str, System.String other) 
-    {   return System.String.Concat(str==null ? "null":str, other==null ? "null":other);
+    public static System.String concat(this System.String str, System.String other)         
+    {   if (str==null) throw new System.NullReferenceException();
+        if (other==null) throw new System.ArgumentNullException();
+        return System.String.Concat(str,other);
     }
     
     public static bool contains(this System.String @this, System.Object other)
@@ -198,14 +200,10 @@ namespace java.lang { public static class StringExtensions
     {   return str.StartsWith(other);
     }
     
-    public static System.String[] split(this System.String str, System.String delim) 
-    {   return str.split(delim,0);
-    }
-    
-    public static System.String[] split(this System.String str, System.String delim, int limit) 
+    public static System.String[] split(this System.String str, System.String delim, int limit=0) 
     {   
         // short-cut for empty string
-        if (str==null || str.Length<1) 
+        if (str.Length<1) 
         {   return new System.String[]{""};
         }
         

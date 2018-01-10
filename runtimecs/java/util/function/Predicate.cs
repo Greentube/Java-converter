@@ -8,15 +8,20 @@ namespace java.util.function { public interface Predicate
 namespace java.util.function { public static class Predicate_c
 {
     public static Predicate and(Predicate @this, Predicate other)
-    {   return new PredicateAnd(@this,other);
+    {   if (@this==null) throw new System.NullReferenceException();    
+        if (other==null) throw new System.ArgumentNullException();
+        return new PredicateAnd(@this,other);
     }
     
     public static Predicate negate(Predicate @this)
-    {   return new PredicateNegate(@this);
+    {   if (@this==null) throw new System.NullReferenceException();    
+        return new PredicateNegate(@this);
     }
     
     public static Predicate or(Predicate @this, Predicate other)
-    {   return new PredicateOr(@this,other);
+    {   if (@this==null) throw new System.NullReferenceException();    
+        if (other==null) throw new System.ArgumentNullException();
+        return new PredicateOr(@this,other);
     }
     
     public static Predicate isEqual(System.Object tobj) 

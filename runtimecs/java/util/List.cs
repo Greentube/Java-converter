@@ -30,8 +30,8 @@ namespace java.util { public static class List_c
     public static void sort(List @this, Comparator c)
     {   System.Object[] a = @this.toArray();
         int l = a.Length;
-        @this.clear();
         java.util.Arrays.sort(a,0,l,c);
+        @this.clear();
         for (int i=0; i<l; i++) 
         {   @this.add(a[i]);
         }

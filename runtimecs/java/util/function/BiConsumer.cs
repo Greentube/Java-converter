@@ -6,7 +6,9 @@ namespace java.util.function { public interface BiConsumer
 namespace java.util.function { public static class BiConsumer_c
 {
     public static BiConsumer andThen(BiConsumer @this, BiConsumer other)
-    {   return new BiConsumerAndThen(@this,other);
+    {   if (@this==null) throw new System.NullReferenceException();
+        if (other==null) throw new System.ArgumentNullException();
+        return new BiConsumerAndThen(@this,other);
     }
 }}
 

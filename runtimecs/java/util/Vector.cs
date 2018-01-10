@@ -80,7 +80,8 @@ namespace java.util { public class Vector: ArrayListImpl
     }
 
     public virtual void setSize(int newsize)
-    {   if (newsize<=0) 
+    {   if (newsize<0) throw new System.IndexOutOfRangeException();    
+        if (newsize<=0) 
         {   clear();
         } 
         else 

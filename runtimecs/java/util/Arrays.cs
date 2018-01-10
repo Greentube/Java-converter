@@ -1,6 +1,7 @@
 namespace java.util { public static class Arrays {    
     public static List asList(System.Object[] a)
-    {   return new java.util.FixSizedArrayList(a);
+    {   if (a==null) throw new System.ArgumentNullException();
+        return new java.util.FixSizedArrayList(a);
     }
     
     public static void sort(System.Object[] a, Comparator comparator)
@@ -9,8 +10,11 @@ namespace java.util { public static class Arrays {
     
     public static void sort(System.Object[] a, int fromIndex, int toIndex, Comparator comparator)
     {   
+        if (fromIndex<0 || toIndex>a.Length) throw new System.IndexOutOfRangeException(); 
         int len = toIndex-fromIndex;
-        mergesort(a,fromIndex,len,comparator, (len>=4) ? new System.Object[len/2] : null);
+        if (len>1)
+        {   mergesort(a,fromIndex,len,comparator, (len>=4) ? new System.Object[len/2] : null);
+        }
     }     
 
     
@@ -102,7 +106,7 @@ namespace java.util { public class FixSizedArrayList: AbstractList
 {        
     private System.Object[] buffer;
     
-    public FixSizedArrayList(System.Object[] buffer) : base() 
+    internal FixSizedArrayList(System.Object[] buffer) : base() 
     {   this.buffer = buffer;    
     }    
         

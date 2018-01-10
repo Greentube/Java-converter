@@ -7,11 +7,15 @@ namespace java.util.function { public interface Function
 namespace java.util.function { public static class Function_c
 {
     public static Function andThen(Function @this, Function other)
-    {   return new FunctionAndThen(@this,other);
+    {   if (@this==null) throw new System.NullReferenceException();
+        if (other==null) throw new System.ArgumentNullException();
+        return new FunctionAndThen(@this,other);
     }
     
     public static Function compose(Function @this, Function other)
-    {   return new FunctionAndThen(other,@this);
+    {   if (@this==null) throw new System.NullReferenceException();
+        if (other==null) throw new System.ArgumentNullException();
+        return new FunctionAndThen(other,@this);
     }
 
     public static Function identity()

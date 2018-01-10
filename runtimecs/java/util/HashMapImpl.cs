@@ -64,10 +64,6 @@ namespace java.util { public class HashMapImpl : Map
         return v;
     }
     
-    public virtual System.Object getOrDefault(System.Object key, System.Object def)
-    {   return java.util.Map_c.getOrDefault(this,key,def);
-    }
-        
     public override int GetHashCode() 
     {   int sum = 0;
         for (Iterator it=this.keySet().iterator(); it.hasNext(); ) 
@@ -159,7 +155,10 @@ namespace java.util { public class HashMapImpl : Map
     {   return new HashMapValueView(this);
     }        
     
-    // redirect default interface method
+    // redirect default interface methods
+    public virtual System.Object getOrDefault(System.Object key, System.Object def)
+    {   return java.util.Map_c.getOrDefault(this,key,def);
+    }
     public virtual void forEach(java.util.function.BiConsumer biconsumer)
     {   java.util.Map_c.forEach(this,biconsumer);
     }    

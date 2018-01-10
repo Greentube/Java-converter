@@ -7,14 +7,17 @@ namespace java.util { public interface Comparator
 namespace java.util { public static class Comparator_c
 {
     public static Comparator reversed(Comparator @this)
-    {   return new ComparatorReversed(@this);
+    {   if (@this==null) throw new System.NullReferenceException();
+        return new ComparatorReversed(@this);
     }
     public static Comparator thenComparing(Comparator @this, Comparator other)
-    {   return new ComparatorThenComparing(@this, other);
+    {   if (@this==null) throw new System.NullReferenceException();
+        if (other==null) throw new System.ArgumentNullException();
+        return new ComparatorThenComparing(@this, other);
     }
 }}
 
-namespace java.util { public class ComparatorReversed: Comparator
+namespace java.util { internal class ComparatorReversed: Comparator
 {
     protected Comparator other;
     public ComparatorReversed(Comparator other) 
@@ -31,7 +34,7 @@ namespace java.util { public class ComparatorReversed: Comparator
     {   return Comparator_c.reversed(this);
     }    
 }}        
-namespace java.util { public class ComparatorThenComparing: ComparatorReversed
+namespace java.util { internal class ComparatorThenComparing: ComparatorReversed
 {
     Comparator second;
     public ComparatorThenComparing(Comparator other, Comparator second) : base(other)

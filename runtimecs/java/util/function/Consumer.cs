@@ -6,7 +6,9 @@ namespace java.util.function { public interface Consumer
 namespace java.util.function { public static class Consumer_c
 {
     public static Consumer andThen(Consumer @this, Consumer other)
-    {   return new ConsumerAndThen(@this,other);
+    {   if (@this==null) throw new System.NullReferenceException();
+        if (other==null) throw new System.ArgumentNullException();
+        return new ConsumerAndThen(@this,other);
     }
 }}
 
