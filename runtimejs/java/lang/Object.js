@@ -90,6 +90,15 @@ function _c2s(c)
 {   return String.fromCharCode(c);
 }
 
+// convert a double to a string (will cause trailing .0 to be included)
+function _d2s(d) 
+{   var s = String(d);
+    if (isFinite(d) && s.indexOf(".")<0)  // finite numbers will be drawn ith a .0
+    {   s = s.concat(".0");
+    }
+    return s;
+}
+
 // convert any primitive type to a string 
 function _p2s(c) 
 {   return String(c);
@@ -193,6 +202,7 @@ function _dimImpl(typedescriptor,dimensions,initvalue,cursor)
 // DO NOT USE such a loop!
 
 Array.prototype._interfaces = [];
+Array.prototype._isArray = true;
 
 Array.prototype.equals_1 = function (o) 
 {   return this===o;

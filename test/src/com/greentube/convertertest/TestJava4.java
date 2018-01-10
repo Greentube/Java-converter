@@ -20,7 +20,13 @@ public class TestJava4
 
     public static void main(String[] args) 
     {   System.out.print ("--");
-        System.out.println(" converter test suite for java 4" );
+        System.out.print(" converter test suite for java ");
+        System.out.print(4.0);
+        System.out.print((char)' ');
+        System.out.print(true);
+        System.out.print(Character.valueOf(' '));
+        System.out.print(4);
+        System.out.println();
 
         staticattributestest();
         constructortest();
@@ -1469,6 +1475,15 @@ public class TestJava4
     	assertO(c.toString(),"A");
     	s = s.replace('A','B');
     	assertO(s,"XBX");
+    	
+    	c = new StringBuffer("double:");
+    	c.append(4.0);
+    	c.append(-52.523);
+    	c.append(-5.0);
+        c.append(Double.POSITIVE_INFINITY);
+        c.append(Double.NEGATIVE_INFINITY);
+        c.append(0.0/0.0);
+        assertO(c.toString(), "double:4.0-52.523-5.0Infinity-InfinityNaN");
     }
     
     public static void stringbuildertest()

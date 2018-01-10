@@ -3,7 +3,12 @@
 var java_lang_System = 
 {    
     arraycopy_5 : function(src, srcPos, dest, destPos, length) 
-    {   if (destPos<=srcPos) 
+    {   if (src==null || dest==null) throw new ReferenceError();
+        if (!(src._isArray) || !(dest._isArray)) throw new TypeError();
+        if (length<0 || srcPos<0 || srcPos+length>src.length
+                     || destPos<0 || destPos+length>dest.length) throw new RangeError();
+        
+        if (destPos<=srcPos) 
         {   for (var i = 0; i < length; i++) 
             {   dest[i + destPos] = src[i + srcPos];
             }

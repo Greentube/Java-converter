@@ -190,6 +190,11 @@ aspect GenerateJS {
                     getArg(i).generateUsingResultJS(out);
                     out.print(")");
                 }
+                else if (at.isDouble()) 
+                {   out.print("_d2s(");     
+                    getArg(i).generateUsingResultJS(out);
+                    out.print(")");
+                }
                 else if (at.isPrimitiveType()) 
                 {   out.print("_p2s(");     
                     getArg(i).generateUsingResultJS(out);

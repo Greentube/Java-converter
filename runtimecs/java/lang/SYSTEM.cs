@@ -86,8 +86,8 @@ namespace java.lang { public class SYSTEM
 
     public static System.String str(double v) 
     {   if (System.Double.IsNaN(v)) return "NaN";    
-        if (System.Double.IsInfinity(v)) return "Infinity";
         if (System.Double.IsNegativeInfinity(v)) return "-Infinity";
+        if (System.Double.IsInfinity(v)) return "Infinity";
         // use decimal point regardless of localisation settings
         System.String s = v.ToString().Replace(',','.');
         // check if already have some decimal places
