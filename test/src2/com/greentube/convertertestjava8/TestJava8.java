@@ -393,7 +393,11 @@ public class TestJava8 extends TestJava7
         return res;
     }
     
-    
+
+    final static Comparator<String> c2 = 
+        ((Comparator<String>) (a,b)->b.length() - a.length() )
+              .thenComparing( (a,b)->a.compareTo(b) );
+
     public static void sortliststest()
     {
         final Comparator<String> c = (a,b)->((String)a).compareTo((String)b);
@@ -427,9 +431,7 @@ public class TestJava8 extends TestJava7
         
         // do a sort with multiple cascaded sort criteria (using generics for shorter lambda expressions)
         List<String> sl = Arrays.asList("more","of","the","same", "with", "less", "effort");
-        Comparator<String> c2 = (a,b)->b.length() - a.length();
-        sl.sort ( c2.thenComparing( (a,b)->a.compareTo(b) )
-                );      
+        sl.sort (c2);      
         assertO(sl.toString(), "[effort, less, more, same, with, the, of]");
     }
 
