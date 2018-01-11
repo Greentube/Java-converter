@@ -12,33 +12,39 @@ _class(java_util_ArrayListImpl, java_util_AbstractList, null, "java.util.ArrayLi
     
     _1: function(collection) 
     {   this._0();
-        this.addAll_1(collection);
+        this.addAll_1(collection);  // will throw if null
         return this;
     },
   
     get_1: function(index) 
-    {   return this._storage[index];	
+    {   if (index<0 || index>=this._storage.length) throw new RangeError("IndexOutOfBoundsException");
+        return this._storage[index];	
     },
     
     set_2: function(index, obj) 
-    {   this._storage[index] = obj;
+    {   if (index<0 || index>=this._storage.length) throw new RangeError("IndexOutOfBoundsException");
+        this._storage[index] = obj;
     },
     
     add_2: function(index, obj) 
-    {   if(index===this._storage.length) 
-        {   this._storage.push(obj);
+    {   var s = this._storage;
+        if(index===s.length) 
+        {   s.push(obj);
         } 
         else if (index===0) 
-        {   this._storage.unshift(obj);
+        {   s.unshift(obj);
         } 
+        else if (index>0 && index<s.length)
+        {   s.splice (index,0, obj);
+        }
         else
-        {   this._storage.splice (index,0, obj);
+        {   throw new RangeError("IndexOutOfBoundsException");
         }
     },
 
     remove_1: function (idx) 
     {   var s = this._storage;
-        if (idx<0 || idx>=s.length) throw new RangeError();
+        if (idx<0 || idx>=s.length) throw new RangeError("IndexOutOfBoundsException");        
         var obj = this._storage[idx];
         if (idx===0) 
         {   this._storage.shift();

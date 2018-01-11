@@ -3,6 +3,7 @@ var java_util_Arrays =
 {   
     asList_1:  function(a)
     {
+        if (a===null) throw new ReferenceError("NullPointerException");
         return new java_util_FixSizedArrayList.$(a);
     }
     ,    
@@ -12,7 +13,10 @@ var java_util_Arrays =
     ,
     sort_4(a,fromIndex,toIndex,comparator)
     {
+        if (fromIndex<0 || toIndex>a.length) throw new RangeError("ArrayIndexOutOfBoundsException"); 
+        if (comparator==null) throw new ReferenceException("NullPointerException");
         var len = toIndex-fromIndex;
+        if (len<0) throw new RangeError("IllegalArgumentException");
         java_util_Arrays._mergesort(a,fromIndex,len,comparator, (len>=4) ? new Array(len>>1) : null);
     }
     ,    
@@ -110,19 +114,21 @@ var java_util_FixSizedArrayList =
 _class(java_util_FixSizedArrayList, java_util_AbstractList, null, "java.util.FixSizedArrayList", 
 {   
     get_1: function(index) 
-    {   return this._storage[index];	
+    {   if (index<0 || index>=this._storage.length) throw new RangeError("IndexOutOfBoundsException");
+        return this._storage[index];	
     },
     
     set_2: function(index, obj) 
-    {   this._storage[index] = obj;
+    {   if (index<0 || index>=this._storage.length) throw new RangeError("IndexOutOfBoundsException");
+        this._storage[index] = obj;
     },
     
     add_2: function(index, obj) 
-    {   throw new ReferenceError();
+    {   throw new TypeError("UnsupportedOperationException");
     },
 
     remove_1: function (idx) 
-    {   throw new ReferenceError();    
+    {   throw new TypeError("UnsupportedOperationException");    
     },
 
     size_0: function()

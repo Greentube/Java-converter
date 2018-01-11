@@ -49,11 +49,12 @@ _class(java_util_AbstractCollection, java_lang_Object, [java_util_Collection], "
     },
           
     toArray_1: function (ta) 
-    {   var a = [];
+    {   var t = ta._t;
+        var a = [];
         for (var i=this.iterator_0(); i.hasNext_0(); ) 
         {   a.push(i.next_0());
         }
-        return _arr(ta._t,a);        
+        return _arr(t,a);        
     },
     
     toString_0: function() 

@@ -6,9 +6,7 @@ var java_util_Hashtable =
 };
 _class(java_util_Hashtable, java_util_HashMapImpl, null, "java.util.Hashtable", 
 {
-    // legacy methods only supported by Hashtable, but not the Map interface 
-    // everything can be easily implemented by just using the methods of the
-    // Map interface
+    // legacy methods only supported by Hashtable but not the Map interface 
     
     clone_0: function() 
     {   return new java_util_Hashtable.$()._1(this);

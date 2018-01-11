@@ -21,8 +21,7 @@ _class(java_util_AbstractList, java_util_AbstractCollection, [java_util_List], "
     },   
    
     addAll_1: function(collection) 
-    {   if (collection==null) throw new TypeError("NullPointerException");        
-        var i = collection.iterator_0();
+    {   var i = collection.iterator_0();
         var didappend = false;
         while (i.hasNext_0()) 
         {   this.add_1(i.next_0());
@@ -32,8 +31,7 @@ _class(java_util_AbstractList, java_util_AbstractCollection, [java_util_List], "
     },
     
     addAll_2: function(index, collection) 
-    {   if (collection===null) throw new TypeError("NullPointerException");        
-        var i = collection.iterator_0();
+    {   var i = collection.iterator_0();
         var pos = index;
         var didappend = false;
         while (i.hasNext_0()) {
@@ -54,7 +52,7 @@ _class(java_util_AbstractList, java_util_AbstractCollection, [java_util_List], "
 
     equals_1: function(o) 
     {   var s = this.size_0();
-        if (o===null || !_implements(o,java_util_Collection) || s!==o.size_0()) 
+        if (o===null || !_isinterface(o,java_util_Collection) || s!==o.size_0()) 
         {   return false;
         }
         for (var it1=this.iterator_0(), it2=o.iterator_0(); it1.hasNext_0(); ) 
@@ -94,15 +92,17 @@ _class(java_util_AbstractList, java_util_AbstractCollection, [java_util_List], "
     },
  
     removeAll_1: function (collection) 
-    {   return this.filter(collection,false);
+    {   if (collection===null) throw new ReferenceError("NullPointerException");    
+        return this._filter(collection,false);
     },
     
     retainAll_1: function (collection) 
-    {   return this.filter(collection,true);
+    {   if (collection===null) throw new ReferenceError("NullPointerException");    
+        return this._filter(collection,true);
     },
     
-    filter: function(collection, keep) 
-    {   if (collection===null) throw new TypeError("NullPointerException");                
+    _filter: function(collection, keep) 
+    {      
         var modified=false;
         for (var i=this.size_0()-1; i>=0; i--) 
         {   var o = this.get_1(i);
@@ -133,11 +133,17 @@ _class(java_util_AbstractListIterator, java_lang_Object,
     },
     
     next_0: function() 
-    {   return this.list.get_1(this.n++);
+    {   var v = this.list.get_1(this.n);    // will throw if out of bounds
+        this.n++;
+        return v;
     },
 
     remove_0: function() 
-    {   this.list.remove_1(--this.n);
+    {   
+        var before = this.n-1;
+        if (before<0) throw new RangeError("IllegalStateException");
+        this.list.remove_1(before);  // will throw if unsupported
+        this.n = before;
     },
 
     hasMoreElements_0: function() 

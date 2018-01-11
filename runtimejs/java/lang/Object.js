@@ -71,19 +71,43 @@ function _class (classobject, base, interfaces, classname, instancemethods)
     }
 }
 
+// test if an arbitrary Object is of a given class (or subclass). 
+// throws exception if not, returns object again if ok.
+function _checkclass(x,cls)
+{
+    if (x===null || x instanceof cls.$) return x;
+    throw new TypeError("ClassCastException");    
+}
+
 // test if an arbitrary java.lang.Object implements a given Interface
-function _implements(x,intrfc)
-{   return (x===null) ? false : (x._interfaces.indexOf(intrfc)>=0);
+function _isinterface(x,intrfc)
+{   return x!==null && x._interfaces.indexOf(intrfc)>=0;
+}
+// interface type check. If unsuccessfull, thows exception. Otherweise just return the value
+function _checkinterface(x,intrfc)
+{   if (x===null || x._interfaces.indexOf(intrfc)>=0) return x;
+    throw new TypeError("ClassCastException");
 }
 
 // test if an arbitrary object is a String
 function _isstr(o) 
 {   return o!==null && o._isString;
 }
+// string type check with exception if unsuccessful. on success just return the value again
+function _checkstr(o)
+{   if (o===null || o._isString) return o;
+    throw new TypeError("ClassCastException");
+}
 
+// test if arbitrary object is if given array type
 function _isarray(o,typedescriptor) 
 {   return o!==null && o._t===typedescriptor;
 }        
+// array type check with exception if unsuccessful. on success just return the value again
+function _checkarray(o,typedescriptor)
+{   if (o===null || o._t===typedescriptor) return o;
+    throw new TypeError("ClassCastException");
+}
 
 // convert a unicode code number to a string with the corresponding letter 
 function _c2s(c) 
@@ -128,6 +152,13 @@ var _imul = (typeof Math.imul === "function") ? Math.imul : function(a, b)
     // the shift by 0 fixes the sign on the high part
     // the final |0 converts the unsigned value into a signed value
     return ((al * bl) + (((ah * bl + al * bh) << 16) >>> 0)|0);
+};
+
+// integer division with correct behaviour over the full ranges and 0 exception
+var _idiv = function(a,b)
+{
+    if (b===0) throw new RangeError("/ by zero");
+    return (a/b)|0;
 };
 
 // do some numerical cast operations

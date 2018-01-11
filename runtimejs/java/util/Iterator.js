@@ -3,7 +3,7 @@ var java_util_Iterator = {
     _superinterfaces: null, 
     _defaults: {
         remove_0: function() 
-        {   throw new ReferenceError();
+        {   throw new TypeError("UnsupportedOperationException");
         }
     }
 }; 

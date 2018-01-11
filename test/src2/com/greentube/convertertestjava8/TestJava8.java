@@ -396,7 +396,7 @@ public class TestJava8 extends TestJava7
     
     public static void sortliststest()
     {
-        Comparator<String> c = (a,b)->((String)a).compareTo((String)b);
+        final Comparator<String> c = (a,b)->((String)a).compareTo((String)b);
         List l = new ArrayList();
         l.add("nixi");
         l.add("trixi");
@@ -423,7 +423,14 @@ public class TestJava8 extends TestJava7
         assertO(l.toString(), "[trixi, sucker, queer, nixi, hubert, horr]");
         // sorting by length needs to keep other sort criteria stable
         l.sort( (a,b)->((String)a).length() - ((String)b).length() );  
-        assertO(l.toString(), "[nixi, horr, trixi, queer, sucker, hubert]");        
+        assertO(l.toString(), "[nixi, horr, trixi, queer, sucker, hubert]");  
+        
+        // do a sort with multiple cascaded sort criteria (using generics for shorter lambda expressions)
+        List<String> sl = Arrays.asList("more","of","the","same", "with", "less", "effort");
+        Comparator<String> c2 = (a,b)->b.length() - a.length();
+        sl.sort ( c2.thenComparing( (a,b)->a.compareTo(b) )
+                );      
+        assertO(sl.toString(), "[effort, less, more, same, with, the, of]");
     }
 
 

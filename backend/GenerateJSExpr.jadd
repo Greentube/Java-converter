@@ -337,7 +337,7 @@ aspect GenerateJS {
 	  		out.print(" ");
   			s.generateUsingResultJS(out);
 			out.print(")");
-  		} else {
+  		} else {  // only int values
   			d.generateJS(out);
   			out.print(" = ((");
   			d.generateJS(out);
@@ -388,6 +388,17 @@ aspect GenerateJS {
   		generateWithOptionalCastJS(out,"*");
   	}  	
   	public void AssignDivExpr.generateJS(CodePrinter out) {
+        Expr d = getDest();
+        Expr s = getSource();
+        if (d.type().isInt() && s.type().isInt()) 
+        {       d.generateJS(out);
+                out.print(" = _idiv(");
+                d.generateJS(out);
+                out.print(" , ");
+                s.generateJS(out);
+                out.print(")");
+                return;        
+        }
   		generateWithOptionalCastJS(out,"/");
   	}
   	
@@ -494,18 +505,18 @@ aspect GenerateJS {
   		}
   	}
   	public void DivExpr.generateJS(CodePrinter out) {
-	  		Expr l = getLeftOperand();
-  			Expr r = getRightOperand();  	
+	  	Expr l = getLeftOperand();
+  		Expr r = getRightOperand();  	
 		if (type().isDouble()) {
 	  		l.generateUsingResultJS(out);
   			out.print(" / ");
   			r.generateUsingResultJS(out);
   		} else {  	
-  			out.print("((");
+  			out.print("_idiv(");
 	  		l.generateUsingResultJS(out);
-  			out.print(" / ");
+  			out.print(", ");
   			r.generateUsingResultJS(out);
-  			out.print(")|0)");
+  			out.print(")");
   		}
   	}
   	public void MulExpr.generateJS(CodePrinter out) {
@@ -524,7 +535,7 @@ aspect GenerateJS {
         } else {
             out.print("_imul(");
             l.generateUsingResultJS(out);
-            out.print(" , ");
+            out.print(", ");
             r.generateUsingResultJS(out);
             out.print(")");  		
   		}
@@ -629,8 +640,36 @@ aspect GenerateJS {
 			} else {
 				throw new RuntimeException("Type not supported:"+t.fullName());
 			}
-		} else {
-  			getExpr().generateUsingResultJS(out);
+        }
+        else if (t.isArrayDecl()) 
+        {
+            out.print("_checkarray(");
+            getExpr().generateUsingResultJS(out);
+            out.print(",\"");
+            out.print(t.typeDescriptor());
+            out.print("\")");
+		} 
+        else if (t.isInterfaceDecl()) 
+        {   out.print("_checkinterface(");
+            getExpr().generateUsingResultJS(out);
+            out.print(",");
+            out.printAndMemorizeReference(t.packageName(),t.uniqueName());
+            out.print(")");
+        }
+        else if (t.isString())
+        {   out.print("_checkstr(");
+            getExpr().generateUsingResultJS(out);
+            out.print(")");
+        }        
+        else if (t.isObject())    // no check (is ensured by compiler)  
+        {   getExpr().generateUsingResultJS(out);
+        }		
+        else 
+        {   out.print("_checkclass(");
+            getExpr().generateUsingResultJS(out);
+            out.print(",");
+            out.printAndMemorizeReference(t.packageName(),t.uniqueName());
+            out.print(")");
   		}
   	}
   	
@@ -660,7 +699,7 @@ aspect GenerateJS {
             throw new RuntimeException("Can not create type check for primitive types");
         }
         else if (t.isInterfaceDecl()) 
-        {   out.print("_implements(");
+        {   out.print("_isinterface(");
             getExpr().generateUsingResultJS(out);
             out.print(",");
             out.printAndMemorizeReference(t.packageName(),t.uniqueName());
@@ -671,11 +710,12 @@ aspect GenerateJS {
             getExpr().generateUsingResultJS(out);
             out.print(")");
         }        
-        else if (t.isObject())        
-        {   out.print("((");
+        else if (t.isObject())      
+        {   
+            out.print("((");
             getExpr().generateUsingResultJS(out);
-            out.print(")!=null)");
-        } 
+            out.print(")!==null)");
+        }               
         else {          
             out.print("(");  
             getExpr().generateUsingResultJS(out);

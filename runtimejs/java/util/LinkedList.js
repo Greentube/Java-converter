@@ -21,15 +21,15 @@ _class(java_util_LinkedList, java_util_AbstractList, null, "java.util.LinkedList
     
     _1: function(collection) 
     {   this._0();
-        this.addAll_1(collection);
+        this.addAll_1(collection);  // may throw NullPointerException
         return this;
     },
   
     get_1: function(index) 
-    {   return this.seek_1(index).element;
+    {   return this.seek_1(index).element;  // may throw IndexOutOfBoundsException
     },
     
-    set_2: function(index, element) 
+    set_2: function(index, element)         // may throw IndexOutOfBoundsException
     {   var n = this.seek_1(index);
         var prev = n.element;
         n.element = element;
@@ -43,7 +43,7 @@ _class(java_util_LinkedList, java_util_AbstractList, null, "java.util.LinkedList
         {   y = this._head;
         } 
         else
-        {   y = this.seek_1(index); 
+        {   y = this.seek_1(index);           // may throw IndexOutOfBoundsException
             if (this._currentIndex>=index) this._currentIndex++;
         }
         var x = y.prev;
@@ -55,7 +55,7 @@ _class(java_util_LinkedList, java_util_AbstractList, null, "java.util.LinkedList
     },
 
     remove_1: function (index) 
-    {   var n = this.seek_1(index);
+    {   var n = this.seek_1(index);      // may throw IndexOutOfBoundsException
         var x = n.prev;
         var y = n.next;
         x.next = y;
@@ -76,7 +76,7 @@ _class(java_util_LinkedList, java_util_AbstractList, null, "java.util.LinkedList
     
     seek_1: function(index) 
     {   var len = this._len;
-        if (index<0 || index>=len) throw new RangeError();
+        if (index<0 || index>=len) throw new RangeError("IndexOutOfBoundsException");
         if (index===0) return this._head.next;
         if (index===this.len-1) return this._head.prev;
             

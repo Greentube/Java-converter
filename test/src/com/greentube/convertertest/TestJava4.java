@@ -1,11 +1,27 @@
 package com.greentube.convertertest;
 
-import com.greentube._convertertest2.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
+import com.greentube._convertertest2.TestInterface_X;
+import com.greentube._convertertest2.TestObject2_;
+import com.greentube._convertertest2._TestInterface2;
 import com.greentube.convertertestreserved.debugger.arguments;
 import com.greentube.convertertestreserved.event.lock;
-import com.greentube.convertert€st_3.*;
-
-import java.util.*;
+import com.greentube.convertert€st_3.InitSequenceTestA;
+import com.greentube.convertert€st_3.InitSequenceTestB;
+import com.greentube.convertert€st_3.InitSequenceTestC;
+import com.greentube.convertert€st_3.InitializerBlockTest;
+import com.greentube.convertert€st_3.OuterCläss;
 
 public class TestJava4 
 {
@@ -21,6 +37,7 @@ public class TestJava4
     public static void main(String[] args) 
     {   System.out.print ("--");
         System.out.print(" converter test suite for java ");
+        System.out.print("1.");
         System.out.print(4.0);
         System.out.print((char)' ');
         System.out.print(true);
@@ -487,6 +504,11 @@ public class TestJava4
         char m = 'A';
         char n = (char) 65530;
         assertI(m+n, 65595);    
+        
+        int z = 4;
+        double zero = 0.0;
+        z /= zero;
+        assertI(z,Integer.MAX_VALUE);
     }
     
     public static void assignoperatortest() 

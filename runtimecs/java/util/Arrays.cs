@@ -12,9 +12,8 @@ namespace java.util { public static class Arrays {
     {   
         if (fromIndex<0 || toIndex>a.Length) throw new System.IndexOutOfRangeException(); 
         int len = toIndex-fromIndex;
-        if (len>1)
-        {   mergesort(a,fromIndex,len,comparator, (len>=4) ? new System.Object[len/2] : null);
-        }
+        if (len<0 || comparator==null) throw new System.ArgumentException();
+        mergesort(a,fromIndex,len,comparator, (len>=4) ? new System.Object[len/2] : null);        
     }     
 
     

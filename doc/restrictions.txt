@@ -8,10 +8,12 @@
        No threading is supported at all. No synchronization keywords either.      
  - Exceptions
       No explicit exception handling. No throw and no try/catch. 
-      Misbehavior of the program at runtime (NullPointerException,ArrayIndexOutOfBoundsException,
-      CastException,etc.)
-      will lead to undefined results (the C#-target will probably behave quite similar to java,
-      but javascript will often silently ignore the problem and run into trouble later on).
+      Misbehavior of the program at runtime (anything that causes a RuntimeException in java)
+      could lead to undefined results. The C#-target will behave very similar to java and
+      throw exceptions of its own in these cases. In javascript there are quite some situations 
+      (e.g. access out of array bounds) that can not reliably detected at the correct moment
+      and will cause more trouble later on. Nevertheless a best affort is done by the converter 
+      behave as fail-fast as is possible and throw appropriate exceptions for ease of debugging.
  - no 'long', 'short', 'float'
       These datatypes are either impossible to implement (javascript only supports a generic 
       Number type that can not hold a 64 bit quantity) or quite useless anyway (short, float).
@@ -58,6 +60,8 @@
       Instead of supporting the whole regular expression framework for just this method, 
       the functionality is limited to have regular expressions that only match a single static
       string. To enforce this, the regex parameter must be a compile-time constant. 
+ - Arrays.sort() and List.sort() only work with a non-null Comparator. The converter
+      enforces this in a very conservative way.
  - Limited subset of java core classes
       The converter core itself provides a very limited subset of the java core classes and
       also a limited number of methods in each. 

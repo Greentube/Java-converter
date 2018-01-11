@@ -31,9 +31,8 @@ namespace java.util { public static class List_c
     {   System.Object[] a = @this.toArray();
         int l = a.Length;
         java.util.Arrays.sort(a,0,l,c);
-        @this.clear();
         for (int i=0; i<l; i++) 
-        {   @this.add(a[i]);
+        {   @this.set(i,a[i]);
         }
     }
     public static void replaceAll(List @this, java.util.function.UnaryOperator unaryoperator)

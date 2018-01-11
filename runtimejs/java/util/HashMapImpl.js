@@ -63,7 +63,7 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
     },
 
     equals_1: function(h) 
-    {   if (h===null || !_implements(h,java_util_Map) || this.size_0()!==h.size_0()) 
+    {   if (h===null || !_isinterface(h,java_util_Map) || this.size_0()!==h.size_0()) 
         {   return false;
         }
         for (var it=this.keySet_0().iterator_0(); it.hasNext_0(); ) 
@@ -137,7 +137,7 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.Hash
     },
     
     putAll_1: function(map) 
-    {   if (map===null) throw new TypeError("NullPointerException");
+    {   if (map===null) throw new ReferenceError("NullPointerException");
         for (var it=map.keySet_0().iterator_0(); it.hasNext_0(); ) 
         {   var k = it.next_0();
             var v = map.get_1(k);
@@ -294,12 +294,16 @@ _class(java_util_HashMapIterator, java_lang_Object, [java_util_Iterator, java_ut
     },
             
     next_0: function() 
-    {   var k = this.keys[this.n++];
+    {   
+        if (this.n>=this.keys.length) throw new RangeError("IndexOutOfBoundsException");        
+        var k = this.keys[this.n++];
         return this.deliverKeys ? k : this.map.get_1(k);
     },       
     
     remove_0: function() 
-    {   this.map.remove_1(this.keys[this.n-1]);
+    {   var before = this.n-1;
+        if (before<0) throw new RangeError("IllegalStateException");
+        this.map.remove_1(this.keys[before]); // may throw 
     },   
     
     hasMoreElements_0: function() 

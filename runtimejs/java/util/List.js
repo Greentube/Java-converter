@@ -5,10 +5,9 @@ var java_util_List = {
         sort_1: function(comparator) 
         {   var a = this.toArray_0();
             var l = a.length;
-            this.clear_0();
             java_util_Arrays.sort_4(a,0,l,comparator);
             for (var i=0; i<l; i++) 
-            {   this.add_1(a[i]);
+            {   this.set_2(i,a[i]);
             }
         }
         ,

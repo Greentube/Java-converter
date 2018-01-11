@@ -3,7 +3,8 @@ var java_util_function_BiConsumer =
 {   _superinterfaces: null, 
     _defaults:
     {   andThen_1: function(after)
-        {   return new java_util_function_BiConsumerAndThen.$(this,after);
+        {   if (after===null) throw new ReferenceError("NullPointerException");
+            return new java_util_function_BiConsumerAndThen.$(this,after);
         }
     },
 }; 

@@ -137,6 +137,48 @@ aspect CheckRestrictions {
   		return true;
 	}    
 	
+	// ensure that an expression can never be null
+    public boolean Expr.isNeverNull()
+    {   return false;
+    }
+    public boolean Dot.isNeverNull() 
+    {   return getRight().isNeverNull();         
+    }    
+    public boolean ArrayCreationExpr.isNeverNull()
+    {   return true;
+    }
+    public boolean ParExpr.isNeverNull() 
+    {   return getExpr().isNeverNull();
+    }
+    public boolean ClassInstanceExpr.isNeverNull()
+    {   return true;
+    }
+    public boolean LambdaExpr.isNeverNull() 
+    {    return true;
+    }
+    public boolean TypeMethodReference.isNeverNull()
+    {    return true;
+    }
+    public boolean ExprMethodReference.isNeverNull()
+    {    return true; 
+    }
+    public boolean VarAccess.isNeverNull()
+    {   Variable v = decl();
+        if (v.isEffectivelyFinal()) 
+        {   return v.getInit().isNeverNull();
+        }
+        return false;
+    } 
+    public boolean MethodAccess.isNeverNull()
+    {
+        // some well known core library functions will never return null
+        MethodDecl m = decl().erasedMethod();
+        if (m.hostType().packageName().equals("java.util") 
+         && m.hostType().uniqueName().equals("Comparator"))
+        {   return true;
+        }
+        return false;
+    }    
 
   	// -- Threads 
 	public void SynchronizedStmt.checkRestrictions(ArrayList<String> errorlist) {
@@ -375,11 +417,21 @@ aspect CheckRestrictions {
 	  		                errorlist);
   		}
   		
-  		// test for availability in supported core libraries
-		if (!m.isSupportedInLibraries()) {
-			reportRestriction(errorlist, "Unsupported core library method in "
-				+ m.hostType().packageName() + "." + m.hostType().uniqueName() + ": " + m.name());
-		}
+        // check for availability for stuff from all the .java core packages    
+        if (m.hostType().packageName().startsWith("java.")) 
+        {   if (!m.isSupportedInLibraries()) {
+                reportRestriction(errorlist, "Unsupported core library method in "
+                + m.hostType().packageName() + "." + m.hostType().uniqueName() + ": " + m.name());
+            }
+            // special consideration for the core sort methods (do not allow null as Comparator) 
+            else if (name().equals("sort") && getNumArg()>0) 
+            {   Expr e = getArg(getNumArg()-1);
+                if (!e.isNeverNull()) 
+                {   reportRestriction(errorlist, 
+                       "Comparators for java core sort functions must be guaranteed to be non-null");            
+                }
+            }
+        }
 		
         // test for correct usage of library methods returning a 'long'
         if (m.type().isLong()) 

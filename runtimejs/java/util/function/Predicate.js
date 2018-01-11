@@ -3,17 +3,19 @@ var java_util_function_Predicate =
 {   _superinterfaces: null, 
     _defaults:
     {   and_1: function(other)
-        {   return new java_util_function_PredicateAnd.$(this,other);
+        {   if (other===null) throw new ReferenceError("NullPointerException");
+            return new java_util_function_PredicateAnd.$(this,other);
         }
         ,
         negate_0: function()
         {   return new java_util_function_PredicateNegate.$(this);
         },
         or_1: function(other)
-        {   return new java_util_function_PredicateOr.$(this, other);
+        {   if (other===null) throw new ReferenceError("NullPointerException");
+            return new java_util_function_PredicateOr.$(this, other);
         }
     },
-    isEqual_1: function(other) 
+    isEqual_1: function(tobj) 
     {   return new java_util_function_PredicateIsEqual.$(tobj);
     },
 }; 
