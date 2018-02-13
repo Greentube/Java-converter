@@ -58,10 +58,9 @@ aspect GenerateCS {
         else
         {   out.print("System.Object");
         }
-        for (Iterator<TypeDecl> iter = interfacesIterator(); iter.hasNext(); ) 
+        for (Access ac: getImplementsList() ) 
         {   out.print(", ");
-            TypeDecl td = iter.next();
-            out.print(td.getNameCS());               
+            ac.generateCS(out);               
         }  
 
     	out.println();
@@ -116,7 +115,7 @@ aspect GenerateCS {
 		}		
     	    	        	    	        	    	    
     	// determine which bridge methods need to be suppressed 
-        Collection<MethodDecl> bridgemethods = localBridgeMethods();
+        Collection<MethodDecl> bridgemethods = bridgeMethods();
         ArrayList<MethodDecl> removedbridgemethods = new ArrayList<>();
         for (BodyDecl b : methodsAndConstructors()) {
              // check if need to suppress auto-generated bridge methods 
@@ -246,8 +245,10 @@ aspect GenerateCS {
 	
 	    // add redirects for interface default methods
 	    ArrayList<MethodDecl> neededredirects = new ArrayList<MethodDecl>();
-        for (Iterator<TypeDecl> iter = interfacesIterator(); iter.hasNext(); ) 
-        {   for(BodyDecl bd: ((InterfaceDecl)iter.next()).recursivelyGetBodyDecl())
+        for (Access ac: getImplementsList() ) 
+        {   TypeDecl t = (ac instanceof TypeAccess) ? ((TypeAccess) ac).type() 
+                                                    : ((ParTypeAccess) ac).type(); 
+            for(BodyDecl bd: ((InterfaceDecl)t).recursivelyGetBodyDecl())
             {   if (bd instanceof MethodDecl) {
                     MethodDecl md = (MethodDecl) bd;
                     if (md.isDefault() 
@@ -334,10 +335,10 @@ aspect GenerateCS {
 		if (hasSuperInterface()) {
 			out.print(": ");
 			int n=0;
-      		for (Iterator<TypeDecl> iter = interfacesIterator(); iter.hasNext(); n++) {
+      		for (Access ac: getSuperInterfaceList()) {
       			if (n>0) out.print(",");
-      			TypeDecl td = iter.next();
-        		out.print(td.getNameCS());
+        		ac.generateCS(out);
+        		n++;
       		}			
 		}
 		

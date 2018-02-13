@@ -155,10 +155,13 @@ aspect GenerateJS {
         else
         {   out.print("[");
             int n=0;
-            for (Iterator<TypeDecl> iter = interfacesIterator(); iter.hasNext(); n++) 
+            for (Access ac: getImplementsList()) 
             {   if (n>0) out.print(",");
-                TypeDecl t = iter.next();
-                out.printAndMemorizeLoad(t.packageName(), t.uniqueName());
+                TypeDecl t = (ac instanceof TypeAccess) ? ((TypeAccess) ac).type() 
+                                                        : ((ParTypeAccess) ac).type();
+                out.printAndMemorizeLoad(t.packageName(),t.uniqueName());            
+                ac.generateJS(out);
+                n++;
             }
             out.print("]");
         } 
@@ -171,7 +174,7 @@ aspect GenerateJS {
 		out.println();
         out.increaseIndent();                                     
 
-        Collection<MethodDecl> bridgemethods = localBridgeMethods();
+        Collection<MethodDecl> bridgemethods = bridgeMethods();
 		// instance methods    	    	        	    	  		      	    	    
       	for (BodyDecl bd : methodsAndConstructors()) {
       	     // check if need to suppress auto-generated bridge methods 
@@ -299,10 +302,12 @@ aspect GenerateJS {
 		} else {
 			out.print("[");
 			int n=0;
-      		for (Iterator<TypeDecl> iter = interfacesIterator(); iter.hasNext(); n++) {
+      		for (Access ac: getSuperInterfaceList()) {
       			if (n>0) out.print(",");
-      			TypeDecl t = iter.next();
-        		out.printAndMemorizeLoad(t.packageName(),t.uniqueName());
+                TypeDecl t = (ac instanceof TypeAccess) ? ((TypeAccess) ac).type() 
+                                                        : ((ParTypeAccess) ac).type();
+                out.printAndMemorizeLoad(t.packageName(),t.uniqueName());            
+        		n++;
       		}			
 			out.print("]");
 		}

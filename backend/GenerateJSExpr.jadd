@@ -240,8 +240,6 @@ aspect GenerateJS {
             }
         }       
     }
-  	public void TypeAccess.generateJS(CodePrinter out) {
- 	}
   	public void ArrayTypeAccess.generateJS(CodePrinter out) {
   		getAccess().generateJS(out);
 	}
@@ -292,6 +290,12 @@ aspect GenerateJS {
 			throw new RuntimeException("Unknown type of variable access");
   		}  		
  	}
+    public void TypeAccess.generateJS(CodePrinter out) 
+    {           
+    }  	
+    public void ParTypeAccess.generateJS(CodePrinter out) 
+    {           
+    }
   	
   	// --- ArrayInit ---
   	

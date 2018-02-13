@@ -1,17 +1,8 @@
 package com.greentube.convertertest;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 
+import com.greentube._convertertest2.ModifierTestOtherPackageSubClass;
 import com.greentube._convertertest2.TestInterface_X;
 import com.greentube._convertertest2.TestObject2_;
 import com.greentube._convertertest2._TestInterface2;
@@ -21,6 +12,8 @@ import com.greentube.convertert€st_3.InitSequenceTestA;
 import com.greentube.convertert€st_3.InitSequenceTestB;
 import com.greentube.convertert€st_3.InitSequenceTestC;
 import com.greentube.convertert€st_3.InitializerBlockTest;
+import com.greentube.convertert€st_3.ModifierTestClass;
+import com.greentube.convertert€st_3.ModifierTestSubClass;
 import com.greentube.convertert€st_3.OuterCläss;
 
 public class TestJava4 
@@ -75,7 +68,8 @@ public class TestJava4
         complexoperationtest();
         initsequencetest();
         innerclasstest();
-        identifi€rmangling();
+        identifi€rmanglingtest();
+        accessmodifiertest();
         
         // have some assert statements that are just eliminated in conversion
         int i=staticint;
@@ -2212,12 +2206,31 @@ public class TestJava4
     	assertO(oc2.accessLocalVariablesOfInstanceMethod(), "77,77");
     }
     
-    public static void identifi€rmangling() 
+    public static void identifi€rmanglingtest() 
     {   System.out.println("- identifier mangling");    
         assertI(lock.implicit(3),4);
         assertI(arguments.yield(5),6);  
     }
     
+    public static void accessmodifiertest()
+    {   System.out.println("- access modifiers");
+    
+        // can only access public constructors from here
+        ModifierTestClass m = new ModifierTestClass(10,20); 
+        ModifierTestSubClass ms = new ModifierTestSubClass(15,17); 
+        ModifierTestOtherPackageSubClass mos = new ModifierTestOtherPackageSubClass(53,23);
+        
+        assertI(m.baseaccessother(m), 107);
+        
+        assertI(ModifierTestSubClass.teststaticacess(), 14);
+        assertI(ms.testownaccess(), 152);
+        assertI(ms.testforeignaccess(m), 148);
+        
+        assertI(ModifierTestOtherPackageSubClass.teststaticacess(), 12);
+        assertI(mos.testownaccess(), 134);
+        assertI(mos.testforeignsuperaccess(m), 40);
+        assertI(mos.testrelatedsuperaccess(mos), 134);        
+    }    
         
     public static void assertI(int value, int expected)
     {   if (value!=expected) 

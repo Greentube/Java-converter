@@ -30,6 +30,7 @@
 			<fileset dir="${extendjpath}/java4/frontend">
 				<include name="*.jrag"/>
 				<include name="*.jadd"/>
+                <exclude name="JavaVersion.jrag"/>
 				<exclude name="BytecodeAttributes.jrag"/>
 				<exclude name="BytecodeDescriptor.jrag"/>
 				<exclude name="BytecodeReader.jrag"/>
@@ -46,6 +47,7 @@
 			<fileset dir="${extendjpath}/java5/frontend">
 				<include name="*.jrag"/>
 				<include name="*.jadd"/>
+                <exclude name="JavaVersion.jrag"/>
 				<exclude name="BytecodeReader.jrag"/>				
 			</fileset>				
 			<fileset dir="${extendjpath}/java5/backend">
@@ -55,13 +57,19 @@
 			<fileset dir="${extendjpath}/java6/frontend">
 				<include name="*.jrag"/>
 				<include name="*.jadd"/>
+                <exclude name="JavaVersion.jrag"/>
 			</fileset>
+            <fileset dir="${extendjpath}/java6/backend">
+                <include name="*.jrag"/>
+                <include name="*.jadd"/>
+            </fileset>
 			<fileset dir="${extendjpath}/java7/grammar">
 				<include name="*.ast"/>
 			</fileset>
 			<fileset dir="${extendjpath}/java7/frontend">
 				<include name="*.jrag"/>
 				<include name="*.jadd"/>
+                <exclude name="JavaVersion.jrag"/>
                 <exclude name="Variable.jadd"/>               
 			</fileset>				
 			<fileset dir="${extendjpath}/java7/backend">
@@ -75,7 +83,7 @@
                 <include name="*.jadd"/>
                 <include name="*.jrag"/>
                 <exclude name="Variable.jadd"/>
-            	<exclude name="UnsupportedFeaturesCheck.jrag"/>
+<!--            	<exclude name="UnsupportedFeaturesCheck.jrag"/> -->
             </fileset>
 	        <fileset dir="${extendjpath}/java8/backend">
 	                <include name="*.jrag"/>
