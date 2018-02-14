@@ -25,7 +25,7 @@ public class ModifierTestClass
     // possible modifiers for constructors
               ModifierTestClass(int a) { this(a,22); };
     public    ModifierTestClass(int a, int b) { this(a,b,33,44); };
-//    private   ModifierTestClass(int a, int b, int c) { this (a,b,c,44); };
+    private   ModifierTestClass(int a, int b, int c) { this (a,b,c,44); };
     protected ModifierTestClass(int a, int b, int c, int d) 
     {   def=a;
         pub=b;
