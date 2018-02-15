@@ -30,14 +30,24 @@
     		searchpath="${basedir}/build/javascript,${basedir}/../runtimejs"
     		main="Launcher"
     		>
-    </linkJavaScript>		
+    </linkJavaScript>
     <linkJavaScript 
             output="${basedir}/build/javascript/mainperformance.js" 
             searchpath="${basedir}/build/javascript,${basedir}/../runtimejs"
             main="Performance"
             >
     </linkJavaScript>       
-
+  	
+    <!-- minify the javascript -->
+  	<java jar="${basedir}/../lib/closure-compiler-v20180204.jar" fork="true">
+        <arg value="--compilation_level"/>
+        <arg value="WHITESPACE_ONLY"/>  	      		
+<!--        <arg value="SIMPLE"/> -->               
+  	    <arg value="--js"/>
+  	    <arg value="${basedir}/build/javascript/main.js"/>
+        <arg value="--js_output_file"/>
+        <arg value="${basedir}/build/javascript/main_mini.js"/>
+  	</java>
   </target>
   
   <target name="clean">

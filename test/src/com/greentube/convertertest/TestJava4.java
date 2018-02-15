@@ -6,6 +6,7 @@ import com.greentube._convertertest2.ModifierTestOtherPackageSubClass;
 import com.greentube._convertertest2.TestInterface_X;
 import com.greentube._convertertest2.TestObject2_;
 import com.greentube._convertertest2._TestInterface2;
+import com.greentube._convertertest2.A;
 import com.greentube.convertertestreserved.debugger.arguments;
 import com.greentube.convertertestreserved.event.lock;
 import com.greentube.convertert€st_3.InitSequenceTestA;
@@ -76,6 +77,19 @@ public class TestJava4
         assert i == 4;
         i = staticint99;
         assert i == 99 : "Strangley, "+staticint99+" but not 99"; 
+        
+        // compliation test only
+        A a = new A();
+//        throw new RuntimeException("x");
+//        throw new RuntimeException();
+//        throw new NullPointerException("hey");
+//        throw new NullPointerException();
+//        throw new IllegalArgumentException("argument??");
+//        throw new IllegalArgumentException();
+//        throw new IllegalStateException("state??");
+//        throw new IllegalStateException();
+//        throw new IndexOutOfBoundsException("bounds!");
+//        throw new IndexOutOfBoundsException();
     }
 
     public static void staticattributestest()

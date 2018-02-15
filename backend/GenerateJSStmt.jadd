@@ -248,6 +248,13 @@ aspect GenerateJS {
 	// --- SynchronizedStmt ---
 	
 	// --- ThrowStmt ---
+    public void ThrowStmt.generateJS(CodePrinter out) 
+    {
+        out.print("throw Error((");
+        getExpr().generateUsingResultJS(out);
+        out.print(").toString_0());");
+        out.println();
+    }
 		
 	// --- TryStmt ---
 		

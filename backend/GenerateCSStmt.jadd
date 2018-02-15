@@ -341,7 +341,13 @@ aspect GenerateCS {
 	// --- SynchronizedStmt ---
 	
 	// --- ThrowStmt ---
-		
+    public void ThrowStmt.generateCS(CodePrinter out) {
+        out.print("throw ");
+        getExpr().generateCS(out);
+        out.print(";");
+		out.println();
+    }
+    
 	// --- TryStmt ---
 		
 	// --- VarDeclStmt ---

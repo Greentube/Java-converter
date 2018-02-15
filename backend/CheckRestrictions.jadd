@@ -187,16 +187,10 @@ aspect CheckRestrictions {
 	}
 
 	// -- Exceptions
-	public void ThrowStmt.checkRestrictions(ArrayList<String> errorlist) {
-		reportRestriction(errorlist, "Exceptions are not supported");
-		super.checkRestrictions(errorlist);
-	}
-
 	public void TryStmt.checkRestrictions(ArrayList<String> errorlist) {
-		reportRestriction(errorlist, "Exceptions are not supported");
+		reportRestriction(errorlist, "Catching exceptions is not supported");
 		super.checkRestrictions(errorlist);
-	}
-	
+	}	
 	
 	// -- Allowed primitive types 
 	public void TypeAccess.checkRestrictions(ArrayList<String> errorlist) {
@@ -238,7 +232,7 @@ aspect CheckRestrictions {
 		}
 		// check forbidden exceptions
 		if (hasException()) {
-			reportRestriction(errorlist, "Exceptions are not supported");
+			reportRestriction(errorlist, "Declaring exceptions is not supported");
 		}
 		
 		// restrictions for Interface methods
@@ -310,7 +304,7 @@ aspect CheckRestrictions {
 	// check constructor overloading  (and exception declaration) 
 	public void ConstructorDecl.checkRestrictions(ArrayList<String> errorlist) {
 		if (hasException()) {
-			reportRestriction(errorlist, "Exceptions are not supported");
+			reportRestriction(errorlist, "Declaring exceptions is not supported");
 		}
 		ClassDecl cd = (ClassDecl)hostType();
 		for (BodyDecl bd:cd.getBodyDeclList()) {

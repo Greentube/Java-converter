@@ -15,7 +15,7 @@ var java_lang_Boolean =
     TRUE: null,
     FALSE: null,
 };
-_class (java_lang_Boolean, java_lang_Object, null, "java_lang_Boolean", 
+_class (java_lang_Boolean, java_lang_Object, null, "java.lang.Boolean", 
 {   _1: function(b) 
     {   this.b = b;
         return this;

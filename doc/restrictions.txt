@@ -7,13 +7,16 @@
  - Threads   
        No threading is supported at all. No synchronization keywords either.      
  - Exceptions
-      No explicit exception handling. No throw and no try/catch. 
-      Misbehavior of the program at runtime (anything that causes a RuntimeException in java)
+      No explicit exception handling. It is not supported to catch exceptions 
+      (no try/catch/finally clauses). A few supported types of RuntimeException may be thrown
+      to signify program errors which will lead to a console output and to the stop of the 
+      thread/callback.  
+      Other misbehavior of the program at runtime (anything that causes a RuntimeException in java)
       could lead to undefined results. The C#-target will behave very similar to java and
       throw exceptions of its own in these cases. In javascript there are quite some situations 
       (e.g. access out of array bounds) that can not reliably detected at the correct moment
       and will cause more trouble later on. Nevertheless a best affort is done by the converter 
-      behave as fail-fast as is possible and throw appropriate exceptions for ease of debugging.
+      to behave as fail-fast as is possible and throw appropriate exceptions for ease of debugging.
  - no 'long', 'short', 'float'
       These datatypes are either impossible to implement (javascript only supports a generic 
       Number type that can not hold a 64 bit quantity) or quite useless anyway (short, float).

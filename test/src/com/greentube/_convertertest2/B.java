@@ -1,10 +1,11 @@
 package com.greentube._convertertest2;
 
-public class B extends com.greentube.convertert€st_3.A 
+public class B 
 {
-    public void test(B other)
-    {
-        other.s.length();  // <-- compiler error in old extendj version
-    }
+    // this cyclic dependency can not be resolved:
+    // final static A a = new A();
+    
+    // therefore the initialization is moved into the another class
+    static A a;    
 }
 
