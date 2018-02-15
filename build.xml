@@ -122,13 +122,19 @@
                 <include name="java/lang/CharSequence.class" />
 				<include name="java/lang/Double.class" />
 				<include name="java/lang/Enum.class" />
+                <include name="java/lang/Exception.class" />
+			    <include name="java/lang/IllegalArgumentException.class" />				
+                <include name="java/lang/IllegalStateException.class" />             
+                <include name="java/lang/IndexOutOfBoundsException.class" />             
 				<include name="java/lang/Integer.class" />
 				<include name="java/lang/Iterable.class" />
 				<include name="java/lang/Math.class" />
+                <include name="java/lang/NullPointerException.class" />
 				<include name="java/lang/Number.class" />
 			    <include name="java/lang/Object.class" />
                 <include name="java/lang/Override.class" />				
 				<include name="java/lang/Runnable.class" />
+                <include name="java/lang/RuntimeException.class" />
 				<include name="java/lang/StringBuffer.class" />
 				<include name="java/lang/StringBuilder.class" />
 			    <include name="java/lang/String.class" />
@@ -190,7 +196,7 @@
 	  		<fileset dir="${basedir}/build/package"/>
 	        <manifest>
 	             <attribute name="Main-Class" value="com.greentube.javaconverter.JavaConverter"/>
-	             <attribute name="Implementation-Version" value="2.5.0"/>
+	             <attribute name="Implementation-Version" value="2.5.1"/>
 	             <attribute name="Version-Date" value="${timestamp}"/>
 	        </manifest>         
 	  	</jar>  		

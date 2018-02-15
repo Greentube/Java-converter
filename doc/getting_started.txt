@@ -1,5 +1,5 @@
-Java-Converter 2.0
------------------- 
+Java-Converter
+-------------- 
 
 The java converter consists of a single .jar file that contains everything needed
 for converting java sources to all conversion targets and also includes the necessary core

@@ -41,12 +41,14 @@
     <!-- minify the javascript -->
   	<java jar="${basedir}/../lib/closure-compiler-v20180204.jar" fork="true">
         <arg value="--compilation_level"/>
-        <arg value="WHITESPACE_ONLY"/>  	      		
-<!--        <arg value="SIMPLE"/> -->               
+        <arg value="WHITESPACE_ONLY"/>   	      		
+<!--       <arg value="SIMPLE"/> -->                
   	    <arg value="--js"/>
   	    <arg value="${basedir}/build/javascript/main.js"/>
         <arg value="--js_output_file"/>
         <arg value="${basedir}/build/javascript/main_mini.js"/>
+  		<arg value="--language_out"/>
+  		<arg value="ECMASCRIPT5_STRICT"/>  			
   	</java>
   </target>
   
