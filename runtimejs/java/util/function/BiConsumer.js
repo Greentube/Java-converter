@@ -19,7 +19,9 @@ var java_util_function_BiConsumerAndThen =
         this.b = b;    
     },
 };
-_class(java_util_function_BiConsumerAndThen, java_lang_Object, [java_util_function_BiConsumer], "java.util.function.ConsumerAndThen", 
+_class(java_util_function_BiConsumerAndThen, java_lang_Object, [java_util_function_BiConsumer], 
+"java.util.function.ConsumerAndThen"  //replace-me-with-empty-string-for-production//
+, 
 {   accept_2: function(t,u) 
     {   this.a.accept_2(t,u);
         this.b.accept_2(t,u);

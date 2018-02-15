@@ -29,8 +29,9 @@ var java_util_function_FunctionAndThen =
         this.b = b;    
     },
 };
-_class(java_util_function_FunctionAndThen, java_lang_Object, [java_util_function_Function], "java.util.function.FunctionAndThen", 
-{   apply_1: function(o) 
+_class(java_util_function_FunctionAndThen, java_lang_Object, [java_util_function_Function], 
+"java.util.function.FunctionAndThen"  //replace-me-with-empty-string-for-production//
+,{  apply_1: function(o) 
     {   return this.b.apply_1(this.a.apply_1(o));
     },        
 });
@@ -40,8 +41,9 @@ var java_util_function_FunctionIdentity =
     {        
     },
 };
-_class(java_util_function_FunctionIdentity, java_lang_Object, [java_util_function_Function], "java.util.function.FunctionIdentity", 
-{   apply_1: function(o) 
+_class(java_util_function_FunctionIdentity, java_lang_Object, [java_util_function_Function], 
+"java.util.function.FunctionIdentity"  //replace-me-with-empty-string-for-production//
+,{   apply_1: function(o) 
     {   return o;
     },        
 });

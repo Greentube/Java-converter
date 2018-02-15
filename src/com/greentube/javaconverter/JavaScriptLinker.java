@@ -187,8 +187,12 @@ public class JavaScriptLinker
             if (l.startsWith("//complete//")) 
             {   complete.add(l.substring(12).trim());
             }
+            if (l.endsWith("//replace-me-with-empty-string-for-production//"))
+            {   l = "\"\"";
+            }   
             sb.append(l);
             sb.append("\n");
+            
         }
         r.close();
         return sb.toString().getBytes("utf-8");

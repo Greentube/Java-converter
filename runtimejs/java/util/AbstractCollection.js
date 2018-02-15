@@ -11,8 +11,9 @@ var java_util_AbstractCollection =
     {
     },   
 };
-_class(java_util_AbstractCollection, java_lang_Object, [java_util_Collection], "java.util.AbstractCollection", 
-{   
+_class(java_util_AbstractCollection, java_lang_Object, [java_util_Collection], 
+"java.util.AbstractCollection"  //replace-me-with-empty-string-for-production//
+,{   
     contains_1: function(obj) 
     {   var i = this.iterator_0();
         while (i.hasNext_0()) 

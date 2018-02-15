@@ -15,8 +15,9 @@ var java_lang_Character =
     MAX__VALUE : 0xffff,
     MIN__VALUE : 0,      
 };
-_class(java_lang_Character, java_lang_Object, null, "java.lang.Character", 
-{   _1: function(c) 
+_class(java_lang_Character, java_lang_Object, null, 
+"java.lang.Character"  //replace-me-with-empty-string-for-production//
+,{  _1: function(c) 
     {   this.c = c;
         return this;
     },

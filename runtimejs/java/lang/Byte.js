@@ -15,7 +15,9 @@ var java_lang_Byte =
     MIN__VALUE: -128,
     MAX__VALUE: 127,
 };    
-_class(java_lang_Byte, java_lang_Object, null, "java.lang.Byte", 
+_class(java_lang_Byte, java_lang_Object, null, 
+"java.lang.Byte"  //replace-me-with-empty-string-for-production//
+, 
 {   _1: function(b) 
     {   this.b = b;
         return this;

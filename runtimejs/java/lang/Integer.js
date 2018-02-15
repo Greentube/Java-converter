@@ -19,8 +19,9 @@ var java_lang_Integer = {
     MAX__VALUE: 2147483647,
     MIN__VALUE: -2147483648,
 }
-_class(java_lang_Integer, java_lang_Object, null, "java.lang.Integer", 
-{   _1: function(i) 
+_class(java_lang_Integer, java_lang_Object, null, 
+"java.lang.Integer"  //replace-me-with-empty-string-for-production//
+,{  _1: function(i) 
     {   this.i = i;
         return this;
     },

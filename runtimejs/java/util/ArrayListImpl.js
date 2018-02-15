@@ -4,7 +4,9 @@ var java_util_ArrayListImpl =
     {   this._storage = null;
     },
 };
-_class(java_util_ArrayListImpl, java_util_AbstractList, null, "java.util.ArrayListImpl", 
+_class(java_util_ArrayListImpl, java_util_AbstractList, null, 
+"java.util.ArrayListImpl"  //replace-me-with-empty-string-for-production//
+, 
 {   _0: function() 
     {   this._storage = [];
         return this;

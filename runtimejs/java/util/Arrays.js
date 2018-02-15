@@ -111,7 +111,9 @@ var java_util_FixSizedArrayList =
     {   this._storage = _storage;  
     },
 };
-_class(java_util_FixSizedArrayList, java_util_AbstractList, null, "java.util.FixSizedArrayList", 
+_class(java_util_FixSizedArrayList, java_util_AbstractList, null, 
+"java.util.FixSizedArrayList"  //replace-me-with-empty-string-for-production//
+, 
 {   
     get_1: function(index) 
     {   if (index<0 || index>=this._storage.length) throw new RangeError("IndexOutOfBoundsException");

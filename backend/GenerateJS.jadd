@@ -165,12 +165,13 @@ aspect GenerateJS {
             }
             out.print("]");
         } 
-		out.print(", ");
+		out.print(",");
+		out.println();
 		out.print("\"");
 		out.print(fullName());
-		out.print("\",");
+		out.print("\" //replace-me-with-empty-string-for-production//");
 		out.println();
-		out.print("{");		
+		out.print(",{");		
 		out.println();
         out.increaseIndent();                                     
 

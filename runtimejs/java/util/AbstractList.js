@@ -7,8 +7,9 @@ var java_util_AbstractList =
     {
     },
 };
-_class(java_util_AbstractList, java_util_AbstractCollection, [java_util_List], "java.util.AbstractList", 
-{   // must be implemented by a modifiable subclass
+_class(java_util_AbstractList, java_util_AbstractCollection, [java_util_List], 
+"java.util.AbstractList"  //replace-me-with-empty-string-for-production//
+,{   // must be implemented by a modifiable subclass
     // public abstract System.Object get(int index);
     // public abstract System.Object set(int index, System.Object element);        
     // public abstract void add(int index, System.Object element);
@@ -125,9 +126,9 @@ var java_util_AbstractListIterator =
         this.n = 0;
     },
 };
-_class(java_util_AbstractListIterator, java_lang_Object, 
-       [java_util_Iterator, java_util_Enumeration], "java.util.AbstractListIterator",
-{    
+_class(java_util_AbstractListIterator, java_lang_Object,  [java_util_Iterator, java_util_Enumeration], 
+"java.util.AbstractListIterator"  //replace-me-with-empty-string-for-production//
+,{    
     hasNext_0: function() 
     {   return this.n < this.list.size_0();
     },

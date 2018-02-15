@@ -24,7 +24,9 @@ java_lang_Object.$.prototype.hashCode_0 = function()
 
 // add default attributes 
 java_lang_Object.$.prototype._interfaces = [];
-java_lang_Object.$.prototype._classname = "java.lang.Object";
+java_lang_Object.$.prototype._classname = 
+"java.lang.Object"  //replace-me-with-empty-string-for-production//
+;
 
 // ---- global toolbox functions for classes and arrays ----
 

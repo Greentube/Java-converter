@@ -4,6 +4,8 @@ var java_util_HashMap =
     {   java_util_HashMapImpl.$.call(this);
     },
 };
-_class(java_util_HashMap, java_util_HashMapImpl, null, "java.util.HashMap", 
+_class(java_util_HashMap, java_util_HashMapImpl, null, 
+"java.util.HashMap"  //replace-me-with-empty-string-for-production//
+, 
 {
 }); 

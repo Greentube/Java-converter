@@ -34,8 +34,9 @@ var java_util_function_PredicateAnd =
         this.b = b;    
     },
 };
-_class(java_util_function_PredicateAnd, java_lang_Object, [java_util_function_Predicate], "java.util.function.PredicateAnd", 
-{   test_1: function(o) 
+_class(java_util_function_PredicateAnd, java_lang_Object, [java_util_function_Predicate], 
+"java.util.function.PredicateAnd"  //replace-me-with-empty-string-for-production//
+,{  test_1: function(o) 
     {   return this.a.test_1(o) && this.b.test_1(o);
     },        
 });
@@ -45,8 +46,9 @@ var java_util_function_PredicateNegate =
     {   this.a = a;
     },
 };
-_class(java_util_function_PredicateNegate, java_lang_Object, [java_util_function_Predicate], "java.util.function.PredicateNegate", 
-{   test_1: function(o) 
+_class(java_util_function_PredicateNegate, java_lang_Object, [java_util_function_Predicate], 
+"java.util.function.PredicateNegate"  //replace-me-with-empty-string-for-production//
+,{  test_1: function(o) 
     {   return ! this.a.test_1(o);
     },        
 });
@@ -57,8 +59,9 @@ var java_util_function_PredicateOr =
         this.b = b;    
     },
 };
-_class(java_util_function_PredicateOr, java_lang_Object, [java_util_function_Predicate], "java.util.function.PredicateOr", 
-{   test_1: function(o) 
+_class(java_util_function_PredicateOr, java_lang_Object, [java_util_function_Predicate], 
+"java.util.function.PredicateOr"  //replace-me-with-empty-string-for-production//
+,{   test_1: function(o) 
     {   return this.a.test_1(o) || this.b.test_1(o);
     },        
 });
@@ -68,8 +71,9 @@ var java_util_function_PredicateIsEqual =
     {   this.tobj = tobj;
     },
 };
-_class(java_util_function_PredicateIsEqual, java_lang_Object, [java_util_function_Predicate], "java.util.function.PredicateIsEqual", 
-{   test_1: function(o) 
+_class(java_util_function_PredicateIsEqual, java_lang_Object, [java_util_function_Predicate], 
+"java.util.function.PredicateIsEqual"  //replace-me-with-empty-string-for-production//
+,{   test_1: function(o) 
     {   return this.tobj===null ? o===null : this.tobj.equals_1(o);
     },        
 });

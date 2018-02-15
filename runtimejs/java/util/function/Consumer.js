@@ -19,8 +19,9 @@ var java_util_function_ConsumerAndThen =
         this.b = b;    
     },
 };
-_class(java_util_function_ConsumerAndThen, java_lang_Object, [java_util_function_Consumer], "java.util.function.ConsumerAndThen", 
-{   accept_1: function(o) 
+_class(java_util_function_ConsumerAndThen, java_lang_Object, [java_util_function_Consumer], 
+"java.util.function.ConsumerAndThen"  //replace-me-with-empty-string-for-production//
+,{  accept_1: function(o) 
     {   this.a.accept_1(o);
         this.b.accept_1(o);
     },        

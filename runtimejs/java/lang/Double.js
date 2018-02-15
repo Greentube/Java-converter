@@ -25,8 +25,9 @@ var java_lang_Double =
     POSITIVE__INFINITY : 1.0/0.0,
     NEGATIVE__INFINITY : -1.0/0.0,
 };
-_class (java_lang_Double, java_lang_Object, null, "java.lang.Double", 
-{   _1: function(d) 
+_class (java_lang_Double, java_lang_Object, null, 
+"java.lang.Double"  //replace-me-with-empty-string-for-production//
+,{   _1: function(d) 
     {   this.d = d;
         return this;
     },

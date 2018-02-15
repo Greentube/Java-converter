@@ -5,8 +5,9 @@ var java_lang_StringBuffer =
         this._length = 0;
     },
 };
-_class(java_lang_StringBuffer, java_lang_Object, null, "java.lang.StringBuffer", 
-{   _0: function() 
+_class(java_lang_StringBuffer, java_lang_Object, null, 
+"java.lang.StringBuffer"  //replace-me-with-empty-string-for-production//
+,{  _0: function() 
     {   this._parts = [];        
         return this;
     },

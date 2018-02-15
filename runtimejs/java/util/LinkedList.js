@@ -7,7 +7,9 @@ var java_util_LinkedList =
         this._currentIndex = 0;        
     },    
 };
-_class(java_util_LinkedList, java_util_AbstractList, null, "java.util.LinkedList", 
+_class(java_util_LinkedList, java_util_AbstractList, null, 
+"java.util.LinkedList"  //replace-me-with-empty-string-for-production//
+, 
 {   _0: function() 
     {   var h = { element:null, next:null, prev: null };
         h.next = h;

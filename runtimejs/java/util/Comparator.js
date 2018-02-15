@@ -20,7 +20,9 @@ var java_util_ComparatorReversed =
     {   this.a = a;
     },
 };
-_class(java_util_ComparatorReversed, java_lang_Object, [java_util_Comparator], "java.util.ComparatorReversed", 
+_class(java_util_ComparatorReversed, java_lang_Object, [java_util_Comparator], 
+"java.util.ComparatorReversed"  //replace-me-with-empty-string-for-production//
+, 
 {   compare_2: function(x,y) 
     {   return this.a.compare_2(y,x);
     },        
@@ -32,7 +34,9 @@ var java_util_ComparatorThenComparing =
         this.b = b;
     },
 };
-_class(java_util_ComparatorThenComparing, java_lang_Object, [java_util_Comparator], "java.util.ComparatorThenComparing", 
+_class(java_util_ComparatorThenComparing, java_lang_Object, [java_util_Comparator], 
+"java.util.ComparatorThenComparing"  //replace-me-with-empty-string-for-production//
+, 
 {   compare_2: function(x,y) 
     {   var v = this.a.compare_2(x,y);
         if (v!=0) return v;

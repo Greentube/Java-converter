@@ -18,7 +18,9 @@ var java_util_HashMapImpl =
         this._totalelements = 0;
     },
 };    
-_class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], "java.util.HashMapImpl", 
+_class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], 
+"java.util.HashMapImpl"  //replace-me-with-empty-string-for-production//
+, 
 {   _0: function() 
     {   this._table = new Map();
         return this;
@@ -209,7 +211,9 @@ var java_util_HashMapKeyView =
     {   this.map = map;
     },
 };    
-_class(java_util_HashMapKeyView, java_util_AbstractCollection, [java_util_Set], "java.util.HashMapKeyView", 
+_class(java_util_HashMapKeyView, java_util_AbstractCollection, [java_util_Set], 
+"java.util.HashMapKeyView"  //replace-me-with-empty-string-for-production//
+, 
 {    
     contains_1: function(o) 
     {   return this.map.containsKey_1(o);
@@ -256,7 +260,9 @@ var java_util_HashMapValueView =
     {   this.map = map;
     },
 };
-_class(java_util_HashMapValueView, java_util_AbstractCollection, [java_util_Collection], "java.util.HashMapValueView", 
+_class(java_util_HashMapValueView, java_util_AbstractCollection, [java_util_Collection], 
+"java.util.HashMapValueView"  //replace-me-with-empty-string-for-production//
+, 
 { 
     contains_1: function(o) 
     {   return this.map.containsValue_1(o);
@@ -287,7 +293,9 @@ var java_util_HashMapIterator =
         this.n = 0;
     },
 };
-_class(java_util_HashMapIterator, java_lang_Object, [java_util_Iterator, java_util_Enumeration], "java.util.HashMapIterator", 
+_class(java_util_HashMapIterator, java_lang_Object, [java_util_Iterator, java_util_Enumeration], 
+"java.util.HashMapIterator"   //replace-me-with-empty-string-for-production//
+, 
 {       
     hasNext_0: function() 
     {   return this.n<this.keys.length;

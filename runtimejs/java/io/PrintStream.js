@@ -6,8 +6,9 @@ var java_io_PrintStream =
         this._line = null;
     },
 };
-_class (java_io_PrintStream, java_lang_Object, null, "java.io.PrintStream", 
-{   _1: function(logfunction) 
+_class (java_io_PrintStream, java_lang_Object, null, 
+"java.io.PrintStream"  //replace-me-with-empty-string-for-production//
+,{  _1: function(logfunction) 
     {   this._logfunction = logfunction;
         this._line = [];
         return this;
