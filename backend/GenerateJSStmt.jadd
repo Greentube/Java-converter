@@ -116,7 +116,16 @@ aspect GenerateJS {
     public void LabeledStmt.generateJS(CodePrinter out) 
     {   out.printJSIdentifier(getLabel(),"");
         out.print(": ");
-        getStmt().generateJS(out);
+        Stmt s = getStmt();
+        if (s instanceof BreakStmt)
+        {   out.print("{");
+            s.generateJS(out);
+            out.print("}");
+            out.println();
+        }
+        else 
+        {   s.generateJS(out);
+        }
     }
     
     public void SwitchStmt.generateJS(CodePrinter out) 

@@ -7,14 +7,14 @@ var java_util_Arrays =
         return new java_util_FixSizedArrayList.$(a);
     }
     ,    
-    sort_2(a,comparator)
+    sort_2: function(a,comparator)
     {   java_util_Arrays.sort_4(a,0,a.length,comparator);
     }
     ,
-    sort_4(a,fromIndex,toIndex,comparator)
+    sort_4: function(a,fromIndex,toIndex,comparator)
     {
         if (fromIndex<0 || toIndex>a.length) throw new RangeError("ArrayIndexOutOfBoundsException"); 
-        if (comparator==null) throw new ReferenceException("NullPointerException");
+        if (comparator==null) throw new ReferenceError("NullPointerException");
         var len = toIndex-fromIndex;
         if (len<0) throw new RangeError("IllegalArgumentException");
         java_util_Arrays._mergesort(a,fromIndex,len,comparator, (len>=4) ? new Array(len>>1) : null);

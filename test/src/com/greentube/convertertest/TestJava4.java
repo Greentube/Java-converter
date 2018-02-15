@@ -944,7 +944,7 @@ public class TestJava4
             case 4:
                 return "FOUR";
             default:
-                return "?";			
+                return "?";
             case 5:
             case 6:
                 break l;

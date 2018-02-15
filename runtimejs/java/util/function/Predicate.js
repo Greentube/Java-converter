@@ -70,7 +70,7 @@ var java_util_function_PredicateIsEqual =
 };
 _class(java_util_function_PredicateIsEqual, java_lang_Object, [java_util_function_Predicate], "java.util.function.PredicateIsEqual", 
 {   test_1: function(o) 
-    {   return obj===null ? o===null : obj.equals_1(o);
+    {   return this.tobj===null ? o===null : this.tobj.equals_1(o);
     },        
 });
 

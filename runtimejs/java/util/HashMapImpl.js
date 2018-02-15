@@ -222,7 +222,7 @@ _class(java_util_HashMapKeyView, java_util_AbstractCollection, [java_util_Set], 
         {   return false;
         }
         for (var it=this.iterator_0(); it.hasNext_0(); ) 
-        {   var e = it1.next_0();
+        {   var e = it.next_0();
             if (! o.map.containsKey_1(e)) return false;
         }
         return true;          
