@@ -29,15 +29,9 @@
     		output="${basedir}/build/javascript/main.js" 
     		searchpath="${basedir}/build/javascript,${basedir}/../runtimejs"
     		main="Launcher"
+    	    production="yes"
     		>
     </linkJavaScript>
-    <linkJavaScript 
-            output="${basedir}/build/javascript/mainperformance.js" 
-            searchpath="${basedir}/build/javascript,${basedir}/../runtimejs"
-            main="Performance"
-            >
-    </linkJavaScript>       
-  	
     <!-- minify the javascript -->
   	<java jar="${basedir}/../lib/closure-compiler-v20180204.jar" fork="true">
         <arg value="--compilation_level"/>
@@ -66,6 +60,14 @@
         <arg value="QUIET"/>           
     </java>  	
   	
+  	<!-- build performance test --> 
+    <linkJavaScript 
+            output="${basedir}/build/javascript/mainperformance.js" 
+            searchpath="${basedir}/build/javascript,${basedir}/../runtimejs"
+            main="Performance"
+            >
+    </linkJavaScript>       
+    
   </target>
   
   <target name="clean">

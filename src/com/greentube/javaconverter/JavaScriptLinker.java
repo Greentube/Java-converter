@@ -5,7 +5,7 @@ import java.util.*;
 
 public class JavaScriptLinker
 {
-    public static void link(String mainfile, String searchpath, String output) 
+    public static void link(String mainfile, String searchpath, String output, boolean production) 
     throws IOException
     {   if (mainfile == null) 
         {   throw new IOException("No main file given");
@@ -23,7 +23,7 @@ public class JavaScriptLinker
 
         // load all
         JavaScriptLinker linker = new JavaScriptLinker(cp);
-        linker.loadAll(mainfile);		
+        linker.loadAll(mainfile,production);		
         int[] o = linker.computeOrdering();
 
         // write all modules
@@ -61,7 +61,7 @@ public class JavaScriptLinker
     {   this.searchpath = searchpath; 
     }
 
-    private void loadAll(String mainfilename) throws IOException 
+    private void loadAll(String mainfilename, boolean production) throws IOException 
     {   name2index = new HashMap();
         index2name = new HashMap();
         modules = new ArrayList();
@@ -83,7 +83,7 @@ public class JavaScriptLinker
             ArrayList<String> reference = new ArrayList();
             ArrayList<String> load = new ArrayList();
             ArrayList<String> complete = new ArrayList();
-            byte[] data = loadModule(fn, reference,load,complete);
+            byte[] data = loadModule(fn, reference,load,complete,production);
             modules.add(data);
 
             // while loading memorize the dependency relations
@@ -153,7 +153,8 @@ public class JavaScriptLinker
     (   String filename, 
         ArrayList<String> reference,
         ArrayList<String> load,
-        ArrayList<String> complete
+        ArrayList<String> complete,
+        boolean production
     ) 
     throws IOException
     {   InputStream is = null;
@@ -178,7 +179,10 @@ public class JavaScriptLinker
         StringBuilder sb = new StringBuilder();
         String l;
         while ( (l = r.readLine()) != null) 
-        {   if (l.startsWith("//reference//")) 
+        {   if (production && l.endsWith("//replace-me-with-empty-string-for-production//"))
+            {   l = "\"\"";
+            }   
+            if (l.startsWith("//reference//")) 
             {   reference.add(l.substring(13).trim());
             }
             if (l.startsWith("//load//")) 
@@ -187,9 +191,6 @@ public class JavaScriptLinker
             if (l.startsWith("//complete//")) 
             {   complete.add(l.substring(12).trim());
             }
-            if (l.endsWith("//replace-me-with-empty-string-for-production//"))
-            {   l = "\"\"";
-            }   
             sb.append(l);
             sb.append("\n");
             

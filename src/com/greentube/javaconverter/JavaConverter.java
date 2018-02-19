@@ -91,7 +91,6 @@ public class JavaConverter extends Frontend
         Options options = program.options();		
         options.addKeyValueOption("-js");
         options.addKeyValueOption("-cs");
-        options.addKeyOption("-benchmark");
     }
 
     @Override
@@ -143,7 +142,8 @@ public class JavaConverter extends Frontend
         {   String mainfile = null;
             String searchpath = null;
             String outputfile = null;
-
+            boolean production = false;
+            
             for (int i=1; i<args.length-1; i++) 
             {   if (args[i].equals("-main")) 
                 {   mainfile = args[i+1];
@@ -157,9 +157,12 @@ public class JavaConverter extends Frontend
                 {   outputfile = args[i+1];
                     i++; 
                 }
+                else if (args[i].equals("-production"))
+                {   production = true;                
+                }
             }
             try 
-            {   JavaScriptLinker.link(mainfile, searchpath, outputfile);
+            {   JavaScriptLinker.link(mainfile, searchpath, outputfile, production);
             }
             catch (IOException e) 
             {   System.err.println(e.getMessage());
