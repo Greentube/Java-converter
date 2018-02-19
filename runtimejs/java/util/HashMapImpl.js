@@ -7,6 +7,7 @@
 
 //reference// java/lang/NullPointerException
 //reference// java/lang/IndexOutOfBoundsException
+//reference// java/lang/IllegalStateException
 
 //load// java/lang/Object
 //load// java/util/Map
@@ -312,7 +313,7 @@ _class(java_util_HashMapIterator, java_lang_Object, [java_util_Iterator, java_ut
     
     remove_0: function() 
     {   var before = this.n-1;
-        if (before<0) throw new RangeError("IllegalStateException");
+        if (before<0) throw (new java_lang_IllegalStateException.$())._error();
         this.map.remove_1(this.keys[before]); // may throw 
     },   
     
