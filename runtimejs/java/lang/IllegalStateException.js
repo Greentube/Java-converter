@@ -4,6 +4,5 @@ var java_lang_IllegalStateException =
     {   java_lang_RuntimeException.$.call(this);
     },
 };
-_class (java_lang_IllegalStateException, java_lang_RuntimeException, null, 
-"java.lang.IllegalStateException"  //replace-me-with-empty-string-for-production//
+_class (java_lang_IllegalStateException, java_lang_RuntimeException, null, "java.lang.IllegalStateException"  
 , {});

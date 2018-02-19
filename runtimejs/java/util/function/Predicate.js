@@ -3,7 +3,7 @@ var java_util_function_Predicate =
 {   _superinterfaces: null, 
     _defaults:
     {   and_1: function(other)
-        {   if (other===null) throw new ReferenceError("NullPointerException");
+        {   if (other===null) throw (new java_lang_NullPointerException.$())._error();
             return new java_util_function_PredicateAnd.$(this,other);
         }
         ,
@@ -11,7 +11,7 @@ var java_util_function_Predicate =
         {   return new java_util_function_PredicateNegate.$(this);
         },
         or_1: function(other)
-        {   if (other===null) throw new ReferenceError("NullPointerException");
+        {   if (other===null) throw (new java_lang_NullPointerException.$())._error();
             return new java_util_function_PredicateOr.$(this, other);
         }
     },

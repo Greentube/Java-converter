@@ -56,8 +56,7 @@
         <arg value="ECMASCRIPT5_STRICT"/>
         <arg value="--language_in"/>
         <arg value="ECMASCRIPT5_STRICT"/>           
-        <arg value="--warning_level"/>
-        <arg value="QUIET"/>           
+    	<arg value="--jscomp_off=checkTypes"/>
     </java>  	
   	
   	<!-- build performance test --> 
@@ -76,14 +75,12 @@
         <arg value="--js"/>     
         <arg value="${basedir}/perfjavascriptexports.js"/>
         <arg value="--js_output_file"/>
-        <arg value="${basedir}/build/javascript/mainperformance.js"/>
+        <arg value="${basedir}/build/javascript/mainperformance_advanced.js"/>
         <arg value="--language_out"/>
         <arg value="ECMASCRIPT5_STRICT"/>
         <arg value="--language_in"/>
         <arg value="ECMASCRIPT5_STRICT"/>           
-        <arg value="--warning_level"/>
-        <arg value="QUIET"/>
-                   
+        <arg value="--jscomp_off=checkTypes"/>
     </java>     
     
   </target>

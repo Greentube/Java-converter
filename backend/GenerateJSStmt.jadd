@@ -259,9 +259,9 @@ aspect GenerateJS {
 	// --- ThrowStmt ---
     public void ThrowStmt.generateJS(CodePrinter out) 
     {
-        out.print("throw Error((");
+        out.print("throw (");
         getExpr().generateUsingResultJS(out);
-        out.print(").toString_0());");
+        out.print(")._error();");
         out.println();
     }
 		

@@ -1,3 +1,5 @@
+//reference// java/lang/NullPointerException
+//reference// java/lang/IllegalStateException
 //load// java/util/Iterator
 //load// java/util/Enumeration
 //load// java/util/List
@@ -93,12 +95,12 @@ _class(java_util_AbstractList, java_util_AbstractCollection, [java_util_List],
     },
  
     removeAll_1: function (collection) 
-    {   if (collection===null) throw new ReferenceError("NullPointerException");    
+    {   if (collection===null) throw (new java_lang_NullPointerException.$())._error();    
         return this._filter(collection,false);
     },
     
     retainAll_1: function (collection) 
-    {   if (collection===null) throw new ReferenceError("NullPointerException");    
+    {   if (collection===null) throw (new java_lang_NullPointerException.$())._error();    
         return this._filter(collection,true);
     },
     
@@ -142,7 +144,7 @@ _class(java_util_AbstractListIterator, java_lang_Object,  [java_util_Iterator, j
     remove_0: function() 
     {   
         var before = this.n-1;
-        if (before<0) throw new RangeError("IllegalStateException");
+        if (before<0) throw (new java_lang_IllegalStateException.$())._error();
         this.list.remove_1(before);  // will throw if unsupported
         this.n = before;
     },

@@ -5,13 +5,15 @@
 //                  of keys and values (so the array always has even length)
 //   _totalelements .. always keep track of the total size
 
+//reference// java/lang/NullPointerException
+//reference// java/lang/IndexOutOfBoundsException
+
 //load// java/lang/Object
 //load// java/util/Map
 //load// java/util/Set
 //load// java/util/AbstractCollection
 //load// java/util/Iterator
 //load// java/util/Enumeration
-
 var java_util_HashMapImpl = 
 {   $: function()
     {   this._table = null;
@@ -139,7 +141,7 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map],
     },
     
     putAll_1: function(map) 
-    {   if (map===null) throw new ReferenceError("NullPointerException");
+    {   if (map===null) throw (new java_lang_NullPointerException.$())._error();
         for (var it=map.keySet_0().iterator_0(); it.hasNext_0(); ) 
         {   var k = it.next_0();
             var v = map.get_1(k);
@@ -303,7 +305,7 @@ _class(java_util_HashMapIterator, java_lang_Object, [java_util_Iterator, java_ut
             
     next_0: function() 
     {   
-        if (this.n>=this.keys.length) throw new RangeError("IndexOutOfBoundsException");        
+        if (this.n>=this.keys.length) throw (new java_lang_IndexOutOfBoundsException.$())._error();
         var k = this.keys[this.n++];
         return this.deliverKeys ? k : this.map.get_1(k);
     },       
@@ -325,27 +327,31 @@ _class(java_util_HashMapIterator, java_lang_Object, [java_util_Iterator, java_ut
 
 // implement a simple Map object if not supported by framework already
 // (may be slow but will work)
-if (!Map) 
-{   Map = function() 
-    {   this.table = {};
-    }
-    Map.prototype.clear = function()
-    {   this.table = {};
-    }
-    Map.prototype.get = function(key)
-    {   return this.table[key];
-    }
-    Map.prototype.set = function(key,value)
-    {   this.table[key] = value;
-    }
-    Map.prototype.delete = function(key)
-    {   delete this.table[key];
-    }
-    Map.prototype.forEach = function(callback)
-    {   for (var k in this.table) 
-        {   if (this.table.hasOwnProperty(k)) 
-            {   callback(this.table[k],k,this);
+(function()
+{   if (!Map) 
+    {   var m = function() 
+        {   this.table = {};
+        }
+        m.prototype.clear = function()
+        {   this.table = {};
+        }
+        m.prototype.get = function(key)
+        {   return this.table[key];
+        }
+        m.prototype.set = function(key,value)
+        {   this.table[key] = value;
+        }
+        m.prototype.delete = function(key)
+        {   delete this.table[key];
+        }
+        m.prototype.forEach = function(callback)
+        {   for (var k in this.table) 
+            {   if (this.table.hasOwnProperty(k)) 
+                {   callback(this.table[k],k,this);
+                }
             }
         }
+        Map = m;
     }
-}
+})();
+

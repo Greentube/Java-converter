@@ -4,8 +4,7 @@ var java_lang_RuntimeException =
     {   this.message = null;
     },
 };
-_class (java_lang_RuntimeException, java_lang_Object, null, 
-"java.lang.RuntimeException"  //replace-me-with-empty-string-for-production//
+_class (java_lang_RuntimeException, java_lang_Object, null, "java.lang.RuntimeException"  
 ,{  _0: function() 
     {   this.message = null;
         return this;
@@ -17,4 +16,8 @@ _class (java_lang_RuntimeException, java_lang_Object, null,
     toString_0 : function()
     {   return java_lang_Object.$.prototype.toString_0.call(this) + (this.message ? ": " + this.message : "");
     },
+    
+    _error : function()
+    {   return Error(this.toString_0());
+    }
 });
