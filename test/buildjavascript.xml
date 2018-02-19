@@ -65,8 +65,26 @@
             output="${basedir}/build/javascript/mainperformance.js" 
             searchpath="${basedir}/build/javascript,${basedir}/../runtimejs"
             main="Performance"
+            production="yes"
             >
-    </linkJavaScript>       
+    </linkJavaScript>
+    <java jar="${basedir}/../lib/closure-compiler-v20180204.jar" fork="true">
+        <arg value="--compilation_level"/>
+        <arg value="ADVANCED"/>                  
+        <arg value="--js"/>     
+        <arg value="${basedir}/build/javascript/mainperformance.js"/>
+        <arg value="--js"/>     
+        <arg value="${basedir}/perfjavascriptexports.js"/>
+        <arg value="--js_output_file"/>
+        <arg value="${basedir}/build/javascript/mainperformance.js"/>
+        <arg value="--language_out"/>
+        <arg value="ECMASCRIPT5_STRICT"/>
+        <arg value="--language_in"/>
+        <arg value="ECMASCRIPT5_STRICT"/>           
+        <arg value="--warning_level"/>
+        <arg value="QUIET"/>
+                   
+    </java>     
     
   </target>
   
