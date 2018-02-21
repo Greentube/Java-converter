@@ -1,6 +1,6 @@
 //load// java/lang/Object
 var java_lang_Iterable = 
-{   _superinterfaces: null, 
+{   _superinterfaces: [], 
     _defaults:
     {   forEach_1: function(consumer)
         {   var i = this.iterator_0();

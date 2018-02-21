@@ -24,6 +24,7 @@ java_lang_Object.$.prototype.hashCode_0 = function()
 
 // add default attributes 
 java_lang_Object.$.prototype._interfaces = [];
+java_lang_Object.$.prototype._baseclasses = [ java_lang_Object ];
 java_lang_Object.$.prototype._classname = 
 "java.lang.Object"  //replace-me-with-empty-string-for-production//
 ;
@@ -39,6 +40,7 @@ function _class (classobject, base, interfaces, classname, instancemethods)
   
     // add attributes than can be used to check for class/interface type
     classobject.$.prototype._classname = classname;
+    classobject.$.prototype._baseclasses = base.$.prototype._baseclasses . concat(classobject);
     classobject.$.prototype._interfaces = base.$.prototype._interfaces;
     
     // add/overwrite methods that are newly defined
@@ -57,6 +59,9 @@ function _class (classobject, base, interfaces, classname, instancemethods)
     {   var proto = classobject.$.prototype;
         for (var index=0; implementedinterfaces && index<implementedinterfaces.length; index++) 
         {   var inf = implementedinterfaces[index];
+            // make sure that there is a valid _superinterfaces attribute defined in all interfaces (even if empty list)
+            if (!inf._superinterfaces) throw Error("Interface without valid _superinterfaces attribute");
+            
             // memorize that the object implements the interface
             if (proto._interfaces.indexOf(inf)<0) proto._interfaces = proto._interfaces.concat([inf]);            
             // wire up missing default methods
@@ -101,13 +106,53 @@ function _checkstr(o)
     throw new TypeError("ClassCastException");
 }
 
-// test if arbitrary object is if given array type
-function _isarray(o,typedescriptor) 
-{   return o!==null && o._t===typedescriptor;
+function _interfacehassuperinterface(intf, sintf)
+{   
+    if (intf==sintf) return true;
+    var l = intf._superinterfaces;
+    for (var i=0; l.length; i++)
+    {   if (_interfacehassuperinterface(l[i], sintf)) return true;
+    }
+    return false;
+}
+// test if arbitrary object is compatible with given array type
+function _isarray(o,typedescriptor,dimensions) 
+{   if (o===null || o._d !== dimensions) { return false; }
+    var ot = o._t;
+    if (!ot) { return false; }  // no type information in the array!
+    
+    // test for compatibility with Object[]
+    if (typedescriptor===java_lang_Object)
+    {   if (ot.$ || ot===java_lang_String) { return true; }  // any object array is compatible
+        if (ot._superinterfaces) { return true; }            // any interface array is compatible
+        return false;
+    }        
+    // test for compatibility with more specific object array types
+    else if (typedescriptor.$) 
+    {   if (ot.$)   // array of object type: must be exact or of type as base class
+        {   return ot.$.prototype._baseclasses.indexOf(typedescriptor) >= 0;
+        }
+        return false;
+    }
+    // test for compatibility with interface array type
+    else if (typedescriptor._superinterfaces)
+    {   
+        if (ot.$)  // array of object type: class must implement interface 
+        {   return ot.$.prototype._interfaces.indexOf(typedescriptor) >= 0;
+        }
+        if (ot._superinterfaces)  // array of interface type: must be exact type or sub-interface
+        {   return _interfacehassuperinterface(ot,typedescriptor);
+        }
+    }
+    // otherwise need exact match of either native type or object/interface
+    {   if (ot === typedescriptor) { return true; }
+    }
+    
+    return false; 
 }        
 // array type check with exception if unsuccessful. on success just return the value again
-function _checkarray(o,typedescriptor)
-{   if (o===null || o._t===typedescriptor) return o;
+function _checkarray(o,typedescriptor,dimensions)
+{   if (o===null || _isarray(o,typedescriptor,dimensions)) return o;
     throw new TypeError("ClassCastException");
 }
 
@@ -191,41 +236,54 @@ function _castTOint(a)
 }
 
 
-// attach runtime type information to an already created javascript array.
+// attach runtime type information to an already created one-dimensional javascript array.
 // returns the array itself for easy chaining
-function _arr(typedescriptor,a)
-{   a._t = typedescriptor;
+// typedescriptor is either one of the strings: 
+//  "B"  (byte) 
+//  "C"  (char) 
+//  "I"  (int)
+//  "D"  (double)
+//  "Z"  (boolean)
+// or a class definition object      (like java_lang_Object, java_lang_String)
+// or an interface definition object (like java_lang_Runnable)
+// dimensions: the declared number of dimensions for the array
+function _arr(typedescriptor,dimensions,a)
+{   a._t = typedescriptor;      // memorize type of leaf element    
+    a._d = dimensions;          // number of dimensions
     return a;
 }
 
-// create a (possible multidimensional) array with a single 
-// initialization value for all elements.
-// the sizes for the dimensions are given as arguments 1 to n, and the 
-// initialization value is the last call argument.
+// create a (possible multidimensional) array
+// typedescriptor: one of the possibilities like for _arr
+// dimensions: number of dimensions, the array will have
+// sizes: a plain javascript array with numbers for the size of each dimension. 
+//   may contain less elements than needed for dimension (but at least 1).
+//   in this case no sub-array is created, but the super-array elements
+//   are initialized with null,
+// initvalue: when the lowest layer is created, this gives the value to fill the array
 
-function _dim(typedescriptor,dimensions,initvalue) 
-{   return _dimImpl(typedescriptor,dimensions,initvalue,0);
-}
-
-function _dimImpl(typedescriptor,dimensions,initvalue,cursor)
-{   if (cursor>=dimensions.length-1) 
-    {   var len = dimensions[cursor];
-        var a = new Array(len);
-        for (var i=0; i<len; i++) 
+function _dim(typedescriptor,dimensions,sizes,initvalue) 
+{   
+    var arraysize = sizes[0];
+    var a = new Array(arraysize);    
+    a._t = typedescriptor;
+    a._d = dimensions;    
+    if (dimensions<2) 
+    {   for (var i=0; i<arraysize; i++) 
         {   a[i] = initvalue;
-        }
-        a._t = typedescriptor;
-        return a;
+        }               
     }
-    else 
-    {   var len = dimensions[cursor];
-        var a = new Array(len);
-        for (var i=0; i<len; i++) 
-        {   a[i] = _dimImpl(typedescriptor.substring(1), dimensions,initvalue, cursor+1);
-        }
-        a._t = typedescriptor;
-        return a;    
+    else if (sizes.length<2)
+    {   for (var i=0; i<arraysize; i++) 
+        {   a[i] = null;
+        }                   
+    } 
+    else
+    {   for (var i=0; i<arraysize; i++) 
+        {   a[i] = _dim(typedescriptor,dimensions-1,sizes.slice(1),initvalue);
+        }                   
     }
+    return a;
 }
 
 // do some patching of the built-in array prototype to allow easy

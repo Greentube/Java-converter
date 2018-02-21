@@ -1,7 +1,7 @@
 //reference// java/lang/NullPointerException
 //load// java/lang/Object
 var java_util_Comparator = { 
-    _superinterfaces: null, 
+    _superinterfaces: [], 
     _defaults: {
         reversed_0: function()
         {   return new java_util_ComparatorReversed.$(this);

@@ -191,10 +191,10 @@ public class TestJava4
         assertI(ar[0],3);
         assertI(ar[1],4);
         assertI(ar[2],5);
-        boolean[][] b2 = new boolean[4][2];
-        assertB(b2[2][1] == false);
         
         // create multidimensional array
+        boolean[][] b2 = new boolean[4][2];
+        assertB(b2[2][1] == false);
         int[][]a = new int[4][5];                
         assertI(a.length, 4);
         a[0][2] = 77;
@@ -349,6 +349,8 @@ public class TestJava4
         assertB((a2 instanceof int[][]));
         Object sa2 = new String[1][2];
         assertB(sa2 instanceof String[][]);
+        assertB(sa2 instanceof Object[][]);
+        assertB(!(sa2 instanceof Integer[][]));
         assertB(!(sa2 instanceof String[][][][]));
         assertB(!(sa2 instanceof String[]));
         assertB(!(sa2 instanceof String));
@@ -357,6 +359,25 @@ public class TestJava4
         Object ta2 = new TestInterface[2][2];
         assertB(ta2 instanceof TestInterface[][]);
         assertB(!(ta2 instanceof TestInterface[]));
+        Object[] ta3 = new TestInterface[3];
+        assertB(ta3 instanceof TestInterface[]);
+        assertB(ta3 instanceof Object[]);
+        assertB(((TestInterface[]) ta3)[0] == null);
+        ta3 = new Object[1];
+        assertB(! (ta3 instanceof TestInterface[]));
+        assertB(ta3 instanceof Object);
+        assertB(ta3 instanceof Object[]);
+        ta3 = new TestObject[]{ new TestObject() };
+        assertB(! (ta3 instanceof DummyClass[]));
+        assertB(ta3 instanceof TestInterface[]);
+        assertB(ta3 instanceof TestParent[]);
+        assertB(ta3 instanceof Object);
+        assertB(ta3 instanceof Object[]);
+        assertB(ta3 instanceof TestObject[]);
+        assertB( ((TestObject[])ta3)[0] != null);
+        assertB( ((TestInterface[])ta3)[0] != null);
+        assertB( ((TestParent[])ta3)[0] != null);
+        
         
         // check if the toString operation delivers at least some string
         assertB(new Object().toString()!=null);
@@ -1676,7 +1697,7 @@ public class TestJava4
         assertO(l,l2);
         assertO(l,new Vector());
         assertB(l2.equals(new Vector()));
-                
+             
         l.add ("alice");
         l.add ("bob");
         l.add ("carl");

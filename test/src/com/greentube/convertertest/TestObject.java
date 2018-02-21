@@ -12,7 +12,9 @@ public class TestObject extends TestParentIntermediate
     public boolean dummyboolean;
 
     public static int staticparentattribute = 55;  // shadow parent static attribute
-
+    public static TestObject staticself = new TestObject(); 
+    public static TestObject[] staticselfarray = new TestObject[1]; 
+    
     // constructors
     public TestObject()                 // construct without parameters
     {   super();                        // constructor calling superconstructor

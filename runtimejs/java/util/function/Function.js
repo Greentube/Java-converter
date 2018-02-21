@@ -1,6 +1,6 @@
 //load// java/lang/Object
 var java_util_function_Function = 
-{   _superinterfaces: null, 
+{   _superinterfaces: [], 
     _defaults:
     {   andThen_1: function(other)
         {   if (other===null) throw (new java_lang_NullPointerException.$())._error();

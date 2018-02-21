@@ -301,9 +301,8 @@ aspect GenerateJS {
   	
     public void ArrayInit.generateJS(CodePrinter out) 
     {   out.print("_arr(");
-        out.print("\"");
-        out.print(type().typeDescriptor());
-        out.print("\",");
+        type().generateElementTypeAndDimensionsJS(out);
+        out.print(",");
         out.print("[");
         for (int i=0; i<getNumInit(); i++) {
             if (i>0) out.print(",");
@@ -649,9 +648,9 @@ aspect GenerateJS {
         {
             out.print("_checkarray(");
             getExpr().generateUsingResultJS(out);
-            out.print(",\"");
-            out.print(t.typeDescriptor());
-            out.print("\")");
+            out.print(",");
+            t.generateElementTypeAndDimensionsJS(out);
+            out.print(")");
 		} 
         else if (t.isInterfaceDecl()) 
         {   out.print("_checkinterface(");
@@ -694,9 +693,9 @@ aspect GenerateJS {
         if (t.isArrayDecl()) 
         {   out.print("_isarray(");
             getExpr().generateUsingResultJS(out);
-            out.print(",\"");
-            out.print(t.typeDescriptor());
-            out.print("\")");
+            out.print(",");
+            t.generateElementTypeAndDimensionsJS(out);
+            out.print(")");
         }
         else if (!t.isReferenceType()) 
         {   out.print("false");
@@ -737,9 +736,7 @@ aspect GenerateJS {
   		} else {
             Access ta = getTypeAccess();
             out.print("_dim(");
-            out.print("\"");
-            out.print(ta.type().typeDescriptor());
-            out.print("\"");
+            type().generateElementTypeAndDimensionsJS(out);
 	  		out.print(",[");
 			ta.generateJS(out);
 			out.print("],");

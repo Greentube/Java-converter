@@ -1,6 +1,6 @@
 //load// java/lang/Object
 var java_util_function_Predicate =  
-{   _superinterfaces: null, 
+{   _superinterfaces: [], 
     _defaults:
     {   and_1: function(other)
         {   if (other===null) throw (new java_lang_NullPointerException.$())._error();

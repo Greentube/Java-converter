@@ -297,11 +297,8 @@ aspect GenerateJS {
     	out.print("{ ");
     	out.println();
     	out.increaseIndent();
-    	out.print("_superinterfaces: ");
-		if (!hasSuperInterface()) {
-			out.print("null");
-		} else {
-			out.print("[");
+    	out.print("_superinterfaces: [");
+    	if (hasSuperInterface()) {
 			int n=0;
       		for (Access ac: getSuperInterfaceList()) {
       			if (n>0) out.print(",");
@@ -310,9 +307,8 @@ aspect GenerateJS {
                 out.printAndMemorizeLoad(t.packageName(),t.uniqueName());            
         		n++;
       		}			
-			out.print("]");
 		}
-		out.print(",");
+		out.print("],");
 		out.println();
 				
 	    Vector<MethodDecl> defaults = new Vector<>();
@@ -322,7 +318,11 @@ aspect GenerateJS {
 					if (fd.isStatic()) {
 						out.printJSIdentifier(fd.getID(), "");
 						out.print(": ");
-						fd.getInit().generateJS(out);
+                        if (fd.getInit()!=null && fd.getInit().isConstant() && fd.isFinal()) {
+                            fd.getInit().generateUsingResultJS(out);
+                        } else {
+                            fd.fieldDecl().type().generateDefaultValueJS(out);
+                        }
 						out.print(",");					}
 						out.println();
 				}
@@ -354,7 +354,28 @@ aspect GenerateJS {
 		
 		out.decreaseIndent();
 		out.print("};");
-		out.println();			
+		out.println();
+					
+        // additional initialization code
+        for (BodyDecl bd:getBodyDeclList()) {
+            if (bd.isField()) {
+                for (FieldDeclarator fd:bd.fieldDeclarations()) {
+                    if (fd.isStatic()) {
+                        if (fd.getInit()!=null && !(fd.isFinal() && fd.getInit().isConstant()) ) {
+                            out.printJSName(packageName(), uniqueName());                   
+                            out.print(".");
+                            out.printJSIdentifier(fd.getID(),"");
+                            out.print(" = ");
+                            fd.getInit().generateUsingResultJS(out);
+                            out.print(";");
+                            out.println();
+                        }
+                    }
+                }
+            } else if (bd instanceof StaticInitializer) {
+                bd.generateJS(out);
+            }
+        }
 	}  
   	
 
@@ -483,7 +504,40 @@ aspect GenerateJS {
   		} else {
   			out.print("null");
   		}
-	}		
+	}
+			
+    public void TypeDecl.generateElementTypeAndDimensionsJS(CodePrinter out) 
+    {   
+        TypeDecl et = elementType();
+        if (et.isPrimitiveType()) {
+            if (et.isInt()) {
+                out.print("\"I\"");
+            } else if (et.isByte()) {
+                out.print("\"B\"");
+            } else if (et.isChar()) {          
+                out.print("\"C\"");
+            } else if (et.isBoolean()) {
+                out.print("\"Z\"");
+            } else if (et.isDouble()) {
+                out.print("\"D\"");
+            } else {
+                throw new RuntimeException("Type not supported:"+et.fullName());
+            }
+        }
+        else
+        {   TypeDecl erased = et.erasure();
+            String fullname = erased.packageName()+"."+erased.uniqueName();
+            if (fullname.equals("java.lang.CharSequence"))   // unsupported type
+            {   out.print("java_lang_String");
+            }
+            else
+            {   out.printAndMemorizeReference(erased.packageName(),erased.uniqueName());
+            }
+        }
+        
+        out.print(",");
+        out.print(""+dimension());    
+    }
   	
     public static void Constant.generateStringJS(CodePrinter out, String s) 
     {   out.print("\"");

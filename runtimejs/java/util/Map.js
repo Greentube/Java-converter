@@ -1,6 +1,6 @@
 //load// java/lang/Object
 var java_util_Map = { 
-    _superinterfaces: null,
+    _superinterfaces: [],
     _defaults:
     {   getOrDefault_2: function(key,def)
         {   return this.containsKey_1(key) ? this.get_1(key) : def;
