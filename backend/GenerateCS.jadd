@@ -246,7 +246,8 @@ aspect GenerateCS {
 	    // add redirects for interface default methods
 	    ArrayList<MethodDecl> neededredirects = new ArrayList<MethodDecl>();
         for (Access ac: getImplementsList() ) 
-        {   TypeDecl t = (ac instanceof TypeAccess) ? ((TypeAccess) ac).type() 
+        {   while (ac instanceof Dot) ac=((Dot)ac).getRight();        
+            TypeDecl t = (ac instanceof TypeAccess) ? ((TypeAccess) ac).type() 
                                                     : ((ParTypeAccess) ac).type(); 
             for(BodyDecl bd: ((InterfaceDecl)t).recursivelyGetBodyDecl())
             {   if (bd instanceof MethodDecl) {

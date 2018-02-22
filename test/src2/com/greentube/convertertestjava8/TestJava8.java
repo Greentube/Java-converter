@@ -33,6 +33,7 @@ public class TestJava8 extends TestJava7
         customiterator();
         customcomparator();
         sortliststest();
+        featureshowcase();        
     }
     
     public static void lambdatest()
@@ -400,6 +401,8 @@ public class TestJava8 extends TestJava7
 
     public static void sortliststest()
     {
+        System.out.println("- sort lists");
+
         final Comparator<String> c = (a,b)->((String)a).compareTo((String)b);
         List l = new ArrayList();
         l.add("nixi");
@@ -436,4 +439,51 @@ public class TestJava8 extends TestJava7
     }
 
 
+    
+    public static void featureshowcase()
+    {
+        System.out.println("- show cool features of java 8 (mainly funky lambdas and generics");
+           
+        // Create a fix sized list-view of an array             
+        List<String> lfix = Arrays.asList("Hi", "this", "are", "some", "texts");
+        // Copy to newly created variable-sized list
+        ArrayList<String> l = new ArrayList<>(lfix);
+        
+        // do some operations on the list, using lambda operators (but avoid auto-boxing)
+        l.removeIf( x->x.equals("some"));             // filter out some elements
+        l.sort((x,y) -> y.compareTo(x));              // sort the list backwards
+        l.replaceAll( x -> "_" + x + "_" );           // do operations on individual elements
+        List<Integer> li = map(l, s->Integer.valueOf(s.length()));  // mapping operation creates new list
+        Integer max = reduce(li, (a,b) -> Integer.valueOf(Math.max(a.intValue(),b.intValue())));
+        Integer min = reduce(li, (a,b) -> Integer.valueOf(Math.min(a.intValue(),b.intValue())));
+        Integer sum = reduce(li, (a,b) -> Integer.valueOf(a.intValue()+b.intValue()));
+                
+        assertO(l.toString(), "[_this_, _texts_, _are_, _Hi_]");
+        assertO(li.toString(), "[6, 7, 5, 4]");
+        assertI(max.intValue(), 7); 
+        assertI(min.intValue(), 4); 
+        assertI(sum.intValue(), 22);              
+    }
+    
+    // implementation of a generic map operation 
+    private static <T,R> List<R> map(List<T> list, Function<T,R> mappingfunction)
+    {
+        ArrayList<R> result = new ArrayList<>();
+        for (T e:list) 
+        {   result.add(mappingfunction.apply(e));
+        }
+        return result;
+    }
+    // implementation of a generic reduce operation 
+    interface ReduceFunction<T> {  T apply(T a, T b);  }
+    private static <T> T reduce(List<T> list, ReduceFunction<T> reducefunction)
+    {
+        if (list.size()<2) return list.get(0);
+        T accu = list.get(0);
+        for (int i=1; i<list.size(); i++)
+        {   accu = reducefunction.apply(accu,list.get(i));
+        }
+        return accu;
+    }
 }
+

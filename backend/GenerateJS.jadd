@@ -157,8 +157,9 @@ aspect GenerateJS {
             int n=0;
             for (Access ac: getImplementsList()) 
             {   if (n>0) out.print(",");
-                TypeDecl t = (ac instanceof TypeAccess) ? ((TypeAccess) ac).type() 
-                                                        : ((ParTypeAccess) ac).type();
+                while (ac instanceof Dot) ac=((Dot)ac).getRight();
+                TypeDecl t = (ac instanceof TypeAccess) ? ((TypeAccess) ac).type()    
+                                                        : ((ParTypeAccess) ac).type(); 
                 out.printAndMemorizeLoad(t.packageName(),t.uniqueName());            
                 ac.generateJS(out);
                 n++;
@@ -302,6 +303,7 @@ aspect GenerateJS {
 			int n=0;
       		for (Access ac: getSuperInterfaceList()) {
       			if (n>0) out.print(",");
+                while (ac instanceof Dot) ac=((Dot)ac).getRight();
                 TypeDecl t = (ac instanceof TypeAccess) ? ((TypeAccess) ac).type() 
                                                         : ((ParTypeAccess) ac).type();
                 out.printAndMemorizeLoad(t.packageName(),t.uniqueName());            
@@ -332,7 +334,7 @@ aspect GenerateJS {
                 if (md.isStatic())
                 {   md.generateJS(out);
                 }
-                else
+                else if (md.isDefault())
                 {   defaults.add(md);
                 }                
 			}
@@ -382,8 +384,40 @@ aspect GenerateJS {
     public void ConstructorDecl.generateJS(CodePrinter out) 
     {   
         Block block = getBlock();
+        int numpar = getNumParameter();
 
-        int numpar = getNumParameter();  		
+        // decide which kind of other constructors are called	
+        boolean callsthisconstructor = false;
+        int numcalledconstructorparameters = 0;
+        if (hasConstructorInvocation()) 
+        {   Stmt stmt = getConstructorInvocation();
+            if (stmt instanceof ExprStmt) 
+            {   ExprStmt exprStmt = (ExprStmt) stmt;
+                Expr expr = exprStmt.getExpr();
+                numcalledconstructorparameters = ((ConstructorAccess)expr).getNumArg();
+                if (!expr.isSuperConstructorAccess())  { callsthisconstructor = true; }
+            }
+        }
+        
+        // check if the whole constructor function can be entirely ommited
+        // (possible for default constructors that only call default
+        // super-constructor and without need to initialize instance variables) 
+        mayommit: if (numpar==0 
+                   && block.getNumStmt()==0 
+                   && !callsthisconstructor 
+                   && numcalledconstructorparameters==0  )
+        {   // check if there are some fields that would need initialization
+            for (BodyDecl bd:hostType().getBodyDeclList()) 
+            {   if (bd.isField()) 
+                {   for (FieldDeclarator fd:bd.fieldDeclarations()) 
+                    {   if (!fd.isStatic() && fd.getInit()!=null) { break mayommit; } 
+                    }
+                }
+            }
+            return;  // can safely ommit
+        }
+
+
         out.print("_"+numpar+": function(");
         for (int i=0; i<numpar; i++) 
         {   if (i>0) out.print(",");
@@ -395,21 +429,8 @@ aspect GenerateJS {
         out.println();
         out.increaseIndent();
 
-        // decide if all the fields have to be initialized right here	
-        boolean needsInit = true;
-        if (hasConstructorInvocation()) 
-        {   Stmt stmt = getConstructorInvocation();
-            if (stmt instanceof ExprStmt) 
-            {   ExprStmt exprStmt = (ExprStmt) stmt;
-                Expr expr = exprStmt.getExpr();
-                if (!expr.isSuperConstructorAccess()) 
-                {   needsInit = false;
-                }
-            }
-        }
-        
         // if calling a constructor of this, do not initialize all variables twice		
-        if (! needsInit) 
+        if (callsthisconstructor) 
         {   getConstructorInvocation().generateJS(out);
         } 
         else 
