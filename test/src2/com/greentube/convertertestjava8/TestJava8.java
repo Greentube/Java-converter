@@ -451,7 +451,7 @@ public class TestJava8 extends TestJava7
         
         // do some operations on the list, using lambda operators (but avoid auto-boxing)
         l.removeIf( x->x.equals("some"));             // filter out some elements
-        l.sort((x,y) -> y.compareTo(x));              // sort the list backwards
+        l.sort((x,y) -> y.compareTo(x));              // sort the list from Z to A
         l.replaceAll( x -> "_" + x + "_" );           // do operations on individual elements
         List<Integer> li = map(l, s->Integer.valueOf(s.length()));  // mapping operation creates new list
         Integer max = reduce(li, (a,b) -> Integer.valueOf(Math.max(a.intValue(),b.intValue())));
@@ -460,9 +460,9 @@ public class TestJava8 extends TestJava7
                 
         assertO(l.toString(), "[_this_, _texts_, _are_, _Hi_]");
         assertO(li.toString(), "[6, 7, 5, 4]");
-        assertI(max.intValue(), 7); 
-        assertI(min.intValue(), 4); 
-        assertI(sum.intValue(), 22);              
+        assertI(max.intValue(), 7);
+        assertI(min.intValue(), 4);
+        assertI(sum.intValue(), 22);
     }
     
     // implementation of a generic map operation 
