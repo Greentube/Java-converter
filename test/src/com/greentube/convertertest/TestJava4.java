@@ -1169,6 +1169,10 @@ public class TestJava4
         assertNaN(Math.atan(nan));
         
         assertApproximately(Math.atan2(1.0,1.0), Math.PI/4.0);
+        assertApproximately(Math.atan2(20.0,0.0), 1.5707963267948966);
+        assertApproximately(Math.atan2(-20.0,-1.0), -1.6207547225168395);
+        assertApproximately(Math.atan2(-1.0,1.0), -0.7853981633974483);
+        assertApproximately(Math.atan2(1.0,-3.0), 2.819842099193151);
         assertNaN(Math.atan2(1.0,nan));
         assertNaN(Math.atan2(nan,1.0));
         assertNaN(Math.atan2(nan,nan));
