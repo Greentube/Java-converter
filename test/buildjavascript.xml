@@ -28,7 +28,7 @@
     <linkJavaScript 
     		output="${basedir}/build/javascript/main.js" 
     		searchpath="${basedir}/build/javascript,${basedir}/../runtimejs"
-    		main="Launcher"
+    		main="com/greentube/test/Launcher"
     	    production="yes"
     		>
     </linkJavaScript>
