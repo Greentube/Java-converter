@@ -384,6 +384,18 @@ public class TestJava5 extends TestJava4
         
         assertO(s, String.join(",", s.split(",",-1)));     
         assertO(s, String.join("co", s.split("co",-1)));     
-        assertO(s, String.join("", s.split("",-1)));     
+        assertO(s, String.join("", s.split("",-1)));  
+        
+        String withzeroes = "\u0000lo\u0000hi\u0000";
+        assertSA(withzeroes.split("\u0000",-2), new String[]{"","lo","hi",""});   
+        assertSA(withzeroes.split("\u0000",-1), new String[]{"","lo","hi",""});   
+        assertSA(withzeroes.split("\u0000",0), new String[]{"","lo","hi"});   
+        assertSA(withzeroes.split("\u0000",1), new String[]{"\u0000lo\u0000hi\u0000"});   
+        assertSA(withzeroes.split("\u0000",2), new String[]{"","lo\u0000hi\u0000"});   
+        assertSA(withzeroes.split("\u0000",3), new String[]{"","lo","hi\u0000"});   
+        assertSA(withzeroes.split("\u0000",4), new String[]{"","lo","hi",""});   
+        assertSA(withzeroes.split("\u0000",5), new String[]{"","lo","hi",""});
+        
+           
     } 
 }

@@ -33,7 +33,7 @@
     		>
     </linkJavaScript>
     <!-- minify the javascript -->
-  	<java jar="${basedir}/../lib/closure-compiler-v20180204.jar" fork="true">
+  	<java jar="${basedir}/../lib/closure-compiler-v20180402.jar" fork="true">
         <arg value="--compilation_level"/>
         <arg value="SIMPLE"/>                 
   	    <arg value="--js"/>
@@ -45,7 +45,7 @@
         <arg value="--language_in"/>
         <arg value="ECMASCRIPT5_STRICT"/>           
   	</java>
-    <java jar="${basedir}/../lib/closure-compiler-v20180204.jar" fork="true">
+    <java jar="${basedir}/../lib/closure-compiler-v20180402.jar" fork="true">
         <arg value="--compilation_level"/>
         <arg value="ADVANCED"/>                  
         <arg value="--js"/>    	

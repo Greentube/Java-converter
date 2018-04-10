@@ -6,8 +6,8 @@ namespace testcsharp
     {
         static void Main(string[] args)
         {
-            Launcher.main(args);
-//            Performance.main(args);
+            com.greentube.test.Launcher.main(args);
+            Performance.main(args);
         }
     }
 }
