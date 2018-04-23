@@ -78,6 +78,8 @@ aspect GenerateCS {
                 out.println();   
             }            
             out.decreaseIndent();
+            out.println();
+            out.print("}");
         } 
         else 
         {   stmt.generateCS(out);

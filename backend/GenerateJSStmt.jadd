@@ -114,17 +114,45 @@ aspect GenerateJS {
     }
 
     public void LabeledStmt.generateJS(CodePrinter out) 
-    {   out.printJSIdentifier(getLabel(),"");
-        out.print(": ");
+    {   
         Stmt s = getStmt();
-        if (s instanceof BreakStmt)
-        {   out.print("{");
+        if 
+        (   (s instanceof ForStmt) 
+            || (s instanceof EnhancedForStmt)
+            || (s instanceof WhileStmt) 
+            || (s instanceof DoStmt) 
+        )
+        {   out.printJSIdentifier(getLabel(),"");
+            out.print(": ");
             s.generateJS(out);
-            out.print("}");
-            out.println();
         }
-        else 
-        {   s.generateJS(out);
+        else if (s instanceof Block)
+        {   out.printJSIdentifier(getLabel(),"");
+            out.print(":");
+            out.println();  
+            out.print("{");
+            out.println();            
+            out.increaseIndent();
+            Block b = (Block) s;
+            int n = b.getNumStmt();
+            for (int i=0; i<n; i++) 
+            {   b.getStmt(i).generateJS(out);
+            }
+            out.decreaseIndent();
+            out.print("}");
+            out.println();            
+        }
+        else
+        {   out.printJSIdentifier(getLabel(),"");
+            out.print(":");
+            out.println();
+            out.print("{");
+            out.println();  
+            out.increaseIndent();            
+            s.generateJS(out);
+            out.decreaseIndent();
+            out.print("}");
+            out.println();        
         }
     }
     

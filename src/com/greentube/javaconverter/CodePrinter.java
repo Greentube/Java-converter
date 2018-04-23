@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.*;
 
 public class CodePrinter 
-{   final static boolean horstmanStyle=true; // experimental bracing
+{   final static boolean horstmanStyle=false; // experimental bracing
 
     // general code generation
     File outputfolder;
@@ -86,7 +86,7 @@ public class CodePrinter
                 linehasstarted=true;
             }
             ow.write(s,0,s.length());
-            afteropeningbrace = s.endsWith("{");
+            afteropeningbrace = s.equals("{");
         } 
         catch (IOException e) 
         {   e.printStackTrace();

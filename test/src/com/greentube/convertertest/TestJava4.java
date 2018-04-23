@@ -48,6 +48,7 @@ public class TestJava4
         assignoperatortest();
         numberconversiontest();
         controlstructurestest();
+        labelstest(4);
         booleantest();        
         bytetest();        
         charactertest();
@@ -947,11 +948,6 @@ public class TestJava4
     }
     private static String swtst(int i) 
     {
-        x: {
-            if (i>99) break x;
-        }
-        y: break y;
-
         int n=0;
         l: switch (i) 
         {   case 1: 
@@ -972,6 +968,28 @@ public class TestJava4
         }
         return "MUCH";
     }
+    
+    private static void labelstest(int i4)
+    { 
+        System.out.println("- labels");
+        int tst = 1; 
+        x: {
+            if (i4>99) break x;
+            tst+=4;
+        }
+        z: {
+            y: break y; tst*=2;
+            break z; 
+        }
+        u: if (i4>3) break u; else tst*=5;
+        u2:if (i4<3) break u2; else tst*=5;
+        v: break v;
+                
+        loop: for (int i=0; i<99; i++, tst*=3) if (i>5) break loop;
+        loop2: for (int i=0; i<99; i++, tst+=1) if (i<5) continue loop2; else break loop2;
+                
+        assertI(tst,36455);
+    }   
         
     public static void booleantest() {
     	System.out.println("- boolean");
