@@ -48,7 +48,7 @@ aspect GenerateCS {
             out.print(n.substring(0,n.lastIndexOf('.')));			
             out.print(" { ");
         }
-        out.print("public class ");
+        out.print(hasAbstract() ? "public abstract class ":"public class ");
         out.printCSIdentifier(uniqueName());
         out.print(": ");
 
@@ -565,7 +565,7 @@ aspect GenerateCS {
 		    	  }    	    	      				
   			   } 			 		
   			   out.print("public ");
-  			   out.print(isoverriding ? "override " : "virtual ");  			
+  			   out.print(isoverriding ? "override " : (isAbstract() ? "abstract ":"virtual "));  			
   		    }  		
   		}
   		// perform some checks for interface methods
