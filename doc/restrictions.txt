@@ -75,8 +75,8 @@
       using generics and lambda expressions. The Supplier, Function, Consumer, BiConsumer, 
       Predicate interfaces are provided to allow basic generic data transformation operations.
       See the document libraries.txt for a complete list.
- - Slightly limited type inference 
-      Compared to the standard java compiler.there are some slight differences what kind of
+ - Slightly different type inference algorithm
+      Compared to the standard java compiler, there are some slight differences what kind of
       types the converter can actually infer for lambda expressions and for the "diamond" operator.
       Since type inference is undecidable in the general case, a best effort approach is done
       by the converter. This will not always succeed in the same set of cases as for the 

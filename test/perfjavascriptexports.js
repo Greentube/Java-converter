@@ -8,3 +8,4 @@ java_lang_System.out = new java_io_PrintStream.$()._1(function(line) {
 });
 window['smalltest'] = __Performance.smalltest_0;
 window['fulltest'] = __Performance.fulltest_0;
+window['hectoc'] = __Performance.hectoc_0;
