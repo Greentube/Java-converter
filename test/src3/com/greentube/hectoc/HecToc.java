@@ -24,9 +24,9 @@ public class HecToc
 
 //        trycombo(l, new int[]{1,1,1,1,1,1}, 100, true);
         
-        for (int a=1; a<=1; a++)
-        {   for (int b=1; b<=1; b++)
-            {   for (int c=1; c<=1; c++)
+        for (int a=1; a<=9; a++)
+        {   for (int b=1; b<=9; b++)
+            {   for (int c=1; c<=9; c++)
                 {   for (int d=1; d<=9; d++)
                     {   for (int e=1; e<=9; e++)
                         {   for (int f=1; f<=9; f++)

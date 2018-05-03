@@ -48,7 +48,14 @@ aspect GenerateCS {
             out.print(n.substring(0,n.lastIndexOf('.')));			
             out.print(" { ");
         }
-        out.print(hasAbstract() ? "public abstract class ":"public class ");
+        
+        boolean enum_has_abstract=false;
+        if (this instanceof EnumDecl) 
+        {   for (MethodDecl method : localMethods()) 
+            {   if (method.isAbstract()) { enum_has_abstract=true; }
+            }
+        }        
+        out.print(hasAbstract() || enum_has_abstract ? "public abstract class ":"public class ");
         out.printCSIdentifier(uniqueName());
         out.print(": ");
 

@@ -1,6 +1,6 @@
 package com.greentube.convertertest;
 
-public class TestParentIntermediate extends TestParent implements TestInterface 
+public abstract class TestParentIntermediate extends TestParent implements TestInterface 
 {
     public TestParentIntermediate(int i) 
     {   super(i);
@@ -9,6 +9,8 @@ public class TestParentIntermediate extends TestParent implements TestInterface
     public TestParentIntermediate() 
     {
     }
+
+    public abstract int xyz();
 
     @Override
     public int add(int a, int b)

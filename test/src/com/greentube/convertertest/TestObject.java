@@ -36,6 +36,11 @@ public class TestObject extends TestParentIntermediate
     public TestObject(int a, int b, int c)  
     {                                   // call default constructor of superclass     
     }
+    
+    public int xyz()
+    {
+        return 1;
+    }
 
     public int shadowAttributeSum()
     {   int somenumber = 123;
@@ -60,7 +65,7 @@ public class TestObject extends TestParentIntermediate
     }
 
     public int depth() 
-    {   return super.depth()+1;
+    {   return super.depth()+xyz();
     }
 
     public int depth(int multiplier) 

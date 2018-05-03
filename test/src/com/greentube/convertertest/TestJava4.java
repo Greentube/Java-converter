@@ -163,8 +163,10 @@ public class TestJava4
         assertO(d.secondaryString(), "secondary");
         
         assertI(t.depth(),3);
-        assertI(new TestParentIntermediate().depth(),2);
-        assertI(new TestParentIntermediate().depth(4), 4);
+        assertI(new TestParentIntermediate2().depth(),2);
+        assertI(new TestParentIntermediate2().depth(4), 4);
+        assertI(new TestParentIntermediate2().xyz(), 4711);
+        
     }
     
 
