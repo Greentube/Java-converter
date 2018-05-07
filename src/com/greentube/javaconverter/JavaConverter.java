@@ -45,15 +45,15 @@ public class JavaConverter extends Frontend
             }
         }
 
-        err = run
+        int parseerr = run
         (   argv.toArray(new String[0]), 
             Program.defaultBytecodeReader(), 
             Program.defaultJavaParser()
         );
-        if (err>0) 
-        {   System.out.println("Total conversion errors: "+err);
+        if (parseerr + err>0) 
+        {   System.out.println("Total conversion errors: "+(parseerr+err));
         }
-        return err;
+        return parseerr+err;
     }
 
     @Override

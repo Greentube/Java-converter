@@ -8,7 +8,6 @@ namespace testcsharp
         {
             com.greentube.test.Launcher.main(args);
             Performance.main(args);
-            com.greentube.hectoc.HecToc.main(args);
         }
     }
 }

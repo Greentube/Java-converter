@@ -4,7 +4,7 @@ public class Performance
 {
     public static void main(String[] args)
     {
-//        fulltest();
+        fulltest();
     }
     
     public static void hectoc()

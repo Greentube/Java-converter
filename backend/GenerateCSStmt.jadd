@@ -296,6 +296,10 @@ aspect GenerateCS {
     }
   
     // --- EmptyStmt ---
+    public void EmptyStmt.generateCS(CodePrinter out)
+    {   out.print("{}");
+        out.println();
+    }    
     
     // --- ExprStmt ---
   

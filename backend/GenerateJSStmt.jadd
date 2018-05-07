@@ -233,6 +233,10 @@ aspect GenerateJS {
 	}
   
     // --- EmptyStmt ---
+    public void EmptyStmt.generateJS(CodePrinter out)
+    {   out.print("{}");
+        out.println();
+    }
     
     // --- ExprStmt ---
   
@@ -253,7 +257,7 @@ aspect GenerateJS {
         if (t instanceof Block) out.println();
         t.generateJS(out);
         if (e!=null) 
-        {   if (!(t instanceof Block)) out.println();
+        {   if (!(t instanceof Block) && !(t instanceof EmptyStmt)) out.println();
             out.print("else ");
             e.generateJS(out);
         }

@@ -3,8 +3,8 @@ import com.greentube.javaconverter.CodePrinter;
 aspect GenerateJS {
   	  	
   	public void ASTNode.generateJS(CodePrinter out) {
-  		System.err.println("Can not create JS for:"+this.getClass().getName());
-		this.dumpTree(System.err);
+  		this.dumpTree(System.err);
+		throw new RuntimeException("Can not create JS for:"+this.getClass().getName());
   	}
 
   	public void CompilationUnit.generateJS(File outputfolder) {

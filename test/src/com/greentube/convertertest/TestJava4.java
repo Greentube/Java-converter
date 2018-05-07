@@ -17,6 +17,8 @@ import com.greentube.convertert€st_3.ModifierTestClass;
 import com.greentube.convertert€st_3.ModifierTestSubClass;
 import com.greentube.convertert€st_3.OuterCläss;
 
+@SuppressWarnings("rawtypes")
+
 public class TestJava4 
 {
     // class attributes
@@ -947,6 +949,11 @@ public class TestJava4
 		assertO(swtst(5),"MUCH");
 		assertO(swtst(6),"MUCH");
 		assertO(swtst(7),"?");
+		
+		; // empty statement
+		for (int i=0; i<2; i++);  // loop with empty body
+		if (y++<0);                 // if with empty body
+		if (y++>0); else;           // more empty bodies		
     }
     private static String swtst(int i) 
     {
@@ -986,6 +993,7 @@ public class TestJava4
         u: if (i4>3) break u; else tst*=5;
         u2:if (i4<3) break u2; else tst*=5;
         v: break v;
+        nope:; 
                 
         loop: for (int i=0; i<99; i++, tst*=3) if (i>5) break loop;
         loop2: for (int i=0; i<99; i++, tst+=1) if (i<5) continue loop2; else break loop2;

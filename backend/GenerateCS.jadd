@@ -3,8 +3,8 @@ import com.greentube.javaconverter.CodePrinter;
 aspect GenerateCS {
   	  	
   	public void ASTNode.generateCS(CodePrinter out) {
-        System.err.println("Can not create CS for:"+this.getClass().getName());
-		this.dumpTree(System.err);
+        this.dumpTree(System.err);
+        throw new RuntimeException("Can not create CS for:"+this.getClass().getName());
   	}
   	
   	public String ASTNode.renameMethod(String n, boolean isstatic) {

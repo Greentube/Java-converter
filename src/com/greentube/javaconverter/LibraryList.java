@@ -190,6 +190,8 @@ public class LibraryList
             "java.lang.StringBuilder append(double)",
             "int length()",			
         },
+        { "java.lang.SuppressWarnings"
+        },
         { "java.lang.System",
             "out",
             "err",

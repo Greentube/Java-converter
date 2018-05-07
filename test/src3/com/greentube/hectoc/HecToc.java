@@ -30,7 +30,7 @@ public class HecToc
                 {   for (int d=1; d<=9; d++)
                     {   for (int e=1; e<=9; e++)
                         {   for (int f=1; f<=9; f++)
-                            {   int hits = trycombo(l, new int[]{a,b,c,d,e,f}, 100, false);
+                            {   int hits = trycombo(l, new int[]{a,b,c,d,e,f}, 99, false);
                                 if (hits<=0) 
                                 {   System.out.println("No solution for "+a+""+b+""+c+""+d+""+e+""+f);
                                 }
