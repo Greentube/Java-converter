@@ -11,8 +11,8 @@ namespace java.lang { public class SYSTEM
     {   System.Environment.Exit( code );
     }
         
-    public static double currentTimeMillis() 
-    {   return (double) System.DateTimeOffset.Now.ToUnixTimeMilliseconds();
+    public static long currentTimeMillis() 
+    {   return System.DateTimeOffset.Now.ToUnixTimeMilliseconds();
     }
                     
     public static T[][] dim<T>(int n0, int n1) 

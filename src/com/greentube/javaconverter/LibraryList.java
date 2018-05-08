@@ -120,7 +120,7 @@ public class LibraryList
             "int min(int, int)", 
             "double pow(double, double)", 
             "double rint(double)", 
-            "long round(double)",  // only allowed if immediately casting the result to double 
+            "long round(double)",  // only allowed if immediately casting the result to double or int
             "double signum(double)",
             "double sin(double)", 
             "double sinh(double)", 
@@ -197,7 +197,7 @@ public class LibraryList
             "err",
             "void arraycopy(java.lang.Object, int, java.lang.Object, int, int)",
             "void exit(int)",
-            "long currentTimeMillis()", // only allowed if immediately casting the result to double
+            "long currentTimeMillis()", // only allowed if immediately casting the result to double or int
         },
         { "java.util.AbstractCollection",
             "boolean contains(java.lang.Object)",

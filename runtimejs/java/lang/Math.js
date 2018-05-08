@@ -72,12 +72,19 @@ var java_lang_Math =
         }
     },
     
-    round_1: function (x) 
+    roundAsDouble_1: function (x) 
     {   if (isNaN(x)) return 0;
         var large = 9.223372036854776E18;
         if (x>=large)  return large;
         if (x<=-large) return -large;
-        return Math.floor(x+0.5);
+        return Math.round(x);
+    },
+    roundAsInt_1: function (x) 
+    {   if (isNaN(x)) return 0;
+        var large = 9.223372036854776E18;
+        if (x>=large) return -1;
+        if (x<=-large) return 0;
+        return Math.round(x) | 0;
     },
     
     signum_1: function(x) 

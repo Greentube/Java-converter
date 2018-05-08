@@ -40,6 +40,7 @@ public class Performance
         }
         
         System.out.println("Warming up...");
+        int si = (int) System.currentTimeMillis();
         for (int i=0; i<100; i++) {
             testArrayList();  
             testHashMap(new Object[]{ "hi", "ho", Integer.valueOf(5), Byte.valueOf((byte)10), "?"}, i);
@@ -48,7 +49,8 @@ public class Performance
             testPolymorphism();
             testSort();
         }
-    
+        int ei = (int) System.currentTimeMillis();
+        System.out.println("warmup took "+(ei-si)+"ms");
         System.out.println("Performance test...");
 
         // do each test multiple times for higher accuracy

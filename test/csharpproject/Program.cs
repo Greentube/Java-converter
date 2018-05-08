@@ -7,7 +7,7 @@ namespace testcsharp
         static void Main(string[] args)
         {
             com.greentube.test.Launcher.main(args);
-            Performance.main(args);
+//            Performance.main(args);
         }
     }
 }

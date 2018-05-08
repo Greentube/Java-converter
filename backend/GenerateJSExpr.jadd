@@ -126,12 +126,21 @@ aspect GenerateJS {
         {   TypeDecl t = m.hostType();
             String tname = t.uniqueName();
             String n = m.name();
-            // special handling of the Math.abs method
-            if (t.packageName().equals("java.lang") && t.uniqueName().equals("Math")) 
-            {   if (n.equals("abs") && m.type().isInt()) 
+            if (t.packageName().equals("java.lang") && (t.uniqueName().equals("Math") || t.uniqueName().equals("System"))) 
+            {   // special handling of the Math.abs method            
+                if (n.equals("abs") && m.type().isInt()) 
                 {   n = "absInt";
                 }
-            }        
+                // special handling of the Math.round and System.currentTimeMillis methods
+                else if (m.type().isLong())      
+                {   Expr parentexp = (Expr) getParent();
+                    while ((parentexp instanceof Dot) && (parentexp.getParent() instanceof Expr)) 
+                    {   parentexp = (Expr) parentexp.getParent();
+                    }
+                    n = n + (parentexp.type().isInt() ? "AsInt" : "AsDouble"); 
+                }
+            }
+            
             out.printAndMemorizeReference(t.packageName(),tname);
             out.print(".");
             out.printJSIdentifier(n,"_"+m.getNumParameter());
@@ -626,6 +635,7 @@ aspect GenerateJS {
   	public void CastExpr.generateJS(CodePrinter out) {
 		TypeDecl t = type();
 		if (t.isPrimitiveType()) {
+		    TypeDecl et = getExpr().type();
 			if (t.isByte()) { 
 				out.print("_castTObyte(");
 				getExpr().generateUsingResultJS(out);
@@ -635,9 +645,9 @@ aspect GenerateJS {
 				getExpr().generateUsingResultJS(out);
 				out.print(")");
 			} else if (t.isInt()) {
-				out.print("_castTOint(");
+			    if (!et.isLong() && !et.isInt()) { out.print("_castTOint("); }
 				getExpr().generateUsingResultJS(out);
-				out.print(")");
+				if (!et.isLong() && !et.isInt()) { out.print(")"); }
 			} else if (t.isDouble()) {
 				getExpr().generateUsingResultJS(out);
 			} else {

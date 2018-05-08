@@ -134,13 +134,21 @@ namespace java.lang { public class Math {
     {   return System.Math.Pow(a,b);
     }
         
-    public static double round(double x)
+    public static long round(double x)
     {
-        double large = 9.223372036854776E18;
-        if (System.Double.IsNaN(x)) return 0;
-        if (x>=large) return large;
-        if (x<=-large) return -large;
-        return System.Math.Floor(x+0.5);
+        if (System.Double.IsNaN(x)) { return 0; }
+        if (x>=9.223372036854776E18) { return System.Int64.MaxValue; }
+        if (x<=-9.223372036854776E18) { return System.Int64.MinValue; }
+        
+        // 0.49999999999999994 + 0.5 makes 1.
+        if (x == 0.49999999999999994) { return 0; }
+
+        // 4503599627370497.0 + 0.5 makes 4503599627370498.0.
+        if (x <= -4503599627370496.0 || 4503599627370496.0 <= x)
+        {   return (long) x;
+        }
+        // for these number ranges, this formula should be fine
+        return (long) System.Math.Floor(x + 0.5);
     }
     
     public static double rint(double x) 

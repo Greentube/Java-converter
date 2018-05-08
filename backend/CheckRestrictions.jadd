@@ -433,9 +433,9 @@ aspect CheckRestrictions {
             while ((parentexp instanceof Dot) && (parentexp.getParent() instanceof Expr)) 
             {   parentexp = (Expr) parentexp.getParent();
             }
-            if (!(parentexp instanceof CastExpr) ||  !(parentexp.type().isDouble()) )
+            if (!(parentexp instanceof CastExpr) || !(parentexp.type().isDouble() || parentexp.type().isInt()) )
             {   reportRestriction(errorlist, 
-                    "Can only use this library method when casting the result explicitly to double"                
+                    "Can only use this library method when casting the result explicitly to double or int"                
                 );  
             }
         }

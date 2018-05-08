@@ -25,8 +25,12 @@ var java_lang_System =
     {
     },
     
-    currentTimeMillis_0: function() 
+    currentTimeMillisAsDouble_0: function() 
     {   return Date.now();
+    },
+    
+    currentTimeMillisAsInt_0: function() 
+    {   return Date.now() | 0;
     },
     
     out: (new java_io_PrintStream.$())._1(console.log),

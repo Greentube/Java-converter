@@ -881,6 +881,12 @@ public class TestJava4
     	assertI((int)-1.7, -1);
     	assertI((int)-1.99, -1);
     	assertI((int)-2.0, -2);
+        d = 1525770675435.0;
+        assertI((int)d, 2147483647);
+        d = 621525770675435.0;
+        assertI((int)d, 2147483647);
+        d = -621525770675435.5;
+        assertI((int)d, -2147483648);
     }
     
     public static void controlstructurestest()
@@ -1305,11 +1311,46 @@ public class TestJava4
         assertD((double)Math.round(0.2), 0);
         assertD((double)Math.round(-0.2), 0);
         assertD((double)Math.round(nan), 0);
-        assertApproximately((double)Math.round(1E20), 9.223372036854776E18);
-        assertApproximately((double)Math.round(-1.1111111111111111111E20), -9.223372036854776E18);
-        assertApproximately((double)Math.round(Double.POSITIVE_INFINITY), 9.223372036854776E18);
-        assertApproximately((double)Math.round(Double.NEGATIVE_INFINITY), -9.223372036854776E18);
-        
+        assertD(-6456125623431434.9, -6456125623431435.0); // precision limit
+        assertD((double) Math.round(-645612562431434.9), -645612562431435.0);
+        assertD((double) Math.round(-645612562431434.5), -645612562431434.0);
+        assertD((double) Math.round(-645612562431434.1), -645612562431434.0);        
+        assertD((double)Math.round(1E20), 9.223372036854776E18);
+        assertD((double)Math.round(-1.1111111111111111111E20), -9.223372036854776E18);
+        assertD((double)Math.round(Double.POSITIVE_INFINITY), 9.223372036854776E18);
+        assertD((double)Math.round(Double.NEGATIVE_INFINITY), -9.223372036854776E18);
+        assertI((int) Math.round(-5.4), -5);
+        assertI((int) Math.round(-5.5), -5);
+        assertI((int) Math.round(4.5), 5);
+        assertI((int) Math.round(4.4999999999999), 4);
+        assertI((int) Math.round(4.4999999999999999), 5);
+        assertI((int) Math.round(44231434.5), 44231435);
+        assertI((int) Math.round(-44231434.5), -44231434);
+        assertI((int) Math.round(234234241231434.2), -390190518);
+        assertI((int) Math.round(-234234241231434.2), 390190518);
+        assertI((int) Math.round(645612562431434.9), 1668431307);
+        assertI((int) Math.round(645612562431434.5), 1668431307);
+        assertI((int) Math.round(645612562431434.1), 1668431306);
+        assertI((int) Math.round(-645612562431434.9), -1668431307);
+        assertI((int) Math.round(-645612562431434.5), -1668431306);
+        assertI((int) Math.round(-645612562431434.1), -1668431306);
+        assertI((int) Math.round(6456125672431434.9), -447439029);
+        assertI((int) Math.round(6456125672431434.5), -447439030);
+        assertI((int) Math.round(6456125672431434.1), -447439030);
+        assertI((int) Math.round(-6456125672431434.9), 447439029);
+        assertI((int) Math.round(-6456125672431434.5), 447439030);
+        assertI((int) Math.round(-6456125672431434.1), 447439030);
+        assertI((int) Math.round(1.1111111111111111111E20), -1);
+        assertI((int) Math.round(-1.1111111111111111111E20), 0);
+        assertI((int)(double) Math.round(-5.4), -5);
+        assertI((int)(double) Math.round(44231434.5), 44231435);
+        assertI((int)(double) Math.round(-44231434.5), -44231434);
+        assertI((int)(double) Math.round(234234241231434.2), 2147483647);
+        assertI((int)(double) Math.round(-234234241231434.2), -2147483648);
+        assertI((int)(double) Math.round(1.1111111111111111111E20), 2147483647);
+        assertI((int)(double) Math.round(-1.1111111111111111111E20), -2147483648);
+        assertI((int)(double) Math.round(-5.4), -5);
+                
         assertD(Math.rint(0.0), 0.0);
         assertD(Math.rint(6.3), 6.0);
         assertD(Math.rint(-16.3), -16.0);
