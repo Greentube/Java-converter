@@ -11,9 +11,7 @@ var java_lang_Double =
     },
     
     toString_1: function(d) 
-    {   var s = d.toString();
-        if (s.indexOf('.')<0) return s+".0";
-        return s;
+    {   return _d2s(d);
     },
     
     valueOf_1: function (d) 
@@ -58,8 +56,6 @@ _class (java_lang_Double, java_lang_Object, null,
     },
     
     toString_0: function() 
-    {   var s = this.d.toString();
-        if (s.indexOf('.')<0) return s+".0";
-        return s;
+    {   return _d2s(this.d);
     },
 });

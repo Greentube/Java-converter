@@ -161,13 +161,23 @@ function _c2s(c)
 {   return String.fromCharCode(c);
 }
 
-// convert a double to a string (will cause trailing .0 to be included)
+// convert a double to a string in java style 
 function _d2s(d) 
-{   var s = String(d);
-    if (isFinite(d) && s.indexOf(".")<0)  // finite numbers will be drawn ith a .0
-    {   s = s.concat(".0");
+{   if (isFinite(d))
+    {   var s = String(d);
+        if (s.indexOf(".")<0)
+        {   s = s.concat(".0");  // non-fractional numbers get a .0 nevertheless
+        } 
+        else     // patch exponent notation to match java
+        {   var idx = s.indexOf("+");
+            if (idx>0) { s = s.substring(0,idx) + s.substring(idx+1); }
+            s = s.replace("e","E");
+        }
+        return s;
     }
-    return s;
+    else    // infinite values or NaN
+    {   return String(d);
+    }
 }
 
 // convert any primitive type to a string 

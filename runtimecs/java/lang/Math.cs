@@ -22,22 +22,13 @@ namespace java.lang { public class Math {
     
     public static double atan2(double y,double x) 
     {   if (System.Double.IsNaN(x) || System.Double.IsNaN(y)) return 0.0/0.0;
-//        if (x==0.0)  // positive or negative 0
-//        {   if (y>0)
-//            {   return x;
-//            }
-//            else
-//            {   return -x;
-//            }
-//        }
-//        if (y==0.0) {  // positive or negative 0
-//            if (x>0)
-//            {   return x;
-//            }
-//            else
-//            {   return -x;
-//            }
-//        }
+        
+        if (x==1.0) { return System.Math.Atan(y); }
+        if (x==-1.0) 
+        {   double z = System.Math.Atan(System.Math.Abs(y));
+            return y>0 ? PI_f-(z-PI_L) : z-PI_L - PI_f;
+        }
+        
         if (y==Double.POSITIVE__INFINITY_f) 
         {   if (x==Double.POSITIVE__INFINITY_f) 
             {   return PI_f/4;
@@ -57,7 +48,7 @@ namespace java.lang { public class Math {
             {   return -3*PI_f/4;
             }
             else 
-            {   return PI_f/2;                
+            {   return -PI_f/2;                
             }
         }
         if (x==Double.POSITIVE__INFINITY_f) 
@@ -66,8 +57,11 @@ namespace java.lang { public class Math {
         if (x==Double.NEGATIVE__INFINITY_f) 
         {   return PI_f;            
         }
+        if (x==0) 
+        {   return y>0 ? PI_f/2.0 : (y<0 ? -PI_f/2.0 : 0);
+        }
         
-        return System.Math.Atan2(y,x);
+        return System.Math.Atan2(y,x);              
     }    
 
     public static double ceil(double a) 
@@ -85,11 +79,7 @@ namespace java.lang { public class Math {
     public static double exp(double a) 
     {   return System.Math.Exp(a);
     }   
-    
-    public static double expm1(double a) 
-    {   return System.Math.Exp(a)-1.0;
-    }   
-    
+        
     public static double floor(double a) 
     {   return System.Math.Floor(a);
     }   
@@ -108,10 +98,6 @@ namespace java.lang { public class Math {
     
     public static double log10(double a) 
     {   return System.Math.Log10(a);
-    }
-    
-    public static double log1p(double x)
-    {   return System.Math.Log(x + 1.0);
     }
     
     public static double max(double a, double b) 
@@ -182,11 +168,12 @@ namespace java.lang { public class Math {
     }
     
     public static double tanh(double a) 
-    {   return System.Math.Tanh(a);
+    {   return 1 - 2/(Math.exp(2*a)+1);
+//        return System.Math.Tanh(a);
     }
     
     public static double toDegrees(double angrad)
-    {   return angrad * (180.0/System.Math.PI);
+    {   return angrad * 180.0 / System.Math.PI;
     }
     
     public static double toRadians(double angdeg)
@@ -194,5 +181,7 @@ namespace java.lang { public class Math {
     }
 
     public static readonly double E_f  = System.Math.E;
-    public static readonly double PI_f = System.Math.PI;   
+    public static readonly double PI_f = System.Math.PI;  
+    
+    private const double PI_L = 1.2246467991473532e-16; // Long bits 0x3ca1a62633145c07L.    
 }}

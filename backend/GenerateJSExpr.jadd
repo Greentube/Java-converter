@@ -468,6 +468,10 @@ aspect GenerateJS {
   				out.print("_c2s(");
   				l.generateUsingResultJS(out);
   				out.print(")");
+            } else if (l.type().isDouble()) {
+                out.print("_d2s(");
+                l.generateUsingResultJS(out);
+                out.print(")");
 			} else if (l.type().isReferenceType()) {
   				out.print("_str(");
   				l.generateUsingResultJS(out);
@@ -482,6 +486,10 @@ aspect GenerateJS {
   				out.print("_c2s(");
   				r.generateUsingResultJS(out);
   				out.print(")");
+            } else if (r.type().isDouble()) {
+                out.print("_d2s(");
+                r.generateUsingResultJS(out);
+                out.print(")");
   			} else if (r.type().isReferenceType()) {
   				out.print("_str(");
   				r.generateUsingResultJS(out);

@@ -24,10 +24,6 @@ var java_lang_Math =
     
     exp_1: Math.exp,
     
-    expm1_1: (typeof Math.expm1 === "function") ? Math.expm1 : function(x) 
-    {   return Math.exp(x) - 1;
-    },
-    
     floor_1: Math.floor,
     
     IEEEremainder_2:  function(a,b)
@@ -46,10 +42,6 @@ var java_lang_Math =
     },
     
     log_1: Math.log,
-    
-    log1p_1: (typeof Math.log1p === "function") ? Math.log1p : function(x) 
-    {   return Math.log(1+x);
-    },
     
     log10_1: (typeof Math.log10 === "function") ? Math.log10 : function(x) 
     {   var result = Math.log(x) * Math.LOG10E;
@@ -110,7 +102,7 @@ var java_lang_Math =
     },
     
     toRadians_1: function(x) 
-    {   return x*Math.PI/180;
+    {   return x*(Math.PI/180);
     },        
     
     E:  Math.E,

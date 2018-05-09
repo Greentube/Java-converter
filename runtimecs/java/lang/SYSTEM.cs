@@ -88,11 +88,23 @@ namespace java.lang { public class SYSTEM
     {   if (System.Double.IsNaN(v)) return "NaN";    
         if (System.Double.IsNegativeInfinity(v)) return "-Infinity";
         if (System.Double.IsInfinity(v)) return "Infinity";
+        
+        // java builds shortest possible representation that does not lose precision
+        // try to also find a short representation by using different formats
+        System.String s = v.ToString("R");
+        System.String s2 = v.ToString("G16");
+        double parseback;
+        if (s2.Length<s.Length && System.Double.TryParse(s2,out parseback))
+        {   if (parseback==v) { s=s2; }
+        }
+                
+        // check if need to add decimal places
+        if (s.IndexOf('.')<0) { return s + ".0"; }
+        // need to patch exponent to match java style
+        int idx = s.indexOf("+");
+        if (idx>0) { s = s.Remove(idx,1); }
         // use decimal point regardless of localisation settings
-        System.String s = v.ToString().Replace(',','.');
-        // check if already have some decimal places
-        if (s.IndexOf('.')>=0) return s;
-        return s + ".0";
+        return s.Replace(',','.');
     }
     
     public static System.String str(int v) 
