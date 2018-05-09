@@ -21,7 +21,7 @@ namespace java.lang { public class Math {
     }
     
     public static double atan2(double y,double x) 
-    {   if (System.Double.IsNaN(x) || System.Double.IsNaN(y)) return 0.0/0.0;
+    {   if (System.Double.IsNaN(x) || System.Double.IsNaN(y)) { return 0.0/0.0; }
         
         if (x==1.0) { return System.Math.Atan(y); }
         if (x==-1.0) 
@@ -101,11 +101,11 @@ namespace java.lang { public class Math {
     }
     
     public static double max(double a, double b) 
-    {   return (a>b) ? a : b;
+    {   return System.Math.Max(a,b);
     }
     
     public static double min(double a, double b) 
-    {   return (a<b) ? a : b;
+    {   return System.Math.Min(a,b);
     }
     
     public static int max(int a, int b) 
@@ -117,7 +117,8 @@ namespace java.lang { public class Math {
     }
 
     public static double pow(double a, double b) 
-    {   return System.Math.Pow(a,b);
+    {   if (b==0) { return 1.0; }
+        return System.Math.Pow(a,b);
     }
         
     public static long round(double x)
@@ -148,7 +149,9 @@ namespace java.lang { public class Math {
     }
 
     public static double signum(double a)
-    {   return a==0 ? a : System.Math.Sign(a);
+    {   
+        if (System.Double.IsNaN(a)) { return 0.0/0.0; }
+        return a==0 ? a : System.Math.Sign(a);
     }
     
     public static double sin(double a) 

@@ -16,7 +16,11 @@ var java_lang_Math =
     
     ceil_1: Math.ceil,
     
-    cos_1: Math.cos,
+    cos_1: Math.cos, 
+//    function(a)
+//    {   if (a>10) a=a%(2*Math.PI); 
+//        return Math.cos(a);
+//    },
     
     cosh_1: (typeof Math.cosh === "function") ? Math.cosh : function(x) 
     {   return (Math.exp(x) + Math.exp(-x)) / 2;
