@@ -4,13 +4,14 @@ import java.io.*;
 import org.apache.tools.ant.*;
 
 public class JavaScriptLinkerAntTask extends Task 
-{   private String mainfile = null;
+{   private String roots = null;
     private String searchpath = null;
     private String outputfile = null;
+    private String startupcode = null;
     private boolean production = false;
     
-    public void setMain(String fname) 
-    {  this.mainfile = fname;
+    public void setRoot(String fnames) 
+    {  this.roots = fnames;
     }
     public void setOutput(String fname) 
     {   this.outputfile = fname;
@@ -18,13 +19,16 @@ public class JavaScriptLinkerAntTask extends Task
     public void setSearchPath(String searchpath) 
     {   this.searchpath = searchpath;
     }
+    public void setStartup(String code) 
+    {   this.startupcode = code;
+    }
     public void setProduction(boolean prod)
     {   this.production = prod;
     }
 
     public void execute() throws BuildException 
     {   try 
-        {   JavaScriptLinker.link(mainfile, searchpath, outputfile, production);
+        {   JavaScriptLinker.link(roots, searchpath, outputfile, startupcode, production);
         }
         catch (IOException e)
         {   throw new BuildException(e.getMessage());

@@ -28,7 +28,8 @@
     <linkJavaScript 
     		output="${basedir}/build/javascript/main.js" 
     		searchpath="${basedir}/build/javascript,${basedir}/../runtimejs"
-    		main="com/greentube/test/Launcher"
+    		root="com/greentube/test/Launcher"
+            startup="com_greentube_test_Launcher.main_1([]);"
     	    production="yes"
     		>
     </linkJavaScript>
@@ -63,7 +64,7 @@
     <linkJavaScript 
             output="${basedir}/build/javascript/mainperformance.js" 
             searchpath="${basedir}/build/javascript,${basedir}/../runtimejs"
-            main="Performance"
+            root="Performance;com/greentube/hectoc/HecToc"
             production="yes"
             >
     </linkJavaScript>

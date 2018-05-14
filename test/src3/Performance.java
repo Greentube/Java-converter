@@ -7,11 +7,6 @@ public class Performance
         fulltest();
     }
     
-    public static void hectoc()
-    {
-        com.greentube.hectoc.HecToc.main(new String[0]);
-    }
-    
     public static void smalltest() 
     {   
         Object[] keys = new Object[1000];

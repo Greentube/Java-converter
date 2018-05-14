@@ -139,14 +139,15 @@ public class JavaConverter extends Frontend
     public static void main(String args[]) 
     {   // add possibility to launch the linker instead of the the converter
         if (args.length>0 && args[0].equals("link")) 
-        {   String mainfile = null;
+        {   String roots = null;
             String searchpath = null;
             String outputfile = null;
+            String startupcode = null;
             boolean production = false;
             
             for (int i=1; i<args.length-1; i++) 
-            {   if (args[i].equals("-main")) 
-                {   mainfile = args[i+1];
+            {   if (args[i].equals("-root")) 
+                {   roots = args[i+1];
                     i++;
                 }
                 else if (args[i].equals("-searchpath")) 
@@ -157,12 +158,16 @@ public class JavaConverter extends Frontend
                 {   outputfile = args[i+1];
                     i++; 
                 }
+                else if (args[i].equals("-startup")) 
+                {   startupcode = args[i+1];
+                    i++; 
+                }
                 else if (args[i].equals("-production"))
                 {   production = true;                
                 }
             }
             try 
-            {   JavaScriptLinker.link(mainfile, searchpath, outputfile, production);
+            {   JavaScriptLinker.link(roots, searchpath, outputfile, startupcode, production);
             }
             catch (IOException e) 
             {   System.err.println(e.getMessage());

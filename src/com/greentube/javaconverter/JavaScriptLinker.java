@@ -5,25 +5,37 @@ import java.util.*;
 
 public class JavaScriptLinker
 {
-    public static void link(String mainfile, String searchpath, String output, boolean production) 
+    public static void link
+    (   String rootclasses, 
+        String searchpath, 
+        String output, 
+        String startupcode, 
+        boolean production
+    ) 
     throws IOException
-    {   if (mainfile == null) 
-        {   throw new IOException("No main file given");
+    {   if (rootclasses == null) 
+        {   throw new IOException("No root class(es) given");
         }
         if (output == null) 
         {   throw new IOException("No output file given");
         }
 
-        StringTokenizer t = new StringTokenizer(searchpath!=null ? searchpath:"", ",");
+        StringTokenizer t = new StringTokenizer(rootclasses, ",;");
         int n = t.countTokens();
+        String[] roots = new String[n];
+        for (int i=0; i<n; i++) 
+        {   roots[i] = t.nextToken().trim();
+        }        
+        t = new StringTokenizer(searchpath!=null ? searchpath:"", ",;");
+        n = t.countTokens();
         File[] cp = new File[n];
         for (int i=0; i<n; i++) 
         {   cp[i] = new File(t.nextToken().trim());
         }
-
+        
         // load all
         JavaScriptLinker linker = new JavaScriptLinker(cp);
-        linker.loadAll(mainfile,production);		
+        linker.loadAll(roots,production);		
         int[] o = linker.computeOrdering();
 
         // write all modules
@@ -31,15 +43,10 @@ public class JavaScriptLinker
         os.write("\"use strict\";\n".getBytes("utf-8"));
         linker.writeOrdered(os,o);
 
-        // add startup code to launch the main method
-        if (mainfile.indexOf('/')<0) mainfile="//"+mainfile;
-        String startupcode = 
-            "\n"
-            + mainfile.replace('/', '_')
-            + ".main_1([]);"
-            + "\n"
-            ;
-        os.write(startupcode.getBytes("utf-8"));
+        // add optional startup code to actually start up everything
+        if (startupcode!=null && startupcode.length()>0)
+        {   os.write(startupcode.getBytes("utf-8"));
+        }
 
         os.close();
     }
@@ -61,7 +68,7 @@ public class JavaScriptLinker
     {   this.searchpath = searchpath; 
     }
 
-    private void loadAll(String mainfilename, boolean production) throws IOException 
+    private void loadAll(String[] roots, boolean production) throws IOException 
     {   name2index = new HashMap();
         index2name = new HashMap();
         modules = new ArrayList();
@@ -71,9 +78,11 @@ public class JavaScriptLinker
         ArrayList<int[]> completionconstraints = new ArrayList();
 
         // start the loading iterations 
-        name2index.put(mainfilename, Integer.valueOf(0));
-        index2name.put(Integer.valueOf(0), mainfilename);
-
+        for (int i=0; i<roots.length; i++)
+        {   name2index.put(roots[i], Integer.valueOf(i));
+            index2name.put(Integer.valueOf(i), roots[i]);
+        }
+        
         // repeat until everything is loaded
         while (modules.size() < index2name.size()) 
         {   // load next not yet loaded file
