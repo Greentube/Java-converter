@@ -257,11 +257,11 @@ public class TestJava5 extends TestJava4
         l.set(4, Integer.valueOf(4));
         assertO(l.toString(), "[so, long, and, thanks, 4, all, the, fish]");
         
-        Object[] a = new Object[]{ "we", "see", "thee", "bee", "lee", "me" };
-        Arrays.sort(a, 1, 4, new StringComparator());
+        String[] a = new String[]{ "we", "see", "thee", "bee", "lee", "me" };
+        Arrays.sort(a, 1, 4, strcmp);
         assertO(Arrays.asList(a).toString(), "[we, bee, see, thee, lee, me]");
         
-        Arrays.sort(a, new StringComparator());
+        Arrays.sort(a, strcmp2);
         assertO(Arrays.asList(a).toString(), "[bee, lee, me, see, thee, we]");
     }
 
@@ -324,13 +324,20 @@ public class TestJava5 extends TestJava4
     }
     
     
-    static class StringComparator implements Comparator
+    static class StringComparator implements Comparator<String>
     {
-        public int compare(Object a, Object b)
+        public int compare(String a, String b)
         {
-            return ((String)a).compareTo((String)b);
+            return (a.compareTo(b));
         }
     } 
+    final static Comparator<String> strcmp = new StringComparator();
+    final static Comparator<String> strcmp2 = new Comparator<String>()
+    {   public int compare(String a, String b)
+        {
+            return (a.compareTo(b));
+        };
+    };
     
     public static void extendedstringtest()
     {
