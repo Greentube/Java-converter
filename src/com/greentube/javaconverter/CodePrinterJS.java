@@ -3,27 +3,19 @@ package com.greentube.javaconverter;
 import java.io.*;
 import java.util.*;
 
-public class CodePrinter 
-{   final static boolean horstmanStyle=false; // experimental bracing
-
+public class CodePrinterJS 
+{  
     // general code generation
     File outputfolder;
     OutputStreamWriter ow;
     boolean linehasstarted;
     int indent;
-    boolean afteropeningbrace;
 
-    // for javascript code
     private HashSet<String> reference;
     private HashSet<String> load;
     private HashSet<String> complete;
 
-    // for c# code
-    private HashSet<String> pendingLabels;	
-    private HashMap<String,Integer> deepestdim;
-    private HashMap<String,Integer> dimtypeid;
-
-    public CodePrinter(File outputfolder, String filename) 
+    public CodePrinterJS(File outputfolder, String filename) 
     {   try
         {   File f = new File(outputfolder,filename);
             f.getParentFile().mkdirs();		
@@ -37,18 +29,13 @@ public class CodePrinter
         this.outputfolder = outputfolder;
         this.indent = 0;
         this.linehasstarted = false;
-        this.afteropeningbrace = false;
         
-        reference = new HashSet();
-        load = new HashSet();
-        complete = new HashSet();
-
-        pendingLabels = new HashSet();
-        deepestdim = new HashMap();
-        dimtypeid = new HashMap();
+        reference = new HashSet<>();
+        load = new HashSet<>();
+        complete = new HashSet<>();
     }
 
-    public CodePrinter(CodePrinter p, String filename) 
+    public CodePrinterJS(CodePrinterJS p, String filename) 
     {   this(p.outputfolder,filename);
     }
 
@@ -60,9 +47,6 @@ public class CodePrinter
         catch (IOException e) 
         {   e.printStackTrace();
             throw new RuntimeException(e.getMessage());
-        }
-        if (pendingLabels.size()>0) 
-        {   throw new RuntimeException("Unresolved label definitions: "+pendingLabels);
         }
     }
 
@@ -76,17 +60,12 @@ public class CodePrinter
 
     public void print(String s) 
     {   try        
-        {   if (horstmanStyle && s.startsWith("}") && afteropeningbrace && linehasstarted) {
-                ow.write("\n");
-                linehasstarted=false;
-                afteropeningbrace=false;
-            }
+        {   
             if (!linehasstarted) 
             {   for (int i=0; i<indent; i++) ow.write("    ",0,4);
                 linehasstarted=true;
             }
             ow.write(s,0,s.length());
-            afteropeningbrace = s.equals("{");
         } 
         catch (IOException e) 
         {   e.printStackTrace();
@@ -97,14 +76,8 @@ public class CodePrinter
     public void println() 
     {
         try 
-        {   if (horstmanStyle && afteropeningbrace) 
-            {   ow.write("   ");
-                linehasstarted=true;
-            } 
-            else 
-            {   ow.write("\n");
-                linehasstarted=false;
-            }
+        {   ow.write("\n");
+            linehasstarted=false;            
         }
         catch (IOException e) 
         {   e.printStackTrace();
@@ -146,8 +119,6 @@ public class CodePrinter
     }
 
 
-    // --- functionality specific for javascript generation ---  
-
     private static Set<String> javascriptreserved = new HashSet<String>
     (   Arrays.asList
         (   "abstract", "arguments", "await", "boolean", "break", "byte", "case", "catch",
@@ -167,6 +138,11 @@ public class CodePrinter
     {   String escaped = escapeIdentifier(id,false) + suffix;
         if (javascriptreserved.contains(escaped)) print("$");        
         print(escaped);
+    }
+    
+    public void printJSIdentifier(String id) 
+    {   
+        printJSIdentifier(id,"");
     }
 
     public void printJSName(String packagename, String uniquename) 
@@ -229,120 +205,5 @@ public class CodePrinter
             print(s);
             println();
         }
-    }
-
-    // --- functionality specific for csharp code generation ---
-
-    private static Set<String> csharpreserved = new HashSet<String>
-    (   Arrays.asList
-        (   "abstract", "as", "base", "bool", "break", "byte", "case", "catch",
-            "char", "checked", "class", "const", "continue", "decimal", "default", "delegate",
-            "do", "double", "else", "enum", "event", "explicit", "extern", "false",
-            "finally", "fixed", "float", "for", "foreach", "goto", "if", "implicit",
-            "in", "int", "interface", "internal", "is", "lock", "long",
-            "namespace", "new", "null", "object", "operator", 	"out", "override",
-            "params", "private", "protected", "public", "readonly", "ref", "return" ,"sbyte",
-            "sealed", "short", "sizeof", "stackalloc", "static", "string", "struct", "switch",
-            "this", "throw", "true", "try", "typeof", "uint", "ulong", "unchecked",
-            "unsafe", "ushort", "using", "using", "static", "virtual", "void", "volatile", "while"						
-       )
-    );
-
-    public void printCSIdentifier(String id, String suffix) 
-    {   String escaped = escapeIdentifier(id,false) + suffix;
-        if (csharpreserved.contains(escaped)) print("@");
-        print(escaped);
-    }
-
-    public void printCSIdentifier(String id) 
-    {   String escaped = escapeIdentifier(id,false);
-        if (csharpreserved.contains(escaped)) print("@");
-        print(escaped);
-    }
-
-    public static String escapeIdentifierCS(String id) 
-    {   String escaped = escapeIdentifier(id,false);
-        if (csharpreserved.contains(escaped)) return "@"+escaped;		
-        return escaped;
-    }
-
-    public void printJumpToLabel(String l) 
-    {   print("goto ");
-        print(l);
-        print(";");
-        pendingLabels.add(l);
-    }
-
-    public boolean hasPendingLabel(String l) 
-    {   if (pendingLabels.contains(l)) 
-        {   pendingLabels.remove(l);
-            return true;
-        }
-        return false;
-    }
-
-    public int memorizeDim(String elementtype, int depth) 
-    {   if (!deepestdim.containsKey(elementtype)) 
-        {   deepestdim.put(elementtype, Integer.valueOf(depth));
-            dimtypeid.put(elementtype, Integer.valueOf(deepestdim.size()));
-            return deepestdim.size();
-        }
-        deepestdim.put(elementtype, Integer.valueOf(Math.max(deepestdim.get(elementtype).intValue(), depth))); 
-        return dimtypeid.get(elementtype).intValue();
-    }
-
-    public void printAndForgetDims() 
-    {   for (String en:deepestdim.keySet()) 
-        {   int dd = deepestdim.get(en).intValue();
-            int id = dimtypeid.get(en).intValue();
-
-            for (int d=5; d<=dd; d++) 
-            {   print("private static "+en);
-                for (int i=0; i<d; i++) print("[]");
-                print(" _dim"+id+"(");
-                for (int i=0; i<d; i++) 
-                {   if (i>0) print(", ");
-                    print("int n"+i);
-                }
-                print(") {");
-                println();
-                increaseIndent();
-                print(en);
-                for (int i=0; i<d; i++) print("[]");
-                print(" a = new "+en+"[n0]");
-                for (int i=1; i<d; i++) print("[]");
-                print(";");
-                println();
-                print("for (int i0=0; n1>=0 && i0<n0; i0++) {");
-                println();
-                increaseIndent();
-                print("a[i0] = ");
-                if (d<=5) 
-                {   print("SYSTEM.dim<"+en+">");
-                } 
-                else 
-                {   print("_dim"+id);
-                }
-                print("(");
-                for (int i=1; i<d; i++) 
-                {   if (i>1) print(", ");
-                    print("n"+i);
-                }
-                print(")");
-                print(";");
-                println();
-                decreaseIndent();
-                print("}");
-                println();
-                print("return a;");
-                println();
-
-                decreaseIndent();
-                print("}");
-                println();
-            }
-        }
-        deepestdim.clear();
-        dimtypeid.clear();
     }
 }

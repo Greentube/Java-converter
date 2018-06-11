@@ -3,9 +3,12 @@ package com.greentube.javaconverter;
 import java.util.*;
 
 public class LibraryList 
-{   static String[][] supported = 
+{   
+    static String[][] supported = 
     {   
-        { "java.io.PrintStream",
+        { 
+            "java.io.PrintStream",
+            
             "void print(boolean)",
             "void print(double)",
             "void print(char)",
@@ -20,7 +23,9 @@ public class LibraryList
             "void println(java.lang.Object)",
             "void println(java.lang.String)",
         },
-        { "java.lang.Boolean",
+        { 
+            "java.lang.Boolean",
+            
             "<init>(boolean)", 
             "boolean booleanValue()",     
             "java.lang.String toString(boolean)",
@@ -28,7 +33,9 @@ public class LibraryList
             "FALSE",
             "TRUE",
         },
-        { "java.lang.Byte",
+        { 
+            "java.lang.Byte",
+            
             "<init>(byte)",
             "byte byteValue()",
             "java.lang.String toString(byte)",
@@ -36,7 +43,9 @@ public class LibraryList
             "MIN_VALUE",
             "MAX_VALUE",
         },
-        { "java.lang.Character",
+        { 
+            "java.lang.Character",
+            
             "<init>(char)",
             "char charValue()",
             "java.lang.String toString(char)",
@@ -44,7 +53,9 @@ public class LibraryList
             "MIN_VALUE",
             "MAX_VALUE",
         },
-        { "java.lang.Double",
+        { 
+            "java.lang.Double",
+            
             "<init>(double)", 
             "double doubleValue()", 
             "boolean isInfinite()",
@@ -58,23 +69,33 @@ public class LibraryList
             "POSITIVE_INFINITY",
             "NEGATIVE_INFINITY",
         },
-        { "java.lang.Enum",
+        { 
+            "java.lang.Enum",
+            
             "java.lang.String name()", 
             "int ordinal()", 
         },
-        { "java.lang.IllegalArgumentException",
+        { 
+            "java.lang.IllegalArgumentException",
+            
             "<init>()",            
             "<init>(java.lang.String)",            
         },
-        { "java.lang.IllegalStateException",
+        { 
+            "java.lang.IllegalStateException",
+            
             "<init>()",            
             "<init>(java.lang.String)",            
         },
-        { "java.lang.IndexOutOfBoundsException",
+        { 
+            "java.lang.IndexOutOfBoundsException",
+            
             "<init>()",            
             "<init>(java.lang.String)",            
         },        
-        { "java.lang.Integer",
+        { 
+            "java.lang.Integer",
+            
             "<init>(int)",
             "int intValue()",
             "java.lang.String toString(int)",
@@ -83,20 +104,29 @@ public class LibraryList
             "MIN_VALUE",
             "MAX_VALUE",
         },
-        { "java.lang.Iterable",
+        { 
+            "java.lang.Iterable",
+            
             "java.util.Iterator iterator()",
             "void forEach(java.util.function.Consumer)",
         },
-        { "java.lang.Object",
+        { 
+            "java.lang.Object",
+            
             "<init>()",
         },
-        { "java.lang.Override"
+        { 
+            "java.lang.Override"
         },
-        { "java.lang.RuntimeException",
+        { 
+            "java.lang.RuntimeException",
+            
             "<init>()",            
             "<init>(java.lang.String)",            
         },
-        { "java.lang.Math",
+        { 
+            "java.lang.Math",
+            
             "double abs(double)",
             "int abs(int)",
             "double acos(double)", 
@@ -130,14 +160,20 @@ public class LibraryList
             "E",
             "PI",
         },
-        { "java.lang.NullPointerException",
+        { 
+            "java.lang.NullPointerException",
+            
             "<init>()",            
             "<init>(java.lang.String)",            
         },
-        { "java.lang.Runnable",
+        { 
+            "java.lang.Runnable",
+            
             "void run()",
         },
-        { "java.lang.String",
+        { 
+            "java.lang.String",
+            
             "<init>(char[])",
             "<init>(char[], int, int)",
             "char charAt(int)",
@@ -166,7 +202,9 @@ public class LibraryList
             "char[] toCharArray()",
             "java.lang.String trim()",
         },
-        { "java.lang.StringBuffer",
+        { 
+            "java.lang.StringBuffer",
+            
             "<init>()",
             "<init>(java.lang.String)",
             "java.lang.StringBuffer append(java.lang.Object)",
@@ -177,7 +215,9 @@ public class LibraryList
             "java.lang.StringBuffer append(double)",
             "int length()",			
         },
-        { "java.lang.StringBuilder",
+        { 
+            "java.lang.StringBuilder",
+            
             "<init>()",
             "<init>(java.lang.String)",
             "java.lang.StringBuilder append(java.lang.Object)",
@@ -188,16 +228,21 @@ public class LibraryList
             "java.lang.StringBuilder append(double)",
             "int length()",			
         },
-        { "java.lang.SuppressWarnings"
+        { 
+            "java.lang.SuppressWarnings"
         },
-        { "java.lang.System",
+        { 
+            "java.lang.System",
+            
             "out",
             "err",
             "void arraycopy(java.lang.Object, int, java.lang.Object, int, int)",
             "void exit(int)",
             "long currentTimeMillis()", // only allowed if immediately casting the result to double or int
         },
-        { "java.util.AbstractCollection",
+        { 
+            "java.util.AbstractCollection",
+            
             "boolean contains(java.lang.Object)",
             "boolean containsAll(java.util.Collection)",
             "boolean isEmpty()",
@@ -207,7 +252,9 @@ public class LibraryList
             "java.lang.Object[] toArray(java.lang.Object[])",
             "boolean removeIf(java.util.function.Predicate)",
         },
-        { "java.util.AbstractList",
+        { 
+            "java.util.AbstractList",
+            
             "boolean contains(java.lang.Object)",
             "boolean containsAll(java.util.Collection)",
             "boolean isEmpty()",
@@ -232,7 +279,9 @@ public class LibraryList
             "java.lang.Object set(int, java.lang.Object)",
             "void sort(java.util.Comparator)",              
         },	
-        { "java.util.ArrayList",
+        { 
+            "java.util.ArrayList",
+            
             "boolean contains(java.lang.Object)",
             "boolean containsAll(java.util.Collection)",
             "boolean isEmpty()",
@@ -261,12 +310,16 @@ public class LibraryList
             "<init>(java.util.Collection)",			
             "void trimToSize()",						
         },
-        { "java.util.Arrays",
+        { 
+            "java.util.Arrays",
+            
             "java.util.List asList(java.lang.Object[])",
             "void sort(java.lang.Object[], java.util.Comparator)", 
             "void sort(java.lang.Object[], int, int, java.util.Comparator)", 
         },
-        { "java.util.Collection",
+        { 
+            "java.util.Collection",
+            
             "boolean contains(java.lang.Object)",
             "boolean containsAll(java.util.Collection)",
             "boolean isEmpty()",
@@ -276,16 +329,22 @@ public class LibraryList
             "java.lang.Object[] toArray(java.lang.Object[])",
             "boolean removeIf(java.util.function.Predicate)",
         },
-        { "java.util.Comparator",
+        { 
+            "java.util.Comparator",
+            
             "int compare(java.lang.Object, java.lang.Object)",
             "java.util.Comparator thenComparing(java.util.Comparator)",
             "java.util.Comparator reversed()",
         },
-        { "java.util.Enumeration",
+        { 
+            "java.util.Enumeration",
+            
             "boolean hasMoreElements()",		
             "java.lang.Object nextElement()",			
         },
-        { "java.util.HashMap",
+        { 
+            "java.util.HashMap",
+            
             "<init>()",
             "<init>(java.util.Map)",
             "void clear()",        
@@ -302,7 +361,9 @@ public class LibraryList
             "int size()",
             "java.util.Collection values()",        
         },
-        { "java.util.HashSet",
+        { 
+            "java.util.HashSet",
+            
             "boolean contains(java.lang.Object)",
             "boolean containsAll(java.util.Collection)",
             "boolean isEmpty()",
@@ -321,7 +382,9 @@ public class LibraryList
             "boolean removeAll(java.util.Collection",			
             "boolean retainAll(java.util.Collection",
         },
-        { "java.util.Hashtable",
+        { 
+            "java.util.Hashtable",
+            
             "<init>()",
             "<init>(java.util.Map)",
             "void clear()",        
@@ -343,12 +406,16 @@ public class LibraryList
             "java.util.Enumeration elements()",
             "java.util.Enumeration keys()",
         },
-        { "java.util.Iterator",
+        { 
+            "java.util.Iterator",
+            
             "boolean hasNext()",		
             "java.lang.Object next()",
             "void remove()",
         },
-        { "java.util.LinkedList",
+        { 
+            "java.util.LinkedList",
+            
             "boolean contains(java.lang.Object)",
             "boolean containsAll(java.util.Collection)",
             "boolean isEmpty()",
@@ -382,7 +449,9 @@ public class LibraryList
             "java.lang.Object removeFirst()",
             "java.lang.Object removeLast()",			
         },
-        { "java.util.List",
+        {   
+            "java.util.List",
+        
             "boolean contains(java.lang.Object)",
             "boolean containsAll(java.util.Collection)",
             "boolean isEmpty()",
@@ -407,7 +476,9 @@ public class LibraryList
             "java.lang.Object set(int, java.lang.Object)",
             "void sort(java.util.Comparator)",    		    
         },
-        { "java.util.Map",
+        {   
+            "java.util.Map",
+        
             "void clear()",
             "boolean containsKey(java.lang.Object)",	
             "boolean containsValue(java.lang.Object)",
@@ -422,7 +493,9 @@ public class LibraryList
             "int size()",
             "java.util.Collection values()",
         },
-        { "java.util.Set",
+        {   
+            "java.util.Set",
+        
             "boolean contains(java.lang.Object)",
             "boolean containsAll(java.util.Collection)",
             "boolean isEmpty()",
@@ -432,7 +505,9 @@ public class LibraryList
             "java.lang.Object[] toArray(java.lang.Object[])",
             "boolean removeIf(java.util.function.Predicate)",
         },
-        { "java.util.Vector",
+        {   
+            "java.util.Vector",
+        
             "boolean contains(java.lang.Object)",
             "boolean containsAll(java.util.Collection)",
             "boolean isEmpty()",
@@ -476,34 +551,46 @@ public class LibraryList
             "void setSize(int)",
             "void trimToSize()",                                    
         },
-        { "java.util.function.BiConsumer",
+        {   
+            "java.util.function.BiConsumer",
+        
             "void accept(java.lang.Object, java.lang.Object)",
             "java.util.function.BiConsumer andThen(java.util.function.BiConsumer)",
         },
-        { "java.util.function.Consumer",
+        { 
+            "java.util.function.Consumer",
+            
             "void accept(java.lang.Object)",
             "java.util.function.Consumer andThen(java.util.function.Consumer)",
         },
-        { "java.util.function.Function",
+        { 
+            "java.util.function.Function",
+            
             "java.util.function.Function andThen(java.util.function.Function)",
             "java.lang.Object apply(java.lang.Object)",
             "java.util.function.Function compose(java.util.function.Function)",
             "java.util.function.Function identity()",            
         },
-        { "java.util.function.UnaryOperator",
+        {   
+            "java.util.function.UnaryOperator",
+        
             "java.util.function.Function andThen(java.util.function.Function)",
             "java.lang.Object apply(java.lang.Object)",
             "java.util.function.Function compose(java.util.function.Function)",
             "java.util.function.Function identity()",            
         },        
-        { "java.util.function.Predicate",
+        { 
+            "java.util.function.Predicate",
+            
             "java.util.function.Predicate and(java.util.function.Predicate)",
             "java.util.function.Predicate isEqual(java.lang.Object)",
             "java.util.function.Predicate negate()",
             "java.util.function.Predicate or(java.util.function.Predicate)",        
             "boolean test(java.lang.Object)",
         },
-        { "java.util.function.Supplier",
+        { 
+            "java.util.function.Supplier",
+            
             "java.lang.Object get()",
         },
     };

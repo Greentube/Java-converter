@@ -8,413 +8,277 @@
 import com.greentube.javaconverter.LibraryList;
 
 aspect CheckRestrictions {
-  	  	  	
-    public void ASTNode.checkRestrictions(ArrayList<String> errorlist) {  	
-        for (int i=0; i<getNumChild(); i++) {
-  			getChild(i).checkRestrictions(errorlist);
-  		}
-  	}
-  	
-  	// --- generate utility query methods ---
-  	public void ASTNode.reportRestriction(ArrayList<String> errorlist, String message) {
-        int s = 0;
+            
+    public void ASTNode.reportRestriction(ArrayList<String> errorlist, String message) 
+    {   int s = 0;
         for (ASTNode n=this; s==0 && n!=null; n=n.getParent()) 
         {   s = n.getStart();
         }
-  		errorlist.add(getLine(s)+","+getColumn(s)+": "+message);
-  	}
-  	
-	public boolean ASTNode.checkAutoBoxing(TypeDecl tfrom, TypeDecl tto, ArrayList<String> errorlist) {
-		if (tfrom.isPrimitiveType() && tto.isReferenceType() && !tto.isString() && !tto.isArrayDecl()) {
-			reportRestriction(errorlist, "Auto-boxing is not supported");
-				return true;
-		}
-		if (tfrom.isReferenceType() && !tfrom.isArrayDecl() && tto.isPrimitiveType()) {
-			reportRestriction(errorlist, "Auto-unboxing is not supported");		
-			return true;
-		}
-		return false;
-	}
-	public boolean ASTNode.checkUnboxing(Expr expr, ArrayList<String> errorlist) {
-		if (expr!=null && !expr.type().isPrimitiveType()) {
-			if (! expr.type().isString() && ! expr.type().isEnumDecl()) {
-				reportRestriction(errorlist, "Auto-unboxing is not supported");
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	// side effect detection
-	public boolean Expr.hasPotentialSideEffects() {
- 		System.err.print("Side effect test encountered:"+this.getClass().getName());	
-  		return false;
-	}
-  	public boolean Dot.hasPotentialSideEffects() {
-  		return getLeft().hasPotentialSideEffects() || getRight().hasPotentialSideEffects();  		
-	}
-	public boolean ArrayAccess.hasPotentialSideEffects() {
-		return getExpr().hasPotentialSideEffects();
-	}
-	public boolean ClassInstanceExpr.hasPotentialSideEffects() {
-		return true;
-	}
-	public boolean MethodAccess.hasPotentialSideEffects() {
-		return true;
-	}
-  	public boolean ParTypeAccess.hasPotentialSideEffects() {
-		return getTypeAccess().hasPotentialSideEffects();
-	}
-	public boolean ThisAccess.hasPotentialSideEffects() {
-		return false;
-	}
-    public boolean SuperAccess.hasPotentialSideEffects() {
-        return false;
+        errorlist.add(getLine(s)+","+getColumn(s)+": "+message);
     }
-	public boolean TypeAccess.hasPotentialSideEffects() {
-		return false;
-	}
-  	public boolean ArrayTypeAccess.hasPotentialSideEffects() {
-  		return getAccess().hasPotentialSideEffects();
-	}	
-  	public boolean ArrayTypeWithSizeAccess.hasPotentialSideEffects() {
-  		return getAccess().hasPotentialSideEffects()
-  		    || getExpr().hasPotentialSideEffects();
-	}   		
-	public boolean VarAccess.hasPotentialSideEffects() {
-		return false;
-	}
-  	public boolean ArrayInit.hasPotentialSideEffects() {
-  		for (int i=0; i<getNumInit(); i++) {
-  			if (getInit(i).hasPotentialSideEffects()) return true;
-  		}
-  		return false;
-  	}
-    public boolean AssignExpr.hasPotentialSideEffects() {
-    	return true;
-    }
-    public boolean Binary.hasPotentialSideEffects() {
-    	return getLeftOperand().hasPotentialSideEffects() || getRightOperand().hasPotentialSideEffects();
-    }
-    public boolean CastExpr.hasPotentialSideEffects() {
-    	return getExpr().hasPotentialSideEffects();
-    }
-  	public boolean ConditionalExpr.hasPotentialSideEffects() {
-  		return getCondition().hasPotentialSideEffects() 
-  		    || getTrueExpr().hasPotentialSideEffects()
-  		    || getFalseExpr().hasPotentialSideEffects();
-  	}
-	public boolean InstanceOfExpr.hasPotentialSideEffects() {
-  		return getExpr().hasPotentialSideEffects();
-  	}    
-  	public boolean ArrayCreationExpr.hasPotentialSideEffects() {
-  		// array with initialization data
-  		if (hasArrayInit()) {
-  			return getArrayInit().hasPotentialSideEffects();
-  		} else {
-  			return getTypeAccess().hasPotentialSideEffects();
-  		}
-  	}
-    public boolean Literal.hasPotentialSideEffects() {
-    	return false;
-    }
-  	public boolean ParExpr.hasPotentialSideEffects() {
-  		return getExpr().hasPotentialSideEffects();
-  	}
-    public boolean Unary.hasPotentialSideEffects() {
-    	return getOperand().hasPotentialSideEffects();
-    }
-  	public boolean PostDecExpr.hasPotentialSideEffects() {
-  		return true;
-  	}
-  	public boolean PostIncExpr.hasPotentialSideEffects() {
-  		return true;
-  	}
-  	public boolean PreDecExpr.hasPotentialSideEffects() {
-  		return true;
-  	}
-  	public boolean PreIncExpr.hasPotentialSideEffects() {
-  		return true;
-	}    
-	
-	// ensure that an expression can never be null
-    public boolean Expr.isNeverNull()
-    {   return false;
-    }
-    public boolean Dot.isNeverNull() 
-    {   return getRight().isNeverNull();         
-    }    
-    public boolean ArrayCreationExpr.isNeverNull()
-    {   return true;
-    }
-    public boolean ParExpr.isNeverNull() 
-    {   return getExpr().isNeverNull();
-    }
-    public boolean ClassInstanceExpr.isNeverNull()
-    {   return true;
-    }
-    public boolean LambdaExpr.isNeverNull() 
-    {    return true;
-    }
-    public boolean TypeMethodReference.isNeverNull()
-    {    return true;
-    }
-    public boolean ExprMethodReference.isNeverNull()
-    {    return true; 
-    }
-    public boolean VarAccess.isNeverNull()
-    {   Variable v = decl();
-        if (v.isEffectivelyFinal()) 
-        {   return v.getInit().isNeverNull();
+
+
+    public void ASTNode.checkRestrictions(ArrayList<String> errorlist) 
+    {   for (int i=0; i<getNumChild(); i++) 
+        {   getChild(i).checkRestrictions(errorlist);
         }
-        return false;
-    } 
-    public boolean MethodAccess.isNeverNull()
+    }
+        
+    public boolean ASTNode.checkAutoBoxing(TypeDecl tfrom, TypeDecl tto, ArrayList<String> errorlist) 
     {
-        // some well known core library functions will never return null
-        MethodDecl m = decl().erasedMethod();
-        if (m.hostType().packageName().equals("java.util") 
-         && m.hostType().uniqueName().equals("Comparator"))
-        {   return true;
+        if (tfrom.isPrimitiveType() && tto.isReferenceType() && !tto.isString() && !tto.isArrayDecl()) 
+        {   reportRestriction(errorlist, "Auto-boxing is not supported");
+            return true;
+        }
+        if (tfrom.isReferenceType() && !tfrom.isArrayDecl() && tto.isPrimitiveType()) 
+        {   reportRestriction(errorlist, "Auto-unboxing is not supported");     
+            return true;
         }
         return false;
-    }    
-
-  	// -- Threads 
-	public void SynchronizedStmt.checkRestrictions(ArrayList<String> errorlist) {
-		reportRestriction(errorlist, "Threading is not supported");
-		super.checkRestrictions(errorlist);
-	}
-
-	// -- Exceptions
-	public void TryStmt.checkRestrictions(ArrayList<String> errorlist) {
-		reportRestriction(errorlist, "Catching exceptions is not supported");
-		super.checkRestrictions(errorlist);
-	}	
-	
-	// -- Allowed primitive types 
-	public void TypeAccess.checkRestrictions(ArrayList<String> errorlist) {
-		TypeDecl t = type();
-		if (t.isLong())  reportRestriction(errorlist, "Type 'long' not supported");
-		if (t.isFloat()) reportRestriction(errorlist, "Type 'float' not supported");
-		if (t.isShort()) reportRestriction(errorlist, "Type 'short' not supported");
-		if (t.isClassDecl() || t.isInterfaceDecl())
-		{     if (!LibraryList.isAllowed(t.erasure().typeName()))
-		      {   reportRestriction(errorlist, "Unsupported type:"+t.erasure().typeName());
-		      }
-		}
-		super.checkRestrictions(errorlist);
-	}
-
-  	public void FloatType.checkRestrictions(ArrayList<String> errorlist) {
-  		reportRestriction(errorlist, "Type 'float' not supported");  		
-  	}  	
-  	public void LongType.checkRestrictions(ArrayList<String> errorlist) {
-  		reportRestriction(errorlist, "Type 'long' not supported");
-  	}  	
-  	public void ShortType.checkRestrictions(ArrayList<String> errorlist) {
-  		reportRestriction(errorlist, "Type 'short' not supported");
-  	}
-
-  	public void FloatingPointLiteral.checkRestrictions(ArrayList<String> errorlist) {
-  		reportRestriction(errorlist, "Type 'float' not supported");  		
-  	}
-  	public void LongLiteral.checkRestrictions(ArrayList<String> errorlist) {
-  		reportRestriction(errorlist, "Type 'long' not supported");
-  	}
-  	
-		   	  			   	    	  
-	// method overloading rules
-	public void MethodDecl.checkRestrictions(ArrayList<String> errorlist) {
-		// check forbidden threading
-		if (isSynchronized()) {		
-			reportRestriction(errorlist, "Threading is not supported");
-		}
-		// check forbidden exceptions
-		if (hasException()) {
-			reportRestriction(errorlist, "Declaring exceptions is not supported");
-		}
-		
-		// restrictions for Interface methods
-		if (hostType() instanceof InterfaceDecl)
-		{  
-		}
-        // restrictions for class methods 
-		else if (hostType() instanceof ClassDecl) 
-		{ 
-			// check method name collisions	in same class 		
-			ClassDecl cd = (ClassDecl)hostType();
-			for (BodyDecl bd:cd.getBodyDeclList()) {
-				// no two methods with same name and number of arguments in same class
-				// if both are either static or non-static
-				if ((bd instanceof MethodDecl) && bd!=this) {
-					MethodDecl md = (MethodDecl) bd;
-					if (md.getID().equals(getID())
-					&&  md.getNumParameter()==getNumParameter()
-					&&  md.isStatic() == isStatic()) {
-						reportRestriction(errorlist, 
-						 (isStatic() ? "Static" : "Non-static") + " method "
-					+ "'"+getID()+"' with "+getNumParameter()
-					+ " parameter(s) conflicts with other method defined in same class");
-					}				
-				}
-			}
-			
-			// check for collisions in the inheritance chain			
-			if (!isStatic()) {			
-				cd = (ClassDecl) cd.superclass();
-				while(!cd.isObject()) {
-					for (BodyDecl bd:cd.getBodyDeclList()) {
-						if ((bd instanceof MethodDecl)) {
-							MethodDecl md = (MethodDecl) bd;							
-							if (!md.isStatic() && md.getID().equals(getID()) 
-							  && md.getNumParameter()==getNumParameter()
-							  && !overrides(md) ) {
-  								reportRestriction(errorlist, "Method '"+getID()	+"' with "
-  								 +getNumParameter()+" parameters conflicts with method in parent class");								
-							}
-						}
-					}
-					cd = (ClassDecl) cd.superclass();
-				}
-			}
-		}
-		
-		super.checkRestrictions(errorlist);		
-	}
-	
-	public boolean MethodDecl.isSupportedInLibraries()
-	{
-        // test for availability in supported core libraries
-        StringBuffer b = new StringBuffer(type().erasure().typeName());
-        b.append(" ");
-        b.append(name());
-        b.append("(");
-        for (int i=0; i<getNumParameter(); i++) {
-            if (i!=0) b.append(", ");
-            String typename = getParameter(i).type().erasure().typeName();
-            b.append(typename);
+    }
+    
+    public boolean ASTNode.checkUnboxing(Expr expr, ArrayList<String> errorlist) 
+    {
+        if (expr!=null && !expr.type().isPrimitiveType()) 
+        {   if (! expr.type().isString() && ! expr.type().isEnumDecl()) 
+            {   reportRestriction(errorlist, "Auto-unboxing is not supported");
+                return true;
+            }
         }
-        b.append(")");          
-        String sig = b.toString();
-        String tn = hostType().packageName() + "." + hostType().uniqueName();
-        return LibraryList.isAllowed(tn, sig);
-	}
-	
-	// check constructor overloading  (and exception declaration) 
-	public void ConstructorDecl.checkRestrictions(ArrayList<String> errorlist) {
-		if (hasException()) {
-			reportRestriction(errorlist, "Declaring exceptions is not supported");
-		}
-		ClassDecl cd = (ClassDecl)hostType();
-		for (BodyDecl bd:cd.getBodyDeclList()) {
-			// no two constructors with same number of arguments
-			if ((bd instanceof ConstructorDecl) && bd!=this) {
-				ConstructorDecl md = (ConstructorDecl) bd;
-				if (md.getNumParameter()==getNumParameter()) {
-					reportRestriction(errorlist, 
-						 "Multiple constructors with "+getNumParameter()+" parameters");								
-				}
-			}
-		}
-		super.checkRestrictions(errorlist);     		
-	}
-	
-	// shadowing field identifiers
-	public void FieldDeclarator.checkRestrictions(ArrayList<String> errorlist) {
-		if (!isStatic()) {
-			ClassDecl cd = (ClassDecl) ((ClassDecl)hostType()).superclass();
-			while(!cd.isObject()) {
-				for (BodyDecl bd:cd.getBodyDeclList()) {
-					if (bd.isField()) {
-						for (FieldDeclarator fd:bd.fieldDeclarations()) {
-							if (!fd.isStatic() && fd.getID().equals(getID())) {
-  								reportRestriction(errorlist, "Field '"+getID()+"' must not shadow parent field");								
-							}
-						}
-					}
-				}
-				cd = (ClassDecl) cd.superclass();
-			}
-		}
-		super.checkRestrictions(errorlist);		
-	}
+        return false;
+    }
+    
+    // -- Threads 
+    public void SynchronizedStmt.checkRestrictions(ArrayList<String> errorlist) 
+    {   
+        reportRestriction(errorlist, "Threading is not supported");
+        super.checkRestrictions(errorlist);
+    }
 
-	// Compound assignments can only use limited types of destination
-	public void AssignExpr.checkRestrictions(ArrayList<String> errorlist)
-	{
-		if (!(this instanceof AssignSimpleExpr)) {
-			if (getDest().hasPotentialSideEffects()) {
-				reportRestriction(errorlist, "Can not use compound assignment when destination my have side effects");			
-			}
-		}
-		
-		// Autoboxing in assignments
-  		checkAutoBoxing(getSource().type(), getDest().type(), errorlist);
-		
-		super.checkRestrictions(errorlist);					
-	}
-	
-	// Increment or decrement operators (++, --) only on operands without side effects	
-  	public void PostDecExpr.checkRestrictions(ArrayList<String> errorlist) {
-		if (getOperand().hasPotentialSideEffects()) {
-			reportRestriction(errorlist, "Can not use -- when operand could have side effects");			
-		}  	
-		super.checkRestrictions(errorlist);					
-  	}
-  	public void PostIncExpr.checkRestrictions(ArrayList<String> errorlist) {
-		if (getOperand().hasPotentialSideEffects()) {
-			reportRestriction(errorlist, "Can not use ++ when operand could have side effects");			
-		}  	
-		super.checkRestrictions(errorlist);					
-  	}
-  	public void PreDecExpr.checkRestrictions(ArrayList<String> errorlist) {
-		if (getOperand().hasPotentialSideEffects()) {
-			reportRestriction(errorlist, "Can not use -- when operand could have side effects");			
-		}  	
-		super.checkRestrictions(errorlist);					
-  	}
-  	public void PreIncExpr.checkRestrictions(ArrayList<String> errorlist) {
-		if (getOperand().hasPotentialSideEffects()) {
-			reportRestriction(errorlist, "Can not use ++ when operand could have side effects");			
-		}  	
-		super.checkRestrictions(errorlist);					
-  	}  	
-	
-	
-	// Autoboxing/unboxing in method call parameters
-	public void MethodAccess.checkRestrictions(ArrayList<String> errorlist) {
-//        if (transformed()!=this)
-//        {   transformed().checkRestrictions(errorlist);
-//            return;
-//        }
-        	
-  		MethodDecl m = decl().erasedMethod();
-  		
-  		// check if this is a call using the variable arguments syntax
-  		int straightargs = 0;
-		if (!m.isVariableArity() 
-		|| (getNumArg()==m.getNumParameter() && getArg(getNumArg()-1).type()==m.getParameter(getNumArg()-1).type()) ) 
-		{
-			straightargs = getNumArg();
-		} else {
-			straightargs = m.getNumParameter()-1;
-		}
-		// test for boxing of "normal parameters"
-	  	for (int i=0; i<straightargs; i++) {
-	  		checkAutoBoxing(getArg(i).type(), m.getParameter(i).type(), errorlist);
-  		}
-  	    // test for boxing of the parameters that are packaged into array
-  		for (int i=straightargs; i<getNumArg(); i++) {
-	  		checkAutoBoxing(getArg(i).type(), 
-	  		               ((ArrayDecl)m.getParameter(straightargs).type()).elementType(),
-	  		                errorlist);
-  		}
-  		
+    // -- Exceptions
+    public void TryStmt.checkRestrictions(ArrayList<String> errorlist) 
+    {
+        reportRestriction(errorlist, "Catching exceptions is not supported");
+        super.checkRestrictions(errorlist);
+    }   
+    
+    // -- Allowed primitive types 
+    public void TypeAccess.checkRestrictions(ArrayList<String> errorlist) 
+    {
+        TypeDecl t = type();
+        if (t.isLong())  reportRestriction(errorlist, "Type 'long' not supported");
+        if (t.isFloat()) reportRestriction(errorlist, "Type 'float' not supported");
+        if (t.isShort()) reportRestriction(errorlist, "Type 'short' not supported");
+        if (t.isClassDecl() || t.isInterfaceDecl())
+        {     if (!LibraryList.isAllowed(t.erasure().typeName()))
+              {   reportRestriction(errorlist, "Unsupported type:"+t.erasure().typeName());
+              }
+        }
+        super.checkRestrictions(errorlist);
+    }
+
+    public void FloatType.checkRestrictions(ArrayList<String> errorlist) 
+    {
+        reportRestriction(errorlist, "Type 'float' not supported");         
+    }   
+    public void LongType.checkRestrictions(ArrayList<String> errorlist) 
+    {
+        reportRestriction(errorlist, "Type 'long' not supported");
+    }   
+    public void ShortType.checkRestrictions(ArrayList<String> errorlist) 
+    {
+        reportRestriction(errorlist, "Type 'short' not supported");
+    }
+
+    public void FloatingPointLiteral.checkRestrictions(ArrayList<String> errorlist) 
+    {
+        reportRestriction(errorlist, "Type 'float' not supported");         
+    }
+    public void LongLiteral.checkRestrictions(ArrayList<String> errorlist) 
+    {
+        reportRestriction(errorlist, "Type 'long' not supported");
+    }
+    
+                                      
+    // method overloading rules
+    public void MethodDecl.checkRestrictions(ArrayList<String> errorlist) 
+    {
+        // check forbidden threading
+        if (isSynchronized()) 
+        {     
+            reportRestriction(errorlist, "Threading is not supported");
+        }
+        // check forbidden exceptions
+        if (hasException()) 
+        {
+            reportRestriction(errorlist, "Declaring exceptions is not supported");
+        }
+        
+        // restrictions for Interface methods
+        if (hostType() instanceof InterfaceDecl)
+        {  
+        }
+        // restrictions for class methods 
+        else if (hostType() instanceof ClassDecl) 
+        { 
+            // check method name collisions in same class       
+            ClassDecl cd = (ClassDecl)hostType();
+            for (BodyDecl bd:cd.getBodyDeclList()) 
+            {   // no two methods with same name and number of arguments in same class
+                // if both are either static or non-static
+                if ((bd instanceof MethodDecl) && bd!=this) 
+                {   MethodDecl md = (MethodDecl) bd;
+                    if (md.getID().equals(getID())
+                    &&  md.getNumParameter()==getNumParameter()
+                    &&  md.isStatic() == isStatic()) 
+                    {
+                        reportRestriction(errorlist, 
+                         (isStatic() ? "Static" : "Non-static") + " method "
+                            + "'"+getID()+"' with "+getNumParameter()
+                            + " parameter(s) conflicts with other method defined in same class");
+                    }               
+                }
+            }
+            
+            // check for collisions in the inheritance chain            
+            if (!isStatic()) 
+            {          
+                cd = (ClassDecl) cd.superclass();
+                while(!cd.isObject()) 
+                {   for (BodyDecl bd:cd.getBodyDeclList()) 
+                    {   if ((bd instanceof MethodDecl)) 
+                        {   MethodDecl md = (MethodDecl) bd;                            
+                            if (!md.isStatic() && md.getID().equals(getID()) 
+                              && md.getNumParameter()==getNumParameter()
+                              && !overrides(md) ) {
+                                reportRestriction(errorlist, "Method '"+getID() +"' with "
+                                 +getNumParameter()+" parameters conflicts with method in parent class");                               
+                            }
+                        }
+                    }
+                    cd = (ClassDecl) cd.superclass();
+                }
+            }
+        }
+        super.checkRestrictions(errorlist);     
+    }
+    
+    // check constructor overloading  (and exception declaration) 
+    public void ConstructorDecl.checkRestrictions(ArrayList<String> errorlist) 
+    {
+        if (hasException()) 
+        {   reportRestriction(errorlist, "Declaring exceptions is not supported");
+        }
+        ClassDecl cd = (ClassDecl)hostType();
+        for (BodyDecl bd:cd.getBodyDeclList()) 
+        {   // no two constructors with same number of arguments
+            if ((bd instanceof ConstructorDecl) && bd!=this) 
+            {   ConstructorDecl md = (ConstructorDecl) bd;
+                if (md.getNumParameter()==getNumParameter())
+                {   reportRestriction(errorlist, 
+                      "Multiple constructors with "+getNumParameter()+" parameters");                                
+                }
+            }
+        }
+        super.checkRestrictions(errorlist);             
+    }
+    
+    // shadowing field identifiers
+    public void FieldDeclarator.checkRestrictions(ArrayList<String> errorlist) 
+    {
+        if (!isStatic()) 
+        {   ClassDecl cd = (ClassDecl) ((ClassDecl)hostType()).superclass();
+            while(!cd.isObject()) 
+            {   for (BodyDecl bd:cd.getBodyDeclList()) 
+                {   if (bd.isField()) 
+                    {   for (FieldDeclarator fd:bd.fieldDeclarations()) 
+                        {   if (!fd.isStatic() && fd.getID().equals(getID())) 
+                            {   reportRestriction(errorlist, "Field '"+getID()+"' must not shadow parent field");                               
+                            }
+                        }
+                    }
+                }
+                cd = (ClassDecl) cd.superclass();
+            }
+        }
+        super.checkRestrictions(errorlist);     
+    }
+
+    // Compound assignments can only use limited types of destination
+    public void AssignExpr.checkRestrictions(ArrayList<String> errorlist)
+    {
+        if (!(this instanceof AssignSimpleExpr)) 
+        {   if (getDest().hasPotentialSideEffects()) 
+            {   reportRestriction(errorlist, "Can not use compound assignment when destination my have side effects");          
+            }
+        }
+        
+        // Autoboxing in assignments
+        checkAutoBoxing(getSource().type(), getDest().type(), errorlist);
+        
+        super.checkRestrictions(errorlist);                 
+    }
+    
+    // Increment or decrement operators (++, --) only on operands without side effects  
+    public void PostDecExpr.checkRestrictions(ArrayList<String> errorlist) 
+    {
+        if (getOperand().hasPotentialSideEffects()) 
+        {   reportRestriction(errorlist, "Can not use -- when operand could have side effects");            
+        }   
+        super.checkRestrictions(errorlist);                 
+    }
+    public void PostIncExpr.checkRestrictions(ArrayList<String> errorlist) 
+    {
+        if (getOperand().hasPotentialSideEffects()) 
+        {   reportRestriction(errorlist, "Can not use ++ when operand could have side effects");            
+        }   
+        super.checkRestrictions(errorlist);                 
+    }
+    public void PreDecExpr.checkRestrictions(ArrayList<String> errorlist) 
+    {
+        if (getOperand().hasPotentialSideEffects()) 
+        {   reportRestriction(errorlist, "Can not use -- when operand could have side effects");            
+        }   
+        super.checkRestrictions(errorlist);                 
+    }
+    public void PreIncExpr.checkRestrictions(ArrayList<String> errorlist) 
+    {
+        if (getOperand().hasPotentialSideEffects()) 
+        {   reportRestriction(errorlist, "Can not use ++ when operand could have side effects");            
+        }   
+        super.checkRestrictions(errorlist);                 
+    }   
+    
+    
+    // Autoboxing/unboxing in method call parameters
+    public void MethodAccess.checkRestrictions(ArrayList<String> errorlist) 
+    {
+        MethodDecl m = decl().erasedMethod();
+        
+        // check if this is a call using the variable arguments syntax
+        int straightargs = 0;
+        if (!m.isVariableArity() 
+        || (getNumArg()==m.getNumParameter() && getArg(getNumArg()-1).type()==m.getParameter(getNumArg()-1).type()) ) 
+        {   straightargs = getNumArg();
+        } 
+        else 
+        {   straightargs = m.getNumParameter()-1;
+        }
+        // test for boxing of "normal parameters"
+        for (int i=0; i<straightargs; i++) 
+        {   checkAutoBoxing(getArg(i).type(), m.getParameter(i).type(), errorlist);
+        }
+        // test for boxing of the parameters that are packaged into array
+        for (int i=straightargs; i<getNumArg(); i++) 
+        {   checkAutoBoxing(getArg(i).type(), 
+                    ((ArrayDecl)m.getParameter(straightargs).type()).elementType(),
+                    errorlist);
+        }
+        
         // check for availability for stuff from all the .java core packages    
         if (m.hostType().packageName().startsWith("java.")) 
-        {   if (!m.isSupportedInLibraries()) {
-                reportRestriction(errorlist, "Unsupported core library method in "
+        {   if (!m.isSupportedInLibraries()) 
+            {   reportRestriction(errorlist, "Unsupported core library method in "
                 + m.hostType().packageName() + "." + m.hostType().uniqueName() + ": " + m.name());
             }
             // special consideration for the core sort methods (do not allow null as Comparator) 
@@ -426,7 +290,7 @@ aspect CheckRestrictions {
                 }
             }
         }
-		
+        
         // test for correct usage of library methods returning a 'long'
         if (m.type().isLong()) 
         {   Expr parentexp = (Expr) getParent();
@@ -452,188 +316,201 @@ aspect CheckRestrictions {
             }        
         }
         
-        super.checkRestrictions(errorlist);					  		
-	}
-	// Autoboxing/unboxing in super/this-constructor call parameters
-	public void ConstructorAccess.checkRestrictions(ArrayList<String> errorlist) {
-//        if (transformed()!=this)
-//        {   transformed().checkRestrictions(errorlist);
-//            return;
-//        }
+        super.checkRestrictions(errorlist);                         
+    }
+    // Autoboxing/unboxing in super/this-constructor call parameters
+    public void ConstructorAccess.checkRestrictions(ArrayList<String> errorlist) {
+        ConstructorDecl m = decl();
+        
+        // check if this is a call using the variable arguments syntax
+        int straightargs = 0;
+        if (!m.isVariableArity() 
+        || (getNumArg()==m.getNumParameter() && getArg(getNumArg()-1).type()==m.getParameter(getNumArg()-1).type()) ) 
+        {   straightargs = getNumArg();
+        } 
+        else
+        {   straightargs = m.getNumParameter()-1;
+        }
+        // test for boxing of "normal parameters"
+        for (int i=0; i<straightargs; i++) 
+        {   checkAutoBoxing(getArg(i).type(), m.getParameter(i).type(), errorlist);
+        }
+        // test for boxing of the parameters that are packaged into array
+        for (int i=straightargs; i<getNumArg(); i++) 
+        {   checkAutoBoxing(getArg(i).type(), 
+                           ((ArrayDecl)m.getParameter(straightargs).type()).elementType(),
+                            errorlist);
+        }
 
-  		ConstructorDecl m = decl();
-  		
-  		// check if this is a call using the variable arguments syntax
-  		int straightargs = 0;
-		if (!m.isVariableArity() 
-		|| (getNumArg()==m.getNumParameter() && getArg(getNumArg()-1).type()==m.getParameter(getNumArg()-1).type()) ) 
-		{
-			straightargs = getNumArg();
-		} else {
-			straightargs = m.getNumParameter()-1;
-		}
-		// test for boxing of "normal parameters"
-	  	for (int i=0; i<straightargs; i++) {
-	  		checkAutoBoxing(getArg(i).type(), m.getParameter(i).type(), errorlist);
-  		}
-  		// test for boxing of the parameters that are packaged into array
-  		for (int i=straightargs; i<getNumArg(); i++) {
-	  		checkAutoBoxing(getArg(i).type(), 
-	  		               ((ArrayDecl)m.getParameter(straightargs).type()).elementType(),
-	  		                errorlist);
-  		}
-
-  		// test for availability in supported core libraries
-  		String sig = m.signature();  
-  		
-		if (!LibraryList.isAllowed(m.hostType().packageName() + "." + m.hostType().uniqueName(), sig)) {
-			reportRestriction(errorlist, "Unsupported core library constructor in "
-				+ m.hostType().packageName() + "." + m.hostType().uniqueName() + ": " + sig);
-		}
-  		
-		super.checkRestrictions(errorlist);					  		  		
-	}
-	// Autoboxing/unboxing in constructor call parameters
-	public void ClassInstanceExpr.checkRestrictions(ArrayList<String> errorlist) {
-  		ConstructorDecl m = decl();
-  		
-  		// check if this is a call using the variable arguments syntax
-  		int straightargs = 0;
-		if (!m.isVariableArity() 
-		|| (getNumArg()==m.getNumParameter() && getArg(getNumArg()-1).type()==m.getParameter(getNumArg()-1).type()) ) 
-		{
-			straightargs = getNumArg();
-		} else {
-			straightargs = m.getNumParameter()-1;
-		}
-		// test for boxing of "normal parameters"
-	  	for (int i=0; i<straightargs; i++) {
-	  		checkAutoBoxing(getArg(i).type(), m.getParameter(i).type(), errorlist);
-  		}
-  		// test for boxing of the parameters that are packaged into array
-  		for (int i=straightargs; i<getNumArg(); i++) {
-	  		checkAutoBoxing(getArg(i).type(), 
-	  		               ((ArrayDecl)m.getParameter(straightargs).type()).elementType(),
-	  		                errorlist);
-  		}
-  		
-  		// test for availability in supported core libraries
+        // test for availability in supported core libraries
+        String sig = m.signature();  
+        
+        if (!LibraryList.isAllowed(m.hostType().packageName() + "." + m.hostType().uniqueName(), sig)) 
+        {   reportRestriction(errorlist, "Unsupported core library constructor in "
+                + m.hostType().packageName() + "." + m.hostType().uniqueName() + ": " + sig);
+        }
+        
+        super.checkRestrictions(errorlist);                                 
+    }
+    // Autoboxing/unboxing in constructor call parameters
+    public void ClassInstanceExpr.checkRestrictions(ArrayList<String> errorlist) 
+    {
+        ConstructorDecl m = decl();
+        
+        // check if this is a call using the variable arguments syntax
+        int straightargs = 0;
+        if (!m.isVariableArity() 
+        || (getNumArg()==m.getNumParameter() && getArg(getNumArg()-1).type()==m.getParameter(getNumArg()-1).type()) ) 
+        {   straightargs = getNumArg();
+        } 
+        else 
+        {   straightargs = m.getNumParameter()-1;
+        }
+        // test for boxing of "normal parameters"
+        for (int i=0; i<straightargs; i++) 
+        {   checkAutoBoxing(getArg(i).type(), m.getParameter(i).type(), errorlist);
+        }
+        // test for boxing of the parameters that are packaged into array
+        for (int i=straightargs; i<getNumArg(); i++) 
+        {   checkAutoBoxing(getArg(i).type(), 
+                           ((ArrayDecl)m.getParameter(straightargs).type()).elementType(),
+                            errorlist);
+        }
+        
+        // test for availability in supported core libraries
         String sig = m.signature();  
 
-		if (!LibraryList.isAllowed(m.hostType().packageName() + "." + m.hostType().uniqueName(), 
-								   sig)) {
-			reportRestriction(errorlist, "Unsupported core library constructor in "
-				+ m.hostType().packageName() + "." + m.hostType().uniqueName() + ": " 
-				+ sig);
-		}
-  		
-		super.checkRestrictions(errorlist);					  		  			
-	}
-	// autoboxing/unboxing at variable declarators	
-	public void VariableDeclarator.checkRestrictions(ArrayList<String> errorlist) {
-		 Expr e = getInit();
-		 if (e!=null) {
-		 	checkAutoBoxing(e.type(), getTypeAccess().type(), errorlist);
-		 } 
-		super.checkRestrictions(errorlist);					  		  			
-	}
-	// autoboxing/unboxing in return statement
-	public void ReturnStmt.checkRestrictions(ArrayList<String> errorlist) {
-		Expr r = getResult();
-		if (r!=null) {
-			checkAutoBoxing(r.type(), returnType(), errorlist);
-		}
-		super.checkRestrictions(errorlist);					  		  			
-	}  	
-	// auto-unboxing of the various conditions and switch expression
-	public void ConditionalExpr.checkRestrictions(ArrayList<String> errorlist) {
-		checkUnboxing(getCondition(), errorlist);
-		super.checkRestrictions(errorlist);					  		  			
-	}
-	public void IfStmt.checkRestrictions(ArrayList<String> errorlist) {
-		checkUnboxing(getCondition(), errorlist);
-		super.checkRestrictions(errorlist);					  		  			
-	}  	
-	public void WhileStmt.checkRestrictions(ArrayList<String> errorlist) {
-		checkUnboxing(getCondition(), errorlist);
-		super.checkRestrictions(errorlist);					  		  			
-	}  	
-	public void DoStmt.checkRestrictions(ArrayList<String> errorlist) {
-		checkUnboxing(getCondition(), errorlist);
-		super.checkRestrictions(errorlist);					  		  			
-	}  	
-	public void ForStmt.checkRestrictions(ArrayList<String> errorlist) {
-		checkUnboxing(getCondition(), errorlist);
-		super.checkRestrictions(errorlist);					  		  			
-	}  	
-	public void SwitchStmt.checkRestrictions(ArrayList<String> errorlist) {
-		checkUnboxing(getExpr(), errorlist);
-		super.checkRestrictions(errorlist);					  		  			
-	}
-	public void EnhancedForStmt.checkRestrictions(ArrayList<String> errorlist) {
-		if (getExpr().type().isArrayDecl()) {
-			checkAutoBoxing(getExpr().type().elementType(), getVariableDecl().getTypeAccess().type(), errorlist);
-		} else if (getVariableDecl().getTypeAccess().type().isPrimitiveType()) {
-			reportRestriction(errorlist, "Auto-unboxing is not supported");
-		}
-		super.checkRestrictions(errorlist);					  		  			
-	}
-	// auto-unboxing the index into an array
-	public void ArrayAccess.checkRestrictions(ArrayList<String> errorlist) {
-		checkUnboxing(getExpr(), errorlist);
-		super.checkRestrictions(errorlist);					  		  			
-	}
-	// autoboxing/unboxing the content of a new array
-  	public void ArrayInit.checkRestrictions(ArrayList<String> errorlist) {
-  		for (int i=0; i<getNumInit(); i++) {  				
-  			checkAutoBoxing(getInit(i).type(), type().elementType(), errorlist);
-  		}
-		super.checkRestrictions(errorlist);					  		  			
-  	}
-	// unboxing the operands for a numerical/string operator
-	public void Binary.checkRestrictions(ArrayList<String> errorlist) {	
-		if (this instanceof AddExpr && type().isString()) {
-			// two operands combining to string were not auto-unboxed
-		} else if (this instanceof EqualityExpr) {
-			checkAutoBoxing(getLeftOperand().type(), getRightOperand().type(), errorlist);
-		} else {
-	  		checkUnboxing(getLeftOperand(), errorlist);
-  			checkUnboxing(getRightOperand(), errorlist);
-  		}	
-		super.checkRestrictions(errorlist);					  		  			
-	}
-	// unboxing the operand for a unary operator
-	public void Unary.checkRestrictions(ArrayList<String> errorlist) {	
-  		checkUnboxing(getOperand(), errorlist);
-		super.checkRestrictions(errorlist);					  		  			
-	}
-	
-	
-	// Access to static members is not allowed by using an instance with side effects 
-	public void Dot.checkRestrictions(ArrayList<String> errorlist) {
-		Expr l = getLeft();
-		Access r = getRight();
-		if ((r instanceof MethodAccess) && ((MethodAccess) r).decl().isStatic()) {
-			if (l.hasPotentialSideEffects()) {
-				 reportRestriction(errorlist, "Can not access static method '"
-				 + ((MethodAccess) r).decl().getID()
-				 +"' with instance expression that has potential side effects");
-			}
-		}
-		if ((r instanceof VarAccess) && ((VarAccess) r).varDecl().isStatic()) {
-            if (l.hasPotentialSideEffects()) {
-				 reportRestriction(errorlist, "Can not access static field '"
-				  + ((VarAccess) r).varDecl().name() 
-				  + "' with instance expression that has potential side effects");
-			}
-		}
-		super.checkRestrictions(errorlist);
-	}  		
-	
-		   	  	
+        if (!LibraryList.isAllowed(m.hostType().packageName() + "." + m.hostType().uniqueName(), 
+                                   sig)) 
+        {   reportRestriction(errorlist, "Unsupported core library constructor in "
+                + m.hostType().packageName() + "." + m.hostType().uniqueName() + ": " 
+                + sig);
+        }
+        
+        super.checkRestrictions(errorlist);                                     
+    }
+    // autoboxing/unboxing at variable declarators  
+    public void VariableDeclarator.checkRestrictions(ArrayList<String> errorlist) 
+    {
+         Expr e = getInit();
+         if (e!=null) 
+         {  checkAutoBoxing(e.type(), getTypeAccess().type(), errorlist);
+         } 
+        super.checkRestrictions(errorlist);                                     
+    }
+    // autoboxing/unboxing in return statement
+    public void ReturnStmt.checkRestrictions(ArrayList<String> errorlist) 
+    {
+        Expr r = getResult();
+        if (r!=null) 
+        {   checkAutoBoxing(r.type(), returnType(), errorlist);
+        }
+        super.checkRestrictions(errorlist);                                     
+    }   
+    // auto-unboxing of the various conditions and switch expression
+    public void ConditionalExpr.checkRestrictions(ArrayList<String> errorlist) 
+    {   
+        checkUnboxing(getCondition(), errorlist);
+        super.checkRestrictions(errorlist);                                     
+    }
+    public void IfStmt.checkRestrictions(ArrayList<String> errorlist) 
+    {   
+        checkUnboxing(getCondition(), errorlist);
+        super.checkRestrictions(errorlist);                                     
+    }   
+    public void WhileStmt.checkRestrictions(ArrayList<String> errorlist) 
+    {   
+        checkUnboxing(getCondition(), errorlist);
+        super.checkRestrictions(errorlist);                                     
+    }   
+    public void DoStmt.checkRestrictions(ArrayList<String> errorlist) 
+    {
+        checkUnboxing(getCondition(), errorlist);
+        super.checkRestrictions(errorlist);                                     
+    }   
+    public void ForStmt.checkRestrictions(ArrayList<String> errorlist) 
+    {
+        checkUnboxing(getCondition(), errorlist);
+        super.checkRestrictions(errorlist);                                     
+    }   
+    public void SwitchStmt.checkRestrictions(ArrayList<String> errorlist) 
+    {
+        checkUnboxing(getExpr(), errorlist);
+        super.checkRestrictions(errorlist);                                     
+    }
+    public void EnhancedForStmt.checkRestrictions(ArrayList<String> errorlist) 
+    {
+        if (getExpr().type().isArrayDecl()) 
+        {   checkAutoBoxing(getExpr().type().elementType(), getVariableDecl().getTypeAccess().type(), errorlist);
+        } 
+        else if (getVariableDecl().getTypeAccess().type().isPrimitiveType()) 
+        {   reportRestriction(errorlist, "Auto-unboxing is not supported");
+        }
+        super.checkRestrictions(errorlist);                                     
+    }
+    // auto-unboxing the index into an array
+    public void ArrayAccess.checkRestrictions(ArrayList<String> errorlist) 
+    {
+        checkUnboxing(getExpr(), errorlist);
+        super.checkRestrictions(errorlist);                                     
+    }
+    // autoboxing/unboxing the content of a new array
+    public void ArrayInit.checkRestrictions(ArrayList<String> errorlist) 
+    {
+        for (int i=0; i<getNumInit(); i++) 
+        {   checkAutoBoxing(getInit(i).type(), type().elementType(), errorlist);
+        }
+        super.checkRestrictions(errorlist);                                     
+    }
+    // unboxing the operands for a numerical/string operator
+    public void Binary.checkRestrictions(ArrayList<String> errorlist) 
+    { 
+        if (this instanceof AddExpr && type().isString()) 
+        {   // two operands combining to string were not auto-unboxed
+        } 
+        else if (this instanceof EqualityExpr) 
+        {   checkAutoBoxing(getLeftOperand().type(), getRightOperand().type(), errorlist);
+        } 
+        else
+        {   checkUnboxing(getLeftOperand(), errorlist);
+            checkUnboxing(getRightOperand(), errorlist);
+        }   
+        super.checkRestrictions(errorlist);                                     
+    }
+    // unboxing the operand for a unary operator
+    public void Unary.checkRestrictions(ArrayList<String> errorlist) 
+    {  
+        checkUnboxing(getOperand(), errorlist);
+        super.checkRestrictions(errorlist);                                     
+    }
+    
+    
+    // Access to static members is not allowed by using an instance with side effects 
+    public void Dot.checkRestrictions(ArrayList<String> errorlist) 
+    {
+        Expr l = getLeft();
+        Access r = getRight();
+        if ((r instanceof MethodAccess) && ((MethodAccess) r).decl().isStatic()) 
+        {   if (l.hasPotentialSideEffects()) 
+            {    reportRestriction(errorlist, "Can not access static method '"
+                 + ((MethodAccess) r).decl().getID()
+                 +"' with instance expression that has potential side effects");
+            }
+        }
+        if ((r instanceof VarAccess) && ((VarAccess) r).varDecl().isStatic()) 
+        {   if (l.hasPotentialSideEffects()) 
+            {   reportRestriction(errorlist, "Can not access static field '"
+                  + ((VarAccess) r).varDecl().name() 
+                  + "' with instance expression that has potential side effects");
+            }
+        }
+        super.checkRestrictions(errorlist);
+    }       
+    
+                
     public void VarAccess.checkRestrictions(ArrayList<String> errorlist) 
-    {   Variable v = varDecl();
-
+    {   
+        Variable v = varDecl();
         // check if part of the supported library
         if (v.isClassVariable() || v.isInstanceVariable()) 
         {   if (!LibraryList.isAllowed(v.hostType().packageName() + "." + v.hostType().uniqueName(),getID())) 
@@ -647,17 +524,6 @@ aspect CheckRestrictions {
         super.checkRestrictions(errorlist);
     }
         
-//    public void Expr.checkRestrictions(ArrayList<String> errorlist) 
-//    {
-//        TypeDecl t = type();
-//        if (t.isClassDecl() || t.isInterfaceDecl())
-//        {     String n = t.erasure().typeName();
-//              if (!LibraryList.isAllowed(n))
-//              {   reportRestriction(errorlist, "Unsupported type:"+t.erasure().typeName());
-//              }
-//        }        
-//        super.checkRestrictions(errorlist);
-//    }
     
     public void LambdaExpr.checkRestrictions(ArrayList<String> errorlist) 
     {    

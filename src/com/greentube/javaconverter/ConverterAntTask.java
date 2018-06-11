@@ -6,7 +6,7 @@ import org.apache.tools.ant.*;
 import org.apache.tools.ant.types.*;
 
 public class ConverterAntTask extends Task 
-{   private List filesets = new LinkedList();
+{   private List<FileSet> filesets = new LinkedList<>();
     public void addFileset(FileSet fs) 
     {   filesets.add(fs);
     }
@@ -28,7 +28,7 @@ public class ConverterAntTask extends Task
     }
 
     public void execute() throws BuildException 
-    {   Vector args = new Vector();
+    {   Vector<String> args = new Vector<>();
         if (jsdir!=null) 
         {   args.add("-js");
             args.add(jsdir.toString());

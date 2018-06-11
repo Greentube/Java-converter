@@ -1,39 +1,31 @@
-import com.greentube.javaconverter.CodePrinter;
+import com.greentube.javaconverter.CodePrinterCS;
 
 aspect GenerateCS {
-  	  	
-  	public void ASTNode.generateCS(CodePrinter out) {
+        
+    public void ASTNode.generateCS(CodePrinterCS out) 
+    {
         this.dumpTree(System.err);
         throw new RuntimeException("Can not create CS for:"+this.getClass().getName());
-  	}
-  	
-  	public String ASTNode.renameMethod(String n, boolean isstatic) {
-  		if (isstatic) {
-			return n;
-		} else {
-			if (n.equals("toString")) return "ToString";
-			if (n.equals("equals")) return "Equals";
-			if (n.equals("hashCode")) return "GetHashCode";
-			return n;			
-		}  	
-  	}  	
+    }  
 
-  	public void CompilationUnit.generateCS(File outputfolder) {
-    	for (TypeDecl t:getTypeDecls()) {
-			CodePrinter out = new CodePrinter(outputfolder,
-					CodePrinter.escapePackagePath(t.packageName()) 
-				    + CodePrinter.escapeIdentifier(t.uniqueName(), true) + ".cs"
-				);
-	    	t.generateCS(out);
-			out.finish();    	
-    	}
-  	}
+    public void CompilationUnit.generateCS(File outputfolder) 
+    {
+        for (TypeDecl t:getTypeDecls()) 
+        {   CodePrinterCS out = new CodePrinterCS(outputfolder,
+                    CodePrinterCS.escapePackagePath(t.packageName()) 
+                    + CodePrinterCS.escapeIdentifier(t.uniqueName(), true) + ".cs"
+                );
+            t.generateCS(out);
+            out.finish();       
+        }
+    }
 
-    public void ClassDecl.generateCS(CodePrinter out) 
-    {   for (TypeDecl t:nestedTypes()) 
-        {   CodePrinter o2 = new CodePrinter(out, 
-                  CodePrinter.escapePackagePath(t.packageName()) 
-                + CodePrinter.escapeIdentifier(t.uniqueName(), true) + ".cs"
+    public void ClassDecl.generateCS(CodePrinterCS out) 
+    {   
+        for (TypeDecl t:nestedTypes()) 
+        {   CodePrinterCS o2 = new CodePrinterCS(out, 
+                  CodePrinterCS.escapePackagePath(t.packageName()) 
+                + CodePrinterCS.escapeIdentifier(t.uniqueName(), true) + ".cs"
             );
             t.generateCS(o2);
             o2.finish();
@@ -45,7 +37,7 @@ aspect GenerateCS {
         if (packageName().length()>0) 
         {   out.print("namespace ");
             String n = getNameCS();
-            out.print(n.substring(0,n.lastIndexOf('.')));			
+            out.print(n.substring(0,n.lastIndexOf('.')));           
             out.print(" { ");
         }
         
@@ -70,19 +62,19 @@ aspect GenerateCS {
             ac.generateCS(out);               
         }  
 
-    	out.println();
-    	out.print ("{");
-    	out.println();
-    	out.increaseIndent(); 
+        out.println();
+        out.print ("{");
+        out.println();
+        out.increaseIndent(); 
 
-		if (needsEnclosing() && !superclass().needsEnclosing()) {
-			out.print("public ");
-			out.print(enclosingType().getNameCS());
-			out.print(" _o;");
-			out.println(); 
-		}
-        for (Variable v:enclosingVariables()) {
-            out.print("public ");
+        if (needsEnclosing() && !superclass().needsEnclosing()) 
+        {   out.print("public ");
+            out.print(enclosingType().getNameCS());
+            out.print(" _o;");
+            out.println(); 
+        }
+        for (Variable v:enclosingVariables()) 
+        {   out.print("public ");
             out.print(v.type().getNameCS());
             out.print(" ");
             out.printCSIdentifier(v.name(),"_o");            
@@ -90,60 +82,62 @@ aspect GenerateCS {
             out.println();
         }
 
-    	for (BodyDecl bd:getBodyDeclList()) {
-			if (bd.isField()) {
-				for (FieldDeclarator fd:bd.fieldDeclarations()) {
-					out.print("public ");
-					if (fd.isStatic()) {
-						out.print("static ");
-						// test if shadowing a previous static field - need "new" keyword 
-						ClassDecl cd = (ClassDecl) superclass();
-						findoriginal: while(!cd.isObject()) {
-							for (BodyDecl y:cd.getBodyDeclList()) {
-								if (y.isField()) {
-									for (FieldDeclarator x:y.fieldDeclarations()) {
-										if (x.isStatic() && x.getID().equals(fd.getID())) {
-											out.print("new ");
-											break findoriginal;
-										}
-									}
-								}
-							}
-							cd = (ClassDecl) cd.superclass();
-						}					
-					}					 
-					fd.fieldDecl().getTypeAccess().generateCS(out);
-					out.print(" ");
-					out.printCSIdentifier(fd.getID(),"_f");
-					out.print(";");						
-					out.println();
-				}
-			}
-		}		
-    	    	        	    	        	    	    
-    	// determine which bridge methods need to be suppressed 
+        for (BodyDecl bd:getBodyDeclList()) 
+        {   if (bd.isField()) 
+            {   for (FieldDeclarator fd:bd.fieldDeclarations()) 
+                {   out.print("public ");
+                    if (fd.isStatic()) 
+                    {   out.print("static ");
+                        // test if shadowing a previous static field - need "new" keyword 
+                        ClassDecl cd = (ClassDecl) superclass();
+                        findoriginal: while(!cd.isObject()) 
+                        {   for (BodyDecl y:cd.getBodyDeclList()) 
+                            {   if (y.isField()) 
+                                {   for (FieldDeclarator x:y.fieldDeclarations()) 
+                                    {   if (x.isStatic() && x.getID().equals(fd.getID())) 
+                                        {   out.print("new ");
+                                            break findoriginal;
+                                        }
+                                    }
+                                }
+                            }
+                            cd = (ClassDecl) cd.superclass();
+                        }                   
+                    }                    
+                    fd.fieldDecl().getTypeAccess().generateCS(out);
+                    out.print(" ");
+                    out.printCSIdentifier(fd.getID(),"_f");
+                    out.print(";");                     
+                    out.println();
+                }
+            }
+        }       
+                                                            
+        // determine which bridge methods need to be suppressed 
         Collection<MethodDecl> bridgemethods = bridgeMethods();
         ArrayList<MethodDecl> removedbridgemethods = new ArrayList<>();
-        for (BodyDecl b : methodsAndConstructors()) {
-             // check if need to suppress auto-generated bridge methods 
-             if (bridgemethods.contains(b)  
-                && hasMethodWithSignature(((MethodDecl)b).signature(), bridgemethods) ) 
-             {  removedbridgemethods.add((MethodDecl)b);
-             }
+        for (BodyDecl b : methodsAndConstructors()) 
+        {   // check if need to suppress auto-generated bridge methods 
+            if 
+            (   bridgemethods.contains(b)  
+                && hasMethodWithSignature(((MethodDecl)b).signature(), bridgemethods) 
+            ) 
+            {  removedbridgemethods.add((MethodDecl)b);
+            }
         }
-    	    	        	    	        	    	    
+                                                            
         // instance methods                                                             
-        for (BodyDecl b : methodsAndConstructors()) {
-             if (removedbridgemethods.contains(b)) continue;
+        for (BodyDecl b : methodsAndConstructors()) 
+        {   if (removedbridgemethods.contains(b)) { continue; }
 
-      		// check if need to suppress auto-generated methods related to Enums
-			if (b instanceof MethodDecl) {
-      			MethodDecl md = (MethodDecl) b;
-      			if (this instanceof EnumDecl) {
-      				if (md.getID().equals("values") && md.getNumParameter()==0 ) continue;
-      				if (md.getID().equals("valueOf") && md.getNumParameter()==1 )  continue;
-      			}
-				if (md.getID().startsWith("$SwitchMap$") && md.getNumParameter()==0) continue;      		
+            // check if need to suppress auto-generated methods related to Enums
+            if (b instanceof MethodDecl) 
+            {   MethodDecl md = (MethodDecl) b;
+                if (this instanceof EnumDecl) 
+                {   if (md.getID().equals("values") && md.getNumParameter()==0 ) { continue; }
+                    if (md.getID().equals("valueOf") && md.getNumParameter()==1 ) { continue; }
+                }
+                if (md.getID().startsWith("$SwitchMap$") && md.getNumParameter()==0) { continue; }              
                 
                 // check if there was a removed bridge method with the same signature
                 // - need to use its return type for the non-bridge method also
@@ -155,114 +149,120 @@ aspect GenerateCS {
                 }
                 
                 md.generateCS(out, false, ta);
-      		}
-      		else
-      		{   if (b instanceof ConstructorDecl) {
-      			   ConstructorDecl cd = (ConstructorDecl) b;
-      			   if (this instanceof EnumDecl) {
-      				  if (cd.isSynthetic() && cd.getNumParameter()==2 
-      				  &&  cd.getParameter(1).type()==this) continue;
-          			}
-          	    }      		
+            }
+            else
+            {   if (b instanceof ConstructorDecl) 
+                {   ConstructorDecl cd = (ConstructorDecl) b;
+                    if (this instanceof EnumDecl) 
+                    {   if 
+                        (   cd.isSynthetic() && cd.getNumParameter()==2 
+                            && cd.getParameter(1).type()==this
+                        ) 
+                        { continue; }
+                    }
+                }           
                 b.generateCS(out);
-      		}
-    	}    	    	    
-    	    	    	
-		boolean havestaticconstructor = false;		
-		for (BodyDecl bd:getBodyDeclList()) {
-			if (bd.isField()) {
-				for (FieldDeclarator fd:bd.fieldDeclarations()) {
-					if (fd.isStatic() && fd.getInit()!=null) {
-						if (!havestaticconstructor) {
-							out.print("static ");
-							out.printCSIdentifier(uniqueName());
-							out.print("()");
-							out.println();
-							out.print("{");
-							out.println();
-							out.increaseIndent();
-							havestaticconstructor=true;
-						}							
-						out.printCSIdentifier(fd.getID(),"_f");
-						out.print(" = ");
-						fd.getInit().generateUsingResultCS(out);
-						out.print(";");
-						out.println();
-					}
-				}
-			} else if (bd instanceof StaticInitializer) {
-				if (!havestaticconstructor) {
-					out.print("static ");
-					out.printCSIdentifier(uniqueName());
-					out.print("() {");
-					out.println();
-					out.increaseIndent();
-					havestaticconstructor=true;
-				}							
-				bd.generateCS(out);
-			}
-		}		
-		if (havestaticconstructor) {
-			out.decreaseIndent();
-			out.print("}");
-			out.println();
-		}
+            }
+        }                   
+                        
+        boolean havestaticconstructor = false;      
+        for (BodyDecl bd:getBodyDeclList()) 
+        {   if (bd.isField()) 
+            {   for (FieldDeclarator fd:bd.fieldDeclarations()) 
+                {   if (fd.isStatic() && fd.getInit()!=null) 
+                    {   if (!havestaticconstructor) 
+                        {   out.print("static ");
+                            out.printCSIdentifier(uniqueName());
+                            out.print("()");
+                            out.println();
+                            out.print("{");
+                            out.println();
+                            out.increaseIndent();
+                            havestaticconstructor=true;
+                        }                           
+                        out.printCSIdentifier(fd.getID(),"_f");
+                        out.print(" = ");
+                        fd.getInit().generateUsingResultCS(out);
+                        out.print(";");
+                        out.println();
+                    }
+                }
+            } 
+            else if (bd instanceof StaticInitializer) 
+            {   if (!havestaticconstructor) 
+                {   out.print("static ");
+                    out.printCSIdentifier(uniqueName());
+                    out.print("() {");
+                    out.println();
+                    out.increaseIndent();
+                    havestaticconstructor=true;
+                }                           
+                bd.generateCS(out);
+            }
+        }       
+        if (havestaticconstructor) 
+        {   out.decreaseIndent();
+            out.print("}");
+            out.println();
+        }
 
-		if (this instanceof EnumDecl) {
-			EnumDecl ed = (EnumDecl) this;
-			int ordinal = 0;
-			for (EnumConstant ec:ed.enumConstants()) {
-				out.print("public static ");
-				out.printCSIdentifier(uniqueName());
-				out.print(" ");
-				out.printCSIdentifier(ec.getID(),"_f");		
-				out.print(" = new "); 								
-				out.printCSIdentifier(ec.getInit().type().uniqueName());
-				out.print("(\""+ec.getID()+"\","+ordinal);
-				for (int i=0; i<ec.getNumArg(); i++) {
-					out.print(",");
-					ec.getArg(i).generateCS(out);
-				}
-				out.print(");");	
-				out.println();				
-				ordinal++;			
-			}	
-			out.print("public static ");
-			out.printCSIdentifier(uniqueName());
-			out.print("[] values()");
-			out.println();
-			out.print("{");
-			out.println();
-			out.increaseIndent();
-			out.print("return new ");
-			out.printCSIdentifier(uniqueName());
-			out.print("[]{");
-			boolean hasfirst=false;
-			for (EnumConstant ec:ed.enumConstants()) {
-				if (hasfirst) out.print(",");  
-				out.printCSIdentifier(ec.getID(),"_f");
-				hasfirst=true;
-			}
-			out.print("};");
-			out.println();
-			out.decreaseIndent();
-			out.print("}");
-			out.println();
-		}
-	
-	    // add redirects for interface default methods
-	    ArrayList<MethodDecl> neededredirects = new ArrayList<MethodDecl>();
+        if (this instanceof EnumDecl) 
+        {   EnumDecl ed = (EnumDecl) this;
+            int ordinal = 0;
+            for (EnumConstant ec:ed.enumConstants()) 
+            {   out.print("public static ");
+                out.printCSIdentifier(uniqueName());
+                out.print(" ");
+                out.printCSIdentifier(ec.getID(),"_f");     
+                out.print(" = new ");                               
+                out.printCSIdentifier(ec.getInit().type().uniqueName());
+                out.print("(\""+ec.getID()+"\","+ordinal);
+                for (int i=0; i<ec.getNumArg(); i++) 
+                {   out.print(",");
+                    ec.getArg(i).generateCS(out);
+                }
+                out.print(");");    
+                out.println();              
+                ordinal++;          
+            }   
+            out.print("public static ");
+            out.printCSIdentifier(uniqueName());
+            out.print("[] values()");
+            out.println();
+            out.print("{");
+            out.println();
+            out.increaseIndent();
+            out.print("return new ");
+            out.printCSIdentifier(uniqueName());
+            out.print("[]{");
+            boolean hasfirst=false;
+            for (EnumConstant ec:ed.enumConstants()) 
+            {   if (hasfirst) { out.print(","); }  
+                out.printCSIdentifier(ec.getID(),"_f");
+                hasfirst=true;
+            }
+            out.print("};");
+            out.println();
+            out.decreaseIndent();
+            out.print("}");
+            out.println();
+        }
+    
+        // add redirects for interface default methods
+        ArrayList<MethodDecl> neededredirects = new ArrayList<MethodDecl>();
         for (Access ac: getImplementsList() ) 
         {   while (ac instanceof Dot) ac=((Dot)ac).getRight();        
             TypeDecl t = (ac instanceof TypeAccess) ? ((TypeAccess) ac).type() 
                                                     : ((ParTypeAccess) ac).type(); 
             for(BodyDecl bd: ((InterfaceDecl)t).recursivelyGetBodyDecl())
-            {   if (bd instanceof MethodDecl) {
-                    MethodDecl md = (MethodDecl) bd;
-                    if (md.isDefault() 
+            {   if (bd instanceof MethodDecl) 
+                {   MethodDecl md = (MethodDecl) bd;
+                    if 
+                    (   md.isDefault() 
                         && !this.hasMethodWithSignature(md.signature(), null)
                         && md.isSupportedInLibraries() 
-                        && !neededredirects.contains(md))
+                        && !neededredirects.contains(md)
+                    )
                     {   neededredirects.add(md); 
                     }
                 }
@@ -270,470 +270,460 @@ aspect GenerateCS {
         }
         for (MethodDecl md:neededredirects) 
         {   out.print("public virtual ");
-                        md.getTypeAccess().generateCS(out);
-                        out.print(" ");
-                        out.printCSIdentifier(md.name());
-                        out.print("(");
-                        int numpar = md.getNumParameter();
-                        for (int i=0; i<numpar; i++)
-                        {   if (i!=0) out.print(", ");
-                            md.getParameter(i).getTypeAccess().generateCS(out);
-                            if (i==numpar-1 && md.isVariableArity()) {
-                                out.print("[]");
-                            }        
-                            out.print(" p"+i);                     
-                        }
-                        out.print(")");                        
-                        out.println();
-                        out.print("{   ");
-                        if (!md.isVoid()) out.print("return ");
-                        out.print(md.hostType().getNameCS());
-                        out.print("_c.");
-                        out.printCSIdentifier(renameMethod(md.name(),true), "");
-                        out.print("(this");
-                        for (int i=0; i<numpar; i++) 
-                        {   out.print(", ");
-                            out.print("p"+i);                            
-                        }
-                        out.print(");");                        
-                        out.println();
-                        out.print("}");
-                        out.println();
+            md.getTypeAccess().generateCS(out);
+            out.print(" ");
+            out.printCSIdentifier(md.name());
+            out.print("(");
+            int numpar = md.getNumParameter();
+            for (int i=0; i<numpar; i++)
+            {   if (i!=0) { out.print(", "); }
+                md.getParameter(i).getTypeAccess().generateCS(out);
+                if (i==numpar-1 && md.isVariableArity()) 
+                {   out.print("[]");
+                }        
+                out.print(" p"+i);                     
+            }
+            out.print(")");                        
+            out.println();
+            out.print("{   ");
+            if (!md.isVoid()) { out.print("return "); }
+            out.print(md.hostType().getNameCS());
+            out.print("_c.");
+            out.printCSMethodName(md.name(),true);
+            out.print("(this");
+            for (int i=0; i<numpar; i++) 
+            {   out.print(", ");
+                out.print("p"+i);                            
+            }
+            out.print(");");                        
+            out.println();
+            out.print("}");
+            out.println();
         }  
-	    
-	    // add synthetic methods for array dimensioning of needed
+        
+        // add synthetic methods for array dimensioning of needed
         out.printAndForgetDims();    
-	
+    
         out.decreaseIndent(); 
         out.print("}");
         if (packageName().length()>0) 
         {   out.print("}");
         }
         out.println();
-  	}
-  	
-  	public boolean ClassDecl.hasMethodWithSignature(String sig, Collection<MethodDecl> ignore)
-  	{
-         for (BodyDecl bd:getBodyDeclList()) {
-            if (bd instanceof MethodDecl) 
-            {   if (((MethodDecl) bd).signature().equals(sig)
-                    && (ignore==null || !ignore.contains(bd)) ) return true;
-            }
-  	     }
-  	     if (hasSuperClass())
-  	     {   return ((ClassDecl)superclass()).hasMethodWithSignature(sig,ignore);
-  	     }
-  	     return false;
-  	}
-  	  	
-  	  	
-  	  	
-	public void InterfaceDecl.generateCS(CodePrinter out) {
+    }
+    
+        
+    public void InterfaceDecl.generateCS(CodePrinterCS out) 
+    {
         out.print("using java.lang;");  
         out.println();      
         String namespaceheader = "";
-		if (packageName().length()>0) {
-			String n = getNameCS();
-			namespaceheader = "namespace " + n.substring(0,n.lastIndexOf('.')) + " { ";						
-		}
-		out.print(namespaceheader);
-		out.print("public interface ");
-		out.printCSIdentifier(uniqueName());
+        if (packageName().length()>0) 
+        {   String n = getNameCS();
+            namespaceheader = "namespace " + n.substring(0,n.lastIndexOf('.')) + " { ";                     
+        }
+        out.print(namespaceheader);
+        out.print("public interface ");
+        out.printCSIdentifier(uniqueName());
 
-		if (hasSuperInterface()) {
-			out.print(": ");
-			int n=0;
-      		for (Access ac: getSuperInterfaceList()) {
-      			if (n>0) out.print(",");
-        		ac.generateCS(out);
-        		n++;
-      		}			
-		}
-		
+        if (hasSuperInterface()) 
+        {   out.print(": ");
+            int n=0;
+            for (Access ac: getSuperInterfaceList()) 
+            {   if (n>0) { out.print(","); }
+                ac.generateCS(out);
+                n++;
+            }           
+        }
+        
         out.println();
-		out.print("{");
-		out.println();
-		out.increaseIndent();
-		
-		boolean needstatic = false;
-		for (BodyDecl bd:getBodyDeclList()) {
-			if (bd.isField()) {
-				needstatic = true;
-			} else if (bd instanceof MethodDecl) {
-			   MethodDecl md = (MethodDecl) bd;
-	           if (md.getBlock()!=null) 
-	           {   needstatic = true;
-	               if (md.isDefault()) md.generateCS(out,true,null); 
-	           }
-	           else 
-			   {   md.generateCS(out);
-			   }
-			}
-		}
+        out.print("{");
+        out.println();
+        out.increaseIndent();
+        
+        boolean needstatic = false;
+        for (BodyDecl bd:getBodyDeclList()) 
+        {   if (bd.isField()) 
+            {   needstatic = true;
+            } 
+            else if (bd instanceof MethodDecl) 
+            {   MethodDecl md = (MethodDecl) bd;
+               if (md.getBlock()!=null) 
+               {   needstatic = true;
+                   if (md.isDefault()) md.generateCS(out,true,null); 
+               }
+               else 
+               {   md.generateCS(out);
+               }
+            }
+        }
 
-		out.decreaseIndent();
-		out.print("}");
-        if (namespaceheader.length()>0) out.print("}");     
-		out.println();
-				
-		// add special class for static fields and static/default methods 
-		if (needstatic) {
-            out.print(namespaceheader);
-			out.print("public static class ");
-			out.printCSIdentifier(uniqueName());
-			out.print("_c ");
-			out.println();
-			out.print("{");
-			out.println();
-			out.increaseIndent();
-			
-			for (BodyDecl bd:getBodyDeclList()) {
-				if (bd.isField()) {
-					for (FieldDeclarator fd:bd.fieldDeclarations()) {
-						if (fd.isStatic()) {
-							out.print("public static ");
-							fd.getTypeAccess().generateCS(out);
-							out.print(" "); 							
-							out.printCSIdentifier(fd.getID(),"_f");
-							out.print(" = ");
-							fd.getInit().generateUsingResultCS(out);
-							out.print(";");		
-							out.println();			
-						}
-					}
-				} 
-				else if (bd instanceof MethodDecl) 
-				{   MethodDecl md = (MethodDecl) bd;
-				    if (md.getBlock()!=null) 
+        out.decreaseIndent();
+        out.print("}");
+        if (namespaceheader.length()>0) { out.print("}"); }     
+        out.println();
+                
+        // add special class for static fields and static/default methods 
+        if (needstatic) 
+        {   out.print(namespaceheader);
+            out.print("public static class ");
+            out.printCSIdentifier(uniqueName());
+            out.print("_c ");
+            out.println();
+            out.print("{");
+            out.println();
+            out.increaseIndent();
+            
+            for (BodyDecl bd:getBodyDeclList()) 
+            {   if (bd.isField()) 
+                {   for (FieldDeclarator fd:bd.fieldDeclarations()) 
+                    {   if (fd.isStatic()) 
+                        {   out.print("public static ");
+                            fd.getTypeAccess().generateCS(out);
+                            out.print(" ");                             
+                            out.printCSIdentifier(fd.getID(),"_f");
+                            out.print(" = ");
+                            fd.getInit().generateUsingResultCS(out);
+                            out.print(";");     
+                            out.println();          
+                        }
+                    }
+                } 
+                else if (bd instanceof MethodDecl) 
+                {   MethodDecl md = (MethodDecl) bd;
+                    if (md.getBlock()!=null) 
                     {   md.generateCS(out);
                     }
-                }				
-			}	
-			
-			out.printAndForgetDims();
-						
-			out.decreaseIndent();
-			out.print("}");	
-    	    if (namespaceheader.length()>0) out.print("}");		
-			out.println();						
-		}		
-	}  
-  	
+                }               
+            }   
+            
+            out.printAndForgetDims();
+                        
+            out.decreaseIndent();
+            out.print("}"); 
+            if (namespaceheader.length()>0) out.print("}");     
+            out.println();                      
+        }       
+    }  
 
 
-  	public void ConstructorDecl.generateCS(CodePrinter out) {  	
-		// decide if all the fields have to be initialized right here	
-		boolean needsInit = true;			
-		if (hasConstructorInvocation()) {
-	        Stmt stmt = getConstructorInvocation();
-        	if (stmt instanceof ExprStmt) {
-          		ExprStmt exprStmt = (ExprStmt) stmt;
-          		Expr expr = exprStmt.getExpr();
-          		if (!expr.isSuperConstructorAccess()) {
-            		needsInit = false;
-          		}
-        	}
-      	}		
-		
+    public void ConstructorDecl.generateCS(CodePrinterCS out) 
+    {   
+        // decide if all the fields have to be initialized right here   
+        boolean needsInit = true;           
+        if (hasConstructorInvocation()) 
+        {   Stmt stmt = getConstructorInvocation();
+            if (stmt instanceof ExprStmt) 
+            {   ExprStmt exprStmt = (ExprStmt) stmt;
+                Expr expr = exprStmt.getExpr();
+                if (!expr.isSuperConstructorAccess()) 
+                {   needsInit = false;
+                }
+            }
+        }       
+        
         Collection<Variable>encvar = hostType().enclosingVariables();
         boolean needouter = hostType().needsEnclosing();
-  		int numpar = getNumParameter();
-  		  		
-  		out.print("public ");  		
-  		out.printCSIdentifier(hostType().uniqueName());
-  		out.print("(");  		
-  		// pass reference to the enclosing object 
-  		if (needouter) {
-  			out.print(hostType().enclosingType().getNameCS());
-  			out.print(" _o");
-  		}
-  		// pass accessible local variables of constructing method
-  		int countencvar=0;
-  		for (Variable v:encvar) {
-  		    if (countencvar>0 || needouter) out.print(",");
-  		    out.print(v.type().getNameCS());
-  		    out.print(" ");
+        int numpar = getNumParameter();
+                
+        out.print("public ");       
+        out.printCSIdentifier(hostType().uniqueName());
+        out.print("(");         
+        // pass reference to the enclosing object 
+        if (needouter) 
+        {   out.print(hostType().enclosingType().getNameCS());
+            out.print(" _o");
+        }
+        // pass accessible local variables of constructing method
+        int countencvar=0;
+        for (Variable v:encvar) 
+        {   if (countencvar>0 || needouter) { out.print(","); }
+            out.print(v.type().getNameCS());
+            out.print(" ");
             out.printCSIdentifier(v.name(),"_o");   
-  		    countencvar++;
-  		}
-  		for (int i=0; i<numpar; i++) {
-  			if (i>0 || needouter || encvar.size()>0) out.print(",");
-  			getParameter(i).getTypeAccess().generateCS(out);
-  			if (i==numpar-1 && isVariableArity()) {
-  				out.print("[]");
-  			} 
-  			out.print(" ");
-  			out.printCSIdentifier(getParameter(i).name(), "");
-  		}
-  		out.print(")");
-  		out.print(":");
-  		                                        // intentionally no post-processing
-  		((ExprStmt)getConstructorInvocation()).getExpr().generateCS(out);	
-  		                                        	
-		out.println();
-  		out.print("{");  		
-		out.println();
-		out.increaseIndent();
-		
-		// when a super-constructor is called, the initialization of everything that belongs
-		// to this class itself needs to be done here
-		// if calling a constructor of this, do not initialize all variables twice		
-		if (needsInit) {
-			if (needouter && !((ClassDecl)hostType()).superclass().needsEnclosing()) {
-				out.print("this._o = _o;");
-				out.println();
-			}			
-            for (Variable v:encvar) {
-                out.print("this.");
+            countencvar++;
+        }
+        for (int i=0; i<numpar; i++) 
+        {   if (i>0 || needouter || encvar.size()>0) { out.print(","); }
+            getParameter(i).getTypeAccess().generateCS(out);
+            if (i==numpar-1 && isVariableArity()) 
+            {   out.print("[]");
+            } 
+            out.print(" ");
+            out.printCSIdentifier(getParameter(i).name(), "");
+        }
+        out.print(")");
+        out.print(":");
+        
+        // intentionally no post-processing
+        ((ExprStmt)getConstructorInvocation()).getExpr().generateCS(out);   
+                                                    
+        out.println();
+        out.print("{");         
+        out.println();
+        out.increaseIndent();
+        
+        // when a super-constructor is called, the initialization of everything that belongs
+        // to this class itself needs to be done here
+        // if calling a constructor of this, do not initialize all variables twice      
+        if (needsInit) 
+        {   if (needouter && !((ClassDecl)hostType()).superclass().needsEnclosing()) 
+            {   out.print("this._o = _o;");
+                out.println();
+            }           
+            for (Variable v:encvar) 
+            {   out.print("this.");
                 out.printCSIdentifier(v.name(),"_o");
                 out.print(" = ");   
                 out.printCSIdentifier(v.name(),"_o");
                 out.print(";");
                 out.println();
             }
-			
-			// do all field initializations
-			for (BodyDecl bd:hostType().getBodyDeclList()) {
-				if (bd.isField()) {
-					for (FieldDeclarator fd:bd.fieldDeclarations()) {
-						if (!fd.isStatic() && fd.getInit()!=null) {
-							out.print("this.");
-							out.printCSIdentifier(fd.getID(), "_f");
-							out.print(" = ");
-							fd.getInit().generateUsingResultCS(out);
-							out.print(";");						
-							out.println();
-						}
-					}
-				} else if (bd instanceof InstanceInitializer) {
-					bd.generateCS(out);
-				}
-			}
-		}
-		
-		// build body of constructor
-		Block block = getBlock();
-  		int n = block.getNumStmt();
-  		for (int i=0; i<n; i++) {
-  			Stmt stmt = block.getStmt(i);
-  			stmt.generateCS(out);
-  		}
-		out.decreaseIndent();
-		out.print("}");
-  		out.println();		
-  	}
+            
+            // do all field initializations
+            for (BodyDecl bd:hostType().getBodyDeclList()) 
+            {   if (bd.isField()) 
+                {   for (FieldDeclarator fd:bd.fieldDeclarations()) 
+                    {   if (!fd.isStatic() && fd.getInit()!=null) 
+                        {   out.print("this.");
+                            out.printCSIdentifier(fd.getID(), "_f");
+                            out.print(" = ");
+                            fd.getInit().generateUsingResultCS(out);
+                            out.print(";");                     
+                            out.println();
+                        }
+                    }
+                }
+                else if (bd instanceof InstanceInitializer) 
+                {   bd.generateCS(out);
+                }
+            }
+        }
+        
+        // build body of constructor
+        Block block = getBlock();
+        int n = block.getNumStmt();
+        for (int i=0; i<n; i++) 
+        {   Stmt stmt = block.getStmt(i);
+            stmt.generateCS(out);
+        }
+        out.decreaseIndent();
+        out.print("}");
+        out.println();      
+    }
 
-//	public void EnumConstant.generateCS(CodePrinter out) {
-//	}
+//  public void EnumConstant.generateCS(CodePrinterCS out) 
+//    {
+//  }
 
-	public void InstanceInitializer.generateCS(CodePrinter out) {
-		getBlock().generateCS(out);	
-	}
-//	public void FieldDecl.generateCS(CodePrinter out) {
-//	}
-//	public void MemberClassDecl.generateCS(CodePrinter out) {
-//	}
-//	public void MemberInterfaceDecl.generateCS(CodePrinter out) {
-//	}
+    public void InstanceInitializer.generateCS(CodePrinterCS out) 
+    {
+        getBlock().generateCS(out); 
+    }
+//  public void FieldDecl.generateCS(CodePrinterCS out) 
+//  {
+//  }
+//  public void MemberClassDecl.generateCS(CodePrinterCS out) 
+//  {
+//  }
+//  public void MemberInterfaceDecl.generateCS(CodePrinterCS out) 
+//  {
+//  }
 
-    public void MethodDecl.generateCS(CodePrinter out) {
+    public void MethodDecl.generateCS(CodePrinterCS out) 
+    {
         generateCS(out,false,null);
     }    
-  	public void MethodDecl.generateCS(CodePrinter out, 
-  	     boolean omitbody, Access overwritereturntype) {
-  	    boolean isinterfaceextension = false;
-  	    // perform some checks for class methods
-  	    if (hostType().isClassDecl())
-		{   if (isStatic()) {
-  			   // test if this method shadows a static super method
-  			   boolean isoverriding = false;
-  			   ClassDecl c = (ClassDecl)(hostType());
-  			   while (!c.isObject()) {
-  				  c = (ClassDecl) (c.superclass());
-				    for (BodyDecl b : c.methodsAndConstructors()) {
-					   if (b instanceof MethodDecl && ((MethodDecl)b).isStatic() 
-				        && signature().equals(((MethodDecl)b).signature()) ) { 
-						  isoverriding = true;
-					   }
-		    	 }    	    	      				
-  			   } 			 		
-			   out.print("public static ");		
-			   if (isoverriding) out.print("new ");			  								
-		    } else {  			
-  			   // test if this method overrides a super method
-  			   boolean isoverriding = false;
-  			   ClassDecl c = (ClassDecl)(hostType());
-  			   while (!c.isObject()) {
-  				  c = (ClassDecl) (c.superclass());
-				  for (BodyDecl b : c.methodsAndConstructors()) {
-					if (b instanceof MethodDecl && overrides((MethodDecl)b) ) { 
-						isoverriding = true;
-					}
-		    	  }    	    	      				
-  			   } 			 		
-  			   out.print("public ");
-  			   out.print(isoverriding ? "override " : (isAbstract() ? "abstract ":"virtual "));  			
-  		    }  		
-  		}
-  		// perform some checks for interface methods
-  		else
-  		{   if (getBlock()!=null && !omitbody)   // static or default interface method
-  		    {   out.print("public static ");
-  		        isinterfaceextension = isDefault();
-  		    }  		
-  		}
-  		
-		String n = renameMethod(name(), isStatic());
-		if (overwritereturntype!=null)
-		{   overwritereturntype.generateCS(out);
-		}
-		else
-  		{   getTypeAccess().generateCS(out);
-  		}
-  		out.print(" ");
-  		out.printCSIdentifier(n, "");
-  		out.print("(");
-  		if (isinterfaceextension) 
-  		{   out.print(hostType().getNameCS());
-  		    out.print(" @this");
-  		}
-  		int numpar = getNumParameter();
-  		for (int i=0; i<numpar; i++) {
-  			if (i>0 || isinterfaceextension) out.print(", ");
-  			getParameter(i).getTypeAccess().generateCS(out);
-  			if (i==numpar-1 && isVariableArity()) {
-  				out.print("[]");
-  			} 
-  			out.print(" ");
-  			out.printCSIdentifier(getParameter(i).name(), "");
-  		}
-  		out.print(")");
-  		
-  		if (getBlock()!=null && !omitbody) {
-	  		out.println();	  		
-  			getBlock().generateCS(out);
-  		} else {
-  			out.print(";");
-  			out.println();  		
-  		}
-  	}
-
-	public void StaticInitializer.generateCS(CodePrinter out) {
-		getBlock().generateCS(out);
-	}
-
-	public String TypeDecl.getNameCS() {
-		if (isPrimitiveType()) {
-  			if (isInt()) {
-  				return("int");
-  			} else if (isByte()) {
-  				return("sbyte");  		
-  			} else if (isChar()) {  		
-  				return("char");
-  			} else if (isBoolean()) {
-  				return("bool");
-  			} else if (isDouble()) {
-  				return("double");
-  			} else {
-  				throw new RuntimeException("Type not supported:"+fullName());
-  			}
-  		} else if (isVoid()) {
-  			return("void");
-  		} else if (isArrayDecl()) {
-  			String s = elementType().getNameCS();
-  			for (int i=dimension(); i>0; i--) {
-  				s = s + "[]";
-  			}
-  			return s;
-  		} else {
-  			TypeDecl erased = erasure();
-  			String s = erased.packageName()+"."+erased.uniqueName();
-  			if (s.equals("java.lang.String")) return "System.String";
-  			if (s.equals("java.lang.Object")) return "System.Object";
-  			if (s.equals("java.lang.System")) return "java.lang.SYSTEM";
-  			if (s.equals("java.lang.CharSequence")) return "System.Object";
-  			
-  			StringBuffer sb = new StringBuffer();
-			StringTokenizer t = new StringTokenizer(s,".");
-			for (int i=0; t.hasMoreElements(); i++) {
-				if (i>0) sb.append(".");
-				sb.append(CodePrinter.escapeIdentifierCS(t.nextToken()));
-			}
-			return sb.toString();
-		}
-	}
-		
-	public int EnumDecl.determineOrdinal(String name) {
-		int ordinal = 0;
-		for (EnumConstant ec:enumConstants()) {
-			if (ec.getID().equals(name)) return ordinal;
-			ordinal++;
-		}
-		return 0;
-	}
-	
-    public static void Constant.generateCharacterCS(CodePrinter out, char c) 
+    public void MethodDecl.generateCS(CodePrinterCS out, boolean omitbody, Access overwritereturntype) 
     {
-            switch(c) {
-            case '\b':  out.print("\\b");
-                        break;
-            case '\f':  out.print("\\f");   
-                        break;
-            case '\n':  out.print("\\n"); 
-                        break;
-            case '\r':  out.print("\\r");
-                        break;
-            case '\t':  out.print("\\t");
-                        break;
-            case '\\':  out.print("\\\\");
-                        break;
-            case '"':   out.print("\\\"");
-                        break;              
-            case '\'':  out.print("\\'");
-                        break;              
+        boolean isinterfaceextension = false;
+        // perform some checks for class methods
+        if (hostType().isClassDecl())
+        {   if (isStatic()) 
+            {   // test if this method shadows a static super method
+                boolean isoverriding = false;
+                ClassDecl c = (ClassDecl)(hostType());
+                while (!c.isObject()) 
+                {   c = (ClassDecl) (c.superclass());
+                    for (BodyDecl b : c.methodsAndConstructors()) 
+                    {   if 
+                        (   b instanceof MethodDecl && ((MethodDecl)b).isStatic() 
+                            && signature().equals(((MethodDecl)b).signature()) 
+                        ) 
+                        { isoverriding = true; }
+                    }                                  
+                }                    
+                out.print("public static ");     
+                if (isoverriding) { out.print("new "); }                                         
+            } 
+            else 
+            {   // test if this method overrides a super method
+                boolean isoverriding = false;
+                ClassDecl c = (ClassDecl)(hostType());
+                while (!c.isObject()) 
+                {   c = (ClassDecl) (c.superclass());
+                    for (BodyDecl b : c.methodsAndConstructors()) 
+                    {   if (b instanceof MethodDecl && overrides((MethodDecl)b) ) 
+                        {   isoverriding = true;
+                        }
+                    }                                 
+                }                    
+                out.print("public ");
+                out.print(isoverriding ? "override " : (isAbstract() ? "abstract ":"virtual "));             
+            }       
+        }
+        // perform some checks for interface methods
+        else
+        {   if (getBlock()!=null && !omitbody)   // static or default interface method
+            {   out.print("public static ");
+                isinterfaceextension = isDefault();
+            }       
+        }
+        
+        if (overwritereturntype!=null)
+        {   overwritereturntype.generateCS(out);
+        }
+        else
+        {   getTypeAccess().generateCS(out);
+        }
+        out.print(" ");
+        out.printCSMethodName(name(), isStatic());
+        out.print("(");
+        if (isinterfaceextension) 
+        {   out.print(hostType().getNameCS());
+            out.print(" @this");
+        }
+        int numpar = getNumParameter();
+        for (int i=0; i<numpar; i++) 
+        {   if (i>0 || isinterfaceextension) { out.print(", "); }
+            getParameter(i).getTypeAccess().generateCS(out);
+            if (i==numpar-1 && isVariableArity()) 
+            {   out.print("[]");
+            } 
+            out.print(" ");
+            out.printCSIdentifier(getParameter(i).name(), "");
+        }
+        out.print(")");
+        
+        if (getBlock()!=null && !omitbody) 
+        {   out.println();          
+            getBlock().generateCS(out);
+        } 
+        else
+        {   out.print(";");
+            out.println();          
+        }
+    }
+
+    public void StaticInitializer.generateCS(CodePrinterCS out) 
+    {   
+        getBlock().generateCS(out);
+    }
+
+    public String TypeDecl.getNameCS() 
+    {
+        if (isPrimitiveType()) 
+        {   if (isInt()) { return("int"); }
+            else if (isByte()) { return("sbyte"); }
+            else if (isChar()) { return("char"); } 
+            else if (isBoolean()) { return("bool"); }
+            else if (isDouble()) { return("double"); }
+            else 
+            {   throw new RuntimeException("Type not supported:"+fullName());
+            }
+        } 
+        else if (isVoid()) 
+        {   return("void");
+        } 
+        else if (isArrayDecl()) 
+        {   String s = elementType().getNameCS();
+            for (int i=dimension(); i>0; i--) 
+            {   s = s + "[]";
+            }
+            return s;
+        } 
+        else 
+        {   TypeDecl erased = erasure();
+            String s = erased.packageName()+"."+erased.uniqueName();
+            if (s.equals("java.lang.String")) { return "System.String"; }
+            if (s.equals("java.lang.Object")) { return "System.Object"; }
+            if (s.equals("java.lang.System")) { return "java.lang.SYSTEM"; }
+            if (s.equals("java.lang.CharSequence")) { return "System.Object"; }
+            
+            StringBuffer sb = new StringBuffer();
+            StringTokenizer t = new StringTokenizer(s,".");
+            for (int i=0; t.hasMoreElements(); i++) 
+            {   if (i>0) { sb.append("."); }
+                sb.append(CodePrinterCS.escapeIdentifierCS(t.nextToken()));
+            }
+            return sb.toString();
+        }
+    }
+
+    
+    public static void Constant.generateCharacterCS(CodePrinterCS out, char c) 
+    {
+        switch(c) 
+        {   case '\b':  { out.print("\\b"); break; }
+            case '\f':  { out.print("\\f"); break; }
+            case '\n':  { out.print("\\n"); break; }
+            case '\r':  { out.print("\\r"); break; }
+            case '\t':  { out.print("\\t"); break; }
+            case '\\':  { out.print("\\\\"); break; }
+            case '"':   { out.print("\\\""); break; }              
+            case '\'':  { out.print("\\'"); break; }              
             default: 
-                if (c>=32 && c<=126) {
-                    out.print(""+c);
-                } else {
-                    String hx = Integer.toHexString((int)c);
+            {   if (c>=32 && c<=126) 
+                {   out.print(""+c);
+                } 
+                else
+                {   String hx = Integer.toHexString((int)c);
                     out.print("\\u");
-                    for (int j=hx.length(); j<4; j++) {
-                        out.print("0");
+                    for (int j=hx.length(); j<4; j++) 
+                    {   out.print("0");
                     } 
                     out.print(hx);
                 }
                 break;
-            } 
+            }
+        } 
+    }       
+    public static void Constant.generateStringCS(CodePrinterCS out, String s) 
+    {
+         out.print("\"");
+         for (int i=0; i<s.length(); i++)
+         {  generateCharacterCS(out,s.charAt(i));
+         }
+         out.print("\"");   
     }   
-  	public static void Constant.generateStringCS(CodePrinter out, String s) 
-  	{
-  	     out.print("\"");
-  	     for (int i=0; i<s.length(); i++)
-         {	generateCharacterCS(out,s.charAt(i));
-  	     }
-  	     out.print("\""); 	
-  	}  	
-  	public void Constant.generateCS(CodePrinter out) {
-		if (this instanceof	ConstantBoolean) {
-			out.print(booleanValue()?"true":"false");
-		} else if (this instanceof ConstantChar) {
-			out.print("'");
-			generateCharacterCS(out, (char) intValue());
-			out.print("'");
-		} else if (this instanceof ConstantDouble) {
-			double d = doubleValue();
-			if (Double.isNaN(d)) {
-				out.print("System.Double.NaN");
-			} else if (Double.isInfinite(d)) {
-				if (d>0) out.print("System.Double.PositiveInfinity");
-				else     out.print("System.Double.NegativeInfinity");
-			} else {
-				out.print(""+d);
-			}
-		} else if (this instanceof ConstantInt) {
-			out.print(""+intValue());
-		} else if (this instanceof ConstantString) {
-	  		generateStringCS(out,stringValue());	
-		}
-  	}		
+    public void Constant.generateCS(CodePrinterCS out) 
+    {
+        if (this instanceof ConstantBoolean) 
+        {   out.print(booleanValue()?"true":"false");
+        } 
+        else if (this instanceof ConstantChar) 
+        {   out.print("'");
+            generateCharacterCS(out, (char) intValue());
+            out.print("'");
+        } 
+        else if (this instanceof ConstantDouble) 
+        {   double d = doubleValue();
+            if (Double.isNaN(d)) 
+            {   out.print("System.Double.NaN");
+            } 
+            else if (Double.isInfinite(d)) 
+            {   if (d>0) { out.print("System.Double.PositiveInfinity"); }
+                else     { out.print("System.Double.NegativeInfinity"); }
+            } 
+            else 
+            {   out.print(""+d);
+            }
+        } 
+        else if (this instanceof ConstantInt) 
+        {   out.print(""+intValue());
+        }
+        else if (this instanceof ConstantString) 
+        {   generateStringCS(out,stringValue());    
+        }
+    }       
 }

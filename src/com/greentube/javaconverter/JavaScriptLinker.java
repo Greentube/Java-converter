@@ -69,13 +69,13 @@ public class JavaScriptLinker
     }
 
     private void loadAll(String[] roots, boolean production) throws IOException 
-    {   name2index = new HashMap();
-        index2name = new HashMap();
-        modules = new ArrayList();
+    {   name2index = new HashMap<>();
+        index2name = new HashMap<>();
+        modules = new ArrayList<>();
         mustbeloaded = new TransitiveClosure();
 
         TransitiveClosure reachablereference = new TransitiveClosure();
-        ArrayList<int[]> completionconstraints = new ArrayList();
+        ArrayList<int[]> completionconstraints = new ArrayList<>();
 
         // start the loading iterations 
         for (int i=0; i<roots.length; i++)
@@ -89,9 +89,9 @@ public class JavaScriptLinker
             int idx = modules.size();
             String fn = index2name.get(Integer.valueOf(idx));
 
-            ArrayList<String> reference = new ArrayList();
-            ArrayList<String> load = new ArrayList();
-            ArrayList<String> complete = new ArrayList();
+            ArrayList<String> reference = new ArrayList<>();
+            ArrayList<String> load = new ArrayList<>();
+            ArrayList<String> complete = new ArrayList<>();
             byte[] data = loadModule(fn, reference,load,complete,production);
             modules.add(data);
 

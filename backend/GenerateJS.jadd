@@ -1,38 +1,38 @@
-import com.greentube.javaconverter.CodePrinter;
+import com.greentube.javaconverter.CodePrinterJS;
 
 aspect GenerateJS {
-  	  	
-  	public void ASTNode.generateJS(CodePrinter out) {
-  		this.dumpTree(System.err);
-		throw new RuntimeException("Can not create JS for:"+this.getClass().getName());
-  	}
+        
+    public void ASTNode.generateJS(CodePrinterJS out) {
+        this.dumpTree(System.err);
+        throw new RuntimeException("Can not create JS for:"+this.getClass().getName());
+    }
 
-  	public void CompilationUnit.generateJS(File outputfolder) {
-    	for (TypeDecl t:getTypeDecls()) {
-			CodePrinter out = new CodePrinter(outputfolder,
-					CodePrinter.escapePackagePath(t.packageName()) 
-				    + CodePrinter.escapeIdentifier(t.uniqueName(), true) + ".js"
-				);
-	    	t.generateJS(out);
-			out.finish();    		    	
-    	}
-  	}
-    	
-	public void ClassDecl.generateJS(CodePrinter out) {
-		for (TypeDecl t:nestedTypes()) {
-			CodePrinter o2 = new CodePrinter(out, 
-					CodePrinter.escapePackagePath(t.packageName()) 
-				    + CodePrinter.escapeIdentifier(t.uniqueName(), true) + ".js"
-			);
-	    	t.generateJS(o2);
-    		o2.finish();    		
-		}
-	  
-    	out.print("var ");
-    	out.printJSName(packageName(), uniqueName());
-    	out.print(" = ");
-    	out.println();
-    	out.print("{");
+    public void CompilationUnit.generateJS(File outputfolder) {
+        for (TypeDecl t:getTypeDecls()) {
+            CodePrinterJS out = new CodePrinterJS(outputfolder,
+                    CodePrinterJS.escapePackagePath(t.packageName()) 
+                    + CodePrinterJS.escapeIdentifier(t.uniqueName(), true) + ".js"
+                );
+            t.generateJS(out);
+            out.finish();                   
+        }
+    }
+        
+    public void ClassDecl.generateJS(CodePrinterJS out) {
+        for (TypeDecl t:nestedTypes()) {
+            CodePrinterJS o2 = new CodePrinterJS(out, 
+                    CodePrinterJS.escapePackagePath(t.packageName()) 
+                    + CodePrinterJS.escapeIdentifier(t.uniqueName(), true) + ".js"
+            );
+            t.generateJS(o2);
+            o2.finish();            
+        }
+      
+        out.print("var ");
+        out.printJSName(packageName(), uniqueName());
+        out.print(" = ");
+        out.println();
+        out.print("{");
         out.println();
         out.increaseIndent();
 
@@ -45,7 +45,7 @@ aspect GenerateJS {
         }
         for (Variable v:enclosingVariables()) {
             if (foundpar) out.print(",");
-            out.printCSIdentifier(v.name(),"_o");
+            out.printJSIdentifier(v.name(),"_o");
             foundpar=true;
         }
         out.print(")");
@@ -64,9 +64,9 @@ aspect GenerateJS {
         }
         for (Variable v:enclosingVariables()) {
             out.print("this.");
-            out.printCSIdentifier(v.name(),"_o");
+            out.printJSIdentifier(v.name(),"_o");
             out.print(" = ");
-            out.printCSIdentifier(v.name(),"_o");
+            out.printJSIdentifier(v.name(),"_o");
             out.print(";");
             out.println();
         }
@@ -166,198 +166,40 @@ aspect GenerateJS {
             }
             out.print("]");
         } 
-		out.print(",");
-		out.println();
-		out.print("\"");
-		out.print(fullName());
-		out.print("\" //replace-me-with-empty-string-for-production//");
-		out.println();
-		out.print(",{");		
-		out.println();
+        out.print(",");
+        out.println();
+        out.print("\"");
+        out.print(fullName());
+        out.print("\" //replace-me-with-empty-string-for-production//");
+        out.println();
+        out.print(",{");        
+        out.println();
         out.increaseIndent();                                     
 
         Collection<MethodDecl> bridgemethods = bridgeMethods();
-		// instance methods    	    	        	    	  		      	    	    
-      	for (BodyDecl bd : methodsAndConstructors()) {
-      	     // check if need to suppress auto-generated bridge methods 
-      	     if (bridgemethods.contains(bd)) continue;
-      	      
-      		// check if need to suppress auto-generated methods related to Enums      		
-			if (bd instanceof MethodDecl) {
-      			MethodDecl md = (MethodDecl) bd;
-      			if (md.isStatic()) continue;      			
-      		}
-      		else if (bd instanceof ConstructorDecl) {
-      			ConstructorDecl cd = (ConstructorDecl) bd;
-      			if (this instanceof EnumDecl) {
-      				if (cd.isSynthetic()) continue;
-      			}      		
-      		}
-	        bd.generateJS(out);
-    	}    	
-    	
-    	out.decreaseIndent();     	    	        	    	  
-    	out.print ("});");
-    	out.println();
-    	
-		// additional initialization code
-		for (BodyDecl bd:getBodyDeclList()) {
-			if (bd.isField()) {
-				for (FieldDeclarator fd:bd.fieldDeclarations()) {
-					if (fd.isStatic()) {
-						if (fd.getInit()!=null && !(fd.isFinal() && fd.getInit().isConstant()) ) {
-	    					out.printJSName(packageName(), uniqueName());					
-							out.print(".");
-							out.printJSIdentifier(fd.getID(),"");
-							out.print(" = ");
-							fd.getInit().generateUsingResultJS(out);
-							out.print(";");
-							out.println();
-						}
-					}
-				}
-			} else if (bd instanceof StaticInitializer) {
-				bd.generateJS(out);
-			}
-		}
-  	}
-  	
-	public void EnumDecl.generateJS(CodePrinter out) {
-		super.generateJS(out);
-		
-		ArrayList<String> values = new ArrayList<>();
-		boolean needexternalinitialization = false;
-		
-		int ordinal = 0;
-		for (EnumConstant ec:enumConstants()) {
-			if (ec.getInit().type()!=this) {
-				needexternalinitialization = true;
-			} else {
-    			out.printJSName(packageName(), uniqueName());			
-				out.print(".");
-				out.printJSIdentifier(ec.getID(),"");
-				out.print(" = ");
-				out.print("new ");
-				out.printJSName(packageName(), uniqueName());
-				out.print(".$()._"+(ec.getNumArg()+2)+"(");
-				Constant.generateStringJS(out, ec.getID());
-				out.print(","+ordinal);				
-				for (int i=0; i<ec.getNumArg(); i++) {
-					out.print(",");
-					ec.getArg(i).generateJS(out);
-				}
-				out.print(");");				
-				out.println();
-			}
-			
-			values.add(ec.getID());			
-			ordinal++;			
-		}
-				
-		if (needexternalinitialization) {
-			out.memorizeReference(packageName(),uniqueName()+"$init");
-			
-			CodePrinter o2 = new CodePrinter(out,
-					CodePrinter.escapePackagePath(packageName()) 
-				    + CodePrinter.escapeIdentifier(uniqueName()+"$init", true) + ".js"
-			);
-
-				ordinal = 0;
-				for (EnumConstant ec:enumConstants()) {
-					if (ec.getInit().type()!=this) {
-						o2.printJSName(packageName(), uniqueName());					
-						o2.print(".");
-						o2.printJSIdentifier(ec.getID(),"");
-						o2.print(" = ");
-						o2.print("new ");
-						TypeDecl t = ec.getInit().type();
-						o2.printAndMemorizeComplete(t.packageName(),t.uniqueName());
-						o2.print(".$()._"+(ec.getNumArg()+2)+"(");
-						Constant.generateStringJS(o2, ec.getID());
-						o2.print(","+ordinal);
-						for (int i=0; i<ec.getNumArg(); i++) {
-							o2.print(",");
-							ec.getArg(i).generateJS(o2);
-						}
-						o2.print(");");
-						o2.println();
-					}
-					ordinal++;
-				}				
-	    		
-			o2.finish();    		
-		}
-	}  
-  	
-	public void InterfaceDecl.generateJS(CodePrinter out) {
-
-    	out.print("var ");
-    	out.printJSName(packageName(),uniqueName());
-    	out.print(" =");
-    	out.println();
-    	out.print("{ ");
-    	out.println();
-    	out.increaseIndent();
-    	out.print("_superinterfaces: [");
-    	if (hasSuperInterface()) {
-			int n=0;
-      		for (Access ac: getSuperInterfaceList()) {
-      			if (n>0) out.print(",");
-                while (ac instanceof Dot) ac=((Dot)ac).getRight();
-                TypeDecl t = (ac instanceof TypeAccess) ? ((TypeAccess) ac).type() 
-                                                        : ((ParTypeAccess) ac).type();
-                out.printAndMemorizeLoad(t.packageName(),t.uniqueName());            
-        		n++;
-      		}			
-		}
-		out.print("],");
-		out.println();
-				
-	    Vector<MethodDecl> defaults = new Vector<>();
-		for (BodyDecl bd:getBodyDeclList()) {
-			if (bd.isField()) {
-				for (FieldDeclarator fd:bd.fieldDeclarations()) {
-					if (fd.isStatic()) {
-						out.printJSIdentifier(fd.getID(), "");
-						out.print(": ");
-                        if (fd.getInit()!=null && fd.getInit().isConstant() && fd.isFinal()) {
-                            fd.getInit().generateUsingResultJS(out);
-                        } else {
-                            fd.fieldDecl().type().generateDefaultValueJS(out);
-                        }
-						out.print(",");					}
-						out.println();
-				}
-			}
-            else if (bd instanceof MethodDecl) 
-            {   MethodDecl md = (MethodDecl) bd;
-                if (md.isStatic())
-                {   md.generateJS(out);
-                }
-                else if (md.isDefault())
-                {   defaults.add(md);
-                }                
-			}
-		}
-		if (defaults.size()>0) 
-		{     out.print("_defaults:");
-		      out.println();
-		      out.print("{   ");
-		      out.increaseIndent();		      
-              for (MethodDecl md:defaults)
-              {     md.generateJS(out);
-              }		
-              out.decreaseIndent();
-		      out.print("}");
-		      out.println();
-              out.print(",");
-              out.println();
-		}	
-		
-		out.decreaseIndent();
-		out.print("};");
-		out.println();
-					
+        // instance methods                                                             
+        for (BodyDecl bd : methodsAndConstructors()) {
+             // check if need to suppress auto-generated bridge methods 
+             if (bridgemethods.contains(bd)) continue;
+              
+            // check if need to suppress auto-generated methods related to Enums            
+            if (bd instanceof MethodDecl) {
+                MethodDecl md = (MethodDecl) bd;
+                if (md.isStatic()) continue;                
+            }
+            else if (bd instanceof ConstructorDecl) {
+                ConstructorDecl cd = (ConstructorDecl) bd;
+                if (this instanceof EnumDecl) {
+                    if (cd.isSynthetic()) continue;
+                }           
+            }
+            bd.generateJS(out);
+        }       
+        
+        out.decreaseIndent();                                     
+        out.print ("});");
+        out.println();
+        
         // additional initialization code
         for (BodyDecl bd:getBodyDeclList()) {
             if (bd.isField()) {
@@ -378,15 +220,173 @@ aspect GenerateJS {
                 bd.generateJS(out);
             }
         }
-	}  
-  	
+    }
+    
+    public void EnumDecl.generateJS(CodePrinterJS out) {
+        super.generateJS(out);
+        
+        ArrayList<String> values = new ArrayList<>();
+        boolean needexternalinitialization = false;
+        
+        int ordinal = 0;
+        for (EnumConstant ec:enumConstants()) {
+            if (ec.getInit().type()!=this) {
+                needexternalinitialization = true;
+            } else {
+                out.printJSName(packageName(), uniqueName());           
+                out.print(".");
+                out.printJSIdentifier(ec.getID(),"");
+                out.print(" = ");
+                out.print("new ");
+                out.printJSName(packageName(), uniqueName());
+                out.print(".$()._"+(ec.getNumArg()+2)+"(");
+                Constant.generateStringJS(out, ec.getID());
+                out.print(","+ordinal);             
+                for (int i=0; i<ec.getNumArg(); i++) {
+                    out.print(",");
+                    ec.getArg(i).generateJS(out);
+                }
+                out.print(");");                
+                out.println();
+            }
+            
+            values.add(ec.getID());         
+            ordinal++;          
+        }
+                
+        if (needexternalinitialization) {
+            out.memorizeReference(packageName(),uniqueName()+"$init");
+            
+            CodePrinterJS o2 = new CodePrinterJS(out,
+                    CodePrinterJS.escapePackagePath(packageName()) 
+                    + CodePrinterJS.escapeIdentifier(uniqueName()+"$init", true) + ".js"
+            );
 
-    public void ConstructorDecl.generateJS(CodePrinter out) 
+                ordinal = 0;
+                for (EnumConstant ec:enumConstants()) {
+                    if (ec.getInit().type()!=this) {
+                        o2.printJSName(packageName(), uniqueName());                    
+                        o2.print(".");
+                        o2.printJSIdentifier(ec.getID(),"");
+                        o2.print(" = ");
+                        o2.print("new ");
+                        TypeDecl t = ec.getInit().type();
+                        o2.printAndMemorizeComplete(t.packageName(),t.uniqueName());
+                        o2.print(".$()._"+(ec.getNumArg()+2)+"(");
+                        Constant.generateStringJS(o2, ec.getID());
+                        o2.print(","+ordinal);
+                        for (int i=0; i<ec.getNumArg(); i++) {
+                            o2.print(",");
+                            ec.getArg(i).generateJS(o2);
+                        }
+                        o2.print(");");
+                        o2.println();
+                    }
+                    ordinal++;
+                }               
+                
+            o2.finish();            
+        }
+    }  
+    
+    public void InterfaceDecl.generateJS(CodePrinterJS out) {
+
+        out.print("var ");
+        out.printJSName(packageName(),uniqueName());
+        out.print(" =");
+        out.println();
+        out.print("{ ");
+        out.println();
+        out.increaseIndent();
+        out.print("_superinterfaces: [");
+        if (hasSuperInterface()) {
+            int n=0;
+            for (Access ac: getSuperInterfaceList()) {
+                if (n>0) out.print(",");
+                while (ac instanceof Dot) ac=((Dot)ac).getRight();
+                TypeDecl t = (ac instanceof TypeAccess) ? ((TypeAccess) ac).type() 
+                                                        : ((ParTypeAccess) ac).type();
+                out.printAndMemorizeLoad(t.packageName(),t.uniqueName());            
+                n++;
+            }           
+        }
+        out.print("],");
+        out.println();
+                
+        Vector<MethodDecl> defaults = new Vector<>();
+        for (BodyDecl bd:getBodyDeclList()) {
+            if (bd.isField()) {
+                for (FieldDeclarator fd:bd.fieldDeclarations()) {
+                    if (fd.isStatic()) {
+                        out.printJSIdentifier(fd.getID(), "");
+                        out.print(": ");
+                        if (fd.getInit()!=null && fd.getInit().isConstant() && fd.isFinal()) {
+                            fd.getInit().generateUsingResultJS(out);
+                        } else {
+                            fd.fieldDecl().type().generateDefaultValueJS(out);
+                        }
+                        out.print(",");                 }
+                        out.println();
+                }
+            }
+            else if (bd instanceof MethodDecl) 
+            {   MethodDecl md = (MethodDecl) bd;
+                if (md.isStatic())
+                {   md.generateJS(out);
+                }
+                else if (md.isDefault())
+                {   defaults.add(md);
+                }                
+            }
+        }
+        if (defaults.size()>0) 
+        {     out.print("_defaults:");
+              out.println();
+              out.print("{   ");
+              out.increaseIndent();           
+              for (MethodDecl md:defaults)
+              {     md.generateJS(out);
+              }     
+              out.decreaseIndent();
+              out.print("}");
+              out.println();
+              out.print(",");
+              out.println();
+        }   
+        
+        out.decreaseIndent();
+        out.print("};");
+        out.println();
+                    
+        // additional initialization code
+        for (BodyDecl bd:getBodyDeclList()) {
+            if (bd.isField()) {
+                for (FieldDeclarator fd:bd.fieldDeclarations()) {
+                    if (fd.isStatic()) {
+                        if (fd.getInit()!=null && !(fd.isFinal() && fd.getInit().isConstant()) ) {
+                            out.printJSName(packageName(), uniqueName());                   
+                            out.print(".");
+                            out.printJSIdentifier(fd.getID(),"");
+                            out.print(" = ");
+                            fd.getInit().generateUsingResultJS(out);
+                            out.print(";");
+                            out.println();
+                        }
+                    }
+                }
+            } else if (bd instanceof StaticInitializer) {
+                bd.generateJS(out);
+            }
+        }
+    }  
+    
+
+    public void ConstructorDecl.generateJS(CodePrinterJS out) 
     {   
         Block block = getBlock();
         int numpar = getNumParameter();
 
-        // decide which kind of other constructors are called	
+        // decide which kind of other constructors are called   
         boolean callsthisconstructor = false;
         int numcalledconstructorparameters = 0;
         if (hasConstructorInvocation()) 
@@ -429,7 +429,7 @@ aspect GenerateJS {
         out.println();
         out.increaseIndent();
 
-        // if calling a constructor of this, do not initialize all variables twice		
+        // if calling a constructor of this, do not initialize all variables twice      
         if (callsthisconstructor) 
         {   getConstructorInvocation().generateJS(out);
         } 
@@ -475,20 +475,20 @@ aspect GenerateJS {
         out.println();
     }
 
-//	public void EnumConstant.generateJS(CodePrinter out) {
-//	}
+//  public void EnumConstant.generateJS(CodePrinterJS out) {
+//  }
 
-    public void InstanceInitializer.generateJS(CodePrinter out) 
-    {   getBlock().generateJS(out);	
+    public void InstanceInitializer.generateJS(CodePrinterJS out) 
+    {   getBlock().generateJS(out); 
     }
-//	public void FieldDecl.generateJS(CodePrinter out) {
-//	}
-//	public void MemberClassDecl.generateJS(CodePrinter out) {
-//	}
-//	public void MemberInterfaceDecl.generateJS(CodePrinter out) {
-//	}
+//  public void FieldDecl.generateJS(CodePrinterJS out) {
+//  }
+//  public void MemberClassDecl.generateJS(CodePrinterJS out) {
+//  }
+//  public void MemberInterfaceDecl.generateJS(CodePrinterJS out) {
+//  }
 
-    public void MethodDecl.generateJS(CodePrinter out) 
+    public void MethodDecl.generateJS(CodePrinterJS out) 
     {   Block block = getBlock();
         if (block==null) return;
 
@@ -508,26 +508,26 @@ aspect GenerateJS {
         out.println();
     }
 
-	public void StaticInitializer.generateJS(CodePrinter out) {
-		getBlock().generateJS(out);
-	}
+    public void StaticInitializer.generateJS(CodePrinterJS out) {
+        getBlock().generateJS(out);
+    }
 
-//	public void SubstitutedBodyDecl.generateJS(CodePrinter out) {
-//	}
-  	
-	public void TypeDecl.generateDefaultValueJS(CodePrinter out) {
-		if (isPrimitiveType()) {
-  			if (isBoolean()) {
-  				out.print("false");
-  			} else {
-  				out.print("0");
-  			} 
-  		} else {
-  			out.print("null");
-  		}
-	}
-			
-    public void TypeDecl.generateElementTypeAndDimensionsJS(CodePrinter out) 
+//  public void SubstitutedBodyDecl.generateJS(CodePrinterJS out) {
+//  }
+    
+    public void TypeDecl.generateDefaultValueJS(CodePrinterJS out) {
+        if (isPrimitiveType()) {
+            if (isBoolean()) {
+                out.print("false");
+            } else {
+                out.print("0");
+            } 
+        } else {
+            out.print("null");
+        }
+    }
+            
+    public void TypeDecl.generateElementTypeAndDimensionsJS(CodePrinterJS out) 
     {   
         TypeDecl et = elementType();
         if (et.isPrimitiveType()) {
@@ -559,8 +559,8 @@ aspect GenerateJS {
         out.print(",");
         out.print(""+dimension());    
     }
-  	
-    public static void Constant.generateStringJS(CodePrinter out, String s) 
+    
+    public static void Constant.generateStringJS(CodePrinterJS out, String s) 
     {   out.print("\"");
         for (int i=0; i<s.length(); i++)
         {   char c = s.charAt(i);        
@@ -616,8 +616,8 @@ aspect GenerateJS {
         out.print("\"");
     }
 
-    public void Constant.generateJS(CodePrinter out) 
-    {   if (this instanceof	ConstantBoolean) 
+    public void Constant.generateJS(CodePrinterJS out) 
+    {   if (this instanceof ConstantBoolean) 
         {   out.print(booleanValue()?"true":"false");
         }
         else if (this instanceof ConstantChar) 

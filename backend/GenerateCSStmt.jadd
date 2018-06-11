@@ -1,10 +1,10 @@
-import com.greentube.javaconverter.CodePrinter;
+import com.greentube.javaconverter.CodePrinterCS;
 
 aspect GenerateCS {
 
     // --- AssertStmt ---
     
-    public void AssertStmt.generateCS(CodePrinter out)
+    public void AssertStmt.generateCS(CodePrinterCS out)
     {   // do not generate any assertion code   
     }
 
@@ -12,11 +12,11 @@ aspect GenerateCS {
 
     // --- Block ---
 
-    public void Block.generateCS(CodePrinter out) {
+    public void Block.generateCS(CodePrinterCS out) {
         generateCS(out,null);
     }
     
-    public void Block.generateCS(CodePrinter out, String continuelabel) 
+    public void Block.generateCS(CodePrinterCS out, String continuelabel) 
     {
         boolean hadNonDeclStatements=false;
         int extraBraces = 0;
@@ -53,15 +53,15 @@ aspect GenerateCS {
     }
 
     // --- BranchTargetStmt ---
-    public void BranchTargetStmt.generateCS(CodePrinter out)
+    public void BranchTargetStmt.generateCS(CodePrinterCS out)
     {   generateCS(out,null);
     }
-    public void BranchTargetStmt.generateCS(CodePrinter out, String continuelabel)    
+    public void BranchTargetStmt.generateCS(CodePrinterCS out, String continuelabel)    
     {   System.err.print("UNEXPECTED:");
         this.dumpTree(System.err);           
     }
 
-    public void BranchTargetStmt.generateInnerStmtCS(CodePrinter out, Stmt stmt, String continuelabel) 
+    public void BranchTargetStmt.generateInnerStmtCS(CodePrinterCS out, Stmt stmt, String continuelabel) 
     {   
         if (stmt instanceof Block)
         {   out.println();
@@ -86,7 +86,7 @@ aspect GenerateCS {
         }
     }
 
-    public void DoStmt.generateCS(CodePrinter out, String continuelabel) 
+    public void DoStmt.generateCS(CodePrinterCS out, String continuelabel) 
     {
         out.print("do ");
         generateInnerStmtCS(out, getStmt(), continuelabel);
@@ -96,7 +96,7 @@ aspect GenerateCS {
         out.println();
     }
 
-    public void EnhancedForStmt.generateCS(CodePrinter out, String continuelabel) 
+    public void EnhancedForStmt.generateCS(CodePrinterCS out, String continuelabel) 
     {
         Expr e = getExpr();
         String vname = getVariableDecl().name();
@@ -144,7 +144,7 @@ aspect GenerateCS {
         }
     }
 
-    public void ForStmt.generateCS(CodePrinter out, String continuelabel) 
+    public void ForStmt.generateCS(CodePrinterCS out, String continuelabel) 
     {   out.print("for (");
 
         if (getNumInitStmt()==0) 
@@ -171,7 +171,7 @@ aspect GenerateCS {
         generateInnerStmtCS(out, getStmt(), continuelabel);
     }
 
-    public void LabeledStmt.generateCS(CodePrinter out) 
+    public void LabeledStmt.generateCS(CodePrinterCS out) 
     {
         Stmt stmt = getStmt();
         if (stmt instanceof BranchTargetStmt) 
@@ -189,7 +189,7 @@ aspect GenerateCS {
         }            
     }
 
-	public void SwitchStmt.generateCS(CodePrinter out, String continuelabel)
+    public void SwitchStmt.generateCS(CodePrinterCS out, String continuelabel)
     {   
         Expr e = getExpr();
         out.print("switch (");
@@ -227,7 +227,7 @@ aspect GenerateCS {
         out.println();
     }
 
-    public void WhileStmt.generateCS(CodePrinter out, String continuelabel) 
+    public void WhileStmt.generateCS(CodePrinterCS out, String continuelabel) 
     {   out.print("while (");
         getCondition().generateUsingResultCS(out);
         out.print(") ");
@@ -236,20 +236,20 @@ aspect GenerateCS {
 
     // --- BreakStmt ---
 
-    public void BreakStmt.generateCS(CodePrinter out) 
+    public void BreakStmt.generateCS(CodePrinterCS out) 
     {   String label = getLabel();
         if (label==null || label.length()==0) 
         {   out.print("break;");
         }
         else
-        {   out.printJumpToLabel(CodePrinter.escapeIdentifier(label,false)+"_b");
+        {   out.printJumpToLabel(CodePrinterCS.escapeIdentifier(label,false)+"_b");
         }
         out.println();
     }
 
     // --- Case ---
     
-    public void ConstCase.generateCS(CodePrinter out) 
+    public void ConstCase.generateCS(CodePrinterCS out) 
     {   Expr e = getValue();
         if (canBeReachedByFallThrough()) 
         {   out.print("    goto case ");
@@ -271,9 +271,9 @@ aspect GenerateCS {
         }
         out.print(":");
         out.println();
-	}
-	
-    public void DefaultCase.generateCS(CodePrinter out) 
+    }
+    
+    public void DefaultCase.generateCS(CodePrinterCS out) 
     {   if (canBeReachedByFallThrough()) 
         { out.print("goto default;");
             out.println();
@@ -284,34 +284,34 @@ aspect GenerateCS {
 
     // --- ContinueStmt ---
 
-    public void ContinueStmt.generateCS(CodePrinter out) 
+    public void ContinueStmt.generateCS(CodePrinterCS out) 
     {   String label = getLabel();
         if (label==null || label.length()==0) 
         {   out.print("continue;");
         }
         else
-        {   out.printJumpToLabel(CodePrinter.escapeIdentifier(label,false)+"_c");
+        {   out.printJumpToLabel(CodePrinterCS.escapeIdentifier(label,false)+"_c");
         }
         out.println();
     }
   
     // --- EmptyStmt ---
-    public void EmptyStmt.generateCS(CodePrinter out)
+    public void EmptyStmt.generateCS(CodePrinterCS out)
     {   out.print("{}");
         out.println();
     }    
     
     // --- ExprStmt ---
   
-    public void ExprStmt.generateCS(CodePrinter out) 
+    public void ExprStmt.generateCS(CodePrinterCS out) 
     {   getExpr().generateCS(out);   // intentionally do no post-processing
         out.print(";");
         out.println();
     }
-	
-	// --- IfStmt ---
-	
-    public void IfStmt.generateCS(CodePrinter out) 
+    
+    // --- IfStmt ---
+    
+    public void IfStmt.generateCS(CodePrinterCS out) 
     {   out.print("if (");
         getCondition().generateUsingResultCS(out);
         out.print(") ");
@@ -323,73 +323,73 @@ aspect GenerateCS {
             out.println();
             e.generateCS(out);
         }
-	}
-	
-	// --- LocalClassDeclStmt ---
-	public void LocalClassDeclStmt.generateCS(CodePrinter out) {
-		// class was already generated 
-	}
-	
-	// --- ReturnStmt ---
-	
-	public void ReturnStmt.generateCS(CodePrinter out) {
-		Expr r = getResult();
-		if (r==null) {
-			out.print("return;");
-		} else {
-			out.print("return ");
-			r.generateUsingResultCS(out);
-			out.print(";");
-		}
-		out.println();		
-	}  	
-	
-	// --- SynchronizedStmt ---
-	
-	// --- ThrowStmt ---
-    public void ThrowStmt.generateCS(CodePrinter out) {
+    }
+    
+    // --- LocalClassDeclStmt ---
+    public void LocalClassDeclStmt.generateCS(CodePrinterCS out) {
+        // class was already generated 
+    }
+    
+    // --- ReturnStmt ---
+    
+    public void ReturnStmt.generateCS(CodePrinterCS out) {
+        Expr r = getResult();
+        if (r==null) {
+            out.print("return;");
+        } else {
+            out.print("return ");
+            r.generateUsingResultCS(out);
+            out.print(";");
+        }
+        out.println();      
+    }   
+    
+    // --- SynchronizedStmt ---
+    
+    // --- ThrowStmt ---
+    public void ThrowStmt.generateCS(CodePrinterCS out) {
         out.print("throw ");
         getExpr().generateCS(out);
         out.print(";");
-		out.println();
+        out.println();
     }
     
-	// --- TryStmt ---
-		
-	// --- VarDeclStmt ---
-	
-	public void VarDeclStmt.generateCS(CodePrinter out) {
-		int extradims = 0;
-		for (int i=0; i<getNumDeclarator(); i++) {
-			extradims = Math.max(extradims, getDeclarator(i).getNumDims());
-		}
-	
-		getTypeAccess().generateCS(out);
+    // --- TryStmt ---
+        
+    // --- VarDeclStmt ---
+    
+    public void VarDeclStmt.generateCS(CodePrinterCS out) {
+        int extradims = 0;
+        for (int i=0; i<getNumDeclarator(); i++) {
+            extradims = Math.max(extradims, getDeclarator(i).getNumDims());
+        }
+    
+        getTypeAccess().generateCS(out);
 
-		for (int i=0; i<extradims; i++) {
-			out.print("[]");
-		}				
-		for (int i=0; i<getNumDeclarator(); i++) {
-			VariableDeclarator d = getDeclarator(i);
-			TypeDecl t = d.getTypeAccess().type();
-			if (i>0) out.print(",");
-			out.print(" ");			
-			out.printCSIdentifier(d.name(), "");
-			Expr e = d.getInit();
-			if (e!=null) {
-				out.print(" = ");								
-				if (t.isChar() && e.type().isInt()) {
-					out.print("SYSTEM.castToChar(");
-					e.generateUsingResultCS(out);
-					out.print(")");
-				} else {
-					e.generateUsingResultCS(out);
-				}					
-			}
-		}
-		out.print(";");
-		if (! (getParent().getParent() instanceof ForStmt)) out.println();
-	}
+        for (int i=0; i<extradims; i++) {
+            out.print("[]");
+        }               
+        for (int i=0; i<getNumDeclarator(); i++) {
+            VariableDeclarator d = getDeclarator(i);
+            TypeDecl t = d.getTypeAccess().type();
+            if (i>0) out.print(",");
+            out.print(" ");         
+            out.printCSIdentifier(d.name(), "");
+            Expr e = d.getInit();
+            if (e!=null) {
+                out.print(" = ");                               
+                if (t.isChar() && e.type().isInt()) {
+                    out.print("SYSTEM.castToChar(");
+                    e.generateUsingResultCS(out);
+                    out.print(")");
+                } else {
+                    e.generateUsingResultCS(out);
+                }                   
+            }
+        }
+        out.print(";");
+        if (! (getParent().getParent() instanceof ForStmt)) out.println();
+    }
 
 }
 
