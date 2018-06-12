@@ -7,8 +7,8 @@ A java-to-javascript and java-to-C# source to source compiler.
 To allow the use of existing java code inside a browser/node.js/.NET environment,
 java code can be transformed into equivalent javascript or C# code.
 The compiler supports all language constructs of java 8 (including lambdas), but 
-imposes a few [restrictions](doc/restrictions.txt) of its own on the input code.
-A large [subset](doc/libraries.txt) of the functionality of the java.lang and java.util packages are
+imposes a few [restrictions of its own](doc/restrictions.txt) on the input code.
+A large [subset of the functionality](doc/libraries.txt) of the java.lang and java.util packages are
 provided by the compiler's runtime. 
 
 ## Integration possibilities
@@ -29,6 +29,14 @@ tasks.
 The compiler can be used as a command-line tool or as an Ant task to compile a bunch of java source files
 to the equivalent .js (javascript) or .cs (C#) files. For the case of javascript, a linker
 step is also needed to put all the small .js files together to a big .js file in the correct loading order.
-A optional minifying step (using Google's closure compiler) will greatly reduce javascript code size 
-- the compiler is optimized to generate minify-able output.
+A optional minifying step (using Google's closure compiler) will greatly reduce javascript code size. 
+The compiler is optimized to generate minify-able output. 
+More details 
 
+## Dependencies on other projects
+
+The Java-Converter is based on the [extendj java compiler](https://extendj.org/) that does most of the
+tricky parts of compilation. Only the backends for javascript and C# and the necessary runtime libraries 
+were actually developed in this project.
+Nevertheless every release of the Java-Compiler is a completely self-contained application
+(basically a .JAR) that contains everything needed.
