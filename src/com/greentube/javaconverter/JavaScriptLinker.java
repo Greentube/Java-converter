@@ -65,11 +65,13 @@ public class JavaScriptLinker
     private TransitiveClosure mustbeloaded;
 
     private JavaScriptLinker(File[] searchpath) 
-    {   this.searchpath = searchpath; 
+    {   
+        this.searchpath = searchpath; 
     }
 
     private void loadAll(String[] roots, boolean production) throws IOException 
-    {   name2index = new HashMap<>();
+    {   
+        name2index = new HashMap<>();
         index2name = new HashMap<>();
         modules = new ArrayList<>();
         mustbeloaded = new TransitiveClosure();
@@ -127,7 +129,8 @@ public class JavaScriptLinker
     }
 
     private int assignIndex(String name) 
-    {   if (name2index.containsKey(name)) 
+    {   
+        if (name2index.containsKey(name)) 
         {   return name2index.get(name).intValue();
         } 
         else 
@@ -139,7 +142,8 @@ public class JavaScriptLinker
     }
 
     private int[] computeOrdering() throws IOException 
-    {   int[] o = mustbeloaded.computeOrdering();
+    {   
+        int[] o = mustbeloaded.computeOrdering();
         if (o==null) 
         {   int[] cycle = mustbeloaded.findCycle();
             StringBuffer msg = new StringBuffer("Cyclic dependencys involving modules:");
@@ -153,7 +157,8 @@ public class JavaScriptLinker
     }
 
     private void writeOrdered(OutputStream os, int[] o) throws IOException 
-    {   for (int i=0; i<o.length; i++) {
+    {   
+        for (int i=0; i<o.length; i++) {
             os.write(modules.get(o[i]));
         }
     }
@@ -166,7 +171,8 @@ public class JavaScriptLinker
         boolean production
     ) 
     throws IOException
-    {   InputStream is = null;
+    {   
+        InputStream is = null;
         // try to find the file in the search path
         for (int i=0; searchpath!=null && i<searchpath.length; i++)
         {   File test = new File(searchpath[i], filename+".js");
@@ -218,7 +224,8 @@ public class JavaScriptLinker
  * appears in the list before any other node that is reachable from this.
  */
 class TransitiveClosure 
-{   // size of the matrix 
+{   
+    // size of the matrix 
     private int n;
 
     // Bit matrix to hold the reachability information
@@ -229,13 +236,15 @@ class TransitiveClosure
     private int[][] reachable;	
 
     public TransitiveClosure()
-    {   n = 0;
+    {   
+        n = 0;
         reachable = new int[0][];
     }
 
     // add reachability relation. all indirect relations are updated.
     public void addEdge(int from, int to) 
-    {   ensureCapacity(Math.max(from,to)+1);
+    {   
+        ensureCapacity(Math.max(from,to)+1);
         // do not add twice
         if (isReachable(from,to)) return;
 
@@ -250,19 +259,22 @@ class TransitiveClosure
 
     // merge all 1es from the source bit vector into the target bit vector
     private void combine_into(int[]source, int[] target) 
-    {   for (int i=0; i<source.length; i++) 
+    {   
+        for (int i=0; i<source.length; i++) 
         {   target[i] |= source[i];
         }
     }
 
     // test if one node is somehow reachable from another node 
     public boolean isReachable(int from, int to) 
-    {   return (reachable[from][to/32] & (1<<(to%32))) != 0;
+    {   
+        return (reachable[from][to/32] & (1<<(to%32))) != 0;
     }
 
     // enlarge the matrix if needed
     private void ensureCapacity(int cap) 
-    {   // no need to do anything
+    {   
+        // no need to do anything
         if (cap<=n) return;		
         // create larger array 
         int[][] newmatrix = new int[cap][];		
@@ -331,7 +343,8 @@ class TransitiveClosure
     // find any pair of nodes which are reachable from one each other, as this 
     // would form a cycle.
     public int[] findCycle() 
-    {   for (int a=0; a<n; a++) 
+    {   
+        for (int a=0; a<n; a++) 
         {   for (int b=0; b<n; b++) 
             {   if (a!=b && isReachable(a,b) && isReachable(b,a)) return new int[]{a,b};
             }

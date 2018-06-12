@@ -1,6 +1,11 @@
-import com.greentube.javaconverter.CodePrinterJS;
-aspect GenerateJS {
+/**
+ * Implement the javascript code generation for all Stmt nodes.
+ */
 
+import com.greentube.javaconverter.CodePrinterJS;
+
+aspect GenerateJS 
+{
     // --- AssertStmt ---
     
     public void AssertStmt.generateJS(CodePrinterJS out)
@@ -28,7 +33,8 @@ aspect GenerateJS {
     // --- BranchTargetStmt ---
 
     public void DoStmt.generateJS(CodePrinterJS out) 
-    {   out.print("do ");
+    {   
+        out.print("do ");
         if (getStmt() instanceof Block) out.println();
         getStmt().generateJS(out);
         out.print("while (");
@@ -38,7 +44,8 @@ aspect GenerateJS {
     }
 
     public void EnhancedForStmt.generateJS(CodePrinterJS out) 
-    {   String vname = getVariableDecl().name();
+    {   
+        String vname = getVariableDecl().name();
         Expr e = getExpr();
         if (e.type().isArrayDecl()) 
         {   out.print("for (var ");
@@ -84,13 +91,14 @@ aspect GenerateJS {
         else 
         {   throw new RuntimeException("Expression is neither an array or an Iterable");
         }
-        if (getStmt() instanceof Block) out.println();
+        if (getStmt() instanceof Block) { out.println(); }
         getStmt().generateJS(out);              
         out.println();
     }
  
     public void ForStmt.generateJS(CodePrinterJS out) 
-    {   out.print("for (");
+    {   
+        out.print("for (");
         if (getNumInitStmt()==0) 
         {   out.print("; ");
         }
@@ -157,7 +165,8 @@ aspect GenerateJS {
     }
     
     public void SwitchStmt.generateJS(CodePrinterJS out) 
-    {   out.print("switch (");
+    {   
+        out.print("switch (");
         getExpr().generateUsingResultJS(out);
         out.print(")");
         out.println();
@@ -185,7 +194,8 @@ aspect GenerateJS {
     }
 
     public void WhileStmt.generateJS(CodePrinterJS out) 
-    {   out.print("while (");
+    {   
+        out.print("while (");
         getCondition().generateUsingResultJS(out);
         out.print(") ");
         if (getStmt() instanceof Block) out.println();
@@ -195,7 +205,8 @@ aspect GenerateJS {
     // --- BreakStmt ---
 
     public void BreakStmt.generateJS(CodePrinterJS out) 
-    {   out.print("break");
+    {   
+        out.print("break");
         String label = getLabel();
         if (label!=null && label.length()>0) 
         {   out.print(" ");
@@ -208,24 +219,27 @@ aspect GenerateJS {
     // --- Case ---
     
     public void ConstCase.generateJS(CodePrinterJS out) 
-    {   out.print("case ");
+    {   
+        out.print("case ");
         getValue().generateUsingResultJS(out);
         out.print(":");
         out.println();
     }
     
     public void DefaultCase.generateJS(CodePrinterJS out) 
-    {   out.print("default:");
+    {   
+        out.print("default:");
         out.println();
     }
 
     // --- ContinueStmt ---
 
-    public void ContinueStmt.generateJS(CodePrinterJS out) {
+    public void ContinueStmt.generateJS(CodePrinterJS out) 
+    {
         out.print("continue");
         String label = getLabel();
-        if (label!=null && label.length()>0) {
-            out.print(" ");
+        if (label!=null && label.length()>0) 
+        {   out.print(" ");
             out.printJSIdentifier(getLabel(), "");
         }
         out.print(";");
@@ -240,7 +254,8 @@ aspect GenerateJS {
     
     // --- ExprStmt ---
   
-    public void ExprStmt.generateJS(CodePrinterJS out) {
+    public void ExprStmt.generateJS(CodePrinterJS out) 
+    {
         getExpr().generateJS(out);
         out.print(";");
         out.println();
@@ -249,12 +264,13 @@ aspect GenerateJS {
     // --- IfStmt ---
     
     public void IfStmt.generateJS(CodePrinterJS out) 
-    {   Stmt t = getThen();
+    {   
+        Stmt t = getThen();
         Stmt e = getElse();
         out.print("if (");
         getCondition().generateUsingResultJS(out);
         out.print(") ");
-        if (t instanceof Block) out.println();
+        if (t instanceof Block) { out.println(); }
         t.generateJS(out);
         if (e!=null) 
         {   if (!(t instanceof Block) && !(t instanceof EmptyStmt)) out.println();
@@ -264,21 +280,25 @@ aspect GenerateJS {
     }
     
     // --- LocalClassDeclStmt ---
-    public void LocalClassDeclStmt.generateJS(CodePrinterJS out) {
+    public void LocalClassDeclStmt.generateJS(CodePrinterJS out) 
+    {
         // class was already generated 
     }
     
     // --- ReturnStmt ---
     
-    public void ReturnStmt.generateJS(CodePrinterJS out) {
-        if (enclosingBodyDecl() instanceof ConstructorDecl) {
-            out.print("return this;");
-        } else {
-            Expr r = getResult();
-            if (r==null) {
-                out.print("return;");
-            } else {
-                out.print("return ");
+    public void ReturnStmt.generateJS(CodePrinterJS out) 
+    {
+        if (enclosingBodyDecl() instanceof ConstructorDecl) 
+        {   out.print("return this;");
+        }
+        else 
+        {   Expr r = getResult();
+            if (r==null) 
+            {   out.print("return;");
+            } 
+            else
+            {   out.print("return ");
                 r.generateUsingResultJS(out);
                 out.print(";");
             }
@@ -301,25 +321,28 @@ aspect GenerateJS {
         
     // --- VarDeclStmt ---
     
-    public void VarDeclStmt.generateJS(CodePrinterJS out) {
+    public void VarDeclStmt.generateJS(CodePrinterJS out) 
+    {
         out.print("var ");
-        for (int i=0; i<getNumDeclarator(); i++) {
-            if (i>0) out.print(", ");
+        for (int i=0; i<getNumDeclarator(); i++) 
+        {   if (i>0) { out.print(", "); }
             VariableDeclarator d = getDeclarator(i);            
             out.printJSIdentifier(d.name(), "");
             out.print(" = ");
             Expr e = d.getInit();
-            if (e!=null) {
-                e.generateUsingResultJS(out);
-            } else {
-                type().generateDefaultValueJS(out);
+            if (e!=null) 
+            {   e.generateUsingResultJS(out);
+            } 
+            else
+            {   type().generateDefaultValueJS(out);
             }
         }
         out.print(";");
-        if (! (getParent().getParent() instanceof ForStmt)) {
-            out.println();
-        } else {
-            out.print(" ");
+        if (! (getParent().getParent() instanceof ForStmt)) 
+        {   out.println();
+        } 
+        else 
+        {   out.print(" ");
         }
     }
     

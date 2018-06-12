@@ -6,29 +6,31 @@ import org.apache.tools.ant.*;
 import org.apache.tools.ant.types.*;
 
 public class ConverterAntTask extends Task 
-{   private List<FileSet> filesets = new LinkedList<>();
+{   
+    private List<FileSet> filesets = new LinkedList<>();    
     public void addFileset(FileSet fs) 
-    {   filesets.add(fs);
+    {       
+        filesets.add(fs);
     }
     private File jsdir;
     public void setJs(File destdir) 
-    {   this.jsdir = destdir;
+    {   
+        this.jsdir = destdir;
     }
     private File csdir=null;
     public void setCs(File destdir) 
-    {   this.csdir = destdir;
+    {   
+        this.csdir = destdir;
     }
     private String classpath=null;
     public void setClasspath(String path) 
-    {   this.classpath = path;
-    }
-    private boolean benchmark = false;
-    public void setBenchmark(String dummy) {
-        this.benchmark = true;
+    {   
+        this.classpath = path;
     }
 
     public void execute() throws BuildException 
-    {   Vector<String> args = new Vector<>();
+    {   
+        Vector<String> args = new Vector<>();
         if (jsdir!=null) 
         {   args.add("-js");
             args.add(jsdir.toString());
@@ -40,9 +42,6 @@ public class ConverterAntTask extends Task
         if (classpath!=null) 
         {   args.add("-classpath");
             args.add(classpath);
-        }
-        if (benchmark) 
-        {   args.add("-benchmark");
         }
 
         for (int i=0; i<filesets.size(); i++)

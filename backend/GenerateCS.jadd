@@ -1,7 +1,12 @@
+/**
+ * Implement the C# code generation for all AST nodes that are not derived from Expr or Stmt.
+ * This covers mainly the class and interface declarations and the attached methods and fields.
+ */
+
 import com.greentube.javaconverter.CodePrinterCS;
 
-aspect GenerateCS {
-        
+aspect GenerateCS 
+{       
     public void ASTNode.generateCS(CodePrinterCS out) 
     {
         this.dumpTree(System.err);
@@ -11,10 +16,11 @@ aspect GenerateCS {
     public void CompilationUnit.generateCS(File outputfolder) 
     {
         for (TypeDecl t:getTypeDecls()) 
-        {   CodePrinterCS out = new CodePrinterCS(outputfolder,
-                    CodePrinterCS.escapePackagePath(t.packageName()) 
-                    + CodePrinterCS.escapeIdentifier(t.uniqueName(), true) + ".cs"
-                );
+        {   CodePrinterCS out = new CodePrinterCS
+            (   outputfolder,
+                CodePrinterCS.escapePackagePath(t.packageName()) 
+                  + CodePrinterCS.escapeIdentifier(t.uniqueName(), true) + ".cs"
+            );
             t.generateCS(out);
             out.finish();       
         }
@@ -36,8 +42,7 @@ aspect GenerateCS {
 
         if (packageName().length()>0) 
         {   out.print("namespace ");
-            String n = getNameCS();
-            out.print(n.substring(0,n.lastIndexOf('.')));           
+            generatePackageNameCS(out);           
             out.print(" { ");
         }
         
@@ -52,7 +57,7 @@ aspect GenerateCS {
         out.print(": ");
 
         if (hasSuperClass()) 
-        {   out.print(superclass().getNameCS());
+        {   superclass().generateNameCS(out);
         }
         else
         {   out.print("System.Object");
@@ -69,13 +74,13 @@ aspect GenerateCS {
 
         if (needsEnclosing() && !superclass().needsEnclosing()) 
         {   out.print("public ");
-            out.print(enclosingType().getNameCS());
+            enclosingType().generateNameCS(out);
             out.print(" _o;");
             out.println(); 
         }
         for (Variable v:enclosingVariables()) 
         {   out.print("public ");
-            out.print(v.type().getNameCS());
+            v.type().generateNameCS(out);
             out.print(" ");
             out.printCSIdentifier(v.name(),"_o");            
             out.print(";");
@@ -287,7 +292,7 @@ aspect GenerateCS {
             out.println();
             out.print("{   ");
             if (!md.isVoid()) { out.print("return "); }
-            out.print(md.hostType().getNameCS());
+            md.hostType().generateNameCS(out);
             out.print("_c.");
             out.printCSMethodName(md.name(),true);
             out.print("(this");
@@ -302,7 +307,7 @@ aspect GenerateCS {
         }  
         
         // add synthetic methods for array dimensioning of needed
-        out.printAndForgetDims();    
+        generateDimsCS(out);
     
         out.decreaseIndent(); 
         out.print("}");
@@ -317,12 +322,12 @@ aspect GenerateCS {
     {
         out.print("using java.lang;");  
         out.println();      
-        String namespaceheader = "";
-        if (packageName().length()>0) 
-        {   String n = getNameCS();
-            namespaceheader = "namespace " + n.substring(0,n.lastIndexOf('.')) + " { ";                     
+        boolean haspackage = packageName().length()>0;
+        if (haspackage) 
+        {   out.print("namespace ");
+            generatePackageNameCS(out); 
+            out.print(" { ");                     
         }
-        out.print(namespaceheader);
         out.print("public interface ");
         out.printCSIdentifier(uniqueName());
 
@@ -360,12 +365,16 @@ aspect GenerateCS {
 
         out.decreaseIndent();
         out.print("}");
-        if (namespaceheader.length()>0) { out.print("}"); }     
+        if (haspackage) { out.print("}"); }     
         out.println();
                 
         // add special class for static fields and static/default methods 
         if (needstatic) 
-        {   out.print(namespaceheader);
+        {   if (haspackage) {
+                out.print("namespace ");
+                generatePackageNameCS(out);
+                out.print(" { ");
+            }
             out.print("public static class ");
             out.printCSIdentifier(uniqueName());
             out.print("_c ");
@@ -397,14 +406,78 @@ aspect GenerateCS {
                 }               
             }   
             
-            out.printAndForgetDims();
+            generateDimsCS(out);
                         
             out.decreaseIndent();
             out.print("}"); 
-            if (namespaceheader.length()>0) out.print("}");     
+            if (haspackage) { out.print("}"); }     
             out.println();                      
         }       
     }  
+
+    public void ReferenceType.generateDimsCS(CodePrinterCS out)
+    {
+        HashMap<Object,int[]> m = out.retrieveDims();
+        for (Object en:m.keySet()) 
+        {   TypeDecl type = (TypeDecl) en;
+            int[] id_and_depth = m.get(type);
+
+            for (int d=5; d<=id_and_depth[1]; d++) 
+            {   out.print("private static ");
+                type.generateNameCS(out);
+                for (int i=0; i<d; i++) { out.print("[]"); }
+                out.print(" _dim"+id_and_depth[0]+"(");
+                for (int i=0; i<d; i++) 
+                {   if (i>0) { out.print(", "); }
+                    out.print("int n"+i);
+                }
+                out.print(")");
+                out.println();
+                out.print("{");
+                out.println();
+                out.increaseIndent();
+                type.generateNameCS(out);
+                for (int i=0; i<d; i++) { out.print("[]"); }
+                out.print(" a = new ");
+                type.generateNameCS(out);
+                out.print("[n0]");
+                for (int i=1; i<d; i++) { out.print("[]"); }
+                out.print(";");
+                out.println();
+                out.print("for (int i0=0; n1>=0 && i0<n0; i0++)");
+                out.println();
+                out.print("{");
+                out.println();
+                out.increaseIndent();
+                out.print("a[i0] = ");
+                if (d<=5) 
+                {   out.print("SYSTEM.dim<");
+                    type.generateNameCS(out);
+                    out.print(">");
+                } 
+                else 
+                {   out.print("_dim"+id_and_depth[0]);
+                }
+                out.print("(");
+                for (int i=1; i<d; i++) 
+                {   if (i>1) { out.print(", "); }
+                    out.print("n"+i);
+                }
+                out.print(")");
+                out.print(";");
+                out.println();
+                out.decreaseIndent();
+                out.print("}");
+                out.println();
+                out.print("return a;");
+                out.println();
+                out.decreaseIndent();
+                out.print("}");
+                out.println();
+            }
+        }
+    } 
+
 
 
     public void ConstructorDecl.generateCS(CodePrinterCS out) 
@@ -431,14 +504,14 @@ aspect GenerateCS {
         out.print("(");         
         // pass reference to the enclosing object 
         if (needouter) 
-        {   out.print(hostType().enclosingType().getNameCS());
+        {   hostType().enclosingType().generateNameCS(out);
             out.print(" _o");
         }
         // pass accessible local variables of constructing method
         int countencvar=0;
         for (Variable v:encvar) 
         {   if (countencvar>0 || needouter) { out.print(","); }
-            out.print(v.type().getNameCS());
+            v.type().generateNameCS(out);
             out.print(" ");
             out.printCSIdentifier(v.name(),"_o");   
             countencvar++;
@@ -590,7 +663,7 @@ aspect GenerateCS {
         out.printCSMethodName(name(), isStatic());
         out.print("(");
         if (isinterfaceextension) 
-        {   out.print(hostType().getNameCS());
+        {   hostType().generateNameCS(out);
             out.print(" @this");
         }
         int numpar = getNumParameter();
@@ -620,82 +693,58 @@ aspect GenerateCS {
         getBlock().generateCS(out);
     }
 
-    public String TypeDecl.getNameCS() 
+    
+    /**
+     * Do not generate code for the TypeDecl itself, but only for its name to be 
+     * referenced from other places.
+     */
+    public void TypeDecl.generateNameCS(CodePrinterCS out) 
     {
         if (isPrimitiveType()) 
-        {   if (isInt()) { return("int"); }
-            else if (isByte()) { return("sbyte"); }
-            else if (isChar()) { return("char"); } 
-            else if (isBoolean()) { return("bool"); }
-            else if (isDouble()) { return("double"); }
+        {   if (isInt()) { out.print("int"); }
+            else if (isByte()) { out.print("sbyte"); }
+            else if (isChar()) { out.print("char"); } 
+            else if (isBoolean()) { out.print("bool"); }
+            else if (isDouble()) { out.print("double"); }
             else 
             {   throw new RuntimeException("Type not supported:"+fullName());
             }
         } 
         else if (isVoid()) 
-        {   return("void");
+        {   out.print("void");
         } 
         else if (isArrayDecl()) 
-        {   String s = elementType().getNameCS();
+        {   elementType().generateNameCS(out);
             for (int i=dimension(); i>0; i--) 
-            {   s = s + "[]";
+            {   out.print("[]");
             }
-            return s;
         } 
         else 
         {   TypeDecl erased = erasure();
             String s = erased.packageName()+"."+erased.uniqueName();
-            if (s.equals("java.lang.String")) { return "System.String"; }
-            if (s.equals("java.lang.Object")) { return "System.Object"; }
-            if (s.equals("java.lang.System")) { return "java.lang.SYSTEM"; }
-            if (s.equals("java.lang.CharSequence")) { return "System.Object"; }
-            
-            StringBuffer sb = new StringBuffer();
-            StringTokenizer t = new StringTokenizer(s,".");
-            for (int i=0; t.hasMoreElements(); i++) 
-            {   if (i>0) { sb.append("."); }
-                sb.append(CodePrinterCS.escapeIdentifierCS(t.nextToken()));
+            if (s.equals("java.lang.String")) { out.print("System.String"); }
+            else if (s.equals("java.lang.Object")) { out.print("System.Object"); }
+            else if (s.equals("java.lang.System")) { out.print("java.lang.SYSTEM"); }
+            else if (s.equals("java.lang.CharSequence")) { out.print("System.Object"); }
+            else
+            {   StringTokenizer t = new StringTokenizer(s,".");
+                for (int i=0; t.hasMoreElements(); i++) 
+                {   if (i>0) { out.print("."); }
+                    out.printCSIdentifier(t.nextToken());
+                }
             }
-            return sb.toString();
+        }
+    }
+    public void ReferenceType.generatePackageNameCS(CodePrinterCS out) 
+    {
+        StringTokenizer t = new StringTokenizer(erasure().packageName(),".");
+        for (int i=0; t.hasMoreElements(); i++) 
+        {   if (i>0) { out.print("."); }
+            out.printCSIdentifier(t.nextToken());
         }
     }
 
-    
-    public static void Constant.generateCharacterCS(CodePrinterCS out, char c) 
-    {
-        switch(c) 
-        {   case '\b':  { out.print("\\b"); break; }
-            case '\f':  { out.print("\\f"); break; }
-            case '\n':  { out.print("\\n"); break; }
-            case '\r':  { out.print("\\r"); break; }
-            case '\t':  { out.print("\\t"); break; }
-            case '\\':  { out.print("\\\\"); break; }
-            case '"':   { out.print("\\\""); break; }              
-            case '\'':  { out.print("\\'"); break; }              
-            default: 
-            {   if (c>=32 && c<=126) 
-                {   out.print(""+c);
-                } 
-                else
-                {   String hx = Integer.toHexString((int)c);
-                    out.print("\\u");
-                    for (int j=hx.length(); j<4; j++) 
-                    {   out.print("0");
-                    } 
-                    out.print(hx);
-                }
-                break;
-            }
-        } 
-    }       
-    public static void Constant.generateStringCS(CodePrinterCS out, String s) 
-    {
-         out.print("\"");
-         for (int i=0; i<s.length(); i++)
-         {  generateCharacterCS(out,s.charAt(i));
-         }
-         out.print("\"");   
-    }   
+        
     public void Constant.generateCS(CodePrinterCS out) 
     {
         if (this instanceof ConstantBoolean) 
@@ -723,7 +772,40 @@ aspect GenerateCS {
         {   out.print(""+intValue());
         }
         else if (this instanceof ConstantString) 
-        {   generateStringCS(out,stringValue());    
+        {   String s = stringValue();
+            out.print("\"");
+            for (int i=0; i<s.length(); i++)
+            {  generateCharacterCS(out,s.charAt(i));
+            }
+            out.print("\"");   
         }
-    }       
+    }      
+    private static void Constant.generateCharacterCS(CodePrinterCS out, char c) 
+    {
+        switch(c) 
+        {   case '\b':  { out.print("\\b"); break; }
+            case '\f':  { out.print("\\f"); break; }
+            case '\n':  { out.print("\\n"); break; }
+            case '\r':  { out.print("\\r"); break; }
+            case '\t':  { out.print("\\t"); break; }
+            case '\\':  { out.print("\\\\"); break; }
+            case '"':   { out.print("\\\""); break; }              
+            case '\'':  { out.print("\\'"); break; }              
+            default: 
+            {   if (c>=32 && c<=126) 
+                {   out.print(""+c);
+                } 
+                else
+                {   String hx = Integer.toHexString((int)c);
+                    out.print("\\u");
+                    for (int j=hx.length(); j<4; j++) 
+                    {   out.print("0");
+                    } 
+                    out.print(hx);
+                }
+                break;
+            }
+        } 
+    }           
+     
 }

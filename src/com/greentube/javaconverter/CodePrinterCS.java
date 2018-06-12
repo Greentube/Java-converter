@@ -12,11 +12,11 @@ public class CodePrinterCS
     boolean afteropeningbrace;
 
     private HashSet<String> pendingLabels;	
-    private HashMap<String,Integer> deepestdim;
-    private HashMap<String,Integer> dimtypeid;
+    private HashMap<Object,int[]> dims;     // TypeDecl -> [identifier,deepest] 
 
     public CodePrinterCS(File outputfolder, String filename) 
-    {   try
+    {   
+        try
         {   File f = new File(outputfolder,filename);
             f.getParentFile().mkdirs();		
             this.ow = new OutputStreamWriter(new FileOutputStream(f), "utf-8");
@@ -32,16 +32,17 @@ public class CodePrinterCS
         this.afteropeningbrace = false;
         
         pendingLabels = new HashSet<>();
-        deepestdim = new HashMap<>();
-        dimtypeid = new HashMap<>();
+        dims = new HashMap<>();
     }
 
     public CodePrinterCS(CodePrinterCS p, String filename) 
-    {   this(p.outputfolder,filename);
+    {   
+        this(p.outputfolder,filename);
     }
 
     public void finish()  
-    {   try 
+    {   
+        try 
         {   ow.close();
         } 
         catch (IOException e) 
@@ -54,15 +55,18 @@ public class CodePrinterCS
     }
 
     public void increaseIndent() 
-    {   indent++;
+    {   
+        indent++;
     }
 
     public void decreaseIndent() 
-    {   indent--;
+    {   
+        indent--;
     }
 
     public void print(String s) 
-    {   try        
+    {   
+        try        
         {   if (!linehasstarted) 
             {   for (int i=0; i<indent; i++) ow.write("    ",0,4);
                 linehasstarted=true;
@@ -89,7 +93,8 @@ public class CodePrinterCS
     }
 
     public static String escapeIdentifier(String id, boolean allowDollarSign) 
-    {   // escape special characters, so the output will never have characters >127
+    {   
+        // escape special characters, so the output will never have characters >127
         StringBuffer b = new StringBuffer();
         for (int i=0; i<id.length(); i++) 
         {   char c = id.charAt(i);
@@ -113,7 +118,8 @@ public class CodePrinterCS
     }
 
     public static String escapePackagePath(String packagename) 
-    {   StringBuffer b = new StringBuffer();
+    {   
+        StringBuffer b = new StringBuffer();
         for (StringTokenizer t = new StringTokenizer(packagename,"."); t.hasMoreElements(); ) 
         {   b.append(escapeIdentifier(t.nextToken(), true));
             b.append("/");
@@ -139,7 +145,8 @@ public class CodePrinterCS
     );
 
     public void printCSIdentifier(String id, String suffix) 
-    {   String escaped = escapeIdentifier(id,false) + suffix;
+    {   
+        String escaped = escapeIdentifier(id,false) + suffix;
         if (csharpreserved.contains(escaped)) print("@");
         print(escaped);
     }
@@ -150,7 +157,8 @@ public class CodePrinterCS
     }
 
     public static String escapeIdentifierCS(String id) 
-    {   String escaped = escapeIdentifier(id,false);
+    {   
+        String escaped = escapeIdentifier(id,false);
         if (csharpreserved.contains(escaped)) return "@"+escaped;		
         return escaped;
     }
@@ -166,82 +174,40 @@ public class CodePrinterCS
     }
 
     public void printJumpToLabel(String l) 
-    {   print("goto ");
+    {   
+        print("goto ");
         print(l);
         print(";");
         pendingLabels.add(l);
     }
 
     public boolean hasPendingLabel(String l) 
-    {   if (pendingLabels.contains(l)) 
+    {   
+        if (pendingLabels.contains(l)) 
         {   pendingLabels.remove(l);
             return true;
         }
         return false;
     }
 
-    public int memorizeDim(String elementtype, int depth) 
-    {   if (!deepestdim.containsKey(elementtype)) 
-        {   deepestdim.put(elementtype, Integer.valueOf(depth));
-            dimtypeid.put(elementtype, Integer.valueOf(deepestdim.size()));
-            return deepestdim.size();
+    public int memorizeDim(Object elementtype, int depth) 
+    {   
+        if (!dims.containsKey(elementtype)) 
+        {   int id = dims.size();
+            dims.put(elementtype, new int[]{id, depth});
+            return id;
         }
-        deepestdim.put(elementtype, Integer.valueOf(Math.max(deepestdim.get(elementtype).intValue(), depth))); 
-        return dimtypeid.get(elementtype).intValue();
+        else
+        {   int[] id_and_depth = dims.get(elementtype);
+            id_and_depth[1] = Math.max(id_and_depth[1], depth);
+            return id_and_depth[0];
+        }
     }
-
-    public void printAndForgetDims() 
-    {   for (String en:deepestdim.keySet()) 
-        {   int dd = deepestdim.get(en).intValue();
-            int id = dimtypeid.get(en).intValue();
-
-            for (int d=5; d<=dd; d++) 
-            {   print("private static "+en);
-                for (int i=0; i<d; i++) { print("[]"); }
-                print(" _dim"+id+"(");
-                for (int i=0; i<d; i++) 
-                {   if (i>0) { print(", "); }
-                    print("int n"+i);
-                }
-                print(") {");
-                println();
-                increaseIndent();
-                print(en);
-                for (int i=0; i<d; i++) { print("[]"); }
-                print(" a = new "+en+"[n0]");
-                for (int i=1; i<d; i++) { print("[]"); }
-                print(";");
-                println();
-                print("for (int i0=0; n1>=0 && i0<n0; i0++) {");
-                println();
-                increaseIndent();
-                print("a[i0] = ");
-                if (d<=5) 
-                {   print("SYSTEM.dim<"+en+">");
-                } 
-                else 
-                {   print("_dim"+id);
-                }
-                print("(");
-                for (int i=1; i<d; i++) 
-                {   if (i>1) print(", ");
-                    print("n"+i);
-                }
-                print(")");
-                print(";");
-                println();
-                decreaseIndent();
-                print("}");
-                println();
-                print("return a;");
-                println();
-
-                decreaseIndent();
-                print("}");
-                println();
-            }
-        }
-        deepestdim.clear();
-        dimtypeid.clear();
+    
+    public HashMap<Object,int[]> retrieveDims()
+    {
+        HashMap<Object,int[]> x = dims;
+        dims = new HashMap<>();
+        return x; 
     }
 }

@@ -1,7 +1,19 @@
+/**
+ * Utility methods that will be attached to various AST types to do various queries. 
+ * These queries do not modify the AST in any way but are needed by the code generation
+ * (for various conversion targets) to decide which action to take.    
+ * Many of the queries are specified for the Expr class as dummies and are overwritten for
+ * its subtypes to actually implement something meaningful. 
+ */
+
 import java.util.regex.Pattern;
 
 aspect Util {
-    
+
+    /** Check if the result of an expression is guaranteed to fit into an integer number with 
+     * less than 20 bits of precision. This is helpful to allow optimization of the 
+     * multiplication operation in javascript. 
+     */    
     public boolean Expr.hasLessThan20Bits() {
         TypeDecl t = type();
         if (t.isChar() || t.isByte() || t.isBoolean()) return true;
@@ -12,10 +24,15 @@ aspect Util {
         return false;
     }
 
+    /**
+     * Check if a generic expression is used that delivers a different type than the
+     * "basic" type of the generic implementation. In these cases a downcast must be
+     * added for the C# target to satisfy the compiler (since the generic types are already 
+     * erased in the C# output) 
+     */
     public TypeDecl Expr.neededDownCast() {
         return null;
     }
-
     public TypeDecl VarAccess.neededDownCast() {
         if (isFieldAccess() && (varDecl() instanceof FieldDeclarator)) {
             FieldDeclarator fd = (FieldDeclarator) varDecl();
@@ -24,8 +41,7 @@ aspect Util {
             }       
         }
         return null;        
-    }
-    
+    }    
     public TypeDecl MethodAccess.neededDownCast() {
         MethodDecl m = decl();
         if (m.erasedMethod().type()!=m.type()) {
@@ -35,14 +51,19 @@ aspect Util {
     }
     
     
-    
-   public String DoubleLiteral.normalizedDigits() 
-   {
-        String lit = getLITERAL();
-        if (lit.equals("Infinity")||lit.equals("-Infinity")||lit.equals("NaN")) return lit;        
-        return super.normalizedDigits();
-   }
+//    
+//   public String DoubleLiteral.normalizedDigits() 
+//   {
+//        String lit = getLITERAL();
+//        if (lit.equals("Infinity")||lit.equals("-Infinity")||lit.equals("NaN")) return lit;        
+//        return super.normalizedDigits();
+//   }
    
+    /**
+     * Test if the program execution can "fall out" of the bottom of the code block.
+     * In such cases it is sometimes necessary to add an additional "break" in the 
+     * C# output to satisfy the compiler - specifically at the last case of a switch.
+     */
     public boolean Block.executionCanReachBottom() 
     {
         if (getNumStmt()<1) return true;
@@ -56,25 +77,40 @@ aspect Util {
         return true;
     }
     
+    /**
+     * Check if a switch case can be reached by the program flow entering from
+     * the previous case. Since this construct is disallowed in C#, additional code needs to 
+     * be inserted to satisfy the C# compiler. 
+     */
     public boolean Case.canBeReachedByFallThrough() 
-    {   ASTNode b = getParent();
+    {   
+        ASTNode b = getParent();
         int idx = b.getIndexOfChild(this);
         if (idx<1) return false;
         ASTNode prev = b.getChild(idx-1);
 
-        if (prev instanceof Block && ! ((Block) prev).executionCanReachBottom()) return false; 
-        if (prev instanceof ReturnStmt 
+        if (prev instanceof Block && ! ((Block) prev).executionCanReachBottom()) { return false; } 
+        if 
+        (   prev instanceof ReturnStmt 
         ||  prev instanceof BreakStmt
         ||  prev instanceof ContinueStmt
-        ||  prev instanceof Case) return false;
+        ||  prev instanceof Case
+        )
+        { return false; }
 
         return true;
     }
 
+    /**
+     * Convert a regular expression string into a simple search pattern.
+     * This will only work for compile time constant expressions.
+     * It is needed to convert the regular-expression based String.split function
+     * into a simple implementation using search patterns. 
+     */
     public String Expr.regexToSearchString()
     {
         if (!isConstant()) 
-        {   throw new RuntimeException("Regular expression must be compile-time constant");
+        {   return null;   // Regular expression must be compile-time constant
         }
         String regex = constant().stringValue();
     
@@ -82,7 +118,7 @@ aspect Util {
         try 
         {   Pattern.compile(regex);
         } catch (Exception e) 
-        {   throw new RuntimeException("Malformed regular expression");
+        {   return null;   // Malformed regular expression
         }
     
         int l = regex.length();
@@ -110,7 +146,7 @@ aspect Util {
                             break;
                         }                              
                         default:  // no other esacpe character is supported
-                            throw new RuntimeException("Unsupported escape int regular expression");                                 
+                            return null; // Unsupported escape in regular expression                                 
                     }
                     break;
                 // characters with special meaning that are not supported
@@ -124,15 +160,20 @@ aspect Util {
                 case '?':
                 case '*':
                 case '+':
-                    throw new RuntimeException("Unsupported functionality in regular expression");
+                    return null;  // Unsupported functionality in regular expression
                 default:
                     b.append(c);
             }
-        }
-        
+        }        
         return b.toString();
     }
    
+   
+    /**
+     * Scan an interface and all its super-interfaces an collect all 
+     * default method implementations. This is needed for the C# target
+     * to implement redirect methods in all implementing classes.  
+     */
     public ArrayList<BodyDecl> InterfaceDecl.recursivelyGetBodyDecl()
     {   ArrayList<BodyDecl> allm = new ArrayList<BodyDecl>();
         for (BodyDecl bd:getBodyDeclList())
@@ -148,6 +189,11 @@ aspect Util {
         return allm;
     }
     
+    /**
+     * Check if a given class implements a method with a specified signature (as specified by the
+     * java class file format specification).
+     * Optionally ignoring a given set of methods.
+     */
     public boolean ClassDecl.hasMethodWithSignature(String sig, Collection<MethodDecl> ignore)
     {
          for (BodyDecl bd:getBodyDeclList())
@@ -165,6 +211,11 @@ aspect Util {
          return false;
     }
         
+    /**
+     * Determine the internal ordinal number of an Enum constant. This is needed for 
+     * the switch statements in the C# target that can only use numerical 
+     * case values.
+     */
     public int EnumDecl.determineOrdinal(String name) 
     {
         int ordinal = 0;
@@ -175,12 +226,36 @@ aspect Util {
         return 0;
     }     
     
+    /**
+     * Check if a method is supported by the runtime library of the converter.
+     */
+    public boolean MethodDecl.isSupportedInLibraries()
+    {
+        // test for availability in supported core libraries
+        StringBuffer b = new StringBuffer(type().erasure().typeName());
+        b.append(" ");
+        b.append(name());
+        b.append("(");
+        for (int i=0; i<getNumParameter(); i++) 
+        {   if (i!=0) { b.append(", "); }
+            String typename = getParameter(i).type().erasure().typeName();
+            b.append(typename);
+        }
+        b.append(")");          
+        String sig = b.toString();
+        String tn = hostType().packageName() + "." + hostType().uniqueName();
+        return LibraryList.isAllowed(tn, sig);
+    }
     
-    // side effect detection
+           
+    /**
+     * Check if a given expression can have possible side effects during evaluation.
+     * For example the ++ operator as side effects, and any method call could
+     * also have side effects. 
+     */
     public boolean Expr.hasPotentialSideEffects() 
     {   
-        System.err.print("Side effect test encountered:"+this.getClass().getName());    
-        return false;
+        return true;    // unless otherwise specified, this is the "safe" assumption
     }    
     public boolean Dot.hasPotentialSideEffects() 
     {   
@@ -189,14 +264,6 @@ aspect Util {
     public boolean ArrayAccess.hasPotentialSideEffects() 
     {
         return getExpr().hasPotentialSideEffects();
-    }
-    public boolean ClassInstanceExpr.hasPotentialSideEffects() 
-    {
-        return true;
-    }
-    public boolean MethodAccess.hasPotentialSideEffects() 
-    {
-        return true;
     }
     public boolean ParTypeAccess.hasPotentialSideEffects() 
     {
@@ -233,10 +300,6 @@ aspect Util {
         {   if (getInit(i).hasPotentialSideEffects()) { return true; }
         }
         return false;
-    }
-    public boolean AssignExpr.hasPotentialSideEffects() 
-    {   
-        return true;
     }
     public boolean Binary.hasPotentialSideEffects() 
     {   
@@ -278,92 +341,60 @@ aspect Util {
     {   
         return getOperand().hasPotentialSideEffects();
     }
-    public boolean PostDecExpr.hasPotentialSideEffects() 
+
+    /**
+     * Test if an expression could somehow be null. Is needed to
+     * prevent faulty behavior of the converted code or to allow optimizations.  
+     */
+    public boolean Expr.couldBeNull()
     {   
-        return true;
+        return true;   // "safe" assumption
     }
-    public boolean PostIncExpr.hasPotentialSideEffects() 
-    {
-        return true;
-    }
-    public boolean PreDecExpr.hasPotentialSideEffects() 
-    {
-        return true;
-    }
-    public boolean PreIncExpr.hasPotentialSideEffects() 
-    {
-        return true;
+    public boolean Dot.couldBeNull() 
+    {   
+        return getRight().couldBeNull();         
     }    
-    
-    // ensure that an expression can never be null
-    public boolean Expr.isNeverNull()
+    public boolean ArrayCreationExpr.couldBeNull()
     {   
         return false;
     }
-    public boolean Dot.isNeverNull() 
+    public boolean ParExpr.couldBeNull() 
     {   
-        return getRight().isNeverNull();         
-    }    
-    public boolean ArrayCreationExpr.isNeverNull()
-    {   
-        return true;
+        return getExpr().couldBeNull();
     }
-    public boolean ParExpr.isNeverNull() 
+    public boolean ClassInstanceExpr.couldBeNull()
     {   
-        return getExpr().isNeverNull();
+        return false;
     }
-    public boolean ClassInstanceExpr.isNeverNull()
+    public boolean LambdaExpr.couldBeNull() 
     {   
-        return true;
+        return false;
     }
-    public boolean LambdaExpr.isNeverNull() 
+    public boolean TypeMethodReference.couldBeNull()
     {   
-        return true;
+        return false;
     }
-    public boolean TypeMethodReference.isNeverNull()
+    public boolean ExprMethodReference.couldBeNull()
     {   
-        return true;
+        return false; 
     }
-    public boolean ExprMethodReference.isNeverNull()
-    {   
-        return true; 
-    }
-    public boolean VarAccess.isNeverNull()
+    public boolean VarAccess.couldBeNull()
     {   
         Variable v = decl();
         if (v.isEffectivelyFinal()) 
-        {   return v.getInit().isNeverNull();
+        {   return v.getInit().couldBeNull();
         }
-        return false;
+        return true;
     } 
-    public boolean MethodAccess.isNeverNull()
+    public boolean MethodAccess.couldBeNull()
     {
         // some well known core library functions will never return null
         MethodDecl m = decl().erasedMethod();
         if (m.hostType().packageName().equals("java.util") 
          && m.hostType().uniqueName().equals("Comparator"))
-        {   return true;
+        {   return false;
         }
-        return false;
+        return true;
     }    
 
-    public boolean MethodDecl.isSupportedInLibraries()
-    {
-        // test for availability in supported core libraries
-        StringBuffer b = new StringBuffer(type().erasure().typeName());
-        b.append(" ");
-        b.append(name());
-        b.append("(");
-        for (int i=0; i<getNumParameter(); i++) 
-        {   if (i!=0) { b.append(", "); }
-            String typename = getParameter(i).type().erasure().typeName();
-            b.append(typename);
-        }
-        b.append(")");          
-        String sig = b.toString();
-        String tn = hostType().packageName() + "." + hostType().uniqueName();
-        return LibraryList.isAllowed(tn, sig);
-    }
-    
-           
 }

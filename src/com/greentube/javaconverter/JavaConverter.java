@@ -11,14 +11,16 @@ public class JavaConverter extends Frontend
     private int err;
 
     public JavaConverter() 
-    {   super("JavaConverter", JavaConverter.class.getPackage().getImplementationVersion());
+    {   
+        super("JavaConverter", JavaConverter.class.getPackage().getImplementationVersion());
         destDirJS=null;
         destDirCS=null;
         err = 0;
     }
     
     public int run(String args[]) 
-    {   Vector<String> argv= new Vector<String>(Arrays.asList(args));
+    {   
+        Vector<String> argv= new Vector<String>(Arrays.asList(args));
 
         // use default bootclasspath from the converter itself if not defined otherwise
         if (!argv.contains("-bootclasspath"))
@@ -58,7 +60,8 @@ public class JavaConverter extends Frontend
 
     @Override
     protected void processNoErrors(CompilationUnit unit) 
-    {   LibraryList.buildList();
+    {   
+        LibraryList.buildList();
         ArrayList<String> errorlist = new ArrayList<String>(0);        
         unit.checkRestrictions(errorlist);
         if (errorlist.size()==0) 
@@ -87,7 +90,8 @@ public class JavaConverter extends Frontend
 
     @Override
     protected void initOptions() 
-    {   super.initOptions();	
+    {   
+        super.initOptions();	
         Options options = program.options();		
         options.addKeyValueOption("-js");
         options.addKeyValueOption("-cs");
@@ -95,7 +99,8 @@ public class JavaConverter extends Frontend
 
     @Override
     public int processArgs(String[] args) 
-    {   int result = super.processArgs(args);
+    {   
+        int result = super.processArgs(args);
         if (result != 0) 
         {   return result;
         }
@@ -128,7 +133,8 @@ public class JavaConverter extends Frontend
         return EXIT_SUCCESS;
     }
 
-    protected void printUsage() {
+    protected void printUsage() 
+    {
         super.printUsage();
         System.out.println(
             "  -js                       Directory where to store javascript files\n"
@@ -137,7 +143,8 @@ public class JavaConverter extends Frontend
     }
 
     public static void main(String args[]) 
-    {   // add possibility to launch the linker instead of the the converter
+    {   
+        // add possibility to launch the linker instead of the the converter
         if (args.length>0 && args[0].equals("link")) 
         {   String roots = null;
             String searchpath = null;

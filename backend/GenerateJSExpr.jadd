@@ -1,62 +1,84 @@
+/**
+ * Implement the javascript code generation for all Expr nodes.
+ */
+
 import com.greentube.javaconverter.CodePrinterJS;
-aspect GenerateJS {
- 
-    public void Expr.generateUsingResultJS(CodePrinterJS out) {   
-        if (isConstant() && !type().isEnumDecl()) {
-            constant().generateJS(out);                     
-        } else {    
-            generateJS(out);
+
+aspect GenerateJS 
+{
+    /**
+     * This code generation of expressions is used when the result of the expression
+     * is actually used for further operation, as opposed to be just thrown away
+     * (after a method call for example).
+     * Some subtypes of Expr can also do additional optimizations in these cases.
+     */
+    public void Expr.generateUsingResultJS(CodePrinterJS out) 
+    {   
+        if (isConstant() && !type().isEnumDecl()) 
+        {   constant().generateJS(out);                     
+        } else 
+        {   generateJS(out);
         }
     }
 
      
     // --- Access --- 
     
-    public void Dot.generateJS(CodePrinterJS out) {
+    public void Dot.generateJS(CodePrinterJS out) 
+    {
         // search down the tree to find the end of the AbstactDot sequence          
         Access a = getRight();
-        while (a instanceof Dot) {
-            a = ((Dot)a).getRight();
+        while (a instanceof Dot) 
+        {   a = ((Dot)a).getRight();
         }
-        if (a instanceof ClassInstanceExpr) {
-            // do not generate enclosing instance expression here - must be done by constructor
+        if (a instanceof ClassInstanceExpr) 
+        {   // do not generate enclosing instance expression here - must be done by constructor
             a.generateJS(out);              
-        } else if ((a instanceof MethodAccess) && ((MethodAccess)a).decl().isStatic()) {
-            // do not generate instance expression when calling static method
+        } 
+        else if ((a instanceof MethodAccess) && ((MethodAccess)a).decl().isStatic()) 
+        {   // do not generate instance expression when calling static method
             a.generateJS(out);              
-        } else if ((a instanceof VarAccess) && ((VarAccess)a).decl().isStatic()) {
-            // do not generate instance expression when accessing static variable
+        } 
+        else if ((a instanceof VarAccess) && ((VarAccess)a).decl().isStatic()) 
+        {   // do not generate instance expression when accessing static variable
             a.generateJS(out);              
-        } else {
-            // generate everything
+        } 
+        else 
+        {   // generate everything
             getLeft().generateJS(out);
             getRight().generateJS(out);
         }
     }
-//      public void Wildcard.generateJS(CodePrinterJS out) {
+//  public void Wildcard.generateJS(CodePrinterJS out) 
+//  {
 //  }
-//      public void WildcardExtends.generateJS(CodePrinterJS out) {
+//  public void WildcardExtends.generateJS(CodePrinterJS out) 
+//  {
 //  }
-//      public void WildcardSuper.generateJS(CodePrinterJS out) {
+//  public void WildcardSuper.generateJS(CodePrinterJS out) 
+//  {
 //  }
-    public void ArrayAccess.generateJS(CodePrinterJS out) {
+    public void ArrayAccess.generateJS(CodePrinterJS out) 
+    {
         out.print("[");
         getExpr().generateUsingResultJS(out);
         out.print("]");
     }
-//      public void ClassAccess.generateJS(CodePrinterJS out) {
+//  public void ClassAccess.generateJS(CodePrinterJS out) 
+//  {
 //  }
     public void ClassInstanceExpr.generateJS(CodePrinterJS out) 
-    {   if (transformed()!=this)
+    {   
+        if (transformed()!=this)
         {   transformed().generateJS(out);
             return;
         }
         // special construction of string objects
-        if (type().isString()) {
-            out.print(getNumArg()<=1 ? "_array2str" : "_subarray2str");
+        if (type().isString()) 
+        {   out.print(getNumArg()<=1 ? "_array2str" : "_subarray2str");
             out.print("(");
-            for (int i=0; i<getNumArg(); i++) {
-                if (i>0) out.print(",");
+            for (int i=0; i<getNumArg(); i++) 
+            {   if (i>0) { out.print(","); }
                 getArg(i).generateUsingResultJS(out);
             }
             out.print(")");
@@ -75,8 +97,8 @@ aspect GenerateJS {
         {   out.print("this");
             foundpar=true;
         }
-        for (Variable v:type().enclosingVariables()) {
-            if (foundpar) out.print(",");
+        for (Variable v:type().enclosingVariables()) 
+        {   if (foundpar) { out.print(","); }
             out.printJSIdentifier(v.name());
             foundpar=true;
         }        
@@ -84,19 +106,20 @@ aspect GenerateJS {
 
         ConstructorDecl m = decl();
         out.print("._"+m.getNumParameter()+"(");        
-        for (int i=0; i<getNumArg(); i++) {
-            if (i>0) out.print(",");
+        for (int i=0; i<getNumArg(); i++) 
+        {   if (i>0) { out.print(","); }
             getArg(i).generateUsingResultJS(out);
         }
         out.print(")");
 
         // check if this is inside a static initializer - must force early loading of created class
-        if (enclosingBodyDecl().isField()) {
-            out.memorizeComplete(type().packageName(),type().uniqueName());
+        if (enclosingBodyDecl().isField()) 
+        {   out.memorizeComplete(type().packageName(),type().uniqueName());
         }
     }
     public void ConstructorAccess.generateJS(CodePrinterJS out) 
-    {   if (transformed()!=this)
+    {   
+        if (transformed()!=this)
         {   transformed().generateJS(out);
             return;
         }
@@ -113,10 +136,12 @@ aspect GenerateJS {
         out.print(")");
     }
 
-//      public void DiamondAccess.generateJS(CodePrinterJS out) {
+//  public void DiamondAccess.generateJS(CodePrinterJS out) {
+//
 //  }
     public void MethodAccess.generateJS(CodePrinterJS out) 
-    {   if (transformed()!=this)
+    {   
+        if (transformed()!=this)
         {   transformed().generateJS(out);
             return;
         }
@@ -179,8 +204,8 @@ aspect GenerateJS {
         }
 
         // generate parameters 
-        for (int i=0; i<getNumArg(); i++) {
-            if (i>0) out.print(",");
+        for (int i=0; i<getNumArg(); i++) 
+        {   if (i>0) { out.print(","); }
             // do necessary data conversion for some built-in methods 
             // to clarify the use of a char instead of a int 
             TypeDecl ht = m.hostType();
@@ -225,66 +250,77 @@ aspect GenerateJS {
         out.print(")");
     }
 
-//      public void PackageAccess.generateJS(CodePrinterJS out) {
+//  public void PackageAccess.generateJS(CodePrinterJS out) 
+//  {
 //  }
-//      public void ParseName.generateJS(CodePrinterJS out) {
+//  public void ParseName.generateJS(CodePrinterJS out) 
+//  {
 //  }
-    public void SuperAccess.generateJS(CodePrinterJS out) {
+    public void SuperAccess.generateJS(CodePrinterJS out) 
+    {
         // do not generate anything - must be implemented by the method or variable access
     }
-    public void ThisAccess.generateJS(CodePrinterJS out) {
+    public void ThisAccess.generateJS(CodePrinterJS out) 
+    {
         // do not generate anything for static access - must be implemented by the method or variable access
-        if (isLeftChildOfDot()) {
-            Access n = nextAccess();
-            if ((n instanceof MethodAccess) && ((MethodAccess)n).decl().isStatic()) return;
-            if ((n instanceof VarAccess) && ((VarAccess)n).decl().isStatic()) return;
+        if (isLeftChildOfDot()) 
+        {   Access n = nextAccess();
+            if ((n instanceof MethodAccess) && ((MethodAccess)n).decl().isStatic()) { return; }
+            if ((n instanceof VarAccess) && ((VarAccess)n).decl().isStatic()) { return; }
         }
         out.print("this");
         // check if accessing the instance of an outer class
         TypeDecl t = hostType();
-        if (t!=type() && t.isInnerTypeOf(type())) {
-            while (t!=type()) {
-                out.print("._o");
+        if (t!=type() && t.isInnerTypeOf(type())) 
+        {   while (t!=type()) 
+            {   out.print("._o");
                 t = t.enclosingType();
             }
         }       
     }
-    public void ArrayTypeAccess.generateJS(CodePrinterJS out) {
+    public void ArrayTypeAccess.generateJS(CodePrinterJS out) 
+    {
         getAccess().generateJS(out);
     }
-    public void ArrayTypeWithSizeAccess.generateJS(CodePrinterJS out) {
+    public void ArrayTypeWithSizeAccess.generateJS(CodePrinterJS out) 
+    {
         getAccess().generateJS(out);
         getExpr().generateJS(out);
         out.print(",");
     }       
 
-    public void VarAccess.generateJS(CodePrinterJS out) {
+    public void VarAccess.generateJS(CodePrinterJS out) 
+    {
         Variable v = varDecl();
-        if (v.isClassVariable()) {
-            TypeDecl t = v.hostType();
+        if (v.isClassVariable()) 
+        {   TypeDecl t = v.hostType();
             out.printAndMemorizeReference(t.packageName(),t.uniqueName());          
             out.print(".");
             out.printJSIdentifier(getID(),"");  
             // check if this is inside a static initializer - must force early loading of accessed class
             BodyDecl bd = enclosingBodyDecl();
-            if (bd.isField() || (bd instanceof StaticInitializer)) {
-                out.memorizeComplete(t.packageName(),t.uniqueName());
+            if (bd.isField() || (bd instanceof StaticInitializer)) 
+            {   out.memorizeComplete(t.packageName(),t.uniqueName());
             }                                           
-        } else if (v.isInstanceVariable()) {
-            if (!hasPrevExpr()) {
-                out.print("this.");
+        }
+        else if (v.isInstanceVariable()) 
+        {   if (!hasPrevExpr()) 
+            {   out.print("this.");
                 TypeDecl t = hostType();
-                if (t!=v.hostType() && t.isInnerTypeOf(v.hostType())) {
-                    while (t!=v.hostType()) {
+                if (t!=v.hostType() && t.isInnerTypeOf(v.hostType())) 
+                {   while (t!=v.hostType()) 
+                    {
                         out.print("_o.");
                         t = t.enclosingType();
                     }
                 }       
-            } else {        
-                out.print(".");
+            }
+            else
+            {   out.print(".");
             } 
             out.printJSIdentifier(getID(),"");
-        } else if (v.isLocalVariable() || v.isParameter()) 
+        } 
+        else if (v.isLocalVariable() || v.isParameter()) 
         {   if (v.hostType() == hostType()) 
             {   out.printJSIdentifier(getID(), "");
             }
@@ -293,10 +329,12 @@ aspect GenerateJS {
                 out.print("this.");
                 out.printJSIdentifier(getID(), "_o");
             }
-        } else if (getID().equals("length")) {
-            out.print(".length");
-        } else {
-            throw new RuntimeException("Unknown type of variable access");
+        }
+        else if (getID().equals("length")) 
+        {   out.print(".length");
+        }
+        else
+        {   throw new RuntimeException("Unknown type of variable access");
         }       
     }
     public void TypeAccess.generateJS(CodePrinterJS out) 
@@ -309,12 +347,13 @@ aspect GenerateJS {
     // --- ArrayInit ---
     
     public void ArrayInit.generateJS(CodePrinterJS out) 
-    {   out.print("_arr(");
+    {   
+        out.print("_arr(");
         type().generateElementTypeAndDimensionsJS(out);
         out.print(",");
         out.print("[");
-        for (int i=0; i<getNumInit(); i++) {
-            if (i>0) out.print(",");
+        for (int i=0; i<getNumInit(); i++) 
+        {   if (i>0) { out.print(","); }
             getInit(i).generateUsingResultJS(out);
         }
         out.print("])");
@@ -322,34 +361,33 @@ aspect GenerateJS {
 
     // --- AssignExpr ---
 
-    public void AssignExpr.generateWithOptionalCastJS(CodePrinterJS out, String operator) {
+    public void AssignExpr.generateWithOptionalCastJS(CodePrinterJS out, String operator) 
+    {
         Expr d = getDest();
         Expr s = getSource();
-        if (d.type().isDouble()) {
-            d.generateJS(out);
+        if (d.type().isDouble()) 
+        {   d.generateJS(out);
             out.print(" ");
             out.print(operator);
             out.print("= ");
             s.generateUsingResultJS(out);
-        } else if (s.type().isDouble()) {
-            d.generateJS(out);
+        } 
+        else if (s.type().isDouble()) 
+        {   d.generateJS(out);
             out.print(" = ");
-            if (d.type().isByte()) {
-                out.print("_castTObyte(");
-            } else if (d.type().isChar()) {
-                out.print("_castTOchar(");
-            } else if (d.type().isInt()) {
-                out.print("_castTOint(");
-            } else {
-                throw new RuntimeException("Can not implicitly cast to destination type");
-            }
+            if (d.type().isByte()) { out.print("_castTObyte("); }
+            else if (d.type().isChar()) { out.print("_castTOchar("); }
+            else if (d.type().isInt()) { out.print("_castTOint("); }
+            else { throw new RuntimeException("Can not implicitly cast to destination type"); }
             d.generateJS(out);
             out.print(" ");
             out.print(operator);
             out.print(" ");
             s.generateUsingResultJS(out);
             out.print(")");
-        } else {  // only int values
+        } 
+        else
+        {   // only int values
             d.generateJS(out);
             out.print(" = ((");
             d.generateJS(out);
@@ -361,34 +399,39 @@ aspect GenerateJS {
         }
     }
 
-    public void AssignMinusExpr.generateJS(CodePrinterJS out) {
+    public void AssignMinusExpr.generateJS(CodePrinterJS out) 
+    {
         generateWithOptionalCastJS(out,"-");
     }
-    public void AssignPlusExpr.generateJS(CodePrinterJS out) {
+    public void AssignPlusExpr.generateJS(CodePrinterJS out) 
+    {
         // do some case discrimination if this is a string concatenation
         Expr d = getDest();
         Expr s = getSource();
-        if (type().isString()) {
-            d.generateJS(out);
+        if (type().isString()) 
+        {   d.generateJS(out);
             out.print(" += \"\"+");
-            if (s.type().isChar()) {
-                out.print("_c2s(");
+            if (s.type().isChar()) 
+            {   out.print("_c2s(");
                 s.generateJS(out);
                 out.print(")");
-            } else {
-                s.generateJS(out);
+            } 
+            else
+            {   s.generateJS(out);
             }
-        } else {
-            generateWithOptionalCastJS(out,"+");
+        } 
+        else
+        {   generateWithOptionalCastJS(out,"+");
         }
     }
-    public void AssignMulExpr.generateJS(CodePrinterJS out) {
+    public void AssignMulExpr.generateJS(CodePrinterJS out)
+    {   
         // do some case discrimination if this is an int multiplication with large operands        
         Expr d = getDest();
         Expr s = getSource();
-        if (d.type().isInt() && s.type().isInt()) {
-            if (!d.hasLessThan20Bits() && !s.hasLessThan20Bits()) {
-                d.generateJS(out);
+        if (d.type().isInt() && s.type().isInt())
+        {   if (!d.hasLessThan20Bits() && !s.hasLessThan20Bits()) 
+            {   d.generateJS(out);
                 out.print(" = _imul(");
                 d.generateJS(out);
                 out.print(" , ");
@@ -399,57 +442,66 @@ aspect GenerateJS {
         }
         generateWithOptionalCastJS(out,"*");
     }   
-    public void AssignDivExpr.generateJS(CodePrinterJS out) {
+    public void AssignDivExpr.generateJS(CodePrinterJS out) 
+    {
         Expr d = getDest();
         Expr s = getSource();
         if (d.type().isInt() && s.type().isInt()) 
-        {       d.generateJS(out);
-                out.print(" = _idiv(");
-                d.generateJS(out);
-                out.print(" , ");
-                s.generateJS(out);
-                out.print(")");
-                return;        
+        {   d.generateJS(out);
+            out.print(" = _idiv(");
+            d.generateJS(out);
+            out.print(" , ");
+            s.generateJS(out);
+            out.print(")");
+            return;        
         }
         generateWithOptionalCastJS(out,"/");
     }
     
-    public void AssignAndExpr.generateJS(CodePrinterJS out) {
+    public void AssignAndExpr.generateJS(CodePrinterJS out) 
+    {
         getDest().generateJS(out);
         out.print(" &= ");
         getSource().generateUsingResultJS(out);
     }
-    public void AssignOrExpr.generateJS(CodePrinterJS out) {
+    public void AssignOrExpr.generateJS(CodePrinterJS out) 
+    {
         getDest().generateJS(out);
         out.print(" |= ");
         getSource().generateUsingResultJS(out);
     }
-    public void AssignXorExpr.generateJS(CodePrinterJS out) {
+    public void AssignXorExpr.generateJS(CodePrinterJS out) 
+    {
         getDest().generateJS(out);
         out.print(" ^= ");
         getSource().generateUsingResultJS(out);
     }
-    public void AssignModExpr.generateJS(CodePrinterJS out) {
+    public void AssignModExpr.generateJS(CodePrinterJS out) 
+    {
         getDest().generateJS(out);
         out.print(" %= ");
         getSource().generateUsingResultJS(out);
     }
-    public void AssignLShiftExpr.generateJS(CodePrinterJS out) {
+    public void AssignLShiftExpr.generateJS(CodePrinterJS out) 
+    {
         getDest().generateJS(out);
         out.print(" <<= ");
         getSource().generateUsingResultJS(out);
     }
-    public void AssignRShiftExpr.generateJS(CodePrinterJS out) {
+    public void AssignRShiftExpr.generateJS(CodePrinterJS out) 
+    {
         getDest().generateJS(out);
         out.print(" >>= ");
         getSource().generateUsingResultJS(out);
     }
-    public void AssignURShiftExpr.generateJS(CodePrinterJS out) {
+    public void AssignURShiftExpr.generateJS(CodePrinterJS out) 
+    {
         getDest().generateJS(out);
         out.print(" >>>= ");
         getSource().generateUsingResultJS(out);
     }
-    public void AssignSimpleExpr.generateJS(CodePrinterJS out) {
+    public void AssignSimpleExpr.generateJS(CodePrinterJS out) 
+    {
         getDest().generateJS(out);
         out.print(" = ");
         getSource().generateUsingResultJS(out);
@@ -457,181 +509,214 @@ aspect GenerateJS {
         
     // --- Binary ---
 
-    public void AddExpr.generateJS(CodePrinterJS out) {
+    public void AddExpr.generateJS(CodePrinterJS out) 
+    {
         // do some case discrimination if this is a string concatenation
         Expr l = getLeftOperand();
         Expr r = getRightOperand();
-        if (type().isString()) {
-            if ((l.type().isString() && l.isConstant()) || (l instanceof AddExpr)) {
-                l.generateUsingResultJS(out);
-            } else if (l.type().isChar()) {
-                out.print("_c2s(");
-                l.generateUsingResultJS(out);
-                out.print(")");
-            } else if (l.type().isDouble()) {
-                out.print("_d2s(");
+        if (type().isString()) 
+        {
+            if ((l.type().isString() && l.isConstant()) || (l instanceof AddExpr)) 
+            {   l.generateUsingResultJS(out);
+            } 
+            else if (l.type().isChar()) 
+            {   out.print("_c2s(");
                 l.generateUsingResultJS(out);
                 out.print(")");
-            } else if (l.type().isReferenceType()) {
-                out.print("_str(");
+            } 
+            else if (l.type().isDouble()) 
+            {   out.print("_d2s(");
+                l.generateUsingResultJS(out);
+                out.print(")");
+            } 
+            else if (l.type().isReferenceType()) 
+            {   out.print("_str(");
                 l.generateUsingResultJS(out);
                 out.print(")");         
-            } else {
-                l.generateUsingResultJS(out);
+            } 
+            else
+            {   l.generateUsingResultJS(out);
             }
             out.print("+\"\"+");
-            if ((r.type().isString() && r.isConstant()) || (r instanceof AddExpr)) {
-                r.generateUsingResultJS(out);
-            } else if (r.type().isChar()) {
-                out.print("_c2s(");
-                r.generateUsingResultJS(out);
-                out.print(")");
-            } else if (r.type().isDouble()) {
-                out.print("_d2s(");
+            if ((r.type().isString() && r.isConstant()) || (r instanceof AddExpr)) 
+            {   r.generateUsingResultJS(out);
+            }
+            else if (r.type().isChar()) 
+            {   out.print("_c2s(");
                 r.generateUsingResultJS(out);
                 out.print(")");
-            } else if (r.type().isReferenceType()) {
-                out.print("_str(");
+            } 
+            else if (r.type().isDouble())
+            {   out.print("_d2s(");
+                r.generateUsingResultJS(out);
+                out.print(")");
+            } 
+            else if (r.type().isReferenceType()) 
+            {   out.print("_str(");
                 r.generateUsingResultJS(out);
                 out.print(")");         
-            } else {
-                r.generateUsingResultJS(out);            
+            } 
+            else
+            {   r.generateUsingResultJS(out);            
             }
-        } else if (type().isDouble()) {
-            l.generateUsingResultJS(out);
+        } 
+        else if (type().isDouble()) 
+        {   l.generateUsingResultJS(out);
             out.print(" + ");
             r.generateUsingResultJS(out);
-        } else {
-            out.print("((");
+        } 
+        else
+        {   out.print("((");
             l.generateUsingResultJS(out);
             out.print(" + ");
             r.generateUsingResultJS(out);
             out.print(")|0)");
         }
     }
-    public void SubExpr.generateJS(CodePrinterJS out) {
+    public void SubExpr.generateJS(CodePrinterJS out) 
+    {
         Expr l = getLeftOperand();
         Expr r = getRightOperand();     
-        if (type().isDouble()) {
-            l.generateUsingResultJS(out);
+        if (type().isDouble()) 
+        {   l.generateUsingResultJS(out);
             out.print(" - ");
             r.generateUsingResultJS(out);
-        } else {
-            out.print("((");
+        }
+        else
+        {   out.print("((");
             l.generateUsingResultJS(out);
             out.print(" - ");
             r.generateUsingResultJS(out);
             out.print(")|0)");
         }
     }
-    public void DivExpr.generateJS(CodePrinterJS out) {
+    public void DivExpr.generateJS(CodePrinterJS out) 
+    {
         Expr l = getLeftOperand();
         Expr r = getRightOperand();     
-        if (type().isDouble()) {
-            l.generateUsingResultJS(out);
+        if (type().isDouble()) 
+        {   l.generateUsingResultJS(out);
             out.print(" / ");
             r.generateUsingResultJS(out);
-        } else {    
-            out.print("_idiv(");
+        } 
+        else
+        {   out.print("_idiv(");
             l.generateUsingResultJS(out);
             out.print(", ");
             r.generateUsingResultJS(out);
             out.print(")");
         }
     }
-    public void MulExpr.generateJS(CodePrinterJS out) {
+    public void MulExpr.generateJS(CodePrinterJS out) 
+    {
         Expr l = getLeftOperand();
         Expr r = getRightOperand();     
-        if (type().isDouble()) {
-            l.generateUsingResultJS(out);
+        if (type().isDouble()) 
+        {   l.generateUsingResultJS(out);
             out.print(" * ");
             r.generateUsingResultJS(out);
-        } else if (l.hasLessThan20Bits() || r.hasLessThan20Bits()) {
-            out.print("((");
+        }
+        else if (l.hasLessThan20Bits() || r.hasLessThan20Bits()) 
+        {   out.print("((");
             l.generateUsingResultJS(out);
             out.print(" * ");
             r.generateUsingResultJS(out);
             out.print(")|0)");
-        } else {
-            out.print("_imul(");
+        }
+        else
+        {   out.print("_imul(");
             l.generateUsingResultJS(out);
             out.print(", ");
             r.generateUsingResultJS(out);
             out.print(")");         
         }
     }
-    public void ModExpr.generateJS(CodePrinterJS out) {
+    public void ModExpr.generateJS(CodePrinterJS out) 
+    {   
         getLeftOperand().generateUsingResultJS(out);
         out.print(" % ");
         getRightOperand().generateUsingResultJS(out);
     }   
-    public void AndBitwiseExpr.generateJS(CodePrinterJS out) {
+    public void AndBitwiseExpr.generateJS(CodePrinterJS out) 
+    {
         getLeftOperand().generateUsingResultJS(out);
         out.print(" & ");
         getRightOperand().generateUsingResultJS(out);   
     }
-    public void OrBitwiseExpr.generateJS(CodePrinterJS out) {
+    public void OrBitwiseExpr.generateJS(CodePrinterJS out) 
+    {
         getLeftOperand().generateUsingResultJS(out);
         out.print(" | ");
         getRightOperand().generateUsingResultJS(out);   
     }
-    public void XorBitwiseExpr.generateJS(CodePrinterJS out) {
+    public void XorBitwiseExpr.generateJS(CodePrinterJS out) 
+    {
         getLeftOperand().generateUsingResultJS(out);
         out.print(" ^ ");
         getRightOperand().generateUsingResultJS(out);   
     }
-    public void AndLogicalExpr.generateJS(CodePrinterJS out) {
+    public void AndLogicalExpr.generateJS(CodePrinterJS out) 
+    {
         getLeftOperand().generateUsingResultJS(out);
         out.print(" && ");
         getRightOperand().generateUsingResultJS(out);   
     }
-    public void OrLogicalExpr.generateJS(CodePrinterJS out) {
+    public void OrLogicalExpr.generateJS(CodePrinterJS out) 
+    {
         getLeftOperand().generateUsingResultJS(out);
         out.print(" || ");
         getRightOperand().generateUsingResultJS(out);   
     }
-    public void EQExpr.generateJS(CodePrinterJS out) {
+    public void EQExpr.generateJS(CodePrinterJS out) 
+    {
         getLeftOperand().generateUsingResultJS(out);
         out.print(" === ");
         getRightOperand().generateUsingResultJS(out);   
     }
-    public void NEExpr.generateJS(CodePrinterJS out) {
+    public void NEExpr.generateJS(CodePrinterJS out) 
+    {
         getLeftOperand().generateUsingResultJS(out);
         out.print(" !== ");
         getRightOperand().generateUsingResultJS(out);   
     }
-    public void GEExpr.generateJS(CodePrinterJS out) {
+    public void GEExpr.generateJS(CodePrinterJS out) 
+    {
         getLeftOperand().generateUsingResultJS(out);
         out.print(" >= ");
         getRightOperand().generateUsingResultJS(out);   
     }
-    public void GTExpr.generateJS(CodePrinterJS out) {
+    public void GTExpr.generateJS(CodePrinterJS out) 
+    {
         getLeftOperand().generateUsingResultJS(out);
         out.print(" > ");
         getRightOperand().generateUsingResultJS(out);   
     }
-    public void LEExpr.generateJS(CodePrinterJS out) {
+    public void LEExpr.generateJS(CodePrinterJS out) 
+    {
         getLeftOperand().generateUsingResultJS(out);
         out.print(" <= ");
         getRightOperand().generateUsingResultJS(out);   
     }
-    public void LTExpr.generateJS(CodePrinterJS out) {
+    public void LTExpr.generateJS(CodePrinterJS out) 
+    {
         getLeftOperand().generateUsingResultJS(out);
         out.print(" < ");
         getRightOperand().generateUsingResultJS(out);   
     }
-    public void LShiftExpr.generateJS(CodePrinterJS out) {
+    public void LShiftExpr.generateJS(CodePrinterJS out) 
+    {
         getLeftOperand().generateUsingResultJS(out);
         out.print(" << ");
         getRightOperand().generateUsingResultJS(out);
-
     }
-    public void RShiftExpr.generateJS(CodePrinterJS out) {
+    public void RShiftExpr.generateJS(CodePrinterJS out) 
+    {
         getLeftOperand().generateUsingResultJS(out);
         out.print(" >> ");
         getRightOperand().generateUsingResultJS(out);   
     }
-    public void URShiftExpr.generateJS(CodePrinterJS out) {
+    public void URShiftExpr.generateJS(CodePrinterJS out) 
+    {
         getLeftOperand().generateUsingResultJS(out);
         out.print(" >>> ");
         getRightOperand().generateUsingResultJS(out);   
@@ -640,31 +725,35 @@ aspect GenerateJS {
     
     // --- CastExpr ---
     
-    public void CastExpr.generateJS(CodePrinterJS out) {
+    public void CastExpr.generateJS(CodePrinterJS out) 
+    {
         TypeDecl t = type();
-        if (t.isPrimitiveType()) {
-            TypeDecl et = getExpr().type();
-            if (t.isByte()) { 
-                out.print("_castTObyte(");
+        if (t.isPrimitiveType()) 
+        {   TypeDecl et = getExpr().type();
+            if (t.isByte()) 
+            {   out.print("_castTObyte(");
                 getExpr().generateUsingResultJS(out);
                 out.print(")");
-            } else if (t.isChar()) {
-                out.print("_castTOchar(");
+            } 
+            else if (t.isChar()) 
+            {   out.print("_castTOchar(");
                 getExpr().generateUsingResultJS(out);
                 out.print(")");
-            } else if (t.isInt()) {
-                if (!et.isLong() && !et.isInt()) { out.print("_castTOint("); }
+            } 
+            else if (t.isInt()) 
+            {   if (!et.isLong() && !et.isInt()) { out.print("_castTOint("); }
                 getExpr().generateUsingResultJS(out);
                 if (!et.isLong() && !et.isInt()) { out.print(")"); }
-            } else if (t.isDouble()) {
-                getExpr().generateUsingResultJS(out);
-            } else {
-                throw new RuntimeException("Type not supported:"+t.fullName());
+            } 
+            else if (t.isDouble()) 
+            {   getExpr().generateUsingResultJS(out);
+            } 
+            else
+            {   throw new RuntimeException("Type not supported:"+t.fullName());
             }
         }
         else if (t.isArrayDecl()) 
-        {
-            out.print("_checkarray(");
+        {   out.print("_checkarray(");
             getExpr().generateUsingResultJS(out);
             out.print(",");
             t.generateElementTypeAndDimensionsJS(out);
@@ -696,7 +785,8 @@ aspect GenerateJS {
     
     // --- ConditionalExpr ---
     
-    public void ConditionalExpr.generateJS(CodePrinterJS out) {
+    public void ConditionalExpr.generateJS(CodePrinterJS out) 
+    {
         getCondition().generateUsingResultJS(out);
         out.print("?");
         getTrueExpr().generateUsingResultJS(out);
@@ -706,9 +796,10 @@ aspect GenerateJS {
     
     // --- InstanceOfExpr ---
 
-    public void InstanceOfExpr.generateJS(CodePrinterJS out) {
+    public void InstanceOfExpr.generateJS(CodePrinterJS out) 
+    {
         TypeDecl t = getTypeAccess().type();
-        if (t.isArrayDecl()) 
+        if (t.isArrayDecl())
         {   out.print("_isarray(");
             getExpr().generateUsingResultJS(out);
             out.print(",");
@@ -737,8 +828,8 @@ aspect GenerateJS {
             getExpr().generateUsingResultJS(out);
             out.print(")!==null)");
         }               
-        else {          
-            out.print("(");  
+        else 
+        {   out.print("(");  
             getExpr().generateUsingResultJS(out);
             out.print(" instanceof ");
             out.printAndMemorizeReference(t.packageName(),t.uniqueName());
@@ -748,50 +839,62 @@ aspect GenerateJS {
 
     // --- PrimaryExpr ---
     
-    public void ArrayCreationExpr.generateJS(CodePrinterJS out) {
-        if (hasArrayInit()) {
-            getArrayInit().generateJS(out);
-        } else {
-            Access ta = getTypeAccess();
+    public void ArrayCreationExpr.generateJS(CodePrinterJS out) 
+    {
+        if (hasArrayInit()) 
+        {   getArrayInit().generateJS(out);
+        } 
+        else
+        {   Access ta = getTypeAccess();
             out.print("_dim(");
             type().generateElementTypeAndDimensionsJS(out);
             out.print(",[");
             ta.generateJS(out);
             out.print("],");
-            if ((ta instanceof ArrayTypeWithSizeAccess) 
-             && ta.type().elementType().isPrimitiveType()) { 
-                out.print(ta.type().elementType().isBoolean()?"false":"0");
-            } else {
-                out.print("null");
+            if 
+            (   (ta instanceof ArrayTypeWithSizeAccess) 
+                && ta.type().elementType().isPrimitiveType()
+            )
+            {   out.print(ta.type().elementType().isBoolean()?"false":"0");
+            } 
+            else
+            {   out.print("null");
             }                               
             out.print(")");         
         }
     }
-    public void Literal.generateJS(CodePrinterJS out) {
+    public void Literal.generateJS(CodePrinterJS out) 
+    {
         constant().generateJS(out);
     }
-//      public void IllegalLiteral.generateCS(CodePrinterJS out) {
-//      }
-    public void NullLiteral.generateJS(CodePrinterJS out) {
+//  public void IllegalLiteral.generateCS(CodePrinterJS out) 
+//  {
+//  }
+    public void NullLiteral.generateJS(CodePrinterJS out) 
+    {
         out.print("null");
     }
     
-    public void ParExpr.generateJS(CodePrinterJS out) {
+    public void ParExpr.generateJS(CodePrinterJS out) 
+    {
         out.print("(");
         getExpr().generateJS(out);
         out.print(")");
     }
     
     // --- Unary ---
-    public void BitNotExpr.generateJS(CodePrinterJS out) {
+    public void BitNotExpr.generateJS(CodePrinterJS out) 
+    {
         out.print(" ~ ");
         getOperand().generateUsingResultJS(out);    
     }
-    public void LogNotExpr.generateJS(CodePrinterJS out) {
+    public void LogNotExpr.generateJS(CodePrinterJS out) 
+    {
         out.print(" ! ");
         getOperand().generateUsingResultJS(out);    
     }
-    public void MinusExpr.generateJS(CodePrinterJS out) {
+    public void MinusExpr.generateJS(CodePrinterJS out) 
+    {
         if (type().isDouble()) 
         {   out.print("-");
             getOperand().generateUsingResultJS(out);
@@ -802,7 +905,8 @@ aspect GenerateJS {
             out.print(")|0)");
         }
     }
-    public void PlusExpr.generateJS(CodePrinterJS out) {
+    public void PlusExpr.generateJS(CodePrinterJS out) 
+    {
         getOperand().generateUsingResultJS(out);    
     }
     
@@ -810,83 +914,71 @@ aspect GenerateJS {
     public void Unary.generatePostOperatorJS(CodePrinterJS out, boolean inc)
     {
         Expr e = getOperand();
-        if (e.type().isDouble()) {
-            e.generateJS(out);
+        if (e.type().isDouble()) 
+        {   e.generateJS(out);
             out.print(inc?" ++ ":" -- ");
             return;
         }
         
         boolean needresult = !(getParent() instanceof ExprStmt);
-        if (needresult) {
-            out.print("(((");
+        if (needresult) 
+        {   out.print("(((");
         }
         
         e.generateUsingResultJS(out);
         out.print("=(");
         e.generateUsingResultJS(out);
         out.print(inc?" +1)":" -1)");
-        if (e.type().isInt()) {
-            out.print("|0");
-        } else if (e.type().isChar()) {
-            out.print("&0xffff");
-        } else if (e.type().isByte()) {
-            out.print("<<24>>24");
-        }
+        if (e.type().isInt()) { out.print("|0"); } 
+        else if (e.type().isChar()) { out.print("&0xffff"); }
+        else if (e.type().isByte()) { out.print("<<24>>24"); }
     
-        if (needresult) {
-            out.print(")");
+        if (needresult) 
+        {   out.print(")");
             // must revert the operation to get the original value out
             out.print(inc?" -1)":" +1)");
-            if (e.type().isInt()) {
-                out.print("|0");
-            } else if (e.type().isChar()) {
-                out.print("&0xffff");
-            } else if (e.type().isByte()) {
-                out.print("<<24>>24");
-            }
+            if (e.type().isInt()) { out.print("|0"); } 
+            else if (e.type().isChar()) { out.print("&0xffff"); } 
+            else if (e.type().isByte()) { out.print("<<24>>24"); }
             out.print(")");
         }       
     }
     public void Unary.generatePreOperatorJS(CodePrinterJS out, boolean inc)
     {
         Expr e = getOperand();
-        if (e.type().isDouble()) {
-            out.print(inc?" ++ ":" -- ");
+        if (e.type().isDouble()) 
+        {   out.print(inc?" ++ ":" -- ");
             e.generateJS(out);
             return;
         }
         
         boolean needresult = !(getParent() instanceof ExprStmt);
-        if (needresult) {
-            out.print("(");
-        }
+        if (needresult) { out.print("("); }
         
         e.generateUsingResultJS(out);
         out.print("=(");
         e.generateUsingResultJS(out);
         out.print(inc?" +1)":" -1)");
-        if (e.type().isInt()) {
-            out.print("|0");
-        } else if (e.type().isChar()) {
-            out.print("&0xffff");
-        } else if (e.type().isByte()) {
-            out.print("<<24>>24");
-        }
+        if (e.type().isInt()) { out.print("|0"); }
+        else if (e.type().isChar()) { out.print("&0xffff"); }
+        else if (e.type().isByte()) { out.print("<<24>>24"); }
         
-        if (needresult) {
-            out.print(")");
-        }   
+        if (needresult) { out.print(")"); }   
     }   
-    public void PostDecExpr.generateJS(CodePrinterJS out) {
+    public void PostDecExpr.generateJS(CodePrinterJS out) 
+    {
         generatePostOperatorJS(out, false);
     }
-    public void PostIncExpr.generateJS(CodePrinterJS out) {
+    public void PostIncExpr.generateJS(CodePrinterJS out) 
+    {
         generatePostOperatorJS(out, true);
     }
-    public void PreDecExpr.generateJS(CodePrinterJS out) {
+    public void PreDecExpr.generateJS(CodePrinterJS out) 
+    {
         generatePreOperatorJS(out,false);
     }
-    public void PreIncExpr.generateJS(CodePrinterJS out) {
+    public void PreIncExpr.generateJS(CodePrinterJS out) 
+    {
         generatePreOperatorJS(out,true);
     }   
 

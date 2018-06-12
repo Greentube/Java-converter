@@ -1,18 +1,32 @@
+/**
+ * Implement the C# code generation for all Expr nodes.
+ */
+
 import java.util.ArrayList;
 import com.greentube.javaconverter.CodePrinterCS;
 
-aspect GenerateCS {
-
-    public void Expr.generateUsingResultCS(CodePrinterCS out) {   
-        if (isConstant() && !type().isEnumDecl()) {
+aspect GenerateCS 
+{
+    /**
+     * This code generation of expressions is used when the result of the expression
+     * is actually used for further operation, as opposed to be just thrown away
+     * (after a method call for example).
+     * Some subtypes of Expr can also do additional optimizations in these cases.
+     */
+    public void Expr.generateUsingResultCS(CodePrinterCS out) 
+    {   
+        if (isConstant() && !type().isEnumDecl()) 
+        {
             constant().generateCS(out);         
-        } else {        
-            TypeDecl t = neededDownCast();
-            if (t==null) {                  
-                generateCS(out);
-            } else {
-                out.print("((");
-                out.print(t.getNameCS());       
+        } 
+        else 
+        {   TypeDecl t = neededDownCast();
+            if (t==null) 
+            {   generateCS(out);
+            } 
+            else
+            {   out.print("((");
+                t.generateNameCS(out);       
                 out.print(")(");
                 generateCS(out);
                 out.print("))");
@@ -22,21 +36,22 @@ aspect GenerateCS {
 
     // --- Access --- 
     
-    public void Dot.generateUsingResultCS(CodePrinterCS out) {
+    public void Dot.generateUsingResultCS(CodePrinterCS out) 
+    {
         generateCS(out, true, null,0);
-    }
-    
-    public void Dot.generateCS(CodePrinterCS out) {
+    }    
+    public void Dot.generateCS(CodePrinterCS out) 
+    {
         generateCS(out, false, null,0);
-    }
-        
-    public void Dot.generateCS(CodePrinterCS out, boolean useresult, ArrayList<Expr>list, int len) {          
+    }       
+    public void Dot.generateCS(CodePrinterCS out, boolean useresult, ArrayList<Expr>list, int len) 
+    {          
         // unwind the order in which the Dot elements are nested
-        if (list==null) {       
-            list = new ArrayList<>();       // decomposition into Expression
+        if (list==null) 
+        {   list = new ArrayList<>();       // decomposition into Expression
             Dot a = this;
-            while (a.getRight() instanceof Dot) {
-                list.add(a.getLeft());                                          
+            while (a.getRight() instanceof Dot) 
+            {   list.add(a.getLeft());                                          
                 a = (Dot) a.getRight();
             }
             list.add(a.getLeft());
@@ -45,61 +60,67 @@ aspect GenerateCS {
         }
         
         // recursion termination
-        if (len<1) return;
+        if (len<1) { return; }
         
         Expr last = list.get(len-1);
         TypeDecl t = useresult ? last.neededDownCast() : null;
-        if (t!=null) {
-            out.print("((");
-            out.print(t.getNameCS());
+        if (t!=null) 
+        {   out.print("((");
+            t.generateNameCS(out);
             out.print(")(");                        
         }
         boolean skipfirst=false;
         // do not generate explicit the type accesses - will be done by the expression itself
-        if (len>=2 && (list.get(len-2) instanceof TypeAccess)) {
-            skipfirst = true;
+        if (len>=2 && (list.get(len-2) instanceof TypeAccess)) 
+        {   skipfirst = true;
         }
         // do not generate explicit super accesses - will be done by the expression itself
-        if (len>=2 && (list.get(len-2) instanceof SuperAccess)) {
-            skipfirst = true;
+        if (len>=2 && (list.get(len-2) instanceof SuperAccess)) 
+        {   skipfirst = true;
         }
         // do not generate the preceeding expression for " x.new " calls. will be injected by the new action later.
-        if (len==2 && (list.get(1) instanceof ClassInstanceExpr)) {
-            skipfirst=true; 
+        if (len==2 && (list.get(1) instanceof ClassInstanceExpr))
+        {   skipfirst=true; 
         }
         // do not generate the leading expression for a static method access
-        if (len>=2 && (list.get(len-1) instanceof MethodAccess) && ((MethodAccess)list.get(len-1)).decl().isStatic()) {
-          skipfirst=true;
+        if (len>=2 && (list.get(len-1) instanceof MethodAccess) && ((MethodAccess)list.get(len-1)).decl().isStatic()) 
+        {   skipfirst=true;
         }
         // do not generate the expression for a static variable access
-        if (len>=2 && (list.get(len-1) instanceof VarAccess) && ((VarAccess)list.get(len-1)).decl().isStatic()) {
-          skipfirst=true;
+        if (len>=2 && (list.get(len-1) instanceof VarAccess) && ((VarAccess)list.get(len-1)).decl().isStatic()) 
+        {   skipfirst=true;
         }
         
-        if (!skipfirst) {
-            generateCS(out,true,list,len-1);
+        if (!skipfirst) 
+        {   generateCS(out,true,list,len-1);
         }
         last.generateCS(out);       // intentionally do not do post-processing           
-        if (t!=null) {
-            out.print("))");
+        if (t!=null) 
+        {   out.print("))");
         }
     }
     
     
-//      public void Wildcard.generateCS(CodePrinterCS out) {
+//  public void Wildcard.generateCS(CodePrinterCS out) 
+//  {
 //  }
-//      public void WildcardExtends.generateCS(CodePrinterCS out) {
+//  public void WildcardExtends.generateCS(CodePrinterCS out) 
+//  {
 //  }
-//      public void WildcardSuper.generateCS(CodePrinterCS out) {
+//  public void WildcardSuper.generateCS(CodePrinterCS out) 
+//  {
 //  }
-    public void ArrayAccess.generateCS(CodePrinterCS out) {
+    public void ArrayAccess.generateCS(CodePrinterCS out) 
+    {
         out.print("[");
         getExpr().generateUsingResultCS(out);
         out.print("]");
     }
-//      public void ClassAccess.generateCS(CodePrinterCS out) {
+//  public void ClassAccess.generateCS(CodePrinterCS out) 
+//  {
 //  }
-    public void ClassInstanceExpr.generateCS(CodePrinterCS out) {
+    public void ClassInstanceExpr.generateCS(CodePrinterCS out) 
+    {   
         if (transformed()!=this)
         {   transformed().generateCS(out);
             return;
@@ -109,24 +130,25 @@ aspect GenerateCS {
          
         int n = getNumArg();
         out.print("new ");
-        out.print(type().getNameCS());
+        type().generateNameCS(out);
         out.print("(");
-        if (isRightChildOfDot()) {
-            prevExpr().generateUsingResultCS(out);
+        if (isRightChildOfDot())
+        {   prevExpr().generateUsingResultCS(out);
             foundpar=true;
-        } else if (type().needsEnclosing()) {
-            out.print("this");
+        } 
+        else if (type().needsEnclosing()) 
+        {   out.print("this");
             foundpar=true;
         }
         
-        for (Variable v:type().enclosingVariables()) {
-            if (foundpar) out.print(",");
+        for (Variable v:type().enclosingVariables()) 
+        {   if (foundpar) out.print(",");
             out.printCSIdentifier(v.name());
             foundpar=true;
         }
         
-        for (int i=0; i<n; i++) {
-            if (i>0 || foundpar) out.print(",");
+        for (int i=0; i<n; i++) 
+        {   if (i>0 || foundpar) { out.print(","); }
             getArg(i).generateUsingResultCS(out);
         }
         out.print(")");
@@ -139,43 +161,46 @@ aspect GenerateCS {
         }
 
         boolean passouter = false;
-        if (this instanceof SuperConstructorAccess) {
-            out.print("base");
+        if (this instanceof SuperConstructorAccess) 
+        {   out.print("base");
             passouter = hostType().needsEnclosing() 
                         && ((ClassDecl)hostType()).superclass().needsEnclosing();
-        } else {
-            out.print("this");
+        } 
+        else 
+        {   out.print("this");
             passouter = hostType().needsEnclosing();
         }
         
         Collection<Variable>encvar = hostType().enclosingVariables();
 
         out.print("(");
-        if (passouter) {
-            out.print("_o");
+        if (passouter) 
+        {   out.print("_o");
         }
         
         int encvarcount=0;
-        if (!(this instanceof SuperConstructorAccess)) {
-            for (Variable v:encvar) {
-                if (encvarcount>0 || passouter) out.print(",");
+        if (!(this instanceof SuperConstructorAccess)) 
+        {   for (Variable v:encvar) 
+            {   if (encvarcount>0 || passouter) { out.print(","); }
                 out.printCSIdentifier(v.name(),"_o");
                 encvarcount++;
             }
         }
         
         for (int i=0; i<getNumArg(); i++) 
-        {
-            if (i>0 || passouter || encvarcount>0) out.print(",");
+        {   if (i>0 || passouter || encvarcount>0) { out.print(","); }
             getArg(i).generateUsingResultCS(out);
         }
         out.print(")");
     }
 
-//      public void DiamondAccess.generateCS(CodePrinterCS out) {
+//  public void DiamondAccess.generateCS(CodePrinterCS out) 
+//  {
 //  }
+
     public void MethodAccess.generateCS(CodePrinterCS out) 
-    {   if (transformed()!=this) 
+    {   
+        if (transformed()!=this) 
         {   transformed().generateCS(out);
             return;
         }
@@ -186,15 +211,15 @@ aspect GenerateCS {
             {   out.print("java.lang.StringExtensions.join");
             }
             else 
-            {   out.print(m.hostType().getNameCS());
+            {   m.hostType().generateNameCS(out);
                 if (m.hostType() instanceof InterfaceDecl) out.print("_c");
                 out.print(".");
                 out.printCSMethodName(m.name(),true);
             }
         }
         else if (isRightChildOfDot()) 
-        {   if (prevExpr().isSuperAccess()) {
-                out.print("base");
+        {   if (prevExpr().isSuperAccess()) 
+            {   out.print("base");
             }
             out.print(".");
             out.printCSMethodName(m.name(),false);
@@ -219,7 +244,7 @@ aspect GenerateCS {
             // do conversion of regex parameter for the String.split method
             if (i==0 && m.name().equals("split") && m.hostType().isString())
             {   String ss = getArg(0).regexToSearchString();
-                Constant.generateStringCS(out,ss);
+                new Constant.ConstantString(ss).generateCS(out);
             }
             else
             {   getArg(i).generateUsingResultCS(out);
@@ -229,106 +254,122 @@ aspect GenerateCS {
     }
        
     
-//      public void PackageAccess.generateCS(CodePrinterCS out) {
+//  public void PackageAccess.generateCS(CodePrinterCS out) 
+//  {
 //  }
-//      public void ParseName.generateCS(CodePrinterCS out) {
+//  public void ParseName.generateCS(CodePrinterCS out) 
+//  {
 //  }
 
-    public void ParTypeAccess.generateCS(CodePrinterCS out) {
+    public void ParTypeAccess.generateCS(CodePrinterCS out) 
+    {
         getTypeAccess().generateCS(out);
     }
     
-//      public void SuperAccess.generateCS(CodePrinterCS out) {
+//  public void SuperAccess.generateCS(CodePrinterCS out) 
+//  {
 //  }
 
-    public void ThisAccess.generateCS(CodePrinterCS out) {
+    public void ThisAccess.generateCS(CodePrinterCS out) 
+    {
         TypeDecl t = hostType();
         // inside an interface default method, need to rename the this  
-         if (!t.isClassDecl()) 
-         {   out.print("@this");
-             return;
-         }
-         out.print("this");
-         // check if accessing the instance of an outer class
-        if (t!=type() && t.isInnerTypeOf(type())) {
-            while (t!=type()) {
-                out.print("._o");
+        if (!t.isClassDecl()) 
+        {   out.print("@this");
+            return;
+        }
+        out.print("this");
+        // check if accessing the instance of an outer class
+        if (t!=type() && t.isInnerTypeOf(type())) 
+        {   while (t!=type()) 
+            {   out.print("._o");
                 t = t.enclosingType();
             }
         }       
     }
     
-    public void TypeAccess.generateCS(CodePrinterCS out) {
-        out.print(type().getNameCS());
+    public void TypeAccess.generateCS(CodePrinterCS out) 
+    {   
+        type().generateNameCS(out);
     }
     
-    public void ArrayTypeAccess.generateCS(CodePrinterCS out) {
+    public void ArrayTypeAccess.generateCS(CodePrinterCS out) 
+    {
         getAccess().generateCS(out);
         // test if inside an ArrayCreationExpr - may need to construct proper call parameter for dim()
         ASTNode p = this;
-        while ( (p=p.getParent()) != null) {
-            if (p instanceof ArrayCreationExpr && !((ArrayCreationExpr)p).hasArrayInit()) {
-                out.print(",-1");
+        while ( (p=p.getParent()) != null) 
+        {   if (p instanceof ArrayCreationExpr && !((ArrayCreationExpr)p).hasArrayInit()) 
+            {   out.print(",-1");
                 return;
             }
         }
         out.print("[]");
     }
     
-    public void ArrayTypeWithSizeAccess.generateCS(CodePrinterCS out) {
+    public void ArrayTypeWithSizeAccess.generateCS(CodePrinterCS out) 
+    {   
         Access a = getAccess();
-        if (a instanceof ArrayTypeWithSizeAccess) {
-            a.generateCS(out);
+        if (a instanceof ArrayTypeWithSizeAccess) 
+        {   a.generateCS(out);
             out.print(",");
         }       
         getExpr().generateUsingResultCS(out);
     }       
 
-    public void VarAccess.generateCS(CodePrinterCS out) {     
+    public void VarAccess.generateCS(CodePrinterCS out) 
+    {     
         Variable v = varDecl();
-        if (v.isClassVariable()) {
-            out.print(v.hostType().getNameCS());
-            if (v.hostType().isInterfaceDecl()) {
-                out.print("_c"); 
+        if (v.isClassVariable()) 
+        {   v.hostType().generateNameCS(out);
+            if (v.hostType().isInterfaceDecl()) 
+            {   out.print("_c"); 
             }
             out.print(".");
             out.printCSIdentifier(getID(), "_f");
-        } else if (v.isInstanceVariable()) {
-            if (isRightChildOfDot()) {
-                out.print(".");
-            } else {
-                out.print("this.");
+        } 
+        else if (v.isInstanceVariable()) 
+        {   if (isRightChildOfDot()) 
+            {   out.print(".");
+            } 
+            else
+            {   out.print("this.");
                 TypeDecl t = hostType();
-                if (t!=v.hostType() && t.isInnerTypeOf(v.hostType())) {
-                    while (t!=v.hostType()) {           
-                        out.print("_o.");
+                if (t!=v.hostType() && t.isInnerTypeOf(v.hostType())) 
+                {   while (t!=v.hostType()) 
+                    {   out.print("_o.");
                         t = t.enclosingType();
                     }
                 }       
             }       
             out.printCSIdentifier(getID(), "_f");
-        } else if (v.isLocalVariable() || v.isParameter()) {  
-            if (v.hostType() == hostType()) {       
-                out.printCSIdentifier(getID(), "");
-            } else 
+        } 
+        else if (v.isLocalVariable() || v.isParameter()) 
+        {   if (v.hostType() == hostType()) 
+            {   out.printCSIdentifier(getID(), "");
+            } 
+            else 
             {   out.print("this.");
                 out.printCSIdentifier(getID(), "_o");
             }
-        } else if (getID().equals("length")) {
-            out.print(".Length");
-        } else {
-            throw new RuntimeException("Unknown type of variable access");
+        }
+        else if (getID().equals("length")) 
+        {   out.print(".Length");
+        } 
+        else
+        {   throw new RuntimeException("Unknown type of variable access");
         }       
     }
     
     // --- ArrayInit ---
     
-    public void ArrayInit.generateCS(CodePrinterCS out) {
+    public void ArrayInit.generateCS(CodePrinterCS out) 
+    {
         out.print("new ");
-        out.print(type().getNameCS());
+        type().generateNameCS(out);
         out.print("{");
-        for (int i=0; i<getNumInit(); i++) {
-            if (i>0) out.print(",");
+        for (int i=0; i<getNumInit(); i++) 
+        {   if (i>0) { out.print(","); }
             getInit(i).generateUsingResultCS(out);
         }
         out.print("}");
@@ -336,20 +377,21 @@ aspect GenerateCS {
     
     // --- AssignExpr ---
     
-    public void AssignExpr.generateWithOptionalCastCS(CodePrinterCS out, String operator) {
+    public void AssignExpr.generateWithOptionalCastCS(CodePrinterCS out, String operator) 
+    {
         Expr d = getDest();
         Expr s = getSource();
         // may need to refactor into normal binary operation
-        if (s.type()!=d.type()) {
-            d.generateCS(out);
+        if (s.type()!=d.type()) 
+        {   d.generateCS(out);
             out.print(" = ");
-            if (!d.type().isInt() || !s.type().isDouble()) {
-                out.print("(");                     
-                out.print(d.type().getNameCS());
+            if (!d.type().isInt() || !s.type().isDouble()) 
+            {   out.print("(");                     
+                d.type().generateNameCS(out);
                 out.print(")");
             }
-            if (s.type().isDouble()) {
-                out.print("SYSTEM.castToInt");
+            if (s.type().isDouble()) 
+            {   out.print("SYSTEM.castToInt");
             }       
             out.print("(");         
             d.generateCS(out);      
@@ -359,22 +401,24 @@ aspect GenerateCS {
             s.generateUsingResultCS(out);
             out.print(")");     
         // can use the compound operator    
-        } else {
-            d.generateCS(out);
+        } 
+        else
+        {   d.generateCS(out);
             out.print(" ");
             out.print(operator);
             out.print("= ");
             s.generateUsingResultCS(out);
         }
-    }
-    
-    public void AssignMinusExpr.generateCS(CodePrinterCS out) {
+    }    
+    public void AssignMinusExpr.generateCS(CodePrinterCS out) 
+    {
         generateWithOptionalCastCS(out, "-");
-    }
-    public void AssignPlusExpr.generateCS(CodePrinterCS out) {
+    }    
+    public void AssignPlusExpr.generateCS(CodePrinterCS out) 
+    {
         // do some case discrimination if this is a string concatenation
-        if (type().isString()) {
-            Expr d = getDest();
+        if (type().isString()) 
+        {   Expr d = getDest();
             Expr s = getSource();
             d.generateCS(out);
             out.print (" = ");
@@ -384,21 +428,24 @@ aspect GenerateCS {
             s.generateUsingResultCS(out);
             out.print("))");
         // may need to refactor into normal binary operation
-        } else {
-            generateWithOptionalCastCS(out, "+");
+        } 
+        else
+        {   generateWithOptionalCastCS(out, "+");
         }
     }
-    public void AssignDivExpr.generateCS(CodePrinterCS out) {
+    public void AssignDivExpr.generateCS(CodePrinterCS out) 
+    {
         Expr d = getDest();
         Expr s = getSource();
-        if (d.type().isDouble() || s.type().isDouble()) {
-            generateWithOptionalCastCS(out, "/");
-        } else {
-            d.generateCS(out);
+        if (d.type().isDouble() || s.type().isDouble()) 
+        {   generateWithOptionalCastCS(out, "/");
+        } 
+        else
+        {   d.generateCS(out);
             out.print(" = ");
-            if (!d.type().isInt()) {
-                out.print("(");                     
-                out.print(d.type().getNameCS());
+            if (!d.type().isInt())
+            {   out.print("(");                     
+                d.type().generateNameCS(out);
                 out.print(")");
             }
             out.print("SYSTEM.div(");           
@@ -408,40 +455,48 @@ aspect GenerateCS {
             out.print(")");     
         }
     }
-    public void AssignModExpr.generateCS(CodePrinterCS out) {
+    public void AssignModExpr.generateCS(CodePrinterCS out) 
+    {
         generateWithOptionalCastCS(out, "%");
     }
-    public void AssignMulExpr.generateCS(CodePrinterCS out) {
+    public void AssignMulExpr.generateCS(CodePrinterCS out) 
+    {
         generateWithOptionalCastCS(out, "*");
     }
     
     
-    public void AssignAndExpr.generateCS(CodePrinterCS out) {
+    public void AssignAndExpr.generateCS(CodePrinterCS out) 
+    {
         getDest().generateCS(out);
         out.print(" &= ");
         getSource().generateUsingResultCS(out);
     }
-    public void AssignOrExpr.generateCS(CodePrinterCS out) {
+    public void AssignOrExpr.generateCS(CodePrinterCS out) 
+    {
         getDest().generateCS(out);
         out.print(" |= ");
         getSource().generateUsingResultCS(out);
     }
-    public void AssignXorExpr.generateCS(CodePrinterCS out) {
+    public void AssignXorExpr.generateCS(CodePrinterCS out) 
+    {
         getDest().generateCS(out);
         out.print(" ^= ");
         getSource().generateUsingResultCS(out);
     }
-    public void AssignLShiftExpr.generateCS(CodePrinterCS out) {
+    public void AssignLShiftExpr.generateCS(CodePrinterCS out) 
+    {
         getDest().generateCS(out);
         out.print(" <<= ");
         getSource().generateUsingResultCS(out);
     }
-    public void AssignRShiftExpr.generateCS(CodePrinterCS out) {
+    public void AssignRShiftExpr.generateCS(CodePrinterCS out) 
+    {
         getDest().generateCS(out);
         out.print(" >>= ");
         getSource().generateUsingResultCS(out);
     }
-    public void AssignURShiftExpr.generateCS(CodePrinterCS out) {
+    public void AssignURShiftExpr.generateCS(CodePrinterCS out) 
+    {
         getDest().generateCS(out);
         out.print(" = (int) (");
         out.print("((uint)(");
@@ -450,146 +505,171 @@ aspect GenerateCS {
         getSource().generateUsingResultCS(out);
         out.print(")");
     }
-    public void AssignSimpleExpr.generateCS(CodePrinterCS out) {
+    public void AssignSimpleExpr.generateCS(CodePrinterCS out) 
+    {
         Expr d = getDest();
         Expr s = getSource();
 
         d.generateCS(out);
         out.print(" = ");
 
-        if (d.type().isChar() && s.type().isInt()) {
-            out.print("SYSTEM.castToChar(");
+        if (d.type().isChar() && s.type().isInt()) 
+        {   out.print("SYSTEM.castToChar(");
             s.generateUsingResultCS(out);
             out.print(")");     
-        } else {
-            s.generateUsingResultCS(out);
+        } 
+        else
+        {   s.generateUsingResultCS(out);
         }
     }
 
     // --- Binary ---
 
-    public void AddExpr.generateCS(CodePrinterCS out) {
+    public void AddExpr.generateCS(CodePrinterCS out) 
+    {
         // do some case discrimination if this is a string concatenation
         Expr l = getLeftOperand();
         Expr r = getRightOperand();
         
-        if (type().isString()) {
-            if ((l.type().isString() && l.isConstant()) || (l instanceof AddExpr)) {
-                l.generateUsingResultCS(out);
-            } else {
-                out.print("SYSTEM.str(");
+        if (type().isString()) 
+        {   if ((l.type().isString() && l.isConstant()) || (l instanceof AddExpr)) 
+            {   l.generateUsingResultCS(out);
+            } 
+            else 
+            {   out.print("SYSTEM.str(");
                 l.generateUsingResultCS(out);
                 out.print(")");
             }           
             out.print("+");
-            if ((r.type().isString() && r.isConstant()) || (r instanceof AddExpr)) {
-                r.generateUsingResultCS(out);
-            } else {
-                out.print("SYSTEM.str(");
+            if ((r.type().isString() && r.isConstant()) || (r instanceof AddExpr)) 
+            {   r.generateUsingResultCS(out);
+            } 
+            else
+            {   out.print("SYSTEM.str(");
                 r.generateUsingResultCS(out);
                 out.print(")");
             }
-        } else {
-            l.generateUsingResultCS(out);
+        } 
+        else
+        {   l.generateUsingResultCS(out);
             out.print("+");
             r.generateUsingResultCS(out);   
         }       
     }
-    public void SubExpr.generateCS(CodePrinterCS out) {
+    public void SubExpr.generateCS(CodePrinterCS out)
+    {
         getLeftOperand().generateUsingResultCS(out);
         out.print("-");
         getRightOperand().generateUsingResultCS(out);   
     }
-    public void DivExpr.generateCS(CodePrinterCS out) {
-        if (type().isDouble()) {
-            getLeftOperand().generateUsingResultCS(out);
+    public void DivExpr.generateCS(CodePrinterCS out) 
+    {
+        if (type().isDouble()) 
+        {   getLeftOperand().generateUsingResultCS(out);
             out.print("/");
             getRightOperand().generateUsingResultCS(out);
-        } else {
-            out.print("(SYSTEM.div(");
+        } 
+        else
+        {   out.print("(SYSTEM.div(");
             getLeftOperand().generateUsingResultCS(out);
             out.print(",");
             getRightOperand().generateUsingResultCS(out);
             out.print("))");        
         }
     }
-    public void ModExpr.generateCS(CodePrinterCS out) {
+    public void ModExpr.generateCS(CodePrinterCS out) 
+    {
         getLeftOperand().generateUsingResultCS(out);
         out.print("%");
         getRightOperand().generateUsingResultCS(out);   
     }
-    public void MulExpr.generateCS(CodePrinterCS out) {
+    public void MulExpr.generateCS(CodePrinterCS out) 
+    {
         getLeftOperand().generateUsingResultCS(out);
         out.print("*");
         getRightOperand().generateUsingResultCS(out);   
     }
-    public void AndBitwiseExpr.generateCS(CodePrinterCS out) {
+    public void AndBitwiseExpr.generateCS(CodePrinterCS out) 
+    {
         getLeftOperand().generateUsingResultCS(out);
         out.print("&");
         getRightOperand().generateUsingResultCS(out);   
     }
-    public void OrBitwiseExpr.generateCS(CodePrinterCS out) {
+    public void OrBitwiseExpr.generateCS(CodePrinterCS out) 
+    {
         getLeftOperand().generateUsingResultCS(out);
         out.print("|");
         getRightOperand().generateUsingResultCS(out);   
     }
-    public void XorBitwiseExpr.generateCS(CodePrinterCS out) {
+    public void XorBitwiseExpr.generateCS(CodePrinterCS out) 
+    {
         getLeftOperand().generateUsingResultCS(out);
         out.print("^");
         getRightOperand().generateUsingResultCS(out);   
     }
-    public void AndLogicalExpr.generateCS(CodePrinterCS out) {
+    public void AndLogicalExpr.generateCS(CodePrinterCS out) 
+    {
         getLeftOperand().generateUsingResultCS(out);
         out.print("&&");
         getRightOperand().generateUsingResultCS(out);   
     }
-    public void OrLogicalExpr.generateCS(CodePrinterCS out) {
+    public void OrLogicalExpr.generateCS(CodePrinterCS out) 
+    {
         getLeftOperand().generateUsingResultCS(out);
         out.print("||");
         getRightOperand().generateUsingResultCS(out);   
     }
-    public void EQExpr.generateCS(CodePrinterCS out) {
+    public void EQExpr.generateCS(CodePrinterCS out) 
+    {
         getLeftOperand().generateUsingResultCS(out);
         out.print("==");
         getRightOperand().generateUsingResultCS(out);   
     }
-    public void NEExpr.generateCS(CodePrinterCS out) {
+    public void NEExpr.generateCS(CodePrinterCS out) 
+    {
         getLeftOperand().generateUsingResultCS(out);
         out.print("!=");
         getRightOperand().generateUsingResultCS(out);   
     }
-    public void GEExpr.generateCS(CodePrinterCS out) {
+    public void GEExpr.generateCS(CodePrinterCS out) 
+    {
         getLeftOperand().generateUsingResultCS(out);
         out.print(">=");
         getRightOperand().generateUsingResultCS(out);   
     }
-    public void GTExpr.generateCS(CodePrinterCS out) {
+    public void GTExpr.generateCS(CodePrinterCS out) 
+    {
         getLeftOperand().generateUsingResultCS(out);
         out.print(">");
         getRightOperand().generateUsingResultCS(out);   
     }
-    public void LEExpr.generateCS(CodePrinterCS out) {
+    public void LEExpr.generateCS(CodePrinterCS out) 
+    {
         getLeftOperand().generateUsingResultCS(out);
         out.print("<=");
         getRightOperand().generateUsingResultCS(out);   
     }
-    public void LTExpr.generateCS(CodePrinterCS out) {
+    public void LTExpr.generateCS(CodePrinterCS out) 
+    {
         getLeftOperand().generateUsingResultCS(out);
         out.print("<");
         getRightOperand().generateUsingResultCS(out);   
     }
-    public void LShiftExpr.generateCS(CodePrinterCS out) {
+    public void LShiftExpr.generateCS(CodePrinterCS out) 
+    {
         getLeftOperand().generateUsingResultCS(out);
         out.print("<<");
         getRightOperand().generateUsingResultCS(out);
 
     }
-    public void RShiftExpr.generateCS(CodePrinterCS out) {
+    public void RShiftExpr.generateCS(CodePrinterCS out) 
+    {
         getLeftOperand().generateUsingResultCS(out);
         out.print(">>");
         getRightOperand().generateUsingResultCS(out);   
     }
-    public void URShiftExpr.generateCS(CodePrinterCS out) {
+    public void URShiftExpr.generateCS(CodePrinterCS out) 
+    {
         out.print("((int)(");
         out.print("((uint)(");
         getLeftOperand().generateUsingResultCS(out);
@@ -601,46 +681,56 @@ aspect GenerateCS {
     
     // --- CastExpr ---
     
-    public void CastExpr.generateCS(CodePrinterCS out) {
+    public void CastExpr.generateCS(CodePrinterCS out) 
+    {
         TypeDecl t = type();
         Expr e = getExpr();
-        if (t.isPrimitiveType()) {
-            if (t.isBoolean()) {
-                e.generateUsingResultCS(out);           
-            } else if (t.isByte()) {
-                if (e.type().isDouble()) {
-                    out.print("(SYSTEM.castToByte(");
-                } else {
-                    out.print("((sbyte)(");
+        if (t.isPrimitiveType()) 
+        {   if (t.isBoolean()) 
+            {   e.generateUsingResultCS(out);           
+            } 
+            else if (t.isByte()) 
+            {   if (e.type().isDouble()) 
+                {   out.print("(SYSTEM.castToByte(");
+                } 
+                else
+                {   out.print("((sbyte)(");
                 }               
                 e.generateUsingResultCS(out);
                 out.print("))");
-            } else if (t.isChar()) {
-                if (e.type().isDouble()) {
-                    out.print("(SYSTEM.castToChar(");
-                } else {
-                    out.print("((char)(");
+            }
+            else if (t.isChar()) 
+            {   if (e.type().isDouble()) 
+                {   out.print("(SYSTEM.castToChar(");
+                } 
+                else
+                {   out.print("((char)(");
                 }               
                 e.generateUsingResultCS(out);
                 out.print("))");
-            } else if (t.isInt()) {
-                if (e.type().isDouble()) {
-                    out.print("(SYSTEM.castToInt(");
-                } else {
-                    out.print("((int)(");
+            } 
+            else if (t.isInt()) 
+            {   if (e.type().isDouble()) 
+                {   out.print("(SYSTEM.castToInt(");
+                } 
+                else
+                {   out.print("((int)(");
                 }               
                 e.generateUsingResultCS(out);
                 out.print("))");
-            } else if (t.isDouble()) {
-                out.print("((double)(");
+            }
+            else if (t.isDouble()) 
+            {   out.print("((double)(");
                 e.generateUsingResultCS(out);
                 out.print("))");
-            } else {
-                e.dumpTree(System.out);
+            } 
+            else 
+            {   e.dumpTree(System.out);
                 throw new RuntimeException("Type not supported in cast:"+t.fullName());
             }
-        } else {
-            out.print("((");
+        } 
+        else
+        {   out.print("((");
             getTypeAccess().generateCS(out);
             out.print(")");
             e.generateUsingResultCS(out);
@@ -650,7 +740,8 @@ aspect GenerateCS {
     
     // --- ConditionalExpr ---
     
-    public void ConditionalExpr.generateCS(CodePrinterCS out) {
+    public void ConditionalExpr.generateCS(CodePrinterCS out) 
+    {   
         getCondition().generateUsingResultCS(out);
         out.print("?");
         getTrueExpr().generateUsingResultCS(out);
@@ -660,7 +751,8 @@ aspect GenerateCS {
     
     // --- InstanceOfExpr ---
 
-    public void InstanceOfExpr.generateCS(CodePrinterCS out) {
+    public void InstanceOfExpr.generateCS(CodePrinterCS out) 
+    {   
         getExpr().generateUsingResultCS(out);
         out.print(" is ");
         getTypeAccess().generateCS(out);
@@ -668,28 +760,32 @@ aspect GenerateCS {
     
     // --- PrimaryExpr ---
     
-    public void ArrayCreationExpr.generateCS(CodePrinterCS out) {
+    public void ArrayCreationExpr.generateCS(CodePrinterCS out) 
+    {
         // array with initialization data
-        if (hasArrayInit()) {
-            getArrayInit().generateCS(out);
-        } else {
-            TypeDecl t = type();
+        if (hasArrayInit()) 
+        {   getArrayInit().generateCS(out);
+        } 
+        else
+        {   TypeDecl t = type();
             int d = t.dimension();
             // one-dimensional array
-            if (d==1) {
-                out.print("new ");
-                out.print(t.elementType().getNameCS());
+            if (d==1) 
+            {   out.print("new ");
+                t.elementType().generateNameCS(out);
                 out.print("[");
                 getTypeAccess().generateCS(out);
                 out.print("]");
             // multi-dimensional array
-            } else {
-                if (d<=4) {
-                    out.print("SYSTEM.dim<");
-                    out.print(t.elementType().getNameCS());
+            } 
+            else
+            {   if (d<=4) 
+                {   out.print("SYSTEM.dim<");
+                    t.elementType().generateNameCS(out);
                     out.print(">");
-                } else {
-                    int id = out.memorizeDim(t.elementType().getNameCS(), d);               
+                } 
+                else
+                {   int id = out.memorizeDim(t.elementType(), d);               
                     out.print("_dim"+id);
                 }               
                 out.print("(");
@@ -699,50 +795,62 @@ aspect GenerateCS {
         }
     }
     
-    public void Literal.generateCS(CodePrinterCS out) {
+    public void Literal.generateCS(CodePrinterCS out) 
+    {
         constant().generateCS(out);
     }
-//      public void IllegalLiteral.generateCS(CodePrinterCS out) {
-//      }
-    public void NullLiteral.generateCS(CodePrinterCS out) {
+//  public void IllegalLiteral.generateCS(CodePrinterCS out) 
+//  {
+//  }
+    public void NullLiteral.generateCS(CodePrinterCS out) 
+    {
         out.print("null");
     }
-    public void ParExpr.generateCS(CodePrinterCS out) {
+    public void ParExpr.generateCS(CodePrinterCS out) 
+    {
         out.print("(");
         getExpr().generateCS(out);
         out.print(")");
     }
     
     // --- Unary ---
-    public void BitNotExpr.generateCS(CodePrinterCS out) {
+    public void BitNotExpr.generateCS(CodePrinterCS out) 
+    {
         out.print("~");
         getOperand().generateUsingResultCS(out);    
     }
-    public void LogNotExpr.generateCS(CodePrinterCS out) {
+    public void LogNotExpr.generateCS(CodePrinterCS out) 
+    {
         out.print("!");
         getOperand().generateUsingResultCS(out);    
     }
-    public void MinusExpr.generateCS(CodePrinterCS out) {
+    public void MinusExpr.generateCS(CodePrinterCS out) 
+    {
         out.print(" - ");
         getOperand().generateUsingResultCS(out);    
     }
-    public void PlusExpr.generateCS(CodePrinterCS out) {
+    public void PlusExpr.generateCS(CodePrinterCS out) 
+    {
         out.print(" + ");    
         getOperand().generateUsingResultCS(out);    
     }
-    public void PostDecExpr.generateCS(CodePrinterCS out) {
+    public void PostDecExpr.generateCS(CodePrinterCS out) 
+    {
         getOperand().generateCS(out);   
         out.print(" -- ");    
     }
-    public void PostIncExpr.generateCS(CodePrinterCS out) {
+    public void PostIncExpr.generateCS(CodePrinterCS out) 
+    {
         getOperand().generateCS(out);   
         out.print(" ++ ");    
     }
-    public void PreDecExpr.generateCS(CodePrinterCS out) {
+    public void PreDecExpr.generateCS(CodePrinterCS out) 
+    {
         out.print(" -- ");    
         getOperand().generateCS(out);   
     }
-    public void PreIncExpr.generateCS(CodePrinterCS out) {
+    public void PreIncExpr.generateCS(CodePrinterCS out) 
+    {
         out.print(" ++ ");    
         getOperand().generateCS(out);   
     }
@@ -762,7 +870,7 @@ aspect GenerateCS {
     
     public void SyntheticTypeAccess.generateCS(CodePrinterCS out)
     {
-       out.print(type().getNameCS());
+       type().generateNameCS(out);
     }
 }
 

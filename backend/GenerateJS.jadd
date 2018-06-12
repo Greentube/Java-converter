@@ -1,28 +1,40 @@
+/**
+ * Implement the javascript code generation for all AST nodes that are not derived from Expr or Stmt.
+ * This covers mainly the class and interface declarations and the attached methods and fields.
+ * This code generation creates multiple output files if multiple classes are need (for 
+ * inner classes or lambas and such). 
+ */
+
 import com.greentube.javaconverter.CodePrinterJS;
 
-aspect GenerateJS {
-        
-    public void ASTNode.generateJS(CodePrinterJS out) {
+aspect GenerateJS 
+{        
+    public void ASTNode.generateJS(CodePrinterJS out) 
+    {
         this.dumpTree(System.err);
         throw new RuntimeException("Can not create JS for:"+this.getClass().getName());
     }
 
-    public void CompilationUnit.generateJS(File outputfolder) {
-        for (TypeDecl t:getTypeDecls()) {
-            CodePrinterJS out = new CodePrinterJS(outputfolder,
+    public void CompilationUnit.generateJS(File outputfolder) 
+    {
+        for (TypeDecl t:getTypeDecls()) 
+        {   CodePrinterJS out = new CodePrinterJS
+            (   outputfolder,
                     CodePrinterJS.escapePackagePath(t.packageName()) 
                     + CodePrinterJS.escapeIdentifier(t.uniqueName(), true) + ".js"
-                );
+            );
             t.generateJS(out);
             out.finish();                   
         }
     }
         
-    public void ClassDecl.generateJS(CodePrinterJS out) {
-        for (TypeDecl t:nestedTypes()) {
-            CodePrinterJS o2 = new CodePrinterJS(out, 
-                    CodePrinterJS.escapePackagePath(t.packageName()) 
-                    + CodePrinterJS.escapeIdentifier(t.uniqueName(), true) + ".js"
+    public void ClassDecl.generateJS(CodePrinterJS out) 
+    {
+        for (TypeDecl t:nestedTypes()) 
+        {   CodePrinterJS o2 = new CodePrinterJS
+            (   out, 
+                CodePrinterJS.escapePackagePath(t.packageName()) 
+                   + CodePrinterJS.escapeIdentifier(t.uniqueName(), true) + ".js"
             );
             t.generateJS(o2);
             o2.finish();            
@@ -43,8 +55,8 @@ aspect GenerateJS {
         {   out.print("_o");
             foundpar=true;
         }
-        for (Variable v:enclosingVariables()) {
-            if (foundpar) out.print(",");
+        for (Variable v:enclosingVariables()) 
+        {   if (foundpar) out.print(",");
             out.printJSIdentifier(v.name(),"_o");
             foundpar=true;
         }
@@ -62,8 +74,8 @@ aspect GenerateJS {
         {   out.print("this._o = _o;");
             out.println();
         }
-        for (Variable v:enclosingVariables()) {
-            out.print("this.");
+        for (Variable v:enclosingVariables()) 
+        {   out.print("this.");
             out.printJSIdentifier(v.name(),"_o");
             out.print(" = ");
             out.printJSIdentifier(v.name(),"_o");
@@ -91,20 +103,22 @@ aspect GenerateJS {
         out.println();
 
         // static methods and fields
-        for (BodyDecl bd:getBodyDeclList()) {
-            if (bd instanceof MethodDecl) {
-                MethodDecl md = (MethodDecl) bd;
+        for (BodyDecl bd:getBodyDeclList()) 
+        {   if (bd instanceof MethodDecl) 
+            {   MethodDecl md = (MethodDecl) bd;
                 if (!md.isStatic()) continue;
                 bd.generateJS(out);         
-            } else if (bd.isField()) {
-                for (FieldDeclarator fd:bd.fieldDeclarations()) {
-                    if (!fd.isStatic()) continue;
+            } 
+            else if (bd.isField()) 
+            {   for (FieldDeclarator fd:bd.fieldDeclarations()) 
+                {   if (!fd.isStatic()) continue;
                     out.printJSIdentifier(fd.getID(),"");
                     out.print(": ");
-                    if (fd.getInit()!=null && fd.getInit().isConstant() && fd.isFinal()) {
-                        fd.getInit().generateUsingResultJS(out);
-                    } else {
-                        fd.fieldDecl().type().generateDefaultValueJS(out);
+                    if (fd.getInit()!=null && fd.getInit().isConstant() && fd.isFinal()) 
+                    {   fd.getInit().generateUsingResultJS(out);
+                    } 
+                    else
+                    {   fd.fieldDecl().type().generateDefaultValueJS(out);
                     }
                     out.print(",");
                     out.println();
@@ -112,8 +126,8 @@ aspect GenerateJS {
             }
         }       
                 
-        if (this instanceof EnumDecl) {
-            out.print("values_0 : function()");
+        if (this instanceof EnumDecl) 
+        {   out.print("values_0 : function()");
             out.println();
             out.print("{");
             out.println();
@@ -121,8 +135,8 @@ aspect GenerateJS {
             out.print("return [");
             out.println();
             out.increaseIndent(); 
-            for (EnumConstant ec:((EnumDecl)this).enumConstants()) {
-                out.printJSName(packageName(), uniqueName());           
+            for (EnumConstant ec:((EnumDecl)this).enumConstants()) 
+            {   out.printJSName(packageName(), uniqueName());           
                 out.print(".");
                 out.printJSIdentifier(ec.getID(),"");
                 out.print(",");
@@ -178,19 +192,19 @@ aspect GenerateJS {
 
         Collection<MethodDecl> bridgemethods = bridgeMethods();
         // instance methods                                                             
-        for (BodyDecl bd : methodsAndConstructors()) {
-             // check if need to suppress auto-generated bridge methods 
-             if (bridgemethods.contains(bd)) continue;
+        for (BodyDecl bd : methodsAndConstructors()) 
+        {   // check if need to suppress auto-generated bridge methods 
+            if (bridgemethods.contains(bd)) continue;
               
             // check if need to suppress auto-generated methods related to Enums            
-            if (bd instanceof MethodDecl) {
-                MethodDecl md = (MethodDecl) bd;
+            if (bd instanceof MethodDecl) 
+            {   MethodDecl md = (MethodDecl) bd;
                 if (md.isStatic()) continue;                
             }
-            else if (bd instanceof ConstructorDecl) {
-                ConstructorDecl cd = (ConstructorDecl) bd;
-                if (this instanceof EnumDecl) {
-                    if (cd.isSynthetic()) continue;
+            else if (bd instanceof ConstructorDecl) 
+            {   ConstructorDecl cd = (ConstructorDecl) bd;
+                if (this instanceof EnumDecl) 
+                {   if (cd.isSynthetic()) continue;
                 }           
             }
             bd.generateJS(out);
@@ -201,12 +215,12 @@ aspect GenerateJS {
         out.println();
         
         // additional initialization code
-        for (BodyDecl bd:getBodyDeclList()) {
-            if (bd.isField()) {
-                for (FieldDeclarator fd:bd.fieldDeclarations()) {
-                    if (fd.isStatic()) {
-                        if (fd.getInit()!=null && !(fd.isFinal() && fd.getInit().isConstant()) ) {
-                            out.printJSName(packageName(), uniqueName());                   
+        for (BodyDecl bd:getBodyDeclList()) 
+        {   if (bd.isField()) 
+            {   for (FieldDeclarator fd:bd.fieldDeclarations()) 
+                {   if (fd.isStatic()) 
+                    {   if (fd.getInit()!=null && !(fd.isFinal() && fd.getInit().isConstant()) ) 
+                        {   out.printJSName(packageName(), uniqueName());                   
                             out.print(".");
                             out.printJSIdentifier(fd.getID(),"");
                             out.print(" = ");
@@ -222,18 +236,20 @@ aspect GenerateJS {
         }
     }
     
-    public void EnumDecl.generateJS(CodePrinterJS out) {
+    public void EnumDecl.generateJS(CodePrinterJS out)
+    {
         super.generateJS(out);
         
         ArrayList<String> values = new ArrayList<>();
         boolean needexternalinitialization = false;
         
         int ordinal = 0;
-        for (EnumConstant ec:enumConstants()) {
-            if (ec.getInit().type()!=this) {
-                needexternalinitialization = true;
-            } else {
-                out.printJSName(packageName(), uniqueName());           
+        for (EnumConstant ec:enumConstants()) 
+        {   if (ec.getInit().type()!=this) 
+            {   needexternalinitialization = true;
+            } 
+            else
+            {   out.printJSName(packageName(), uniqueName());           
                 out.print(".");
                 out.printJSIdentifier(ec.getID(),"");
                 out.print(" = ");
@@ -242,8 +258,8 @@ aspect GenerateJS {
                 out.print(".$()._"+(ec.getNumArg()+2)+"(");
                 Constant.generateStringJS(out, ec.getID());
                 out.print(","+ordinal);             
-                for (int i=0; i<ec.getNumArg(); i++) {
-                    out.print(",");
+                for (int i=0; i<ec.getNumArg(); i++) 
+                {   out.print(",");
                     ec.getArg(i).generateJS(out);
                 }
                 out.print(");");                
@@ -254,44 +270,46 @@ aspect GenerateJS {
             ordinal++;          
         }
                 
-        if (needexternalinitialization) {
-            out.memorizeReference(packageName(),uniqueName()+"$init");
+        if (needexternalinitialization) 
+        {   out.memorizeReference(packageName(),uniqueName()+"$init");
             
-            CodePrinterJS o2 = new CodePrinterJS(out,
-                    CodePrinterJS.escapePackagePath(packageName()) 
-                    + CodePrinterJS.escapeIdentifier(uniqueName()+"$init", true) + ".js"
+            CodePrinterJS o2 = new CodePrinterJS
+            (   out,
+                CodePrinterJS.escapePackagePath(packageName()) 
+                   + CodePrinterJS.escapeIdentifier(uniqueName()+"$init", true) + ".js"
             );
 
-                ordinal = 0;
-                for (EnumConstant ec:enumConstants()) {
-                    if (ec.getInit().type()!=this) {
-                        o2.printJSName(packageName(), uniqueName());                    
-                        o2.print(".");
-                        o2.printJSIdentifier(ec.getID(),"");
-                        o2.print(" = ");
-                        o2.print("new ");
-                        TypeDecl t = ec.getInit().type();
-                        o2.printAndMemorizeComplete(t.packageName(),t.uniqueName());
-                        o2.print(".$()._"+(ec.getNumArg()+2)+"(");
-                        Constant.generateStringJS(o2, ec.getID());
-                        o2.print(","+ordinal);
-                        for (int i=0; i<ec.getNumArg(); i++) {
-                            o2.print(",");
-                            ec.getArg(i).generateJS(o2);
-                        }
-                        o2.print(");");
-                        o2.println();
+            ordinal = 0;
+            for (EnumConstant ec:enumConstants()) 
+            {   if (ec.getInit().type()!=this) 
+                {   o2.printJSName(packageName(), uniqueName());                    
+                    o2.print(".");
+                    o2.printJSIdentifier(ec.getID(),"");
+                    o2.print(" = ");
+                    o2.print("new ");
+                    TypeDecl t = ec.getInit().type();
+                    o2.printAndMemorizeComplete(t.packageName(),t.uniqueName());
+                    o2.print(".$()._"+(ec.getNumArg()+2)+"(");
+                    Constant.generateStringJS(o2, ec.getID());
+                    o2.print(","+ordinal);
+                    for (int i=0; i<ec.getNumArg(); i++) 
+                    {   o2.print(",");
+                        ec.getArg(i).generateJS(o2);
                     }
-                    ordinal++;
-                }               
+                    o2.print(");");
+                    o2.println();
+                }
+                ordinal++;
+            }               
                 
             o2.finish();            
         }
     }  
     
-    public void InterfaceDecl.generateJS(CodePrinterJS out) {
-
+    public void InterfaceDecl.generateJS(CodePrinterJS out) 
+    {
         out.print("var ");
+    
         out.printJSName(packageName(),uniqueName());
         out.print(" =");
         out.println();
@@ -299,11 +317,11 @@ aspect GenerateJS {
         out.println();
         out.increaseIndent();
         out.print("_superinterfaces: [");
-        if (hasSuperInterface()) {
-            int n=0;
-            for (Access ac: getSuperInterfaceList()) {
-                if (n>0) out.print(",");
-                while (ac instanceof Dot) ac=((Dot)ac).getRight();
+        if (hasSuperInterface()) 
+        {   int n=0;
+            for (Access ac: getSuperInterfaceList()) 
+            {   if (n>0) { out.print(","); }
+                while (ac instanceof Dot) { ac=((Dot)ac).getRight(); }
                 TypeDecl t = (ac instanceof TypeAccess) ? ((TypeAccess) ac).type() 
                                                         : ((ParTypeAccess) ac).type();
                 out.printAndMemorizeLoad(t.packageName(),t.uniqueName());            
@@ -314,19 +332,21 @@ aspect GenerateJS {
         out.println();
                 
         Vector<MethodDecl> defaults = new Vector<>();
-        for (BodyDecl bd:getBodyDeclList()) {
-            if (bd.isField()) {
-                for (FieldDeclarator fd:bd.fieldDeclarations()) {
-                    if (fd.isStatic()) {
-                        out.printJSIdentifier(fd.getID(), "");
+        for (BodyDecl bd:getBodyDeclList()) 
+        {   if (bd.isField()) 
+            {   for (FieldDeclarator fd:bd.fieldDeclarations()) 
+                {   if (fd.isStatic()) 
+                    {   out.printJSIdentifier(fd.getID(), "");
                         out.print(": ");
-                        if (fd.getInit()!=null && fd.getInit().isConstant() && fd.isFinal()) {
-                            fd.getInit().generateUsingResultJS(out);
-                        } else {
-                            fd.fieldDecl().type().generateDefaultValueJS(out);
+                        if (fd.getInit()!=null && fd.getInit().isConstant() && fd.isFinal()) 
+                        {   fd.getInit().generateUsingResultJS(out);
                         }
-                        out.print(",");                 }
-                        out.println();
+                        else 
+                        {   fd.fieldDecl().type().generateDefaultValueJS(out);
+                        }
+                        out.print(",");                 
+                    }
+                    out.println();
                 }
             }
             else if (bd instanceof MethodDecl) 
@@ -359,12 +379,12 @@ aspect GenerateJS {
         out.println();
                     
         // additional initialization code
-        for (BodyDecl bd:getBodyDeclList()) {
-            if (bd.isField()) {
-                for (FieldDeclarator fd:bd.fieldDeclarations()) {
-                    if (fd.isStatic()) {
-                        if (fd.getInit()!=null && !(fd.isFinal() && fd.getInit().isConstant()) ) {
-                            out.printJSName(packageName(), uniqueName());                   
+        for (BodyDecl bd:getBodyDeclList()) 
+        {   if (bd.isField()) 
+            {   for (FieldDeclarator fd:bd.fieldDeclarations()) 
+                {   if (fd.isStatic()) 
+                    {   if (fd.getInit()!=null && !(fd.isFinal() && fd.getInit().isConstant()) ) 
+                        {   out.printJSName(packageName(), uniqueName());                   
                             out.print(".");
                             out.printJSIdentifier(fd.getID(),"");
                             out.print(" = ");
@@ -374,8 +394,9 @@ aspect GenerateJS {
                         }
                     }
                 }
-            } else if (bd instanceof StaticInitializer) {
-                bd.generateJS(out);
+            } 
+            else if (bd instanceof StaticInitializer) 
+            {   bd.generateJS(out);
             }
         }
     }  
@@ -402,10 +423,12 @@ aspect GenerateJS {
         // check if the whole constructor function can be entirely ommited
         // (possible for default constructors that only call default
         // super-constructor and without need to initialize instance variables) 
-        mayommit: if (numpar==0 
-                   && block.getNumStmt()==0 
-                   && !callsthisconstructor 
-                   && numcalledconstructorparameters==0  )
+        mayommit: if 
+        (   numpar==0 
+            && block.getNumStmt()==0 
+            && !callsthisconstructor 
+            && numcalledconstructorparameters==0  
+        )
         {   // check if there are some fields that would need initialization
             for (BodyDecl bd:hostType().getBodyDeclList()) 
             {   if (bd.isField()) 
@@ -416,7 +439,6 @@ aspect GenerateJS {
             }
             return;  // can safely ommit
         }
-
 
         out.print("_"+numpar+": function(");
         for (int i=0; i<numpar; i++) 
@@ -489,8 +511,9 @@ aspect GenerateJS {
 //  }
 
     public void MethodDecl.generateJS(CodePrinterJS out) 
-    {   Block block = getBlock();
-        if (block==null) return;
+    {   
+        Block block = getBlock();
+        if (block==null) { return; }
 
         int numpar = getNumParameter();
         out.printJSIdentifier(name(), "_"+numpar);
@@ -508,41 +531,37 @@ aspect GenerateJS {
         out.println();
     }
 
-    public void StaticInitializer.generateJS(CodePrinterJS out) {
+    public void StaticInitializer.generateJS(CodePrinterJS out) 
+    {
         getBlock().generateJS(out);
     }
 
-//  public void SubstitutedBodyDecl.generateJS(CodePrinterJS out) {
+//  public void SubstitutedBodyDecl.generateJS(CodePrinterJS out) 
+//  {
 //  }
     
-    public void TypeDecl.generateDefaultValueJS(CodePrinterJS out) {
-        if (isPrimitiveType()) {
-            if (isBoolean()) {
-                out.print("false");
-            } else {
-                out.print("0");
-            } 
-        } else {
-            out.print("null");
+    public void TypeDecl.generateDefaultValueJS(CodePrinterJS out)
+    {
+        if (isPrimitiveType()) 
+        {   if (isBoolean()) { out.print("false"); } 
+            else { out.print("0"); } 
+        } 
+        else
+        {   out.print("null");
         }
     }
             
     public void TypeDecl.generateElementTypeAndDimensionsJS(CodePrinterJS out) 
     {   
         TypeDecl et = elementType();
-        if (et.isPrimitiveType()) {
-            if (et.isInt()) {
-                out.print("\"I\"");
-            } else if (et.isByte()) {
-                out.print("\"B\"");
-            } else if (et.isChar()) {          
-                out.print("\"C\"");
-            } else if (et.isBoolean()) {
-                out.print("\"Z\"");
-            } else if (et.isDouble()) {
-                out.print("\"D\"");
-            } else {
-                throw new RuntimeException("Type not supported:"+et.fullName());
+        if (et.isPrimitiveType()) 
+        {   if (et.isInt()) { out.print("\"I\""); }
+            else if (et.isByte()) { out.print("\"B\""); }
+            else if (et.isChar()) { out.print("\"C\""); }
+            else if (et.isBoolean()) { out.print("\"Z\""); }
+            else if (et.isDouble()) { out.print("\"D\""); }
+            else 
+            {   throw new RuntimeException("Type not supported:"+et.fullName());
             }
         }
         else
@@ -561,42 +580,19 @@ aspect GenerateJS {
     }
     
     public static void Constant.generateStringJS(CodePrinterJS out, String s) 
-    {   out.print("\"");
+    {   
+        out.print("\"");
         for (int i=0; i<s.length(); i++)
         {   char c = s.charAt(i);        
             switch(c) 
-            {   case '\b':
-                {   out.print("\\b");
-                    break;
-                }
-                case '\f':
-                {   out.print("\\f"); 
-                    break;
-                }
-                case '\n':
-                {   out.print("\\n");
-                    break;
-                }
-                case '\r':
-                {   out.print("\\r");
-                    break;
-                }
-                case '\t':
-                {   out.print("\\t");
-                    break;
-                }
-                case '\\':
-                {   out.print("\\\\");
-                    break;
-                }
-                case '"':
-                {   out.print("\\\"");
-                    break;
-                }
-                case '\'':
-                {   out.print("\\'");
-                    break;
-                }
+            {   case '\b': { out.print("\\b"); break; }
+                case '\f': { out.print("\\f"); break; }
+                case '\n': { out.print("\\n"); break; }
+                case '\r': { out.print("\\r"); break; }
+                case '\t': { out.print("\\t"); break; }
+                case '\\': { out.print("\\\\"); break; }
+                case '"':  { out.print("\\\""); break; }
+                case '\'': { out.print("\\'"); break; }
                 default:
                 {   if (c>=32 && c<=126) 
                     {   out.print(""+c);
@@ -617,7 +613,8 @@ aspect GenerateJS {
     }
 
     public void Constant.generateJS(CodePrinterJS out) 
-    {   if (this instanceof ConstantBoolean) 
+    {   
+        if (this instanceof ConstantBoolean) 
         {   out.print(booleanValue()?"true":"false");
         }
         else if (this instanceof ConstantChar) 
