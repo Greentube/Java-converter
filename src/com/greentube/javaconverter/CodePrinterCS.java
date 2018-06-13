@@ -3,33 +3,14 @@ package com.greentube.javaconverter;
 import java.io.*;
 import java.util.*;
 
-public class CodePrinterCS 
-{   // general code generation
-    File outputfolder;
-    OutputStreamWriter ow;
-    boolean linehasstarted;
-    int indent;
-    boolean afteropeningbrace;
-
+public class CodePrinterCS extends CodePrinter
+{   
     private HashSet<String> pendingLabels;	
     private HashMap<Object,int[]> dims;     // TypeDecl -> [identifier,deepest] 
 
     public CodePrinterCS(File outputfolder, String filename) 
     {   
-        try
-        {   File f = new File(outputfolder,filename);
-            f.getParentFile().mkdirs();		
-            this.ow = new OutputStreamWriter(new FileOutputStream(f), "utf-8");
-        } 
-        catch (IOException e) 
-        {   e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
-        }
-
-        this.outputfolder = outputfolder;
-        this.indent = 0;
-        this.linehasstarted = false;
-        this.afteropeningbrace = false;
+        super(outputfolder,filename);
         
         pendingLabels = new HashSet<>();
         dims = new HashMap<>();
@@ -42,92 +23,14 @@ public class CodePrinterCS
 
     public void finish()  
     {   
-        try 
-        {   ow.close();
-        } 
-        catch (IOException e) 
-        {   e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
-        }
+        super.finish();
         if (pendingLabels.size()>0) 
         {   throw new RuntimeException("Unresolved label definitions: "+pendingLabels);
         }
-    }
-
-    public void increaseIndent() 
-    {   
-        indent++;
-    }
-
-    public void decreaseIndent() 
-    {   
-        indent--;
-    }
-
-    public void print(String s) 
-    {   
-        try        
-        {   if (!linehasstarted) 
-            {   for (int i=0; i<indent; i++) ow.write("    ",0,4);
-                linehasstarted=true;
-            }
-            ow.write(s,0,s.length());
-            afteropeningbrace = s.equals("{");
-        } 
-        catch (IOException e) 
-        {   e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
+        if (dims.size()>0) 
+        {   throw new RuntimeException("Unresolved array allocation functions: "+dims);
         }
     }
-
-    public void println() 
-    {
-        try 
-        {   ow.write("\n");
-            linehasstarted=false;            
-        }
-        catch (IOException e) 
-        {   e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
-        }
-    }
-
-    public static String escapeIdentifier(String id, boolean allowDollarSign) 
-    {   
-        // escape special characters, so the output will never have characters >127
-        StringBuffer b = new StringBuffer();
-        for (int i=0; i<id.length(); i++) 
-        {   char c = id.charAt(i);
-            if
-            (   (c>='a' && c<='z')
-                || (c>='A' && c<='Z')
-                || (c>='0' && c<='9')
-                || (allowDollarSign && c=='$') 
-            )
-            {   b.append(c);
-            }
-            else 
-            {   b.append("_");
-                if (c!='_')   // '_' simply escapes to '__'
-                {   b.append(Integer.toHexString(c));
-                }
-                b.append("_");
-            }
-        }
-        return b.toString();
-    }
-
-    public static String escapePackagePath(String packagename) 
-    {   
-        StringBuffer b = new StringBuffer();
-        for (StringTokenizer t = new StringTokenizer(packagename,"."); t.hasMoreElements(); ) 
-        {   b.append(escapeIdentifier(t.nextToken(), true));
-            b.append("/");
-        }
-        return b.toString();
-    }
-
-
 
     private static Set<String> csharpreserved = new HashSet<String>
     (   Arrays.asList

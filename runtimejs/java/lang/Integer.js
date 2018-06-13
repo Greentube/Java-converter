@@ -1,13 +1,24 @@
+//reference// java/lang/NumberFormatException
 //load// java/lang/Object
 var java_lang_Integer = {
     $: function() 
     {   this.i = 0;
     },    
-    
+    parseInt_1 : function(s) 
+    {   
+        var n = Number(s);
+        if (isNaN(n)) 
+        {   throw (new java_lang_NumberFormatException.$())._0(); 
+        }
+        var i = Math.round(n);
+        if (!(i===n) || i<-2147483648 || i>2147483647) 
+        {   throw (new java_lang_NumberFormatException.$())._0(); 
+        }
+        return i;
+    },
     toString_1 : function(i) 
     {   return i.toString();
     },
-    
     toHexString_1 : function(i) 
     {   return (i<0 ? 4294967296+i : i).toString(16);
     },

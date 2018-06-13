@@ -38,5 +38,5 @@ More details
 The Java-Converter is based on the [extendj java compiler](https://extendj.org/) that does most of the
 tricky parts of compilation. Only the backends for javascript and C# and the necessary runtime libraries 
 were actually developed in this project.
-Nevertheless every release of the Java-Compiler is a completely self-contained application
+Nevertheless every release of the Java-Converter is a completely self-contained application
 (basically a .JAR) that contains everything needed.

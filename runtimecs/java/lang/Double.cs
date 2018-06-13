@@ -41,6 +41,15 @@ namespace java.lang { public class Double
     public static bool isInfinite(double d) 
     {   return System.Double.IsInfinity(d);
     }    
+    
+    public static double parseDouble(System.String s)
+    {
+        double result;
+        if (System.Double.TryParse(s, out result))
+        {   return result;
+        }
+        throw new java.lang.NumberFormatException();
+    }
         
     public static System.String toString(double d)
     {   return java.lang.SYSTEM.str(d);

@@ -396,5 +396,18 @@ aspect Util {
         }
         return true;
     }    
-
+    
+    
+    public boolean ASTNode.usesParameterSomewhere(String name) 
+    {   for (int i=0; i<getNumChild(); i++) 
+        {   if (getChild(i).usesParameterSomewhere(name)) { return true; }
+        }
+        return false;
+    }        
+    public boolean VarAccess.usesParameterSomewhere(String name) 
+    {             
+        Variable v = varDecl();
+        return v.isParameter() && name.equals(getID());
+    }
+    
 }

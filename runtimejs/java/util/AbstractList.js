@@ -95,12 +95,12 @@ _class(java_util_AbstractList, java_util_AbstractCollection, [java_util_List],
     },
  
     removeAll_1: function (collection) 
-    {   if (collection===null) throw (new java_lang_NullPointerException.$())._error();    
+    {   if (collection===null) throw (new java_lang_NullPointerException.$())._0();    
         return this._filter(collection,false);
     },
     
     retainAll_1: function (collection) 
-    {   if (collection===null) throw (new java_lang_NullPointerException.$())._error();    
+    {   if (collection===null) throw (new java_lang_NullPointerException.$())._0();    
         return this._filter(collection,true);
     },
     
@@ -144,7 +144,7 @@ _class(java_util_AbstractListIterator, java_lang_Object,  [java_util_Iterator, j
     remove_0: function() 
     {   
         var before = this.n-1;
-        if (before<0) throw (new java_lang_IllegalStateException.$())._error();
+        if (before<0) throw (new java_lang_IllegalStateException.$())._0();
         this.list.remove_1(before);  // will throw if unsupported
         this.n = before;
     },

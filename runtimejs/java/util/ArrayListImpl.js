@@ -20,12 +20,12 @@ _class(java_util_ArrayListImpl, java_util_AbstractList, null,
     },
   
     get_1: function(index) 
-    {   if (index<0 || index>=this._storage.length) throw (new java_lang_IndexOutOfBoundsException.$())._error();
+    {   if (index<0 || index>=this._storage.length) throw (new java_lang_IndexOutOfBoundsException.$())._0();
         return this._storage[index];	
     },
     
     set_2: function(index, obj) 
-    {   if (index<0 || index>=this._storage.length) throw (new java_lang_IndexOutOfBoundsException.$())._error();
+    {   if (index<0 || index>=this._storage.length) throw (new java_lang_IndexOutOfBoundsException.$())._0();
         this._storage[index] = obj;
     },
     
@@ -41,13 +41,13 @@ _class(java_util_ArrayListImpl, java_util_AbstractList, null,
         {   s.splice (index,0, obj);
         }
         else
-        {   throw (new java_lang_IndexOutOfBoundsException.$())._error();
+        {   throw (new java_lang_IndexOutOfBoundsException.$())._0();
         }
     },
 
     remove_1: function (idx) 
     {   var s = this._storage;
-        if (idx<0 || idx>=s.length) throw (new java_lang_IndexOutOfBoundsException.$())._error();
+        if (idx<0 || idx>=s.length) throw (new java_lang_IndexOutOfBoundsException.$())._0();
         var obj = this._storage[idx];
         if (idx===0) 
         {   this._storage.shift();

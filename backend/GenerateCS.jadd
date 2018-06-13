@@ -37,8 +37,7 @@ aspect GenerateCS
             o2.finish();
         }
 
-        out.print("using java.lang;");  
-        out.println();
+        out.println("using java.lang;");  
 
         if (packageName().length()>0) 
         {   out.print("namespace ");
@@ -68,8 +67,7 @@ aspect GenerateCS
         }  
 
         out.println();
-        out.print ("{");
-        out.println();
+        out.println("{");
         out.increaseIndent(); 
 
         if (needsEnclosing() && !superclass().needsEnclosing()) 
@@ -83,8 +81,7 @@ aspect GenerateCS
             v.type().generateNameCS(out);
             out.print(" ");
             out.printCSIdentifier(v.name(),"_o");            
-            out.print(";");
-            out.println();
+            out.println(";");
         }
 
         for (BodyDecl bd:getBodyDeclList()) 
@@ -112,8 +109,7 @@ aspect GenerateCS
                     fd.fieldDecl().getTypeAccess().generateCS(out);
                     out.print(" ");
                     out.printCSIdentifier(fd.getID(),"_f");
-                    out.print(";");                     
-                    out.println();
+                    out.println(";");                     
                 }
             }
         }       
@@ -178,18 +174,15 @@ aspect GenerateCS
                     {   if (!havestaticconstructor) 
                         {   out.print("static ");
                             out.printCSIdentifier(uniqueName());
-                            out.print("()");
-                            out.println();
-                            out.print("{");
-                            out.println();
+                            out.println("()");
+                            out.println("{");
                             out.increaseIndent();
                             havestaticconstructor=true;
                         }                           
                         out.printCSIdentifier(fd.getID(),"_f");
                         out.print(" = ");
                         fd.getInit().generateUsingResultCS(out);
-                        out.print(";");
-                        out.println();
+                        out.println(";");
                     }
                 }
             } 
@@ -197,8 +190,7 @@ aspect GenerateCS
             {   if (!havestaticconstructor) 
                 {   out.print("static ");
                     out.printCSIdentifier(uniqueName());
-                    out.print("() {");
-                    out.println();
+                    out.println("() {");
                     out.increaseIndent();
                     havestaticconstructor=true;
                 }                           
@@ -207,8 +199,7 @@ aspect GenerateCS
         }       
         if (havestaticconstructor) 
         {   out.decreaseIndent();
-            out.print("}");
-            out.println();
+            out.println("}");
         }
 
         if (this instanceof EnumDecl) 
@@ -226,16 +217,13 @@ aspect GenerateCS
                 {   out.print(",");
                     ec.getArg(i).generateCS(out);
                 }
-                out.print(");");    
-                out.println();              
+                out.println(");");    
                 ordinal++;          
             }   
             out.print("public static ");
             out.printCSIdentifier(uniqueName());
-            out.print("[] values()");
-            out.println();
-            out.print("{");
-            out.println();
+            out.println("[] values()");
+            out.println("{");
             out.increaseIndent();
             out.print("return new ");
             out.printCSIdentifier(uniqueName());
@@ -246,11 +234,9 @@ aspect GenerateCS
                 out.printCSIdentifier(ec.getID(),"_f");
                 hasfirst=true;
             }
-            out.print("};");
-            out.println();
+            out.println("};");
             out.decreaseIndent();
-            out.print("}");
-            out.println();
+            out.println("}");
         }
     
         // add redirects for interface default methods
@@ -288,9 +274,8 @@ aspect GenerateCS
                 }        
                 out.print(" p"+i);                     
             }
-            out.print(")");                        
-            out.println();
-            out.print("{   ");
+            out.println(")");                        
+            out.println("{");
             if (!md.isVoid()) { out.print("return "); }
             md.hostType().generateNameCS(out);
             out.print("_c.");
@@ -300,10 +285,8 @@ aspect GenerateCS
             {   out.print(", ");
                 out.print("p"+i);                            
             }
-            out.print(");");                        
-            out.println();
-            out.print("}");
-            out.println();
+            out.println(");");                        
+            out.println("}");
         }  
         
         // add synthetic methods for array dimensioning of needed
@@ -320,8 +303,7 @@ aspect GenerateCS
         
     public void InterfaceDecl.generateCS(CodePrinterCS out) 
     {
-        out.print("using java.lang;");  
-        out.println();      
+        out.println("using java.lang;");  
         boolean haspackage = packageName().length()>0;
         if (haspackage) 
         {   out.print("namespace ");
@@ -342,8 +324,7 @@ aspect GenerateCS
         }
         
         out.println();
-        out.print("{");
-        out.println();
+        out.println("{");
         out.increaseIndent();
         
         boolean needstatic = false;
@@ -377,10 +358,8 @@ aspect GenerateCS
             }
             out.print("public static class ");
             out.printCSIdentifier(uniqueName());
-            out.print("_c ");
-            out.println();
-            out.print("{");
-            out.println();
+            out.println("_c ");
+            out.println("{");
             out.increaseIndent();
             
             for (BodyDecl bd:getBodyDeclList()) 
@@ -393,8 +372,7 @@ aspect GenerateCS
                             out.printCSIdentifier(fd.getID(),"_f");
                             out.print(" = ");
                             fd.getInit().generateUsingResultCS(out);
-                            out.print(";");     
-                            out.println();          
+                            out.println(";");     
                         }
                     }
                 } 
@@ -431,10 +409,8 @@ aspect GenerateCS
                 {   if (i>0) { out.print(", "); }
                     out.print("int n"+i);
                 }
-                out.print(")");
-                out.println();
-                out.print("{");
-                out.println();
+                out.println(")");
+                out.println("{");
                 out.increaseIndent();
                 type.generateNameCS(out);
                 for (int i=0; i<d; i++) { out.print("[]"); }
@@ -442,12 +418,10 @@ aspect GenerateCS
                 type.generateNameCS(out);
                 out.print("[n0]");
                 for (int i=1; i<d; i++) { out.print("[]"); }
-                out.print(";");
-                out.println();
+                out.println(";");
                 out.print("for (int i0=0; n1>=0 && i0<n0; i0++)");
                 out.println();
-                out.print("{");
-                out.println();
+                out.println("{");
                 out.increaseIndent();
                 out.print("a[i0] = ");
                 if (d<=5) 
@@ -464,16 +438,12 @@ aspect GenerateCS
                     out.print("n"+i);
                 }
                 out.print(")");
-                out.print(";");
-                out.println();
+                out.println(";");
                 out.decreaseIndent();
-                out.print("}");
-                out.println();
-                out.print("return a;");
-                out.println();
+                out.println("}");
+                out.println("return a;");
                 out.decreaseIndent();
-                out.print("}");
-                out.println();
+                out.println("}");
             }
         }
     } 
@@ -532,8 +502,7 @@ aspect GenerateCS
         ((ExprStmt)getConstructorInvocation()).getExpr().generateCS(out);   
                                                     
         out.println();
-        out.print("{");         
-        out.println();
+        out.println("{");         
         out.increaseIndent();
         
         // when a super-constructor is called, the initialization of everything that belongs
@@ -541,16 +510,14 @@ aspect GenerateCS
         // if calling a constructor of this, do not initialize all variables twice      
         if (needsInit) 
         {   if (needouter && !((ClassDecl)hostType()).superclass().needsEnclosing()) 
-            {   out.print("this._o = _o;");
-                out.println();
+            {   out.println("this._o = _o;");
             }           
             for (Variable v:encvar) 
             {   out.print("this.");
                 out.printCSIdentifier(v.name(),"_o");
                 out.print(" = ");   
                 out.printCSIdentifier(v.name(),"_o");
-                out.print(";");
-                out.println();
+                out.println(";");
             }
             
             // do all field initializations
@@ -562,8 +529,7 @@ aspect GenerateCS
                             out.printCSIdentifier(fd.getID(), "_f");
                             out.print(" = ");
                             fd.getInit().generateUsingResultCS(out);
-                            out.print(";");                     
-                            out.println();
+                            out.println(";");                     
                         }
                     }
                 }
@@ -581,8 +547,7 @@ aspect GenerateCS
             stmt.generateCS(out);
         }
         out.decreaseIndent();
-        out.print("}");
-        out.println();      
+        out.println("}");
     }
 
 //  public void EnumConstant.generateCS(CodePrinterCS out) 
@@ -683,8 +648,7 @@ aspect GenerateCS
             getBlock().generateCS(out);
         } 
         else
-        {   out.print(";");
-            out.println();          
+        {   out.println(";");
         }
     }
 

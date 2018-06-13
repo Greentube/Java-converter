@@ -1,23 +1,9 @@
-//load// java/lang/Object
+//load// java/lang/Exception
 var java_lang_RuntimeException = 
 {   $: function() 
-    {   this.message = null;
+    {   java_lang_Exception.$.call(this);
     },
 };
-_class (java_lang_RuntimeException, java_lang_Object, null, "java.lang.RuntimeException"  
-,{  _0: function() 
-    {   this.message = null;
-        return this;
-    },
-    _1: function(message) 
-    {   this.message = message;
-        return this;
-    },
-    toString_0 : function()
-    {   return java_lang_Object.$.prototype.toString_0.call(this) + (this.message ? ": " + this.message : "");
-    },
-    
-    _error : function()
-    {   return Error(this.toString_0());
-    }
+_class (java_lang_RuntimeException, java_lang_Exception, null, "java.lang.RuntimeException"  
+,{  
 });

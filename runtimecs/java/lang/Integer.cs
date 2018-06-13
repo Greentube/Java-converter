@@ -7,32 +7,48 @@ namespace java.lang { public class Integer
     }
 
     public int intValue() 
-    {   return value;
+    {   
+        return value;
     }
 
     public override bool Equals(System.Object o)
-    {   if (o==null || !(o is Integer)) return false;
+    {   
+        if (o==null || !(o is Integer)) return false;
         return ((Integer)o).value == value;
     }
 
     public override int GetHashCode()
-    {   return value;
+    {   
+        return value;
     }
 
     public override System.String ToString()
-    {   return Integer.toString(value);
+    {   
+        return Integer.toString(value);
+    }
+
+    public static int parseInt(System.String s)
+    {
+        int result;
+        if (System.Int32.TryParse(s, out result))
+        {   return result;
+        }
+        throw new java.lang.NumberFormatException();
     }
 
     public static System.String toString(int i)
-    {   return i.ToString("d");
-    }
+    {   
+        return i.ToString("d");
+    }    
     
     public static System.String toHexString(int i)
-    {   return i.ToString("x");
+    {   
+        return i.ToString("x");
     }
         
     public static java.lang.Integer valueOf(int i)
-    {   return new java.lang.Integer(i);
+    {   
+        return new java.lang.Integer(i);
     }
 
     public const int MIN__VALUE_f = -2147483648;

@@ -1,4 +1,4 @@
-namespace java.lang { public class RuntimeException: System.Exception
+namespace java.lang { public class RuntimeException: java.lang.Exception
 {
     public RuntimeException() : base()
     {   

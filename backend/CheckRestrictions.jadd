@@ -59,11 +59,39 @@ aspect CheckRestrictions
     }
 
     // -- Exceptions
-    public void TryStmt.checkRestrictions(ArrayList<String> errorlist) 
+    public void BasicCatch.checkRestrictions(ArrayList<String> errorlist) 
     {
-        reportRestriction(errorlist, "Catching exceptions is not supported");
+        String tn = getParameter().type().typeName();
+        if (isForbiddenCatch(tn))
+        {   reportRestriction(errorlist, "Can not catch exception of type "+tn);
+        }
         super.checkRestrictions(errorlist);
     }   
+    public void MultiCatch.checkRestrictions(ArrayList<String> errorlist) 
+    {
+        CatchParameterDeclaration par = getParameter();        
+        for (int i=0; i<par.getNumTypeAccess(); i++)
+        {   String tn = par.getTypeAccess(i).type().typeName();
+            if (isForbiddenCatch(tn))
+            {   reportRestriction(errorlist, "Can not catch exception of type "+tn);
+            }
+        }
+        super.checkRestrictions(errorlist);
+    }   
+    protected static boolean CatchClause.isForbiddenCatch(String typename)
+    {
+        return typename.equals("java.lang.NullPointerException")
+            || typename.equals("java.lang.ArrayIndexOutOfBoundsException")
+            || typename.equals("java.lang.ArrayStoreException")
+            || typename.equals("java.lang.NegativeArraySizeException")
+            || typename.equals("java.lang.ClassCastException")
+            || typename.equals("java.lang.ArithmeticException")
+            
+            || typename.equals("java.lang.IndexOutOfBoundsException")            
+            || typename.equals("java.lang.RuntimeException")
+            || typename.equals("java.lang.Exception")
+            || typename.equals("java.lang.Throwable");
+    }
     
     // -- Allowed primitive types 
     public void TypeAccess.checkRestrictions(ArrayList<String> errorlist) 

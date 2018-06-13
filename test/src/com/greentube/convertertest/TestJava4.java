@@ -50,6 +50,7 @@ public class TestJava4
         assignoperatortest();
         numberconversiontest();
         controlstructurestest();
+        trycatchtest();
         labelstest(4);
         booleantest();        
         bytetest();        
@@ -81,7 +82,7 @@ public class TestJava4
         i = staticint99;
         assert i == 99 : "Strangley, "+staticint99+" but not 99"; 
         
-        // compliation test only
+        // compilation test only
         A a = new A();
 //        throw new RuntimeException("x");
 //        throw new RuntimeException();
@@ -996,6 +997,41 @@ public class TestJava4
         }
         return "MUCH";
     }
+    private static void trycatchtest()
+    {
+        System.out.println("- trycatch");
+        
+        StringBuffer b = new StringBuffer();
+        try
+        {
+            b.append(CustomException.halve(98));
+            b.append(CustomException.halve(99));
+        } 
+        catch (NumberFormatException e)
+        {   b.append("N");
+        }
+        catch (CustomException e7)
+        {   b.append("catch");
+            b.append(e7);
+        }
+        finally
+        {   b.append("finally");
+        }
+        assertO(b.toString(), "49catchCan not halve odd numberfinally");
+        
+        b = new StringBuffer();
+        try {
+            CustomException.halveWithLogging(4,b);
+            CustomException.halveWithLogging(3,b);
+        }
+        catch (CustomException|NumberFormatException ex) 
+        {   b.append("catch");
+        }
+        finally
+        {   b.append("finally");
+        }
+        assertO(b.toString(), "start2donestartdonecatchfinally");
+    }
     
     private static void labelstest(int i4)
     { 
@@ -1161,6 +1197,23 @@ public class TestJava4
     	double b = 0.11700354448621550;
     	assertB(a!=b);
     	assertB(!(a==b));
+    	
+    	assertD(Double.parseDouble(".5"), 0.5);
+        assertD(Double.parseDouble("-.331"), -0.331);
+        assertD(Double.parseDouble("33.1e5"), 33.1e5);
+        assertD(Double.parseDouble("-13213.1e90"), -13213.1e90);
+        assertD(Double.parseDouble("+11232313213.1e200"), +11232313213.1e200);
+    	
+        double parsed = 0;
+        try {  parsed = Double.parseDouble("nupi"); } 
+        catch (NumberFormatException e) { parsed=-1; }
+        assertD(parsed,-1);
+        try {  parsed = Double.parseDouble("5342545254523545...42"); } 
+        catch (NumberFormatException e) { parsed=-2; }
+        assertD(parsed,-2);
+        try {  parsed = Double.parseDouble("--53425"); } 
+        catch (NumberFormatException e) { parsed=-3; }
+        assertD(parsed,-3);
     }
         
     public static void integertest()
@@ -1192,6 +1245,34 @@ public class TestJava4
         assertO(Integer.toHexString(0), "0");
         assertO(Integer.toHexString(1535621512), "5b87b988");
         assertO(Integer.toHexString(-2135621512), "80b50078");
+        
+        assertI(Integer.parseInt("54"),54);
+        assertI(Integer.parseInt("1001"),1001);
+        assertI(Integer.parseInt("-1001"),-1001);
+        assertI(Integer.parseInt("+5884"),5884);
+        
+        int parsed = 0;
+        try {  parsed = Integer.parseInt("nupi"); } 
+        catch (NumberFormatException e) { parsed=-1; }
+        assertI(parsed,-1);
+        try {  parsed = Integer.parseInt("5342545254523545"); } 
+        catch (NumberFormatException e) { parsed=-2; }
+        assertI(parsed,-2);
+        try {  parsed = Integer.parseInt("-545254523545"); } 
+        catch (NumberFormatException e) { parsed=-3; }
+        assertI(parsed,-3);
+        try {  parsed = Integer.parseInt("++545"); } 
+        catch (NumberFormatException e) { parsed=-4; }
+        assertI(parsed,-4);
+        try {  parsed = Integer.parseInt("545254550000"); } 
+        catch (NumberFormatException e) { parsed=-5; }
+        assertI(parsed,-5);
+        try {  parsed = Integer.parseInt("-+545"); } 
+        catch (NumberFormatException e) { parsed=-6; }
+        assertI(parsed,-6);
+        try {  parsed = Integer.parseInt("--0"); } 
+        catch (NumberFormatException e) { parsed=-7; }
+        assertI(parsed,-7);
     }
     
 

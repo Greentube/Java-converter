@@ -3,7 +3,7 @@ var java_util_function_Consumer =
 {   _superinterfaces: [], 
     _defaults:
     {   andThen_1: function(after)
-        {   if (after===null) throw (new java_lang_NullPointerException.$())._error();
+        {   if (after===null) throw (new java_lang_NullPointerException.$())._0();
             return new java_util_function_ConsumerAndThen.$(this,after);
         }
     },

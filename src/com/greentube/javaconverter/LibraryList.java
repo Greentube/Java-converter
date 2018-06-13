@@ -51,12 +51,13 @@ public class LibraryList
         },
         {   "java.lang.Double",
             
-            "<init>(double)", 
-            "double doubleValue()", 
+            "<init>(double)",
+            "double doubleValue()",
             "boolean isInfinite()",
             "boolean isInfinite(double)",
             "boolean isNaN()",
             "boolean isNaN(double)",
+            "double parseDouble(java.lang.String)",
             "java.lang.String toString(double)",
             "java.lang.Double valueOf(double)",
             "MIN_VALUE",
@@ -69,17 +70,34 @@ public class LibraryList
             "java.lang.String name()", 
             "int ordinal()", 
         },
+        {   "java.lang.Exception",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
+            "<init>()",            
+            "<init>(java.lang.String)",            
+        },
         {   "java.lang.IllegalArgumentException",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
             
             "<init>()",            
             "<init>(java.lang.String)",            
         },
         {   "java.lang.IllegalStateException",
             
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
             "<init>()",            
             "<init>(java.lang.String)",            
         },
         {   "java.lang.IndexOutOfBoundsException",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
             
             "<init>()",            
             "<init>(java.lang.String)",            
@@ -88,6 +106,7 @@ public class LibraryList
             
             "<init>(int)",
             "int intValue()",
+            "int parseInt(java.lang.String)",
             "java.lang.String toString(int)",
             "java.lang.String toHexString(int)",
             "java.lang.Integer valueOf(int)",
@@ -98,17 +117,6 @@ public class LibraryList
             
             "java.util.Iterator iterator()",
             "void forEach(java.util.function.Consumer)",
-        },
-        {   "java.lang.Object",
-            
-            "<init>()",
-        },
-        {   "java.lang.Override"
-        },
-        {   "java.lang.RuntimeException",
-            
-            "<init>()",            
-            "<init>(java.lang.String)",            
         },
         {   "java.lang.Math",
             
@@ -147,12 +155,37 @@ public class LibraryList
         },
         {   "java.lang.NullPointerException",
             
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
             "<init>()",            
             "<init>(java.lang.String)",            
+        },
+        {   "java.lang.NumberFormatException",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
+            "<init>()",            
+            "<init>(java.lang.String)",            
+        },        
+        {   "java.lang.Object",
+            
+            "<init>()",
+        },
+        {   "java.lang.Override"
         },
         {   "java.lang.Runnable",
             
             "void run()",
+        },
+        {   "java.lang.RuntimeException",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
+            "<init>()",            
+            "<init>(java.lang.String)",            
         },
         {   "java.lang.String",
             
@@ -217,6 +250,13 @@ public class LibraryList
             "void arraycopy(java.lang.Object, int, java.lang.Object, int, int)",
             "void exit(int)",
             "long currentTimeMillis()", // only allowed if immediately casting the result to double or int
+        },
+        {   "java.lang.Throwable",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            "<init>()",            
+            "<init>(java.lang.String)",            
         },
         {   "java.util.AbstractCollection",
             

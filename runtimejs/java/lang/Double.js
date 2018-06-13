@@ -1,3 +1,4 @@
+//reference// java/lang/NumberFormatException
 //load// java/lang/Object
 var java_lang_Double = 
 {   $: function() 
@@ -9,7 +10,12 @@ var java_lang_Double =
     isInfinite_1: function(d) 
     {   return ! (isFinite(d) || isNaN(d))
     },
-    
+    parseDouble_1 : function(s) 
+    {   
+        var n = Number(s);
+        if (isNaN(n))throw (new java_lang_NumberFormatException.$())._0();
+        return n;
+    },
     toString_1: function(d) 
     {   return _d2s(d);
     },

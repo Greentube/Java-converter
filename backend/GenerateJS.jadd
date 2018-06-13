@@ -42,10 +42,8 @@ aspect GenerateJS
       
         out.print("var ");
         out.printJSName(packageName(), uniqueName());
-        out.print(" = ");
-        out.println();
-        out.print("{");
-        out.println();
+        out.println(" = ");
+        out.println("{");
         out.increaseIndent();
 
         // allocator function
@@ -60,27 +58,22 @@ aspect GenerateJS
             out.printJSIdentifier(v.name(),"_o");
             foundpar=true;
         }
-        out.print(")");
-        out.println();
-        out.print("{");        
-        out.println();
+        out.println(")");
+        out.println("{");        
         out.increaseIndent();   
         if (!superclass().isObject()) 
         {   out.printAndMemorizeLoad(superclass().packageName(),superclass().uniqueName());
-            out.print(".$.call(this" + (superclass().needsEnclosing()?",_o":"") +");");
-            out.println();
+            out.println(".$.call(this" + (superclass().needsEnclosing()?",_o":"") +");");
         }  
         if (needsEnclosing() && !superclass().needsEnclosing()) 
-        {   out.print("this._o = _o;");
-            out.println();
+        {   out.println("this._o = _o;");
         }
         for (Variable v:enclosingVariables()) 
         {   out.print("this.");
             out.printJSIdentifier(v.name(),"_o");
             out.print(" = ");
             out.printJSIdentifier(v.name(),"_o");
-            out.print(";");
-            out.println();
+            out.println(";");
         }
         for (BodyDecl bd:getBodyDeclList()) 
         {   if (bd.isField()) 
@@ -90,17 +83,14 @@ aspect GenerateJS
                         out.printJSIdentifier(fd.getID(),"");
                         out.print(" = ");
                         fd.fieldDecl().type().generateDefaultValueJS(out);
-                        out.print(";");
-                        out.println();
+                        out.println(";");
                     }
                 }
             }
         }
         out.decreaseIndent();
-        out.print("}");
-        out.println();
-        out.print(",");
-        out.println();
+        out.println("}");
+        out.println(",");
 
         // static methods and fields
         for (BodyDecl bd:getBodyDeclList()) 
@@ -120,8 +110,7 @@ aspect GenerateJS
                     else
                     {   fd.fieldDecl().type().generateDefaultValueJS(out);
                     }
-                    out.print(",");
-                    out.println();
+                    out.println(",");
                 }
             }
         }       
@@ -129,33 +118,25 @@ aspect GenerateJS
         if (this instanceof EnumDecl) 
         {   out.print("values_0 : function()");
             out.println();
-            out.print("{");
-            out.println();
+            out.println("{");
             out.increaseIndent();
-            out.print("return [");
-            out.println();
+            out.println("return [");
             out.increaseIndent(); 
             for (EnumConstant ec:((EnumDecl)this).enumConstants()) 
             {   out.printJSName(packageName(), uniqueName());           
                 out.print(".");
                 out.printJSIdentifier(ec.getID(),"");
-                out.print(",");
-                out.println();
+                out.println(",");
             }
             out.decreaseIndent();
-            out.print("];");        
-            out.println();
+            out.println("];");        
             out.decreaseIndent();
-            out.print("}");
-            out.println();      
-            out.print(",");
-            out.println();      
+            out.println("}");
+            out.println(",");
         }           
                         
         out.decreaseIndent(); 
-        out.print("};");
-        out.println();
-
+        out.println("};");
 
         out.print("_class(");
         out.printJSName(packageName(), uniqueName());
@@ -180,14 +161,11 @@ aspect GenerateJS
             }
             out.print("]");
         } 
-        out.print(",");
-        out.println();
+        out.println(",");
         out.print("\"");
         out.print(fullName());
-        out.print("\" //replace-me-with-empty-string-for-production//");
-        out.println();
-        out.print(",{");        
-        out.println();
+        out.println("\" //replace-me-with-empty-string-for-production//");
+        out.println(",{");        
         out.increaseIndent();                                     
 
         Collection<MethodDecl> bridgemethods = bridgeMethods();
@@ -211,8 +189,7 @@ aspect GenerateJS
         }       
         
         out.decreaseIndent();                                     
-        out.print ("});");
-        out.println();
+        out.println ("});");
         
         // additional initialization code
         for (BodyDecl bd:getBodyDeclList()) 
@@ -225,8 +202,7 @@ aspect GenerateJS
                             out.printJSIdentifier(fd.getID(),"");
                             out.print(" = ");
                             fd.getInit().generateUsingResultJS(out);
-                            out.print(";");
-                            out.println();
+                            out.println(";");
                         }
                     }
                 }
@@ -262,8 +238,7 @@ aspect GenerateJS
                 {   out.print(",");
                     ec.getArg(i).generateJS(out);
                 }
-                out.print(");");                
-                out.println();
+                out.println(");");                
             }
             
             values.add(ec.getID());         
@@ -296,8 +271,7 @@ aspect GenerateJS
                     {   o2.print(",");
                         ec.getArg(i).generateJS(o2);
                     }
-                    o2.print(");");
-                    o2.println();
+                    o2.println(");");
                 }
                 ordinal++;
             }               
@@ -311,10 +285,8 @@ aspect GenerateJS
         out.print("var ");
     
         out.printJSName(packageName(),uniqueName());
-        out.print(" =");
-        out.println();
-        out.print("{ ");
-        out.println();
+        out.println(" =");
+        out.println("{ ");
         out.increaseIndent();
         out.print("_superinterfaces: [");
         if (hasSuperInterface()) 
@@ -328,8 +300,7 @@ aspect GenerateJS
                 n++;
             }           
         }
-        out.print("],");
-        out.println();
+        out.println("],");
                 
         Vector<MethodDecl> defaults = new Vector<>();
         for (BodyDecl bd:getBodyDeclList()) 
@@ -360,23 +331,19 @@ aspect GenerateJS
             }
         }
         if (defaults.size()>0) 
-        {     out.print("_defaults:");
-              out.println();
+        {     out.println("_defaults:");
               out.print("{   ");
               out.increaseIndent();           
               for (MethodDecl md:defaults)
               {     md.generateJS(out);
               }     
               out.decreaseIndent();
-              out.print("}");
-              out.println();
-              out.print(",");
-              out.println();
+              out.println("}");
+              out.println(",");
         }   
         
         out.decreaseIndent();
-        out.print("};");
-        out.println();
+        out.println("};");
                     
         // additional initialization code
         for (BodyDecl bd:getBodyDeclList()) 
@@ -389,8 +356,7 @@ aspect GenerateJS
                             out.printJSIdentifier(fd.getID(),"");
                             out.print(" = ");
                             fd.getInit().generateUsingResultJS(out);
-                            out.print(";");
-                            out.println();
+                            out.println(";");
                         }
                     }
                 }
@@ -445,10 +411,8 @@ aspect GenerateJS
         {   if (i>0) out.print(",");
             out.printJSIdentifier(getParameter(i).name(), "");
         }
-        out.print(")");
-        out.println();
-        out.print("{");
-        out.println();
+        out.println(")");
+        out.println("{");
         out.increaseIndent();
 
         // if calling a constructor of this, do not initialize all variables twice      
@@ -472,8 +436,7 @@ aspect GenerateJS
                             out.printJSIdentifier(fd.getID(),"");
                             out.print(" = ");
                             fd.getInit().generateUsingResultJS(out);
-                            out.print(";");
-                            out.println();
+                            out.println(";");
                         }
                     }
                 }
@@ -491,10 +454,8 @@ aspect GenerateJS
         out.print("return this;");
         out.decreaseIndent();
         out.println();
-        out.print("}");
-        out.println();
-        out.print(",");
-        out.println();
+        out.println("}");
+        out.println(",");
     }
 
 //  public void EnumConstant.generateJS(CodePrinterJS out) {
@@ -522,13 +483,11 @@ aspect GenerateJS
         {   if (i>0) out.print(",");
             out.printJSIdentifier(getParameter(i).name(), "");
         }
-        out.print(")");
-        out.println();
+        out.println(")");
         
         block.generateJS(out);
 
-        out.print(",");
-        out.println();
+        out.println(",");
     }
 
     public void StaticInitializer.generateJS(CodePrinterJS out) 

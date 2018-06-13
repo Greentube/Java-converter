@@ -18,16 +18,14 @@ aspect GenerateJS
 
     public void Block.generateJS(CodePrinterJS out) 
     {   
-        out.print("{");
+        out.println("{");
         out.increaseIndent();
-        out.println();
         int n = getNumStmt();
         for (int i=0; i<n; i++) 
         {   getStmt(i).generateJS(out);
         }
         out.decreaseIndent();
-        out.print("}");
-        out.println();
+        out.println("}");
     }
   
     // --- BranchTargetStmt ---
@@ -39,8 +37,7 @@ aspect GenerateJS
         getStmt().generateJS(out);
         out.print("while (");
         getCondition().generateUsingResultJS(out);
-        out.print(");");
-        out.println();
+        out.println(");");
     }
 
     public void EnhancedForStmt.generateJS(CodePrinterJS out) 
@@ -136,10 +133,8 @@ aspect GenerateJS
         }
         else if (s instanceof Block)
         {   out.printJSIdentifier(getLabel(),"");
-            out.print(":");
-            out.println();  
-            out.print("{");
-            out.println();            
+            out.println(":");
+            out.println("{");
             out.increaseIndent();
             Block b = (Block) s;
             int n = b.getNumStmt();
@@ -147,20 +142,16 @@ aspect GenerateJS
             {   b.getStmt(i).generateJS(out);
             }
             out.decreaseIndent();
-            out.print("}");
-            out.println();            
+            out.println("}");
         }
         else
         {   out.printJSIdentifier(getLabel(),"");
-            out.print(":");
-            out.println();
-            out.print("{");
-            out.println();  
+            out.println(":");
+            out.println("{");
             out.increaseIndent();            
             s.generateJS(out);
             out.decreaseIndent();
-            out.print("}");
-            out.println();        
+            out.println("}");
         }
     }
     
@@ -168,10 +159,8 @@ aspect GenerateJS
     {   
         out.print("switch (");
         getExpr().generateUsingResultJS(out);
-        out.print(")");
-        out.println();
-        out.print("{");
-        out.println();
+        out.println(")");
+        out.println("{");
         out.increaseIndent();
 
         Block b = getBlock();
@@ -189,8 +178,7 @@ aspect GenerateJS
         }
 
         out.decreaseIndent();
-        out.print("}");
-        out.println();
+        out.println("}");
     }
 
     public void WhileStmt.generateJS(CodePrinterJS out) 
@@ -212,8 +200,7 @@ aspect GenerateJS
         {   out.print(" ");
             out.printJSIdentifier(getLabel(), "");
         }
-        out.print(";"); 
-        out.println();          
+        out.println(";"); 
     }
 
     // --- Case ---
@@ -222,14 +209,12 @@ aspect GenerateJS
     {   
         out.print("case ");
         getValue().generateUsingResultJS(out);
-        out.print(":");
-        out.println();
+        out.println(":");
     }
     
     public void DefaultCase.generateJS(CodePrinterJS out) 
     {   
-        out.print("default:");
-        out.println();
+        out.println("default:");
     }
 
     // --- ContinueStmt ---
@@ -242,14 +227,13 @@ aspect GenerateJS
         {   out.print(" ");
             out.printJSIdentifier(getLabel(), "");
         }
-        out.print(";");
-        out.println();      
+        out.println(";");
     }
   
     // --- EmptyStmt ---
     public void EmptyStmt.generateJS(CodePrinterJS out)
-    {   out.print("{}");
-        out.println();
+    {   
+        out.println("{}");
     }
     
     // --- ExprStmt ---
@@ -257,8 +241,7 @@ aspect GenerateJS
     public void ExprStmt.generateJS(CodePrinterJS out) 
     {
         getExpr().generateJS(out);
-        out.print(";");
-        out.println();
+        out.println(";");
     }   
     
     // --- IfStmt ---
@@ -311,13 +294,99 @@ aspect GenerateJS
     // --- ThrowStmt ---
     public void ThrowStmt.generateJS(CodePrinterJS out) 
     {
-        out.print("throw (");
+        out.print("throw ");
         getExpr().generateUsingResultJS(out);
-        out.print(")._error();");
-        out.println();
+        out.println(";");
     }
         
     // --- TryStmt ---
+    public void TryStmt.generateJS(CodePrinterJS out) 
+    {
+        out.println("try");
+        getBlock().generateJS(out);
+        
+        int n = getNumCatchClause();
+        if (n>0) 
+        {   CatchClause cc = getCatchClause(0);            
+            String varid = "";
+            if (cc instanceof BasicCatch)
+            {   varid = ((BasicCatch)cc).getParameter().getID();
+            }
+            else if (cc instanceof MultiCatch)
+            {   varid = ((MultiCatch)cc).getParameter().getID();
+            }
+            
+            out.print("catch (");
+            out.printJSIdentifier(varid,"");
+            out.println(")");
+            out.println("{");
+            out.increaseIndent();
+        
+            for (int i=0; i<n; i++)
+            {   cc = getCatchClause(i);
+                String var2id = varid;
+                
+                if (i!=0) { out.print("else "); }
+                out.print("if (");                
+                if (cc instanceof BasicCatch)
+                {   ParameterDeclaration par = ((BasicCatch) cc).getParameter();
+                    var2id = par.getID();
+                    out.printJSIdentifier(varid,"");
+                    out.print(" instanceof ");
+                    TypeDecl t = par.type();
+                    out.printAndMemorizeReference(t.packageName(),t.uniqueName());
+                    out.print(".$");
+                }
+                else if (cc instanceof MultiCatch)
+                {   CatchParameterDeclaration par = ((MultiCatch) cc).getParameter();
+                    var2id = par.getID();
+                    for (int j=0; j<par.getNumTypeAccess(); j++) 
+                    {   if (j>0) { out.print(" || "); }
+                        out.print("(");
+                        out.printJSIdentifier(varid,"");
+                        out.print(" instanceof ");
+                        TypeDecl t = par.getTypeAccess(j).type();
+                        out.printAndMemorizeReference(t.packageName(),t.uniqueName());
+                        out.print(".$)");
+                    }                
+                }
+                else
+                {   throw new RuntimeException("Unknown catch clause type");                
+                }
+                out.println(")");
+                
+                if (!var2id.equals(varid)) 
+                {   out.println();
+                    out.print("{   var ");
+                    out.printJSIdentifier(var2id);
+                    out.print(" = ");
+                    out.printJSIdentifier(varid);
+                    out.print(";");
+                    out.increaseIndent();
+                    out.println();                
+                    cc.getBlock().generateJS(out);                        
+                    out.decreaseIndent();
+                    out.println("}");
+                }
+                else
+                {   cc.getBlock().generateJS(out);
+                }
+            }
+            out.print("else { throw ");
+            out.printJSIdentifier(varid,"");
+            out.println("; }");
+            
+            out.decreaseIndent();
+            out.println("}");
+        }
+        
+        Block fin = getFinally();
+        if (fin!=null)
+        {   out.println("finally");
+            fin.generateJS(out);        
+        }
+    }
+        
         
     // --- VarDeclStmt ---
     
