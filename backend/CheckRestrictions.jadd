@@ -81,13 +81,12 @@ aspect CheckRestrictions
     protected static boolean CatchClause.isForbiddenCatch(String typename)
     {
         return typename.equals("java.lang.NullPointerException")
-            || typename.equals("java.lang.ArrayIndexOutOfBoundsException")
+            || typename.equals("java.lang.IndexOutOfBoundsException")            
             || typename.equals("java.lang.ArrayStoreException")
             || typename.equals("java.lang.NegativeArraySizeException")
             || typename.equals("java.lang.ClassCastException")
             || typename.equals("java.lang.ArithmeticException")
             
-            || typename.equals("java.lang.IndexOutOfBoundsException")            
             || typename.equals("java.lang.RuntimeException")
             || typename.equals("java.lang.Exception")
             || typename.equals("java.lang.Throwable");

@@ -1,6 +1,7 @@
 //reference// java/lang/NullPointerException
 //reference// java/lang/IndexOutOfBoundsException
 //reference// java/lang/IllegalArgumentException
+//reference// java/lang/UnsupportedOperationException
 //load// java/lang/Object
 var java_util_Arrays = 
 {   
@@ -129,11 +130,11 @@ _class(java_util_FixSizedArrayList, java_util_AbstractList, null,
     },
     
     add_2: function(index, obj) 
-    {   throw new TypeError("UnsupportedOperationException");
+    {   throw (new java_lang_UnsupportedOperationException.$())._0();
     },
 
     remove_1: function (idx) 
-    {   throw new TypeError("UnsupportedOperationException");    
+    {   throw (new java_lang_UnsupportedOperationException.$())._0();
     },
 
     size_0: function()

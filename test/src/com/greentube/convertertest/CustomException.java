@@ -7,11 +7,6 @@ public class CustomException extends IllegalArgumentException
         super(reason);
     }
 
-    public String toString()
-    {
-        return getMessage();
-    }
-
     public static int halve(int i) 
     {
         if (i<0) throw new CustomException("Can not halve negative number");

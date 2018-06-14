@@ -6,7 +6,8 @@ import java.util.*;
 public class TestJava5 extends TestJava4 
 {
     public static void main(String[] args) 
-    {   TestJava4.main(args);   
+    {   
+        TestJava4.main(args);   
 
         System.out.println ("-- converter test suite for java 5" );
         genericstest();
@@ -15,9 +16,9 @@ public class TestJava5 extends TestJava4
         varargstest();
         staticimportstest();
         arraystest();
-        extendedstringtest();
+        extendedstringtest();        
     }
-
+    
     public static void genericstest() 
     {   System.out.println("- generics");
 
@@ -256,13 +257,56 @@ public class TestJava5 extends TestJava4
         assertO(l.toString(), "[so, long, and, thanks, for, all, the, fish]");
         l.set(4, Integer.valueOf(4));
         assertO(l.toString(), "[so, long, and, thanks, 4, all, the, fish]");
-        
+                
         String[] a = new String[]{ "we", "see", "thee", "bee", "lee", "me" };
         Arrays.sort(a, 1, 4, strcmp);
         assertO(Arrays.asList(a).toString(), "[we, bee, see, thee, lee, me]");
         
         Arrays.sort(a, strcmp2);
         assertO(Arrays.asList(a).toString(), "[bee, lee, me, see, thee, we]");
+        
+        StringBuffer caught = new StringBuffer();
+        try 
+        {   Iterator<Object> it = l.iterator();
+            it.remove();
+        } 
+        catch (IllegalStateException e) 
+        {   caught.append("ISE:");
+            caught.append(e.getMessage());
+        }
+        try 
+        {   Iterator<Object> it = l.iterator();
+            it.next();
+            it.remove();
+        } 
+        catch (UnsupportedOperationException e) 
+        {   caught.append("UOE:");
+            caught.append(e.getMessage());
+        }
+        try 
+        {   Iterator<Object> it = l.iterator();
+            for (;;) { it.next(); }
+        } 
+        catch (NoSuchElementException e) 
+        {   caught.append("NSE:");
+            caught.append(e);
+        }
+        assertO(caught.toString(), "ISE:nullUOE:nullNSE:java.util.NoSuchElementException");
+        
+        caught = new StringBuffer();
+        try 
+        {   l.add("more");
+        } 
+        catch (UnsupportedOperationException e) 
+        {   caught.append(e);
+        }
+        try 
+        {   l.remove(3);
+        } 
+        catch (UnsupportedOperationException e) 
+        {   caught.append(e);
+        }
+        assertO(caught.toString(), "java.lang.UnsupportedOperationExceptionjava.lang.UnsupportedOperationException");
     }
 
 

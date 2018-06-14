@@ -5,5 +5,5 @@ var java_lang_NullPointerException =
     },
 };
 _class (java_lang_NullPointerException, java_lang_RuntimeException, null, 
-"java.lang.NullPointerException"  //replace-me-with-empty-string-for-production//
+"java.lang.NullPointerException" 
 , {}); 

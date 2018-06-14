@@ -11,7 +11,7 @@ Basically the language features of java 8 are provided with the following restri
     While exceptions are largely supported, it is not possible to use a catch-clause
     for any of the following exceptions: 
         NullPointerException
-        ArrayIndexOutOfBoundsException
+        IndexOutOfBoundsException
         ArrayStoreException
         NegativeArraySizeException
         ClassCastException

@@ -121,11 +121,11 @@ namespace java.util { public class FixSizedArrayList: AbstractList
     }
         
     public override void add(int index, System.Object element) 
-    {   throw new System.NotSupportedException();
+    {   throw new java.lang.UnsupportedOperationException();
     }
 
     public override System.Object remove(int index) 
-    {   throw new System.NotSupportedException();
+    {   throw new java.lang.UnsupportedOperationException();
     }
         
     public override int size() 

@@ -16,16 +16,20 @@ a bug in the converter and will either be fixed or also documented here.
     in java. Do not rely on certain hash values for specific strings.
             
 - Different default implementation of toString()
-    Objects not overriding toString will provide a default implementation
-    that is conversion target specific. Do only use to create a human readable debug output and
-    do not rely on any specific format.
+    Objects not overriding toString() will provide a default implementation
+    that is conversion target specific. Do only use it to create a human readable debug output and
+    do not rely on any specific format. When the javascript program is linked using the 
+    "production" option, class names are completely stripped and the default toString() will 
+    generate no meaningful output at all.
+    In contrast, the default implementation for all Throwable types will always produce
+    output as specified by java, so it is safe to use it for comparisons or logs.
 
 - "bad" RuntimeExceptions
     There is a set of runtime situations where the converted code may not behave
     exactly as in java. Specifically these are all occurrences where the java-VM would
     throw any of these exceptions:    
-        NullPointerException
-        ArrayIndexOutOfBoundsException
+        NullPointerException        
+        IndexOutOfBoundsException
         ArrayStoreException
         NegativeArraySizeException
         ClassCastException
@@ -34,8 +38,8 @@ a bug in the converter and will either be fixed or also documented here.
     undefined. It could very well wreck arbitrary data structures and bring the program
     into a situation from which it can not recover.
     The converter already enforces that such exceptions may never be caught, so the
-    developer is probably made aware of the problem. Nevertheless testing the original
-    java code to see if these exceptions could occur there is strongly recommended.
+    developer may probably be aware of the problem. Nevertheless testing the original
+    java code to see if these exceptions could occur, is strongly recommended.
     
     Other RuntimeExceptions are fine to catch and all library methods should implement
     the exact same functionality in this respect as their java original.

@@ -4,5 +4,6 @@ var java_lang_NumberFormatException =
     {   java_lang_IllegalArgumentException.$.call(this);
     },
 };
-_class (java_lang_NumberFormatException, java_lang_IllegalArgumentException, null, "java.lang.NumberFormatException"  
+_class (java_lang_NumberFormatException, java_lang_IllegalArgumentException, null, 
+"java.lang.NumberFormatException"  
 , {});

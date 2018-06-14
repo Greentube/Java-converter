@@ -128,11 +128,20 @@ namespace java.util { class AbstractListIterator : Iterator, Enumeration
     }
 
     public System.Object next() 
-    {   return list.get(n++);
+    {   
+        if (n>=list.size())
+        {   throw new java.util.NoSuchElementException();
+        }
+        System.Object v = list.get(n);  
+        n++;
+        return v;    
     }
 
     public void remove() 
-    {   list.remove(--n);
+    {   int before = n-1;
+        if (before<0) throw new java.lang.IllegalStateException();
+        list.remove(before);        
+        n=before;
     }
 
     public bool hasMoreElements() 

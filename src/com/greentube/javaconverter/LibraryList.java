@@ -70,38 +70,6 @@ public class LibraryList
             "java.lang.String name()", 
             "int ordinal()", 
         },
-        {   "java.lang.Exception",
-            
-            "java.lang.String getMessage()",
-            "void printStackTrace()",
-            
-            "<init>()",            
-            "<init>(java.lang.String)",            
-        },
-        {   "java.lang.IllegalArgumentException",
-            
-            "java.lang.String getMessage()",
-            "void printStackTrace()",
-            
-            "<init>()",            
-            "<init>(java.lang.String)",            
-        },
-        {   "java.lang.IllegalStateException",
-            
-            "java.lang.String getMessage()",
-            "void printStackTrace()",
-            
-            "<init>()",            
-            "<init>(java.lang.String)",            
-        },
-        {   "java.lang.IndexOutOfBoundsException",
-            
-            "java.lang.String getMessage()",
-            "void printStackTrace()",
-            
-            "<init>()",            
-            "<init>(java.lang.String)",            
-        },        
         {   "java.lang.Integer",
             
             "<init>(int)",
@@ -153,22 +121,6 @@ public class LibraryList
             "E",
             "PI",
         },
-        {   "java.lang.NullPointerException",
-            
-            "java.lang.String getMessage()",
-            "void printStackTrace()",
-            
-            "<init>()",            
-            "<init>(java.lang.String)",            
-        },
-        {   "java.lang.NumberFormatException",
-            
-            "java.lang.String getMessage()",
-            "void printStackTrace()",
-            
-            "<init>()",            
-            "<init>(java.lang.String)",            
-        },        
         {   "java.lang.Object",
             
             "<init>()",
@@ -178,14 +130,6 @@ public class LibraryList
         {   "java.lang.Runnable",
             
             "void run()",
-        },
-        {   "java.lang.RuntimeException",
-            
-            "java.lang.String getMessage()",
-            "void printStackTrace()",
-            
-            "<init>()",            
-            "<init>(java.lang.String)",            
         },
         {   "java.lang.String",
             
@@ -250,13 +194,6 @@ public class LibraryList
             "void arraycopy(java.lang.Object, int, java.lang.Object, int, int)",
             "void exit(int)",
             "long currentTimeMillis()", // only allowed if immediately casting the result to double or int
-        },
-        {   "java.lang.Throwable",
-            
-            "java.lang.String getMessage()",
-            "void printStackTrace()",
-            "<init>()",            
-            "<init>(java.lang.String)",            
         },
         {   "java.util.AbstractCollection",
             
@@ -589,6 +526,87 @@ public class LibraryList
             
             "java.lang.Object get()",
         },
+        
+        
+        {   "java.lang.Throwable",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            "<init>()",            
+            "<init>(java.lang.String)",            
+        },
+        {   "java.lang.Exception",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
+            "<init>()",            
+            "<init>(java.lang.String)",            
+        },
+        {   "java.lang.RuntimeException",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
+            "<init>()",            
+            "<init>(java.lang.String)",            
+        },
+        {   "java.lang.IllegalArgumentException",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
+            "<init>()",            
+            "<init>(java.lang.String)",            
+        },
+        {   "java.lang.IllegalStateException",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
+            "<init>()",            
+            "<init>(java.lang.String)",            
+        },
+        {   "java.lang.IndexOutOfBoundsException",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
+            "<init>()",            
+            "<init>(java.lang.String)",            
+        },   
+        {   "java.util.NoSuchElementException",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
+            "<init>()",            
+            "<init>(java.lang.String)",            
+        },       
+        {   "java.lang.NullPointerException",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
+            "<init>()",            
+            "<init>(java.lang.String)",            
+        },        
+        {   "java.lang.NumberFormatException",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
+            "<init>()",            
+            "<init>(java.lang.String)",            
+        },       
+        {   "java.lang.UnsupportedOperationException",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
+            "<init>()",            
+            "<init>(java.lang.String)",            
+        },       
     };
 
 

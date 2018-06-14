@@ -10,7 +10,7 @@ java_lang_Object.$.prototype._0 = function()
 };
 
 java_lang_Object.$.prototype.toString_0 = function()
-{   return this._classname;
+{   return this._classname+"@"+this.hashCode_0();
 };
 
 java_lang_Object.$.prototype.equals_1 = function(a)
@@ -368,7 +368,7 @@ String.prototype.hashCode_0 = function()
        h = (h*31 + this.charCodeAt(i)) | 0;
     }
     return h;
-};   
+};
 
 String.prototype.indexOf_1 = function(str) 
 {   if (str===null) 

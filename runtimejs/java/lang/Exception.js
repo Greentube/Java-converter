@@ -4,6 +4,7 @@ var java_lang_Exception =
     {   java_lang_Throwable.$.call(this);
     },
 };
-_class (java_lang_Exception, java_lang_Throwable, null, "java.lang.Exception"  
+_class (java_lang_Exception, java_lang_Throwable, null, 
+"java.lang.Exception"  
 ,{  
 });

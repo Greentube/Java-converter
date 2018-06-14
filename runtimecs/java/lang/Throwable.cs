@@ -1,16 +1,27 @@
 namespace java.lang { public class Throwable: System.Exception
 {    
-    public Throwable() : base()
+    private System.String message;
+    private System.String trace;
+    
+    public Throwable() : this(null)
     {   
     }
-    public Throwable(System.String message) : base(message)
+    public Throwable(System.String message) : base()
     {   
+        this.message = message;
+        this.trace = System.Environment.StackTrace;
     }
     public void printStackTrace()
     {
+        System.Console.Error.WriteLine(this.trace);
     }
-    public System.String getMessage()
+    virtual public System.String getMessage()
     {
-        return Message;
+        return message;
+    }    
+    override public System.String ToString()
+    {        
+        if (message==null) { return this.GetType().FullName; }
+        else { return this.GetType().FullName + ": " + message; }
     }
 }}

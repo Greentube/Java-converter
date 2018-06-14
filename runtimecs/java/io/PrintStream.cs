@@ -34,8 +34,8 @@ namespace java.io { public class PrintStream {
     {   line.Append("\n");
         if (iserr) 
         {   System.Console.Error.Write(line.ToString());
-            System.Console.Error.Write(System.Environment.StackTrace);
-            System.Console.Error.Write("\n");
+//            System.Console.Error.Write(System.Environment.StackTrace);
+//            System.Console.Error.Write("\n");
         }
         else 
         {   System.Console.Write(line.ToString());

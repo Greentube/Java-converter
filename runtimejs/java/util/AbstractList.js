@@ -1,5 +1,6 @@
 //reference// java/lang/NullPointerException
 //reference// java/lang/IllegalStateException
+//reference// java/util/NoSuchElementException
 //load// java/util/Iterator
 //load// java/util/Enumeration
 //load// java/util/List
@@ -136,7 +137,10 @@ _class(java_util_AbstractListIterator, java_lang_Object,  [java_util_Iterator, j
     },
     
     next_0: function() 
-    {   var v = this.list.get_1(this.n);    // will throw if out of bounds
+    {   if (this.n>=this.list.size_0())
+        {   throw (new java_util_NoSuchElementException.$())._0();
+        }
+        var v = this.list.get_1(this.n);  
         this.n++;
         return v;
     },

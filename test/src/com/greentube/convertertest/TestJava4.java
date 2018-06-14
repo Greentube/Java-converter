@@ -30,8 +30,30 @@ public class TestJava4
 
     static String initialized = "hello".substring(2);
 
+private static IllegalArgumentException mke()
+{   return new IllegalArgumentException();
+}
+private static void thrw()
+{   IllegalArgumentException e = mke();
+    if (e!=null) 
+    {   throw e; 
+    }
+}
+private static void thrw2()
+{   try { thrw(); } 
+    catch (IllegalArgumentException e) 
+    {   System.err.println("did catch!"); 
+        System.err.println(e.toString());
+        e.printStackTrace();  
+        System.err.println("rethrowing...");
+        throw e; 
+    }
+}
+
     public static void main(String[] args) 
-    {   System.out.print ("--");
+    {
+//thrw2();    
+        System.out.print ("--");
         System.out.print(" converter test suite for java ");
         System.out.print("1.");
         System.out.print(4.0);
@@ -1017,7 +1039,7 @@ public class TestJava4
         finally
         {   b.append("finally");
         }
-        assertO(b.toString(), "49catchCan not halve odd numberfinally");
+        assertO(b.toString(), "49catchcom.greentube.convertertest.CustomException: Can not halve odd numberfinally");
         
         b = new StringBuffer();
         try {
@@ -2132,7 +2154,7 @@ public class TestJava4
         	Integer e = (Integer) iti.next();
         	if (e.intValue()%2==1) iti.remove();
         }
-        assertO(itt.toString(), "[8, 14]");        
+        assertO(itt.toString(), "[8, 14]");
     }
     
     

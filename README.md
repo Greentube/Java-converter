@@ -5,7 +5,8 @@ A java-to-javascript and java-to-C# source to source compiler.
 ## Summary
 
 To allow the use of existing java code inside a browser/node.js/.NET environment,
-java code can be transformed into equivalent javascript or C# code.
+java code can be transformed into equivalent javascript 
+(compatible with ECMAScript 5 or later) or C# (compatible with netcoreapp1.1).
 The compiler supports all language constructs of java 8 (including lambdas), but 
 imposes a few [restrictions of its own](doc/restrictions.txt) on the input code.
 A large [subset of the functionality](doc/libraries.txt) of the java.lang and java.util

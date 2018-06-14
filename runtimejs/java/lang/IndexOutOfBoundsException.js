@@ -4,5 +4,6 @@ var java_lang_IndexOutOfBoundsException =
     {   java_lang_RuntimeException.$.call(this);
     },
 };
-_class (java_lang_IndexOutOfBoundsException, java_lang_RuntimeException, null, "java.lang.IndexOutOfBoundsException" 
+_class (java_lang_IndexOutOfBoundsException, java_lang_RuntimeException, null, 
+"java.lang.IndexOutOfBoundsException" 
 , {});
