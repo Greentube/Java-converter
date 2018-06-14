@@ -27,6 +27,9 @@ _class(java_util_ComparatorReversed, java_lang_Object, [java_util_Comparator],
 {   compare_2: function(x,y) 
     {   return this.a.compare_2(y,x);
     },        
+    reversed_0: function() 
+    {   return this.a;
+    },        
 });
 
 var java_util_ComparatorThenComparing =

@@ -1,84 +1,94 @@
- Restrictions
- ------------
+Restrictions
+------------
  
- Basically the language features of java 8 are provided with the following restrictions
- (which will be checked by the converter at compile time):
+Basically the language features of java 8 are provided with the following restrictions
+(which will be enforced by the converter at compile time):
  
- - Threads   
-       No threading is supported at all. No synchronization keywords either.      
- - Exceptions
-      No explicit exception handling. It is not supported to catch exceptions 
-      (no try/catch/finally clauses). A few supported types of RuntimeException may be thrown
-      to signify program errors which will lead to a console output and to the stop of the 
-      thread/callback.  
-      Other misbehavior of the program at runtime (anything that causes a RuntimeException in java)
-      could lead to undefined results. The C#-target will behave very similar to java and
-      throw exceptions of its own in these cases. In javascript there are quite some situations 
-      (e.g. access out of array bounds) that can not reliably detected at the correct moment
-      and will cause more trouble later on. Nevertheless a best affort is done by the converter 
-      to behave as fail-fast as is possible and throw appropriate exceptions for ease of debugging.
- - no 'long', 'short', 'float'
-      These datatypes are either impossible to implement (javascript only supports a generic 
-      Number type that can not hold a 64 bit quantity) or quite useless anyway (short, float).
-      In some cases a java library method that returns a 'long' is supported. To use this 
-      method, the java code needs to convert the result to a double or int immediately.  
- - Auto-boxing, Auto-unboxing not supported
-      This feature would be a horror to get right in all conversion targets. Since its use
-      is already quite disfavored in the first place, the converter does not allow it at all.
- - Method/constructor overloading only based on number of parameters
-      Instead of implementing the java way of using the full type signatures
-      of all parameters, the javascript target uses a simpler system that 
-      takes only the number of parameters into account. As a consequence, it is not possible
-      to have multiple identically named methods with the same number of parameters 
-      and the same static/non-static state in the same class.         
- - No shadowing of fields and methods 
-      No two instance fields in objects that are somehow inherited from each other can have the 
-      same name - even if one or both are private. 
-      Same holds for methods - but there the "name" is considered to be the 
-      identifier in conjunction with the number-of-parameters.
-      Static fields or methods do not have this restriction.
-      Also local variables may shadow fields just as normally.
- - Compound assignments and increment/decrement operators must not have side-effects in the target 
-      When using any of the operators +=,-=,*=,... it is only possible to use 
-      a target that is guaranteed to have no side effects on evaluation. While 
-      it is possible to use  a[i]+=5  it is unsupported to write  a[i++]+=4.
-      Same thing holds for ++ and --  (i[4]++ is ok, i[get()]++  is not).  
-      This is to avoid faulty double-evaluation behavior in any conversion target. 
- - Access to static members is not allowed by using an instance expression with side-effects
-      It is legal in java to call a static method with something like: 
-      exp.valueOf(4711)    // where exp is of type Integer 
-      Since the expression will just be eliminated during conversion, it must not
-      have any possible side effects.
-  - Different default implementation of hashCode()
-      Objects not overriding hashCode will provide a default implementation that may deliver
-      an extremely weak hash (only depending on the object's class). Do not 
-      use these as keys in any Hashtable/HashMap/HashSet. 
-      The String and Double objects will create a good hash, but a different one as is specified 
-      in java. Do not rely on certain hash values for specific strings.
- - Different default implementation of toString()
-      Objects not overriding toString will provide a default implementation
-      that is conversion target specific. Do only use to create a human readable debug output and
-      do not rely on any specific format.
- - String.split() only accepts a simple search string
-      Instead of supporting the whole regular expression framework for just this method, 
-      the functionality is limited to have regular expressions that only match a single static
-      string. To enforce this, the regex parameter must be a compile-time constant. 
- - Arrays.sort() and List.sort() only work with a non-null Comparator. The converter
-      enforces this in a very conservative way.
- - Limited subset of java core classes
-      The converter core itself provides a very limited subset of the java core classes and
-      also a limited number of methods in each. 
-      Mainly the most crucial parts of java.lang and java.util are provided and a
-      minimal version of java.io.PrintStream to make 'System.out' and 'System.err' available 
-      for simple output. 
-      The whole java 8 Stream API is not provided, but similar functionality can be created
-      using generics and lambda expressions. The Supplier, Function, Consumer, BiConsumer, 
-      Predicate interfaces are provided to allow basic generic data transformation operations.
-      See the document libraries.txt for a complete list.
- - Slightly different type inference algorithm
-      Compared to the standard java compiler, there are some slight differences what kind of
-      types the converter can actually infer for lambda expressions and for the "diamond" operator.
-      Since type inference is undecidable in the general case, a best effort approach is done
-      by the converter. This will not always succeed in the same set of cases as for the 
-      standard java compiler. When this happens, the problem will become apparent at compile time.    
+- Threads   
+    No threading is supported at all. No synchronization keywords either.   
       
+- Exceptions
+    While exceptions are largely supported, it is not possible to use a catch-clause
+    for any of the following exceptions: 
+        NullPointerException
+        ArrayIndexOutOfBoundsException
+        ArrayStoreException
+        NegativeArraySizeException
+        ClassCastException
+        ArithmeticException
+    You can also not catch any super-class of these, like RuntimeException or Exception.
+    But you can and should throw such exceptions to signify program errors.
+      
+    This restriction is necessary because the target systems will not throw these Exceptions
+    in the same way as the java-VM does. Sometimes it will not throw any Exception at all
+    and just messes up the data structures in an unpredictable way. So you can not 
+    do anything useful reliably after one of these "bad" program faults have happened. 
+      
+- no 'long', 'short', 'float'
+    These datatypes are either impossible to implement (javascript only supports a generic 
+    Number type that can not hold a 64 bit quantity) or quite useless anyway (short, float).
+    In some cases a java library method that returns a 'long' is supported in a very specify way.
+    To use this method, the java code needs to convert the result to a double or int explicitly.  
+      
+- Auto-boxing, Auto-unboxing not supported
+    This feature would be a horror to get right in all conversion targets. Since its use
+    is already quite disfavoured in the first place, the converter does not allow it at all.
+      
+- Method/constructor overloading only based on number of parameters
+    Instead of implementing the java way of using the full type signatures
+    of all parameters, the javascript target uses a simpler system that 
+    takes only the number of parameters into account. As a consequence, it is not possible
+    to have multiple identically named methods with the same number of parameters 
+    and the same static/non-static state in the same class.         
+      
+- No shadowing of fields and methods 
+    No two instance fields in objects that are somehow inherited from each other can have the 
+    same name - even if one or both are private. 
+    Same holds for methods - but there the "name" is considered to be the 
+    identifier in conjunction with the number-of-parameters.
+    Static fields or methods do not have this restriction.
+    Also local variables and parameters may shadow fields just as normally.
+      
+- Compound assignments and increment/decrement operators must not have side-effects in the target 
+    When using any of the operators +=,-=,*=,... it is only possible to use 
+    a target that is guaranteed to have no side effects on evaluation. While 
+    it is possible to use  a[i]+=5  it is unsupported to write  a[i++]+=4.
+    Same thing holds for ++ and --  (i[4]++ is ok, i[get()]++  is not).  
+      
+    This is to avoid faulty double-evaluation behaviour in any conversion target. 
+      
+- Access to static members is not allowed by using an instance expression with side-effects
+    It is legal in java to call a static method with something like: 
+    exp.valueOf(4711)    // where exp is of type Integer 
+    Since the expression will just be eliminated during conversion, it must not
+    have any possible side effects.
+      
+- String.split() only accepts a simple search string
+    Instead of supporting the whole regular expression framework for just this method, 
+    the functionality is limited to have regular expressions that only match a single static
+    string. To enforce this, the regex parameter must be a compile-time constant. 
+      
+- Arrays.sort() and List.sort() only work with a non-null Comparator. 
+    To avoid implementing the whole concept of "natural ordering" and the
+    Comparable interface, you must always provide an explicit Comparator.
+    The java converter enforces this in a conservative way. If it can not detect
+    the non-nullness of the parameter from the usage, you can make it obvious by
+    calling an otherwise useless ".reversed().reversed()" on the comparator object.
+      
+- Limited subset of java core classes
+    The converter core itself provides a limited subset of the java core classes and
+    also a limited number of methods in each. 
+    Mainly the most crucial parts of java.lang and java.util are provided and a
+    minimal version of java.io.PrintStream to make 'System.out' and 'System.err' available 
+    for simple logging. 
+    The java 8 Stream API is not provided, but similar functionality can be created
+    using generics and lambda expressions. The Supplier, Function, Consumer, BiConsumer, 
+    Predicate interfaces are provided to allow basic generic data transformation operations.
+    See the document libraries.txt for a complete list.
+      
+- Slightly different type inference algorithm
+    Compared to the standard java compiler, there are some slight differences what kind of
+    types the converter can actually infer for lambda expressions and for the "diamond" operator.
+    Since type inference is undecidable in the general case, a best effort approach is done
+    by the converter. This will not always succeed in the same set of cases as for the 
+    standard java compiler. When this happens, the problem will become apparent at compile time.    

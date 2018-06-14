@@ -398,6 +398,8 @@ public class TestJava8 extends TestJava7
     final static Comparator<String> c2 = 
         ((Comparator<String>) (a,b)->b.length() - a.length() )
               .thenComparing( (a,b)->a.compareTo(b) );
+    // non-final comparator object 
+    public static Comparator<String> cv2 = (Comparator<String>) (a,b)->a.compareTo(b);  
 
     public static void sortliststest()
     {
@@ -436,6 +438,12 @@ public class TestJava8 extends TestJava7
         List<String> sl = Arrays.asList("more","of","the","same", "with", "less", "effort");
         sl.sort (c2);      
         assertO(sl.toString(), "[effort, less, more, same, with, the, of]");
+        
+        // perform a sort with a non-final comparator (need to explicitly convince the converter
+        // it is surely not null)
+        sl.sort(cv2.reversed().reversed());
+        assertO(sl.toString(), "[effort, less, more, of, same, the, with]");
+        
     }
 
 

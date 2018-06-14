@@ -1,0 +1,54 @@
+Incompatibilities
+-----------------
+
+Greatest care has been taken to make the generated code behave exactly 
+like the java original. Nevertheless there are some special cases where
+this compatibility can not be maintained. All this cases are explicitly 
+listed here. Other incompatibilities that are found in the future constitute
+a bug in the converter and will either be fixed or also documented here.
+
+
+- Different default implementation of hashCode()
+    Objects not overriding hashCode will provide a default implementation that may deliver
+    an extremely weak hash (only depending on the object's class). Do not 
+    use these as keys in any Hashtable/HashMap/HashSet. 
+    The String and Double objects will create a good hash, but a different one as is specified 
+    in java. Do not rely on certain hash values for specific strings.
+            
+- Different default implementation of toString()
+    Objects not overriding toString will provide a default implementation
+    that is conversion target specific. Do only use to create a human readable debug output and
+    do not rely on any specific format.
+
+- "bad" RuntimeExceptions
+    There is a set of runtime situations where the converted code may not behave
+    exactly as in java. Specifically these are all occurrences where the java-VM would
+    throw any of these exceptions:    
+        NullPointerException
+        ArrayIndexOutOfBoundsException
+        ArrayStoreException
+        NegativeArraySizeException
+        ClassCastException
+        ArithmeticException
+    Whenever the program attempts do do such a faulty operation, the behaviour is 
+    undefined. It could very well wreck arbitrary data structures and bring the program
+    into a situation from which it can not recover.
+    The converter already enforces that such exceptions may never be caught, so the
+    developer is probably made aware of the problem. Nevertheless testing the original
+    java code to see if these exceptions could occur there is strongly recommended.
+    
+    Other RuntimeExceptions are fine to catch and all library methods should implement
+    the exact same functionality in this respect as their java original.
+   
+- transcendental operations in java.lang.Math
+    All conversion targets use the same internal representation of values 
+    of type "double" and implement all basic operations according to the standard
+    IEEE 754, so the outcome of all computations are bit-perfectly the same.  
+    
+    Nevertheless there are some transcendental operations in the "java.lang.Math"
+    library that could not be exactly replicated. As these operations are by 
+    definition impossible to compute exactly, the various libraries use different
+    approaches to calculate a near solution, and this leads to slightly different
+    results for various conversion targets.   
+    Specifically Math.exp and Math.pow show this behaviour even for small numbers.
+    

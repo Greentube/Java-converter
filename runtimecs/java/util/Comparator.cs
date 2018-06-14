@@ -31,7 +31,7 @@ namespace java.util { internal class ComparatorReversed: Comparator
     {   return Comparator_c.thenComparing(this,other);
     }    
     public virtual Comparator reversed()
-    {   return Comparator_c.reversed(this);
+    {   return other;
     }    
 }}        
 namespace java.util { internal class ComparatorThenComparing: ComparatorReversed
