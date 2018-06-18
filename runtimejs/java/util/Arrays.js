@@ -1,5 +1,3 @@
-//reference// java/lang/NullPointerException
-//reference// java/lang/IndexOutOfBoundsException
 //reference// java/lang/IllegalArgumentException
 //reference// java/lang/UnsupportedOperationException
 //load// java/lang/Object
@@ -7,7 +5,7 @@ var java_util_Arrays =
 {   
     asList_1:  function(a)
     {
-        if (a===null) throw (new java_lang_NullPointerException.$())._0();
+        if (a===null) throw new ReferenceError("NullPointerException");
         return new java_util_FixSizedArrayList.$(a);
     }
     ,    
@@ -17,10 +15,10 @@ var java_util_Arrays =
     ,
     sort_4: function(a,fromIndex,toIndex,comparator)
     {
-        if (fromIndex<0 || toIndex>a.length) throw (new java_lang_IndexOutOfBoundsException.$())._0();
-        if (comparator==null) throw (new java_lang_NullPointerException.$())._0();
+        if (fromIndex<0 || toIndex>a.length) throw new RangeError("IndexOutOfBoundsException");
+        if (comparator==null) throw ReferenceError("NullPointerException");
         var len = toIndex-fromIndex;
-        if (len<0) throw (new java_lang_IllegalArgumentException.$())._0();
+        if (len<0) throw (new java_lang_IllegalArgumentException.$())._0()._e;
         java_util_Arrays._mergesort(a,fromIndex,len,comparator, (len>=4) ? new Array(len>>1) : null);
     }
     ,    
@@ -120,21 +118,21 @@ _class(java_util_FixSizedArrayList, java_util_AbstractList, null,
 , 
 {   
     get_1: function(index) 
-    {   if (index<0 || index>=this._storage.length) throw (new java_lang_IndexOutOfBoundsException.$())._0();
+    {   if (index<0 || index>=this._storage.length) throw new RangeError("IndexOutOfBoundsException");
         return this._storage[index];	
     },
     
     set_2: function(index, obj) 
-    {   if (index<0 || index>=this._storage.length) throw (new java_lang_IndexOutOfBoundsException.$())._0();
+    {   if (index<0 || index>=this._storage.length) throw new RangeError("IndexOutOfBoundsException");
         this._storage[index] = obj;
     },
     
     add_2: function(index, obj) 
-    {   throw (new java_lang_UnsupportedOperationException.$())._0();
+    {   throw (new java_lang_UnsupportedOperationException.$())._0()._e;
     },
 
     remove_1: function (idx) 
-    {   throw (new java_lang_UnsupportedOperationException.$())._0();
+    {   throw (new java_lang_UnsupportedOperationException.$())._0()._e;
     },
 
     size_0: function()

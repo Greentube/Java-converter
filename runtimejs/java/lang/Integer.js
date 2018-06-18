@@ -8,11 +8,11 @@ var java_lang_Integer = {
     {   
         var n = Number(s);
         if (isNaN(n)) 
-        {   throw (new java_lang_NumberFormatException.$())._0(); 
+        {   throw (new java_lang_NumberFormatException.$())._0()._e; 
         }
         var i = Math.round(n);
         if (!(i===n) || i<-2147483648 || i>2147483647) 
-        {   throw (new java_lang_NumberFormatException.$())._0(); 
+        {   throw (new java_lang_NumberFormatException.$())._0()._e; 
         }
         return i;
     },

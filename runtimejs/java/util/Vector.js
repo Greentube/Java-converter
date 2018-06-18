@@ -1,5 +1,4 @@
 //reference// java/util/Enumeration
-//reference java/lang/IndexOutOfBoundsException
 //load// java/util/ArrayListImpl
 var java_util_Vector = 
 {   $: function() 
@@ -23,7 +22,7 @@ _class(java_util_Vector, java_util_ArrayListImpl, null,
 
     copyInto_1: function(array) 
     {   var l = this.size_0();
-        if (l>array.length) throw (new java_lang_IndexOutOfBoundsException.$())._0();
+        if (l>array.length) throw new RangeError("IndexOutOfBoundsException");
         for (var i=0; i<l; i++) 
         {   array[i] = this.get_1(i);
         }
@@ -89,7 +88,7 @@ _class(java_util_Vector, java_util_ArrayListImpl, null,
     setSize_1: function(newsize)
     {   
         if (newsize<=0) 
-        {   if (newsize<0) throw (new java_lang_IndexOutOfBoundsException.$())._0();
+        {   if (newsize<0) throw new RangeError("IndexOutOfBoundsException");
             this.clear_0();
         } 
         else

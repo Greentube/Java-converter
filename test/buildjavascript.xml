@@ -65,7 +65,7 @@
             output="${basedir}/build/javascript/mainperformance.js" 
             searchpath="${basedir}/build/javascript,${basedir}/../runtimejs"
             root="Performance;com/greentube/hectoc/HecToc"
-            production="yes"
+            production="no" 
             >
     </linkJavaScript>
     

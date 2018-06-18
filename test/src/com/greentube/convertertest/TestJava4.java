@@ -1355,19 +1355,19 @@ private static void thrw2()
         assertD(Math.atan(Double.POSITIVE_INFINITY), Math.PI/2);
         assertD(Math.atan(Double.NEGATIVE_INFINITY), -Math.PI/2);
         
-        assertD(Math.atan2(1.0,1.0), Math.PI/4.0);
-        assertD(Math.atan2(0.423413,1.51231212341), 0.2729876133603903);
-        assertD(Math.atan2(-0.423413,1.51231212341), -0.2729876133603903);
-        assertD(Math.atan2(-5.423413,7.51231212341), -0.625297297288531);
-        assertD(Math.atan2(-5.423413,-3.51231212341), -2.145496798096123);
-        assertD(Math.atan2(2.423413,-3.51231212341), 2.5376255622450175);
-        assertD(Math.atan2(20.0,0.0), 1.5707963267948966);
-        assertD(Math.atan2(-5.0,0.0), -1.5707963267948966);
-        assertD(Math.atan2(-20.0,-1.0), -1.6207547225168395);
-        assertD(Math.atan2(20.0,-1.0), 1.6207547225168395);
-        assertD(Math.atan2(-1.0,1.0), -0.7853981633974483);
-        assertD(Math.atan2(1.0,-3.0), 2.819842099193151);
-        assertD(Math.atan2(0,0), 0);
+        assertDX(Math.atan2(1.0,1.0), Math.PI/4.0);
+        assertDX(Math.atan2(0.423413,1.51231212341), 0.2729876133603903);
+        assertDX(Math.atan2(-0.423413,1.51231212341), -0.2729876133603903);
+        assertDX(Math.atan2(-5.423413,7.51231212341), -0.625297297288531);
+        assertDX(Math.atan2(-5.423413,-3.51231212341), -2.145496798096123);
+        assertDX(Math.atan2(2.423413,-3.51231212341), 2.5376255622450175);
+        assertDX(Math.atan2(20.0,0.0), 1.5707963267948966);
+        assertDX(Math.atan2(-5.0,0.0), -1.5707963267948966);
+        assertDX(Math.atan2(-20.0,-1.0), -1.6207547225168395);
+        assertDX(Math.atan2(20.0,-1.0), 1.6207547225168395);
+        assertDX(Math.atan2(-1.0,1.0), -0.7853981633974483);
+        assertDX(Math.atan2(1.0,-3.0), 2.819842099193151);
+        assertDX(Math.atan2(0,0), 0);
         assertNaN(Math.atan2(1.0,nan));
         assertNaN(Math.atan2(nan,1.0));
         assertNaN(Math.atan2(nan,nan));        
@@ -1400,8 +1400,8 @@ private static void thrw2()
         assertNaN(Math.cos(Double.POSITIVE_INFINITY));
         assertNaN(Math.cos(Double.NEGATIVE_INFINITY));
         
-        assertD(Math.cosh(0.2), 1.020066755619076);
-        assertD(Math.cosh(4.3), 36.85668112930399);
+        assertDX(Math.cosh(0.2), 1.020066755619076);
+        assertDX(Math.cosh(4.3), 36.85668112930399);
         assertD(Math.cosh(844.3), Double.POSITIVE_INFINITY);
         assertNaN(Math.cosh(nan));
         assertD(Math.cosh(Double.POSITIVE_INFINITY),Double.POSITIVE_INFINITY);
@@ -1409,9 +1409,9 @@ private static void thrw2()
                 
         assertD(Math.exp(0),1);
         assertDX(Math.exp(-123),3.817497188671175E-54);
-        assertD(Math.exp(-1230),0);
+        assertDX(Math.exp(-1230),0);
         assertDX(Math.exp(1.0000001123),2.7182821337221115);
-        assertD(Math.exp(1.1243665234),3.0782662215249514);
+        assertDX(Math.exp(1.1243665234),3.0782662215249514);
         assertDX(Math.exp(5.1554012729),173.3653596237277);
         assertD(Math.exp(2.41E+20),Double.POSITIVE_INFINITY);
         assertNaN(Math.exp(nan));                   
@@ -1593,10 +1593,10 @@ private static void thrw2()
         assertNaN(Math.sin(Double.NEGATIVE_INFINITY));                   
         assertNaN(Math.sin(nan));                   
         
-        assertD(Math.sinh(-24.3), -1.7878287405962826E10);
-        assertD(Math.sinh(-4.3), -36.843112570291794);
-        assertD(Math.sinh(1.41), 1.9259060604588694);
-        assertD(Math.sinh(31.41), 2.1885661656332195E13);
+        assertDX(Math.sinh(-24.3), -1.7878287405962826E10);
+        assertDX(Math.sinh(-4.3), -36.843112570291794);
+        assertDX(Math.sinh(1.41), 1.9259060604588694);
+        assertDX(Math.sinh(31.41), 2.1885661656332195E13);
         assertD(Math.sinh(Double.POSITIVE_INFINITY), Double.POSITIVE_INFINITY);                   
         assertD(Math.sinh(Double.NEGATIVE_INFINITY), Double.NEGATIVE_INFINITY);                   
         assertNaN(Math.sinh(nan));                   
@@ -1616,9 +1616,9 @@ private static void thrw2()
         assertNaN(Math.tan(Double.NEGATIVE_INFINITY));                   
         assertNaN(Math.tan(nan));                   
         
-        assertD(Math.tanh(Math.PI/4.0), 0.6557942026326724);
-        assertD(Math.tanh(Math.PI/6.0), 0.4804727781564516);
-        assertD(Math.tanh(-2), -0.9640275800758169);
+        assertDX(Math.tanh(Math.PI/4.0), 0.6557942026326724);
+        assertDX(Math.tanh(Math.PI/6.0), 0.4804727781564516);
+        assertDX(Math.tanh(-2), -0.9640275800758169);
         assertD(Math.tanh(Double.POSITIVE_INFINITY), 1.0);                   
         assertD(Math.tanh(Double.NEGATIVE_INFINITY), -1.0);                   
         assertNaN(Math.tanh(nan));                   
@@ -2593,9 +2593,20 @@ private static void thrw2()
         assertI(mos.testrelatedsuperaccess(mos), 134);        
     }    
         
+        
+    private static void printstack()
+    {   try 
+        {   throw new IllegalArgumentException();
+        }
+        catch (IllegalArgumentException e)
+        {   e.printStackTrace();
+        }
+    }
+    
     public static void assertI(int value, int expected)
     {   if (value!=expected) 
         {   System.err.println("Received(I) "+value+" instead of "+expected);
+            printstack();
         }
     }
     
@@ -2606,6 +2617,7 @@ private static void thrw2()
             }
             else 
             {   System.err.println("Received(O) "+value+" instead of "+expected);
+                printstack();
             }
         }
     }
@@ -2613,28 +2625,33 @@ private static void thrw2()
     public static void assertB(boolean value, boolean expected)
     {   if (value!=expected) 
         {   System.err.println("Received(B) "+value+" instead of "+expected);
+            printstack();
         }
     }
     
     public static void assertB(boolean b)
     {   if (!b) 
         {   System.err.println("Check failed");
+            printstack();
         }
     }
     
     public static void assertD(double value, double expected)
     {   if (value!=expected) 
         {   System.err.println("Received(D) "+value+" instead of "+expected);
+            printstack();
         }
     }
     public static void assertDX(double value, double expected)
     {   if (value!=expected) 
         {   if (Double.isNaN(value) || Double.isNaN(expected)) 
             {   System.err.println("Received(DX) "+value+" instead of "+expected);
+                printstack();
             }
             double quot = Math.abs(value / expected);
-            if (Double.isNaN(quot) || quot<0.99999999999999 || quot>1.000000000000001) 
+            if (Double.isNaN(quot) || quot<0.9999999999999 || quot>1.00000000000001) 
             {   System.err.println("Received(DX) "+value+" instead of "+expected);
+                printstack();
             }
         }
     }
@@ -2642,22 +2659,26 @@ private static void thrw2()
     public static void assertNaN(double value)
     {   if (!Double.isNaN(value)) 
         {   System.err.println("Received "+value+" instead of expected NaN");
+            printstack();
         }
     }
     public static void assertPositiveZero(double value)
     {   if (!(value==0.0 && 1/value==Double.POSITIVE_INFINITY)) 
         {   System.err.println("Received "+value+" instead of positive 0");
+            printstack();
         }
     }
     public static void assertNegativeZero(double value)
     {   if (!(value==0.0 && 1/value==Double.NEGATIVE_INFINITY)) 
         {   System.err.println("Received "+value+" instead of negative 0");
+            printstack();
         }
     }
 
     public static void assertBA(byte[] value, byte[] expected)
     {   if (value.length != expected.length) 
         {   System.err.println("Received "+value.length+" bytes instead of "+expected.length);  
+            printstack();
             return;
         }
         for (int i=0; i<value.length; i++) 
@@ -2668,6 +2689,7 @@ private static void thrw2()
     public static void assertSA(String[] value, String[] expected) 
     {   if (value.length != expected.length) 
         {   System.err.println("Received "+value.length+" strings instead of "+expected.length);  
+            printstack();
             return;
         }
         for (int i=0; i<value.length; i++) 

@@ -294,9 +294,9 @@ aspect GenerateJS
     // --- ThrowStmt ---
     public void ThrowStmt.generateJS(CodePrinterJS out) 
     {
-        out.print("throw ");
+        out.print("throw(");
         getExpr().generateUsingResultJS(out);
-        out.println(";");
+        out.println(")._e;");
     }
         
     // --- TryStmt ---
@@ -317,11 +317,15 @@ aspect GenerateJS
             }
             
             out.print("catch (");
-            out.printJSIdentifier(varid,"");
+            out.printJSIdentifier(varid,"$");
             out.println(")");
             out.println("{");
             out.increaseIndent();
-        
+            out.print("var ");
+            out.printJSIdentifier(varid,"");
+            out.print(" = ");
+            out.printJSIdentifier(varid,"$");
+            out.println(".throwable;");
             for (int i=0; i<n; i++)
             {   cc = getCatchClause(i);
                 String var2id = varid;
@@ -373,7 +377,7 @@ aspect GenerateJS
                 }
             }
             out.print("else { throw ");
-            out.printJSIdentifier(varid,"");
+            out.printJSIdentifier(varid,"$");
             out.println("; }");
             
             out.decreaseIndent();

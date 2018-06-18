@@ -1,14 +1,12 @@
 //complete// java/io/PrintStream
-//reference// java/lang/NullPointerException
-//reference// java/lang/IndexOutOfBoundsException
 //load// java/lang/Object
 var java_lang_System = 
 {    
     arraycopy_5 : function(src, srcPos, dest, destPos, length) 
-    {   if (src==null || dest==null) throw (new java_lang_NullPointerException.$())._0();
+    {   if (src==null || dest==null) throw new ReferenceError("NullPointerException");
         if (!(src._isArray) || !(dest._isArray)) throw new TypeError("ArrayStoreException");
         if (length<0 || srcPos<0 || srcPos+length>src.length
-                     || destPos<0 || destPos+length>dest.length) throw (new java_lang_IndexOutOfBoundsException.$())._0();
+                     || destPos<0 || destPos+length>dest.length) throw new RangeError("IndexOutOfBoundsException");
         
         if (destPos<=srcPos) 
         {   for (var i = 0; i < length; i++) 

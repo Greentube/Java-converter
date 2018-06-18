@@ -1,4 +1,3 @@
-//reference// java/lang/NullPointerException
 //load// java/lang/Object
 var java_util_Comparator = { 
     _superinterfaces: [], 
@@ -7,7 +6,7 @@ var java_util_Comparator = {
         {   return new java_util_ComparatorReversed.$(this);
         },
         thenComparing_1: function(other)
-        {   if (other===null) throw (new java_lang_NullPointerException.$())._0();
+        {   if (other===null) throw new ReferenceError("NullPointerException");
             return new java_util_ComparatorThenComparing.$(this,other);
         },
     }

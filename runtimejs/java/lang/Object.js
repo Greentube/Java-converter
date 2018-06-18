@@ -214,7 +214,7 @@ var _imul = (typeof Math.imul === "function") ? Math.imul : function(a, b)
 // integer division with correct behaviour over the full ranges and 0 exception
 var _idiv = function(a,b)
 {
-    if (b===0) throw new RangeError("/ by zero");
+    if (b===0) throw new RangeError("ArithmeticException");
     return (a/b)|0;
 };
 

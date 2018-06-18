@@ -13,7 +13,7 @@ var java_lang_Double =
     parseDouble_1 : function(s) 
     {   
         var n = Number(s);
-        if (isNaN(n))throw (new java_lang_NumberFormatException.$())._0();
+        if (isNaN(n))throw (new java_lang_NumberFormatException.$())._0()._e;
         return n;
     },
     toString_1: function(d) 
