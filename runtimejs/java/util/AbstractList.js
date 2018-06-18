@@ -95,12 +95,12 @@ _class(java_util_AbstractList, java_util_AbstractCollection, [java_util_List],
     },
  
     removeAll_1: function (collection) 
-    {   if (collection===null) throw new ReferenceError("NullPointerException");
+    {   if (collection===null) throw _NullPointerException();
         return this._filter(collection,false);
     },
     
     retainAll_1: function (collection) 
-    {   if (collection===null) throw new ReferenceError("NullPointerException");
+    {   if (collection===null) throw _NullPointerException();
         return this._filter(collection,true);
     },
     

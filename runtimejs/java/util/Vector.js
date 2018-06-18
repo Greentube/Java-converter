@@ -22,7 +22,7 @@ _class(java_util_Vector, java_util_ArrayListImpl, null,
 
     copyInto_1: function(array) 
     {   var l = this.size_0();
-        if (l>array.length) throw new RangeError("IndexOutOfBoundsException");
+        if (l>array.length) throw _IndexOutOfBoundsException();
         for (var i=0; i<l; i++) 
         {   array[i] = this.get_1(i);
         }
@@ -88,7 +88,7 @@ _class(java_util_Vector, java_util_ArrayListImpl, null,
     setSize_1: function(newsize)
     {   
         if (newsize<=0) 
-        {   if (newsize<0) throw new RangeError("IndexOutOfBoundsException");
+        {   if (newsize<0) throw _IndexOutOfBoundsException();
             this.clear_0();
         } 
         else

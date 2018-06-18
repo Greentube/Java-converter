@@ -3,12 +3,12 @@ var java_util_function_Function =
 {   _superinterfaces: [], 
     _defaults:
     {   andThen_1: function(other)
-        {   if (other===null) throw new ReferenceError("NullPointerException");
+        {   if (other===null) throw _NullPointerException();
             return new java_util_function_FunctionAndThen.$(this,other);
         }
         ,
         compose_1: function(other)
-        {   if (other===null) throw new ReferenceError("NullPointerException");
+        {   if (other===null) throw _NullPointerException();
             return new java_util_function_FunctionAndThen.$(other,this);
         }
     },

@@ -29,7 +29,13 @@ java_lang_Object.$.prototype._classname =
 "java.lang.Object"  //replace-me-with-empty-string-for-production//
 ;
 
-// ---- global toolbox functions for classes and arrays ----
+// ---- global toolbox functions to create various error objects ----
+var _ClassCastException = function() { return new TypeError("ClassCastException"); };
+var _NullPointerException = function() { return new ReferenceError("NullPointerException"); };
+var _ArrayStoreException = function() { return new TypeError("ArrayStoreException"); };
+var _ArithmeticException = function() { return new RangeError("ArithmeticException"); };
+var _IndexOutOfBoundsException = function() { return new RangeError("IndexOutOfBounds"); };
+
 
 // set up a class to use its instances (set up prototype chain, etc.)
 function _class (classobject, base, interfaces, classname, instancemethods)
@@ -60,7 +66,7 @@ function _class (classobject, base, interfaces, classname, instancemethods)
         for (var index=0; implementedinterfaces && index<implementedinterfaces.length; index++) 
         {   var inf = implementedinterfaces[index];
             // make sure that there is a valid _superinterfaces attribute defined in all interfaces (even if empty list)
-            if (!inf._superinterfaces) throw Error("Interface without valid _superinterfaces attribute");
+            if (!inf._superinterfaces) throw new Error("Missing attribute _superinterfaces");
             
             // memorize that the object implements the interface
             if (proto._interfaces.indexOf(inf)<0) proto._interfaces = proto._interfaces.concat([inf]);            
@@ -83,7 +89,7 @@ function _class (classobject, base, interfaces, classname, instancemethods)
 function _checkclass(x,cls)
 {
     if (x===null || x instanceof cls.$) return x;
-    throw new TypeError("ClassCastException");    
+    throw _ClassCastException();    
 }
 
 // test if an arbitrary java.lang.Object implements a given Interface
@@ -93,7 +99,7 @@ function _isinterface(x,intrfc)
 // interface type check. If unsuccessfull, thows exception. Otherweise just return the value
 function _checkinterface(x,intrfc)
 {   if (x===null || x._interfaces.indexOf(intrfc)>=0) return x;
-    throw new TypeError("ClassCastException");
+    throw _ClassCastException();
 }
 
 // test if an arbitrary object is a String
@@ -103,7 +109,7 @@ function _isstr(o)
 // string type check with exception if unsuccessful. on success just return the value again
 function _checkstr(o)
 {   if (o===null || o._isString) return o;
-    throw new TypeError("ClassCastException");
+    throw _ClassCastException();
 }
 
 function _interfacehassuperinterface(intf, sintf)
@@ -214,7 +220,7 @@ var _imul = (typeof Math.imul === "function") ? Math.imul : function(a, b)
 // integer division with correct behaviour over the full ranges and 0 exception
 var _idiv = function(a,b)
 {
-    if (b===0) throw new RangeError("ArithmeticException");
+    if (b===0) throw _ArithmeticException();
     return (a/b)|0;
 };
 

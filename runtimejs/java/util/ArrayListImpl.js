@@ -19,12 +19,12 @@ _class(java_util_ArrayListImpl, java_util_AbstractList, null,
     },
   
     get_1: function(index) 
-    {   if (index<0 || index>=this._storage.length) throw new RangeError("IndexOutOfBoundsException");
+    {   if (index<0 || index>=this._storage.length) throw _IndexOutOfBoundsException();
         return this._storage[index];	
     },
     
     set_2: function(index, obj) 
-    {   if (index<0 || index>=this._storage.length) throw new RangeError("IndexOutOfBoundsException");
+    {   if (index<0 || index>=this._storage.length) throw _IndexOutOfBoundsException();
         this._storage[index] = obj;
     },
     
@@ -46,7 +46,7 @@ _class(java_util_ArrayListImpl, java_util_AbstractList, null,
 
     remove_1: function (idx) 
     {   var s = this._storage;
-        if (idx<0 || idx>=s.length) throw new RangeError("IndexOutOfBoundsException");
+        if (idx<0 || idx>=s.length) throw _IndexOutOfBoundsException();
         var obj = this._storage[idx];
         if (idx===0) 
         {   this._storage.shift();

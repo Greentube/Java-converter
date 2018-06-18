@@ -5,7 +5,7 @@ var java_util_Arrays =
 {   
     asList_1:  function(a)
     {
-        if (a===null) throw new ReferenceError("NullPointerException");
+        if (a===null) throw _NullPointerException();
         return new java_util_FixSizedArrayList.$(a);
     }
     ,    
@@ -15,8 +15,8 @@ var java_util_Arrays =
     ,
     sort_4: function(a,fromIndex,toIndex,comparator)
     {
-        if (fromIndex<0 || toIndex>a.length) throw new RangeError("IndexOutOfBoundsException");
-        if (comparator==null) throw ReferenceError("NullPointerException");
+        if (fromIndex<0 || toIndex>a.length) throw _IndexOutOfBoundsException();
+        if (comparator==null) throw _NullPointerException();
         var len = toIndex-fromIndex;
         if (len<0) throw (new java_lang_IllegalArgumentException.$())._0()._e;
         java_util_Arrays._mergesort(a,fromIndex,len,comparator, (len>=4) ? new Array(len>>1) : null);
@@ -118,12 +118,12 @@ _class(java_util_FixSizedArrayList, java_util_AbstractList, null,
 , 
 {   
     get_1: function(index) 
-    {   if (index<0 || index>=this._storage.length) throw new RangeError("IndexOutOfBoundsException");
+    {   if (index<0 || index>=this._storage.length) throw _IndexOutOfBoundsException();
         return this._storage[index];	
     },
     
     set_2: function(index, obj) 
-    {   if (index<0 || index>=this._storage.length) throw new RangeError("IndexOutOfBoundsException");
+    {   if (index<0 || index>=this._storage.length) throw _IndexOutOfBoundsException();
         this._storage[index] = obj;
     },
     

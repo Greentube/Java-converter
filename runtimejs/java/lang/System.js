@@ -3,10 +3,10 @@
 var java_lang_System = 
 {    
     arraycopy_5 : function(src, srcPos, dest, destPos, length) 
-    {   if (src==null || dest==null) throw new ReferenceError("NullPointerException");
-        if (!(src._isArray) || !(dest._isArray)) throw new TypeError("ArrayStoreException");
+    {   if (src==null || dest==null) throw _NullPointerException();
+        if (!(src._isArray) || !(dest._isArray)) throw _ArrayStoreException();
         if (length<0 || srcPos<0 || srcPos+length>src.length
-                     || destPos<0 || destPos+length>dest.length) throw new RangeError("IndexOutOfBoundsException");
+                     || destPos<0 || destPos+length>dest.length) throw _IndexOutOfBoundsException();
         
         if (destPos<=srcPos) 
         {   for (var i = 0; i < length; i++) 
