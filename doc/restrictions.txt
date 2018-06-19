@@ -24,9 +24,14 @@ Basically the language features of java 8 are provided with the following restri
     and just messes up the data structures in an unpredictable way. So you can not 
     do anything useful reliably after one of these "bad" program faults have happened. 
       
-- no 'long', 'short', 'float'
-    These datatypes are either impossible to implement (javascript only supports a generic 
-    Number type that can not hold a 64 bit quantity) or quite useless anyway (short, float).
+- no 'long' and no 'float'
+    These datatypes are impossible to implement correctly in javascript, since this
+    only supportes a single Number type. This type is identical to a java double and
+    can also be used to hold all integer values up to the size of int. A "long" can just
+    not be squeezed into the 52-bit mantissa. On the other hand, 'float' would somehow
+    fit, but because of the higher precision of the Number type, floating point computations
+    would give different results in the converted code. So I also dropped support for this.
+  
     In some cases a java library method that returns a 'long' is supported in a very specify way.
     To use this method, the java code needs to convert the result to a double or int explicitly.  
       

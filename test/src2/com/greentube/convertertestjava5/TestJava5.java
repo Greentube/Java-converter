@@ -118,8 +118,8 @@ public class TestJava5 extends TestJava4
 
         Day day1 = Day.MONDAY;
         Day day2 = Day.FRIDAY;
-        Day day3 = Day.FRIDAY;
-        Day day4 = Day.SUNDAY;
+        Day day3 = Day.valueOf("FRIDAY");
+        Day day4 = Day.valueOf("SUNDAY");
         Day day5  = null;
 
         switch (day1) 
@@ -177,7 +177,9 @@ public class TestJava5 extends TestJava4
         assertO(a2.toString(), "GIRAFFE!");
         assertB(Animal.FROG.isAmphibian());
         assertO(Animal.FROG.toString(), "Kermit");
-
+        assertI(a1.ordinal(),0);
+        assertI(a2.ordinal(),1);
+        assertI(Animal.TURTLE.ordinal(),2);
         Animal[] animals = Animal.values();
         assertI(animals.length,5);
         assertO(animals[1],Animal.GIRAFFE);
@@ -190,6 +192,15 @@ public class TestJava5 extends TestJava4
             public void run() {}
         };
         assertO(r.toString(), "a=null");
+        
+        Day x = null;
+        try 
+        {   x = Day.valueOf("NEVERDAY");
+        }
+        catch (IllegalArgumentException e)
+        {   
+        }
+        assertO(x,null);
     }
 
     public static void varargstest() 

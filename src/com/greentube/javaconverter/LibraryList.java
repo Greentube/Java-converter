@@ -131,6 +131,15 @@ public class LibraryList
             
             "void run()",
         },
+        {   "java.lang.Short",
+            
+            "<init>(short)",
+            "short shortValue()",
+            "java.lang.String toString(short)",
+            "java.lang.Short valueOf(short)",
+            "MIN_VALUE",
+            "MAX_VALUE",
+        },
         {   "java.lang.String",
             
             "<init>(char[])",

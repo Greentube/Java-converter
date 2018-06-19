@@ -6,7 +6,6 @@ import com.greentube._convertertest2.ModifierTestOtherPackageSubClass;
 import com.greentube._convertertest2.TestInterface_X;
 import com.greentube._convertertest2.TestObject2_;
 import com.greentube._convertertest2._TestInterface2;
-import com.greentube._convertertest2.A;
 import com.greentube.convertertestreserved.debugger.arguments;
 import com.greentube.convertertestreserved.event.lock;
 import com.greentube.convertert€st_3.InitSequenceTestA;
@@ -30,25 +29,25 @@ public class TestJava4
 
     static String initialized = "hello".substring(2);
 
-private static IllegalArgumentException mke()
-{   return new IllegalArgumentException();
-}
-private static void thrw()
-{   IllegalArgumentException e = mke();
-    if (e!=null) 
-    {   throw e; 
-    }
-}
-private static void thrw2()
-{   try { thrw(); } 
-    catch (IllegalArgumentException e) 
-    {   System.err.println("did catch!"); 
-        System.err.println(e.toString());
-        e.printStackTrace();  
-        System.err.println("rethrowing...");
-        throw e; 
-    }
-}
+//private static IllegalArgumentException mke()
+//{   return new IllegalArgumentException();
+//}
+//private static void thrw()
+//{   IllegalArgumentException e = mke();
+//    if (e!=null) 
+//    {   throw e; 
+//    }
+//}
+//private static void thrw2()
+//{   try { thrw(); } 
+//    catch (IllegalArgumentException e) 
+//    {   System.err.println("did catch!"); 
+//        System.err.println(e.toString());
+//        e.printStackTrace();  
+//        System.err.println("rethrowing...");
+//        throw e; 
+//    }
+//}
 
     public static void main(String[] args) 
     {
@@ -79,6 +78,7 @@ private static void thrw2()
         charactertest();
         doubletest();
         integertest();
+        shorttest();
         mathtest();
         objecttest();
         stringtest();
@@ -104,8 +104,8 @@ private static void thrw2()
         i = staticint99;
         assert i == 99 : "Strangley, "+staticint99+" but not 99"; 
         
-        // compilation test only
-        A a = new A();
+//        // compilation test only
+//        A a = new A();
 //        throw new RuntimeException("x");
 //        throw new RuntimeException();
 //        throw new NullPointerException("hey");
@@ -815,6 +815,13 @@ private static void thrw2()
         d = 0.999999999999;
         double d2 = d;
         assertD(d++,d2);
+        
+        int dd = 3;
+        int xx;
+        dd += xx = 15;
+        assertI(dd,18);
+        assertI(xx,15);
+        assertI(xx=99,99);
     }
 
        
@@ -935,7 +942,17 @@ private static void thrw2()
     		v=v+j;
     	}
     	assertI(v,31);
-    	assertI(w,3);
+    	assertI(w,3);    	
+    	{
+    	   int i,j,s;
+    	   int k = 4;
+    	   int n = 7;
+            for (s = 1, i = n, j = 1; i != n - k; i--, j++) {
+                s *= i;
+                s /= j;
+            }
+            assertI(s,35);	
+    	}
     	
     	int x,y=1,z=4;
     	while (z<10) {
@@ -1297,6 +1314,83 @@ private static void thrw2()
         assertI(parsed,-7);
     }
     
+    public static void shorttest()
+    {
+        System.out.println("- short");
+     
+        Short s = Short.valueOf((short)-55);
+        assertI(s.shortValue(), -55);
+        Short s2 = new Short(s.shortValue());
+        assertO(s,s2);
+        assertI(Short.MIN_VALUE, -32768);
+        assertI(Short.MAX_VALUE, 32767);
+        assertO(s2.toString(), "-55");
+        
+        short x = 55 + 77;
+        x += 66653354;
+        assertI(x, 3374);
+        x -= 429384374;
+        assertI(x, 10872);
+        for (int i=0; i<100000; i++) { x++; }
+        assertI(x, -20200);
+        for (int i=0; i<200000; i++) { x--; }
+        assertI(x, -23592);
+        for (int i=0; i<70000; i++) { ++x; }
+        assertI(x, -19128);
+        for (int i=0; i<90000; i++) { --x; }
+        assertI(x, 21944);
+        for (int i=0; i<100; i++)  { x = (short)(x + i); };
+        assertI(x, 26894);
+        
+        int i = 12;
+        x = 7400;
+        x *= i;
+        assertI(x, 23264);
+        x = 7400;
+        x /= i;
+        assertI(x, 616);
+        x = 7400;
+        x %= i;
+        assertI(x, 8);
+        x = 7400;
+        x &= i;
+        assertI(x, 8);
+        x = 7400;
+        x |= i;
+        assertI(x, 7404);
+        x = 7400;
+        x ^= i;
+        assertI(x, 7396);
+        x = 7400;
+        x >>= i;
+        assertI(x, 1);
+        x = 7400;
+        x >>>= i;
+        assertI(x, 1);
+        x = 7400;
+        x <<= i;
+        assertI(x, -32768);
+        
+        x = -6254;
+        short y = 7;
+        assertI(x + y, -6247); 
+        assertI(x * y, -43778); 
+        assertI(x - y, -6261); 
+        assertI(x / y, -893); 
+        assertI(x % y, -3); 
+        assertI(x & y, 2); 
+        assertI(x | y, -6249); 
+        assertI(x ^ y, -6251); 
+        assertI(x <<  y, -800512);
+        assertI(x >>>  y, 33554383);
+        assertI(x >>  y, -49);
+        
+        short[] as = new short[]{ 44,55,-66 };
+        assertI(as[0], 44);
+        assertI(as[1], 55);
+        assertI(as[2], -66);    
+        assertB( as instanceof short[]);            
+    }
 
     public static void mathtest() {
     	System.out.println("- math");

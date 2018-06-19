@@ -462,44 +462,35 @@ aspect GenerateCS
     public void AssignMulExpr.generateCS(CodePrinterCS out) 
     {
         generateWithOptionalCastCS(out, "*");
-    }
-    
+    }    
     
     public void AssignAndExpr.generateCS(CodePrinterCS out) 
     {
-        getDest().generateCS(out);
-        out.print(" &= ");
-        getSource().generateUsingResultCS(out);
+        generateWithOptionalCastCS(out, "&"); 
+
     }
     public void AssignOrExpr.generateCS(CodePrinterCS out) 
     {
-        getDest().generateCS(out);
-        out.print(" |= ");
-        getSource().generateUsingResultCS(out);
+        generateWithOptionalCastCS(out, "|"); 
     }
     public void AssignXorExpr.generateCS(CodePrinterCS out) 
     {
-        getDest().generateCS(out);
-        out.print(" ^= ");
-        getSource().generateUsingResultCS(out);
+        generateWithOptionalCastCS(out, "^"); 
     }
     public void AssignLShiftExpr.generateCS(CodePrinterCS out) 
     {
-        getDest().generateCS(out);
-        out.print(" <<= ");
-        getSource().generateUsingResultCS(out);
+        generateWithOptionalCastCS(out, "<<"); 
     }
     public void AssignRShiftExpr.generateCS(CodePrinterCS out) 
     {
-        getDest().generateCS(out);
-        out.print(" >>= ");
-        getSource().generateUsingResultCS(out);
+        generateWithOptionalCastCS(out, ">>"); 
     }
     public void AssignURShiftExpr.generateCS(CodePrinterCS out) 
     {
         getDest().generateCS(out);
-        out.print(" = (int) (");
-        out.print("((uint)(");
+        out.print(" = (");
+        getDest().type().generateNameCS(out);        
+        out.print(")(((uint)(");
         getDest().generateCS(out);
         out.print(")) >> ");
         getSource().generateUsingResultCS(out);
@@ -597,9 +588,11 @@ aspect GenerateCS
     }
     public void OrBitwiseExpr.generateCS(CodePrinterCS out) 
     {
+        out.print("((int)(");
         getLeftOperand().generateUsingResultCS(out);
-        out.print("|");
-        getRightOperand().generateUsingResultCS(out);   
+        out.print("))|((int)(");
+        getRightOperand().generateUsingResultCS(out);
+        out.print("))");   
     }
     public void XorBitwiseExpr.generateCS(CodePrinterCS out) 
     {
@@ -705,6 +698,16 @@ aspect GenerateCS
                 } 
                 else
                 {   out.print("((char)(");
+                }               
+                e.generateUsingResultCS(out);
+                out.print("))");
+            } 
+            else if (t.isShort()) 
+            {   if (e.type().isDouble()) 
+                {   out.print("(SYSTEM.castToShort(");
+                } 
+                else
+                {   out.print("((short)(");
                 }               
                 e.generateUsingResultCS(out);
                 out.print("))");

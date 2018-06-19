@@ -96,15 +96,17 @@ aspect GenerateJS
     public void ForStmt.generateJS(CodePrinterJS out) 
     {   
         out.print("for (");
-        if (getNumInitStmt()==0) 
-        {   out.print("; ");
-        }
-        else
-        {   for (int i=0; i<getNumInitStmt(); i++) 
-            {   if (i>0) out.print(",");
-                getInitStmt(i).generateJS(out);
+        for (int i=0; i<getNumInitStmt(); i++) 
+        {   if (i>0) out.print(",");               
+            Stmt s = getInitStmt(i);
+            if (s instanceof ExprStmt)
+            {   ((ExprStmt)s).getExpr().generateJS(out);
+            }
+            else
+            {   s.generateJS(out);
             }
         }
+        out.print("; ");
         if (hasCondition()) 
         {   getCondition().generateUsingResultJS(out);
         }
@@ -410,13 +412,9 @@ aspect GenerateJS
             {   type().generateDefaultValueJS(out);
             }
         }
-        out.print(";");
         if (! (getParent().getParent() instanceof ForStmt)) 
-        {   out.println();
+        {   out.println(";");
         } 
-        else 
-        {   out.print(" ");
-        }
     }
     
 }

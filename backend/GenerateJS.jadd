@@ -116,8 +116,7 @@ aspect GenerateJS
         }       
                 
         if (this instanceof EnumDecl) 
-        {   out.print("values_0 : function()");
-            out.println();
+        {   out.println("values_0 : function()");
             out.println("{");
             out.increaseIndent();
             out.println("return [");
@@ -133,6 +132,27 @@ aspect GenerateJS
             out.decreaseIndent();
             out.println("}");
             out.println(",");
+            
+            out.println("valueOf_1 : function(n)");
+            out.println("{");
+            out.increaseIndent();
+            out.println("switch(n)");
+            out.println("{");
+            out.increaseIndent();            
+            for (EnumConstant ec:((EnumDecl)this).enumConstants()) 
+            {   out.print("case ");
+                Constant.generateStringJS(out,ec.getID());
+                out.print(": return ");                            
+                out.printJSName(packageName(), uniqueName());           
+                out.print(".");
+                out.printJSIdentifier(ec.getID(),"");                
+                out.println(";");
+            }
+            out.println("default: throw (new java_lang_IllegalArgumentException.$())._0()._e;");
+            out.decreaseIndent();
+            out.println("}");            
+            out.decreaseIndent();
+            out.println("},");
         }           
                         
         out.decreaseIndent(); 
@@ -520,6 +540,7 @@ aspect GenerateJS
         {   if (et.isInt()) { out.print("\"I\""); }
             else if (et.isByte()) { out.print("\"B\""); }
             else if (et.isChar()) { out.print("\"C\""); }
+            else if (et.isShort()) { out.print("\"S\""); }
             else if (et.isBoolean()) { out.print("\"Z\""); }
             else if (et.isDouble()) { out.print("\"D\""); }
             else 

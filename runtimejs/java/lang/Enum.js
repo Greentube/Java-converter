@@ -1,3 +1,4 @@
+//reference// java/lang/IllegalArgumentException
 //load// java/lang/Object
 var java_lang_Enum = {
     $: function()

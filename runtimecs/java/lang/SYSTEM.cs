@@ -54,6 +54,10 @@ namespace java.lang { public class SYSTEM
     {   return (char) castToInt(x);
     }
     
+    public static short castToShort(double x) 
+    {   return (short) castToInt(x);
+    }
+    
     public static int castToInt(double a) 
     {   // NaN will be cast to 0
         if (System.Double.IsNaN(a)) {

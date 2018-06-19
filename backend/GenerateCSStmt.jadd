@@ -146,18 +146,19 @@ aspect GenerateCS
     }
 
     public void ForStmt.generateCS(CodePrinterCS out, String continuelabel) 
-    {   out.print("for (");
-
-        if (getNumInitStmt()==0) 
-        {   out.print("; ");
-        } 
-        else 
-        {   for (int i=0; i<getNumInitStmt(); i++) 
-            {   if (i>0) out.print(", ");
-                getInitStmt(i).generateCS(out);
+    {  
+        out.print("for (");
+        for (int i=0; i<getNumInitStmt(); i++) 
+        {   if (i>0) out.print(",");               
+            Stmt s = getInitStmt(i);
+            if (s instanceof ExprStmt)
+            {   ((ExprStmt)s).getExpr().generateCS(out);
             }
-            out.print(" ");
+            else
+            {   s.generateCS(out);
+            }
         }
+        out.print("; ");
         if (hasCondition()) {
             getCondition().generateUsingResultCS(out);
         } 
@@ -425,8 +426,7 @@ aspect GenerateCS
                 }                   
             }
         }
-        out.print(";");
-        if (! (getParent().getParent() instanceof ForStmt)) { out.println(); }
+        if (! (getParent().getParent() instanceof ForStmt)) { out.println(";"); }
     }
 }
 

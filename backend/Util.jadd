@@ -356,6 +356,32 @@ aspect Util {
     {   
         return getOperand().hasPotentialSideEffects();
     }
+    public boolean MethodAccess.hasPotentialSideEffects()
+    {
+        // check side-effects of all arguments
+        for (int i=0; i<getNumArg(); i++)
+        {   if (getArg(i).hasPotentialSideEffects()) return true;
+        }
+         
+        // allow some well known core library methods here
+        MethodDecl m = decl().erasedMethod();
+        TypeDecl ht = m.hostType();
+        if (ht.packageName().equals("java.lang") 
+         && ht.uniqueName().equals("Enum"))
+        {   return false;
+        }
+        if (ht.packageName().equals("java.lang") 
+         && ht.uniqueName().equals("String"))
+        {   return false;
+        }
+        
+        // do a wild guess, that a static method "valueOf" will never have side effects
+        if (m.isStatic() && getNumArg()==1 && m.name().equals("valueOf")) 
+        {   return false;
+        }
+        
+        return true;
+    }
 
     /**
      * Test if an expression could somehow be null. Is needed to

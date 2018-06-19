@@ -372,30 +372,32 @@ aspect GenerateJS
             out.print("= ");
             s.generateUsingResultJS(out);
         } 
-        else if (s.type().isDouble()) 
+        else if (s.type().isDouble() || !d.type().isInt()) 
         {   d.generateJS(out);
             out.print(" = ");
             if (d.type().isByte()) { out.print("_castTObyte("); }
             else if (d.type().isChar()) { out.print("_castTOchar("); }
+            else if (d.type().isShort()) { out.print("_castTOshort("); }
             else if (d.type().isInt()) { out.print("_castTOint("); }
             else { throw new RuntimeException("Can not implicitly cast to destination type"); }
+            out.print("(");
             d.generateJS(out);
-            out.print(" ");
-            out.print(operator);
-            out.print(" ");
-            s.generateUsingResultJS(out);
             out.print(")");
+            out.print(operator);
+            out.print("(");
+            s.generateUsingResultJS(out);
+            out.print("))");
         } 
         else
         {   // only int values
             d.generateJS(out);
-            out.print(" = ((");
+            out.print(" = (((");
             d.generateJS(out);
-            out.print(" ");
+            out.print(")");
             out.print(operator);
-            out.print(" ");
+            out.print("(");
             getSource().generateUsingResultJS(out);
-            out.print(")|0)");          
+            out.print("))|0)");          
         }
     }
 
@@ -460,45 +462,31 @@ aspect GenerateJS
     
     public void AssignAndExpr.generateJS(CodePrinterJS out) 
     {
-        getDest().generateJS(out);
-        out.print(" &= ");
-        getSource().generateUsingResultJS(out);
+        generateWithOptionalCastJS(out,"&");
     }
     public void AssignOrExpr.generateJS(CodePrinterJS out) 
     {
-        getDest().generateJS(out);
-        out.print(" |= ");
-        getSource().generateUsingResultJS(out);
+        generateWithOptionalCastJS(out,"|");
     }
     public void AssignXorExpr.generateJS(CodePrinterJS out) 
     {
-        getDest().generateJS(out);
-        out.print(" ^= ");
-        getSource().generateUsingResultJS(out);
+        generateWithOptionalCastJS(out,"^");
     }
     public void AssignModExpr.generateJS(CodePrinterJS out) 
     {
-        getDest().generateJS(out);
-        out.print(" %= ");
-        getSource().generateUsingResultJS(out);
+        generateWithOptionalCastJS(out,"%");
     }
     public void AssignLShiftExpr.generateJS(CodePrinterJS out) 
     {
-        getDest().generateJS(out);
-        out.print(" <<= ");
-        getSource().generateUsingResultJS(out);
+        generateWithOptionalCastJS(out,"<<");
     }
     public void AssignRShiftExpr.generateJS(CodePrinterJS out) 
     {
-        getDest().generateJS(out);
-        out.print(" >>= ");
-        getSource().generateUsingResultJS(out);
+        generateWithOptionalCastJS(out,">>");
     }
     public void AssignURShiftExpr.generateJS(CodePrinterJS out) 
     {
-        getDest().generateJS(out);
-        out.print(" >>>= ");
-        getSource().generateUsingResultJS(out);
+        generateWithOptionalCastJS(out,">>>");
     }
     public void AssignSimpleExpr.generateJS(CodePrinterJS out) 
     {
@@ -740,6 +728,11 @@ aspect GenerateJS
                 getExpr().generateUsingResultJS(out);
                 out.print(")");
             } 
+            else if (t.isShort()) 
+            {   out.print("_castTOshort(");
+                getExpr().generateUsingResultJS(out);
+                out.print(")");
+            } 
             else if (t.isInt()) 
             {   if (!et.isLong() && !et.isInt()) { out.print("_castTOint("); }
                 getExpr().generateUsingResultJS(out);
@@ -931,6 +924,7 @@ aspect GenerateJS
         out.print(inc?" +1)":" -1)");
         if (e.type().isInt()) { out.print("|0"); } 
         else if (e.type().isChar()) { out.print("&0xffff"); }
+        else if (e.type().isShort()) { out.print("<<16>>16"); }
         else if (e.type().isByte()) { out.print("<<24>>24"); }
     
         if (needresult) 
@@ -939,6 +933,7 @@ aspect GenerateJS
             out.print(inc?" -1)":" +1)");
             if (e.type().isInt()) { out.print("|0"); } 
             else if (e.type().isChar()) { out.print("&0xffff"); } 
+            else if (e.type().isShort()) { out.print("<<16>>16"); }
             else if (e.type().isByte()) { out.print("<<24>>24"); }
             out.print(")");
         }       
@@ -961,6 +956,7 @@ aspect GenerateJS
         out.print(inc?" +1)":" -1)");
         if (e.type().isInt()) { out.print("|0"); }
         else if (e.type().isChar()) { out.print("&0xffff"); }
+        else if (e.type().isShort()) { out.print("<<16>>16"); }
         else if (e.type().isByte()) { out.print("<<24>>24"); }
         
         if (needresult) { out.print(")"); }   

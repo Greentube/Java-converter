@@ -122,19 +122,14 @@
                 <include name="java/lang/CharSequence.class" />
                 <include name="java/lang/Double.class" />
                 <include name="java/lang/Enum.class" />
-                <include name="java/lang/Exception.class" />
-                <include name="java/lang/IllegalArgumentException.class" />             
-                <include name="java/lang/IllegalStateException.class" />             
-                <include name="java/lang/IndexOutOfBoundsException.class" />             
                 <include name="java/lang/Integer.class" />
                 <include name="java/lang/Iterable.class" />
                 <include name="java/lang/Math.class" />
-                <include name="java/lang/NullPointerException.class" />
                 <include name="java/lang/Number.class" />
                 <include name="java/lang/Object.class" />
                 <include name="java/lang/Override.class" />             
                 <include name="java/lang/Runnable.class" />
-                <include name="java/lang/RuntimeException.class" />
+                <include name="java/lang/Short.class" />
                 <include name="java/lang/StringBuffer.class" />
                 <include name="java/lang/StringBuilder.class" />
                 <include name="java/lang/String.class" />
@@ -170,6 +165,18 @@
                 <include name="java/io/PrintStream.class" />
                 <include name="java/io/FilterOutputStream.class" />
                 <include name="java/io/OutputStream.class" />
+
+                <include name="java/lang/Throwable.class" />
+                <include name="java/lang/Exception.class" />
+                <include name="java/lang/RuntimeException.class" />
+                <include name="java/lang/IllegalArgumentException.class" />             
+                <include name="java/lang/IllegalStateException.class" />             
+                <include name="java/lang/IndexOutOfBoundsException.class" />             
+                <include name="java/lang/NullPointerException.class" />
+                <include name="java/lang/NumberFormatException.class" />
+                <include name="java/long/UnsupportedOperationException.class" /> 
+                <include name="java/util/NoSuchElementException.class" /> 
+            	
             </patternset>
         </unzip>
         
@@ -196,7 +203,7 @@
             <fileset dir="${basedir}/build/package"/>
             <manifest>
                  <attribute name="Main-Class" value="com.greentube.javaconverter.JavaConverter"/>
-                 <attribute name="Implementation-Version" value="2.7.2"/>
+                 <attribute name="Implementation-Version" value="2.8.0"/>
                  <attribute name="Version-Date" value="${timestamp}"/>
             </manifest>         
         </jar>          

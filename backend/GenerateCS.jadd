@@ -237,6 +237,27 @@ aspect GenerateCS
             out.println("};");
             out.decreaseIndent();
             out.println("}");
+            
+            out.print("public static ");
+            out.printCSIdentifier(uniqueName());
+            out.println(" valueOf(System.String s)");
+            out.println("{");
+            out.increaseIndent();
+            out.println("switch (s)");
+            out.println("{");
+            out.increaseIndent();
+            for (EnumConstant ec:ed.enumConstants()) 
+            {   out.print("case ");
+                (new Constant.ConstantString(ec.getID())).generateCS(out);
+                out.print(": return ");
+                out.printCSIdentifier(ec.getID(),"_f");
+                out.println(";");
+            }
+            out.println("default: throw new java.lang.IllegalArgumentException();");
+            out.decreaseIndent();
+            out.println("}");
+            out.decreaseIndent();
+            out.println("}");
         }
     
         // add redirects for interface default methods
@@ -667,6 +688,7 @@ aspect GenerateCS
         if (isPrimitiveType()) 
         {   if (isInt()) { out.print("int"); }
             else if (isByte()) { out.print("sbyte"); }
+            else if (isShort()) { out.print("short"); }
             else if (isChar()) { out.print("char"); } 
             else if (isBoolean()) { out.print("bool"); }
             else if (isDouble()) { out.print("double"); }

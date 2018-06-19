@@ -72,38 +72,6 @@ the result to a double or int. For example:  double now = (double) System.curren
             "java.lang.String name()", 
             "int ordinal()", 
         },
-        {   "java.lang.Exception",
-            
-            "java.lang.String getMessage()",
-            "void printStackTrace()",
-            
-            "<init>()",            
-            "<init>(java.lang.String)",            
-        },
-        {   "java.lang.IllegalArgumentException",
-            
-            "java.lang.String getMessage()",
-            "void printStackTrace()",
-            
-            "<init>()",            
-            "<init>(java.lang.String)",            
-        },
-        {   "java.lang.IllegalStateException",
-            
-            "java.lang.String getMessage()",
-            "void printStackTrace()",
-            
-            "<init>()",            
-            "<init>(java.lang.String)",            
-        },
-        {   "java.lang.IndexOutOfBoundsException",
-            
-            "java.lang.String getMessage()",
-            "void printStackTrace()",
-            
-            "<init>()",            
-            "<init>(java.lang.String)",            
-        },        
         {   "java.lang.Integer",
             
             "<init>(int)",
@@ -155,22 +123,6 @@ the result to a double or int. For example:  double now = (double) System.curren
             "E",
             "PI",
         },
-        {   "java.lang.NullPointerException",
-            
-            "java.lang.String getMessage()",
-            "void printStackTrace()",
-            
-            "<init>()",            
-            "<init>(java.lang.String)",            
-        },
-        {   "java.lang.NumberFormatException",
-            
-            "java.lang.String getMessage()",
-            "void printStackTrace()",
-            
-            "<init>()",            
-            "<init>(java.lang.String)",            
-        },        
         {   "java.lang.Object",
             
             "<init>()",
@@ -181,13 +133,14 @@ the result to a double or int. For example:  double now = (double) System.curren
             
             "void run()",
         },
-        {   "java.lang.RuntimeException",
+        {   "java.lang.Short",
             
-            "java.lang.String getMessage()",
-            "void printStackTrace()",
-            
-            "<init>()",            
-            "<init>(java.lang.String)",            
+            "<init>(short)",
+            "short shortValue()",
+            "java.lang.String toString(short)",
+            "java.lang.Short valueOf(short)",
+            "MIN_VALUE",
+            "MAX_VALUE",
         },
         {   "java.lang.String",
             
@@ -252,13 +205,6 @@ the result to a double or int. For example:  double now = (double) System.curren
             "void arraycopy(java.lang.Object, int, java.lang.Object, int, int)",
             "void exit(int)",
             "long currentTimeMillis()", // only allowed if immediately casting the result to double or int
-        },
-        {   "java.lang.Throwable",
-            
-            "java.lang.String getMessage()",
-            "void printStackTrace()",
-            "<init>()",            
-            "<init>(java.lang.String)",            
         },
         {   "java.util.AbstractCollection",
             
@@ -591,3 +537,84 @@ the result to a double or int. For example:  double now = (double) System.curren
             
             "java.lang.Object get()",
         },
+        
+        
+        {   "java.lang.Throwable",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            "<init>()",            
+            "<init>(java.lang.String)",            
+        },
+        {   "java.lang.Exception",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
+            "<init>()",            
+            "<init>(java.lang.String)",            
+        },
+        {   "java.lang.RuntimeException",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
+            "<init>()",            
+            "<init>(java.lang.String)",            
+        },
+        {   "java.lang.IllegalArgumentException",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
+            "<init>()",            
+            "<init>(java.lang.String)",            
+        },
+        {   "java.lang.IllegalStateException",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
+            "<init>()",            
+            "<init>(java.lang.String)",            
+        },
+        {   "java.lang.IndexOutOfBoundsException",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
+            "<init>()",            
+            "<init>(java.lang.String)",            
+        },   
+        {   "java.util.NoSuchElementException",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
+            "<init>()",            
+            "<init>(java.lang.String)",            
+        },       
+        {   "java.lang.NullPointerException",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
+            "<init>()",            
+            "<init>(java.lang.String)",            
+        },        
+        {   "java.lang.NumberFormatException",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
+            "<init>()",            
+            "<init>(java.lang.String)",            
+        },       
+        {   "java.lang.UnsupportedOperationException",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
+            "<init>()",            
+            "<init>(java.lang.String)",            
+        },       

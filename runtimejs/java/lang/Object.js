@@ -226,11 +226,15 @@ var _idiv = function(a,b)
 
 // do some numerical cast operations
 function _castTObyte(a) 
-{   return _castTOint(a) << 24 >> 24;
+{   return (_castTOint(a) << 24) >> 24;
 }
 
 function _castTOchar(a) 
 {   return _castTOint(a) & 0xffff;
+}
+
+function _castTOshort(a) 
+{   return (_castTOint(a) << 16) >> 16;
 }
 
 function _castTOint(a) 
