@@ -116,7 +116,8 @@
         <unzip src="${basedir}/rt.jar" dest="${basedir}/build/package">
             <patternset>
                 <include name="java/lang/AbstractStringBuilder.class" />
-                <include name="java/lang/Boolean.class" />              
+            	<include name="java/lang/AutoCloseable.class" />
+            	<include name="java/lang/Boolean.class" />              
                 <include name="java/lang/Byte.class" />
                 <include name="java/lang/Character.class" />
                 <include name="java/lang/CharSequence.class" />

@@ -15,6 +15,7 @@ public class TestJava7 extends TestJava5
         stringinswitchtest();
         underscoreinnumbertest();
         diamondoperatortest();
+        trywithresourcestest();
     }
 
     public static void binaryliteralstest() 
@@ -71,4 +72,82 @@ public class TestJava7 extends TestJava5
         list.addAll(list2);
         assertO(list.toString(), "[A, B]");
     }
+    
+    public static void trywithresourcestest() 
+    {   System.out.println("- try with resources");
+
+        StringBuffer b;
+        
+        b = new StringBuffer();
+        assertI(ParseEngine.countopen,0);
+        try (ParseEngine pe = new ParseEngine(false,false))
+        {   b.append("ok");     
+        }
+        assertI(ParseEngine.countopen,0);
+        assertO(b.toString(), "ok");
+
+        b = new StringBuffer();
+        assertI(ParseEngine.countopen,0);
+        try (ParseEngine pe = new ParseEngine(false,false))
+        {   assertI(ParseEngine.countopen,1);        
+            int fail = Integer.parseInt("no!");            
+        }
+        catch (NumberFormatException e) 
+        {   assertI(ParseEngine.countopen,0);
+            b.append("NFE");
+        }
+        finally
+        {   assertI(ParseEngine.countopen,0);
+        }
+        assertI(ParseEngine.countopen,0);
+        assertO(b.toString(), "NFE");
+
+        b = new StringBuffer();
+        try (ParseEngine pe = new ParseEngine(true,false))
+        {   assertI(ParseEngine.countopen,0);
+            b.append("should not be reached");
+        }
+        catch (IllegalArgumentException e) 
+        {   assertI(ParseEngine.countopen,0);
+            b.append("IAE");
+        }
+        assertI(ParseEngine.countopen,0);
+        assertO(b.toString(), "IAE");
+        
+        b = new StringBuffer();
+        try (ParseEngine pe = new ParseEngine(false,true); ParseEngine p2=null)
+        {   assertI(ParseEngine.countopen,1);
+            b.append("ok");
+        }
+        catch (IllegalStateException e) 
+        {   b.append("ISE");
+            assertI(ParseEngine.countopen,0);
+        }
+        finally
+        {   assertI(ParseEngine.countopen,0);
+        }        
+        assertI(ParseEngine.countopen,0);
+        assertO(b.toString(), "okISE");
+        
+    }
+    
+    static class ParseEngine implements AutoCloseable 
+    {
+        public static int countopen = 0;
+        private boolean failonclose;
+        
+        public ParseEngine(boolean failonopen, boolean failonclose)
+        {
+            if (failonopen) { throw new IllegalArgumentException(""); }
+            this.failonclose = failonclose;
+            countopen++;
+        }
+        
+        public void close()
+        {            
+            countopen--;
+            if (failonclose) { throw new IllegalStateException(""); }
+        }
+    }
+
 }

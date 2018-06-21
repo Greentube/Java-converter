@@ -366,6 +366,64 @@ aspect GenerateCS
             fin.generateCS(out);        
         }
     } 
+    public void TryWithResources.generateCS(CodePrinterCS out)        
+    {
+        if (getNumCatchClause()>0 || getFinally()!=null) 
+        {   out.println("try"); 
+        }
+        out.println("{");
+        out.increaseIndent();            
+        
+        for (int i=0; i<getNumResource(); i++) 
+        {   ResourceDeclaration d = getResource(i);
+            d.getTypeAccess().type().generateNameCS(out);  
+            out.print(" ");              
+            out.printCSIdentifier(d.name(), "");
+            out.print(" = ");
+            d.getInit().generateUsingResultCS(out);
+            out.println(";");
+            out.println("try");
+            if (i!=getNumResource()-1) 
+            {   out.println("{");                                
+                out.increaseIndent();
+            }                
+        }
+        
+        getBlock().generateCS(out);
+        
+        for (int i=getNumResource()-1; i>=0; i--)
+        {   ResourceDeclaration d = getResource(i);
+            if (i!=getNumResource()-1) 
+            {   out.decreaseIndent();
+                out.println("}");
+            }
+            out.println("finally");
+            out.println("{");
+            out.increaseIndent();
+            out.print("if (");
+            out.printCSIdentifier(d.name(), "");
+            out.print("!=null) { ");
+            out.printCSIdentifier(d.name(), "");
+            out.print(".close(); ");
+            out.println("}");
+            out.decreaseIndent();
+            out.println("}");
+        }
+        out.decreaseIndent();            
+        out.println("}");
+        
+        int n = getNumCatchClause();
+        for (int i=0; i<getNumCatchClause(); i++) 
+        {   getCatchClause(i).generateCS(out);
+        }                   
+        Block fin = getFinally();
+        if (fin!=null)
+        {   out.println("finally");
+            fin.generateCS(out);        
+        }
+    } 
+    
+    
     public void BasicCatch.generateCS(CodePrinterCS out)
     {
         ParameterDeclaration par = getParameter();

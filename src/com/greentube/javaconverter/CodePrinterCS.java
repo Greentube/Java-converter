@@ -43,7 +43,7 @@ public class CodePrinterCS extends CodePrinter
             "params", "private", "protected", "public", "readonly", "ref", "return" ,"sbyte",
             "sealed", "short", "sizeof", "stackalloc", "static", "string", "struct", "switch",
             "this", "throw", "true", "try", "typeof", "uint", "ulong", "unchecked",
-            "unsafe", "ushort", "using", "using", "static", "virtual", "void", "volatile", "while"						
+            "unsafe", "ushort", "using", "static", "virtual", "void", "volatile", "while"						
        )
     );
 

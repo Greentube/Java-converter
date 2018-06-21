@@ -22,6 +22,10 @@ public class LibraryList
             "void println(java.lang.Object)",
             "void println(java.lang.String)",
         },
+        {   "java.lang.AutoCloseable",
+            
+            "void close()",
+        },
         {   "java.lang.Boolean",
             
             "<init>(boolean)", 
