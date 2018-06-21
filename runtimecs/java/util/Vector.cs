@@ -12,7 +12,7 @@ namespace java.util { public class Vector: ArrayListImpl
     {   add(o);
     }
     
-    public virtual System.Object clone() 
+    public virtual System.Object Clone() 
     {   return new Vector(this);
     }
 

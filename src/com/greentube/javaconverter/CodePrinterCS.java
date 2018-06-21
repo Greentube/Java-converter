@@ -72,6 +72,7 @@ public class CodePrinterCS extends CodePrinter
         {   if (name.equals("toString")) { name = "ToString"; }
             else if (name.equals("equals")) { name = "Equals"; }
             else if (name.equals("hashCode")) { name = "GetHashCode"; }
+            else if (name.equals("clone")) { name = "Clone"; }
         }   
         printCSIdentifier(name);
     }

@@ -292,11 +292,22 @@ public class TestJava4
         assertB(!sa.equals("something"));
         
         Object[] oba = new String[]{"one","two","three"};
+
+        String[] cloned = (String[]) oba.clone();
+        cloned[1] = "two!";
+        assertI(cloned.length,3);
+        assertO(cloned[0],"one");
+        assertO(cloned[1],"two!");
+        assertO(cloned[2],"three");
+        assertB(cloned instanceof String[]);
+        
         assertO(oba[0],"one");
         oba[0] = "fix";
         assertO(oba[0],"fix");
+        assertO(oba[1],"two");
         Object[] tpa = passarray(new TestObject[2]);
         tpa[0] = new TestObject();
+        
     }
     
     private static int getArray()[]

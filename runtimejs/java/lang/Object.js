@@ -327,6 +327,13 @@ Array.prototype.hashCode_0 = function ()
 {   return 2;
 };
 
+Array.prototype.clone_0 = function()
+{   var a = this.slice();
+    a._t = this._t;
+    a._d = this._d;
+    return a; 
+};
+
 // Extend the javascript String object by monkey-patching in the necessary
 // java methods and attributes.
 // Actually only string literals are used throughout the implementation,

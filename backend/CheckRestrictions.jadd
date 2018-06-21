@@ -300,6 +300,18 @@ aspect CheckRestrictions
                     errorlist);
         }
         
+        // check is using the clone() method on arrays (which is supported)
+        if (m.name().equals("clone") && m.getNumParameter()==0)
+        {   Expr parentexp = (Expr) getParent();
+            if (parentexp instanceof Dot)
+            {   Expr left = ((Dot) parentexp).getLeft();
+                if (left.type().isArrayDecl()) 
+                {   super.checkRestrictions(errorlist);
+                    return;
+                }
+            } 
+        }
+        
         // check for availability for stuff from all the .java core packages    
         if (m.hostType().packageName().startsWith("java.")) 
         {   if (!m.isSupportedInLibraries()) 

@@ -8,7 +8,7 @@ namespace java.util { public class Hashtable : HashMapImpl
     {
     }
         
-    public virtual System.Object clone() 
+    public virtual System.Object Clone() 
     {   return new Hashtable(this);
     }
     

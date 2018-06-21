@@ -666,6 +666,7 @@ public class LibraryList
         )
         {   return true;
         }
+        
         // support these on the abstract intermediary classes
         if (fullclassname.equals("java.lang.AbstractStringBuilder") && membername.equals("int length()"))
         {    return true;
