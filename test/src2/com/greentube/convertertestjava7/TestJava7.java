@@ -79,64 +79,132 @@ public class TestJava7 extends TestJava5
         StringBuffer b;
         
         b = new StringBuffer();
-        assertI(ParseEngine.countopen,0);
-        try (ParseEngine pe = new ParseEngine(false,false))
+        assertI(FailEngine.countopen,0);
+        try (FailEngine pe = new FailEngine(false,false))
         {   b.append("ok");     
         }
-        assertI(ParseEngine.countopen,0);
+        assertI(FailEngine.countopen,0);
         assertO(b.toString(), "ok");
 
         b = new StringBuffer();
-        assertI(ParseEngine.countopen,0);
-        try (ParseEngine pe = new ParseEngine(false,false))
-        {   assertI(ParseEngine.countopen,1);        
+        assertI(FailEngine.countopen,0);
+        try (FailEngine pe = new FailEngine(false,false))
+        {   assertI(FailEngine.countopen,1);        
             int fail = Integer.parseInt("no!");            
         }
-        catch (NumberFormatException e) 
-        {   assertI(ParseEngine.countopen,0);
+        catch (NumberFormatException e)    // is called after auto-closing
+        {   assertI(FailEngine.countopen,0);  
             b.append("NFE");
         }
-        finally
-        {   assertI(ParseEngine.countopen,0);
+        finally                            // is called last
+        {   assertI(FailEngine.countopen,0);
+            b.append("fin");
         }
-        assertI(ParseEngine.countopen,0);
-        assertO(b.toString(), "NFE");
+        assertI(FailEngine.countopen,0);
+        assertO(b.toString(), "NFEfin");
 
         b = new StringBuffer();
-        try (ParseEngine pe = new ParseEngine(true,false))
-        {   assertI(ParseEngine.countopen,0);
+        try (FailEngine pe = new FailEngine(true,false))
+        {   assertI(FailEngine.countopen,0);
             b.append("should not be reached");
         }
         catch (IllegalArgumentException e) 
-        {   assertI(ParseEngine.countopen,0);
+        {   assertI(FailEngine.countopen,0);
             b.append("IAE");
         }
-        assertI(ParseEngine.countopen,0);
+        assertI(FailEngine.countopen,0);
         assertO(b.toString(), "IAE");
         
         b = new StringBuffer();
-        try (ParseEngine pe = new ParseEngine(false,true); ParseEngine p2=null)
-        {   assertI(ParseEngine.countopen,1);
+        try (FailEngine pe = new FailEngine(false,true); FailEngine p2=null)
+        {   assertI(FailEngine.countopen,1);
             b.append("ok");
         }
         catch (IllegalStateException e) 
         {   b.append("ISE");
-            assertI(ParseEngine.countopen,0);
+            assertI(FailEngine.countopen,0);
         }
         finally
-        {   assertI(ParseEngine.countopen,0);
+        {   assertI(FailEngine.countopen,0);
         }        
-        assertI(ParseEngine.countopen,0);
+        assertI(FailEngine.countopen,0);
         assertO(b.toString(), "okISE");
         
+        b = new StringBuffer();
+        try
+        {   failinfinally();
+        }
+        catch (NumberFormatException e) 
+        {   b.append("NFE");
+        }
+        assertO(b.toString(), "NFE");
+        
+        b = new StringBuffer();
+        try
+        {   int result = failinautoclose();
+            assertI(result, 4711);
+        }
+        catch (NumberFormatException e) 
+        {   b.append("NFE");
+        }
+        catch (IllegalStateException e) 
+        {   b.append("ISE");
+        }
+        assertO(b.toString(), "ISE");
+        
+        b = new StringBuffer();
+        try
+        {   failinfinallyafterexception();  // will suppress the original exception
+        }
+        catch (IllegalStateException e) 
+        {   b.append("ISE");
+        }
+        catch (IllegalArgumentException e) 
+        {   b.append("IAE");
+        }        
+        assertO(b.toString(), "IAE");
+        
+        b = new StringBuffer();
+        try
+        {   failinautocloseafterexception();  // will suppress the exception of auto-close
+        }
+        catch (IllegalStateException e) 
+        {   b.append("ISE");
+        }
+        catch (IllegalArgumentException e) 
+        {   b.append("IAE");
+        }
+        assertO(b.toString(), "IAE");
+
+        b = new StringBuffer();
+        try 
+        {
+            try (FailEngine pe = new FailEngine(false,true))
+            {   assertI(FailEngine.countopen,1);
+                Integer.parseInt("no!"); // will suppress the exception of auto-close   
+                b.append("ok");
+            }
+        }
+        catch (NumberFormatException e) 
+        {   b.append("NFE");
+            assertI(FailEngine.countopen,0);
+        }
+        catch (IllegalArgumentException e) 
+        {   b.append("IAE");
+        }
+        catch (IllegalStateException e) 
+        {   b.append("ISE");
+        }
+        assertI(FailEngine.countopen,0);
+        assertO(b.toString(), "NFE");        
     }
     
-    static class ParseEngine implements AutoCloseable 
+    static class FailEngine implements AutoCloseable 
     {
         public static int countopen = 0;
         private boolean failonclose;
         
-        public ParseEngine(boolean failonopen, boolean failonclose)
+        public FailEngine(boolean failonopen, boolean failonclose)
         {
             if (failonopen) { throw new IllegalArgumentException(""); }
             this.failonclose = failonclose;
@@ -149,5 +217,41 @@ public class TestJava7 extends TestJava5
             if (failonclose) { throw new IllegalStateException(""); }
         }
     }
-
+    
+    private static int failinfinally()
+    {
+        try
+        {
+            return 4711;
+        } 
+        finally
+        {
+            Integer.parseInt("äää");
+        }
+    }
+    private static int failinautoclose()
+    {
+        try (FailEngine pe = new FailEngine(false,true))
+        {
+            return 4711;
+        } 
+    }
+    private static void failinfinallyafterexception()
+    {
+        try
+        {
+            throw new IllegalStateException();
+        } 
+        finally
+        {
+            Integer.parseInt("äää");
+        }
+    }
+    private static void failinautocloseafterexception()
+    {
+        try (FailEngine pe = new FailEngine(false,true))
+        {
+            throw new IllegalArgumentException();
+        } 
+    }
 }

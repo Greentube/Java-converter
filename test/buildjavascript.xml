@@ -45,6 +45,7 @@
   		<arg value="ECMASCRIPT5_STRICT"/>
         <arg value="--language_in"/>
         <arg value="ECMASCRIPT5_STRICT"/>           
+        <arg value="--jscomp_off=uselessCode"/> 
   	</java>
     <java jar="${basedir}/../lib/closure-compiler-v20180402.jar" fork="true">
         <arg value="--compilation_level"/>
@@ -57,6 +58,7 @@
         <arg value="ECMASCRIPT5_STRICT"/>
         <arg value="--language_in"/>
         <arg value="ECMASCRIPT5_STRICT"/>           
+        <arg value="--jscomp_off=uselessCode"/> 
     	<arg value="--jscomp_off=checkTypes"/>
     </java>  	
   	

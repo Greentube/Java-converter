@@ -307,6 +307,63 @@ aspect GenerateJS
         out.println("try");
         getBlock().generateJS(out);
         
+        generateTryAndCatchClausesJS(out);
+    }
+    
+    public void TryWithResources.generateJS(CodePrinterJS out) 
+    {
+        if (getNumCatchClause()>0 || getFinally()!=null) 
+        {   out.println("try"); 
+        }
+        out.println("{");
+        out.increaseIndent();            
+
+        for (int i=0; i<getNumResource(); i++) 
+        {   ResourceDeclaration d = getResource(i);
+            out.print("var ");              
+            out.printJSIdentifier(d.name(), "");
+            out.print(" = ");
+            d.getInit().generateUsingResultJS(out);
+            out.println(";");
+            out.println("try");
+            if (i!=getNumResource()-1) 
+            {   out.println("{");                                
+                out.increaseIndent();
+            }                
+        }
+        
+        getBlock().generateJS(out);
+        
+        for (int i=getNumResource()-1; i>=0; i--)
+        {   ResourceDeclaration d = getResource(i);
+            if (i!=getNumResource()-1) 
+            {   out.decreaseIndent();
+                out.println("}");
+            }
+            out.print("catch($e1) { try { if(");
+            out.printJSIdentifier(d.name());
+            out.print(") ");
+            out.printJSIdentifier(d.name());
+            out.print(".close_0(); } catch($e2) {} ");
+            out.printJSIdentifier(d.name());
+            out.println("=null; throw $e1; }");
+            
+            out.print("finally { if (");
+            out.printJSIdentifier(d.name(), "");
+            out.print(") { ");
+            out.printJSIdentifier(d.name(), "");
+            out.print(".close_0(); ");
+            out.println("} }");
+        }
+        out.decreaseIndent();            
+        out.println("}");
+        
+        generateTryAndCatchClausesJS(out);
+    }
+    
+    
+    public void TryStmt.generateTryAndCatchClausesJS(CodePrinterJS out)
+    {    
         int n = getNumCatchClause();
         if (n>0) 
         {   CatchClause cc = getCatchClause(0);            

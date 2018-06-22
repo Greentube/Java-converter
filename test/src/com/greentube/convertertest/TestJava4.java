@@ -1081,6 +1081,32 @@ public class TestJava4
         {   b.append("finally");
         }
         assertO(b.toString(), "start2donestartdonecatchfinally");
+        
+        StringBuffer sb = new StringBuffer();
+        try
+        {   int cnt=0;
+            try
+            {   cnt++;
+                assertI(cnt,1);
+                Integer.parseInt("x");        
+            }
+            catch (NumberFormatException e)
+            {
+                assertI(cnt,1);  // is executed before finally
+                throw e;
+            }
+            finally
+            {
+                cnt--;
+                assertI(cnt,0);
+                // throw inside finally after exception will suppress original exception
+                if (cnt==0) throw new IllegalStateException();  
+            }
+        }
+        catch (IllegalStateException e) { sb.append("ISE"); }
+//        catch (NumberFormatException e) { assertB(false); }
+//        catch (Throwable e) { throw e; };
+        assertO(sb.toString(), "ISE");
     }
     
     private static void labelstest(int i4)

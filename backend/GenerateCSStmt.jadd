@@ -358,7 +358,8 @@ aspect GenerateCS
         int n = getNumCatchClause();
         for (int i=0; i<getNumCatchClause(); i++) 
         {   getCatchClause(i).generateCS(out);
-        }   
+        }
+        out.println("catch (System.Exception _e) { throw _e; }");   
                 
         Block fin = getFinally();
         if (fin!=null)
@@ -397,17 +398,20 @@ aspect GenerateCS
             {   out.decreaseIndent();
                 out.println("}");
             }
-            out.println("finally");
-            out.println("{");
-            out.increaseIndent();
-            out.print("if (");
+            out.print("catch(System.Exception _e1) { try { if(");
+            out.printCSIdentifier(d.name());
+            out.print("!=null) ");
+            out.printCSIdentifier(d.name());
+            out.print(".close(); } catch(System.Exception) {} ");
+            out.printCSIdentifier(d.name());
+            out.println("=null; throw _e1; }");
+            
+            out.print("finally { if (");
             out.printCSIdentifier(d.name(), "");
             out.print("!=null) { ");
             out.printCSIdentifier(d.name(), "");
             out.print(".close(); ");
-            out.println("}");
-            out.decreaseIndent();
-            out.println("}");
+            out.println("} }");
         }
         out.decreaseIndent();            
         out.println("}");
