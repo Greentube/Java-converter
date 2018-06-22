@@ -225,6 +225,20 @@ var _idiv = function(a,b)
     return (a/b)|0;
 };
 
+// logic operation without short-circuit evaluation (rarely used)
+var _and = function(a,b)
+{   
+    return a && b;
+}
+var _or = function(a,b)
+{   
+    return a || b;
+}
+var _xor = function(a,b)
+{   
+    return ( a || b ) && ! ( a && b );
+}
+
 // do some numerical cast operations
 function _castTObyte(a) 
 {   return (_castTOint(a) << 24) >> 24;
@@ -1052,7 +1066,7 @@ _class(org_apache_hadoop_examples_dancing_Pentomino$24$Piece, java_lang_Object, 
             var width = this.shape[0].length;
             result = _dim("Z",2,[height,],null);
             var flipX = rotate === 2;
-            var flipY = flip ^ (rotate === 2);
+            var flipY = _xor(flip,(rotate === 2));
             for (var y = 0; y < height; y=(y +1)|0) 
             {
                 result[y] = _dim("Z",1,[width,],false);
@@ -1067,7 +1081,7 @@ _class(org_apache_hadoop_examples_dancing_Pentomino$24$Piece, java_lang_Object, 
             var width = this.shape.length;
             result = _dim("Z",2,[height,],null);
             var flipX = rotate === 3;
-            var flipY = flip ^ (rotate === 1);
+            var flipY = _xor(flip,(rotate === 1));
             for (var y = 0; y < height; y=(y +1)|0) 
             {
                 result[y] = _dim("Z",1,[width,],false);
