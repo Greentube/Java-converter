@@ -471,7 +471,20 @@ aspect GenerateCS
     }
     public void AssignOrExpr.generateCS(CodePrinterCS out) 
     {
-        generateWithOptionalCastCS(out, "|"); 
+        Expr d = getDest();
+        Expr s = getSource();
+        if (d.type().isShort() || d.type().isByte() || d.type().isChar())
+        {   d.generateCS(out);
+            out.print(" = (");
+            d.type().generateNameCS(out);
+            out.print(")(((int)(");
+            d.generateCS(out);
+            out.print("))|((int)(");      
+            s.generateUsingResultCS(out);
+            out.print(")))");             
+            return;   
+        }        
+        generateWithOptionalCastCS(out, "|");
     }
     public void AssignXorExpr.generateCS(CodePrinterCS out) 
     {
@@ -588,11 +601,25 @@ aspect GenerateCS
     }
     public void OrBitwiseExpr.generateCS(CodePrinterCS out) 
     {
-        out.print("((int)(");
-        getLeftOperand().generateUsingResultCS(out);
-        out.print("))|((int)(");
-        getRightOperand().generateUsingResultCS(out);
-        out.print("))");   
+        Expr l = getLeftOperand();
+        Expr r = getRightOperand();                
+        if (type().isInt() && !l.type().isInt())   
+        {   out.print("((int)");
+            l.generateUsingResultCS(out);
+            out.print(")");
+        } 
+        else
+        {   l.generateUsingResultCS(out);
+        }        
+        out.print("|");        
+        if (type().isInt() && !r.type().isInt())   
+        {   out.print("((int)");
+            r.generateUsingResultCS(out);
+            out.print(")");
+        } 
+        else
+        {   r.generateUsingResultCS(out);
+        }
     }
     public void XorBitwiseExpr.generateCS(CodePrinterCS out) 
     {

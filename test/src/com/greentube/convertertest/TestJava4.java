@@ -477,6 +477,16 @@ public class TestJava4
         assertB ( (f && t || t), true);
         assertB ( 3 < 4, true);
         assertB ( - -3 > + + +4, false);
+        assertB (t | f, true);
+        assertB (t & f, false);
+        assertB (t ^ f, true);
+        f2 |= t;
+        assertB(f2, true);
+        f2 &= f;
+        assertB(f2, false);
+        f2 ^= t;
+        assertB(f2, true);
+        
         
         i = 17;
         assertI( i/5, 3);
@@ -590,6 +600,20 @@ public class TestJava4
         double zero = 0.0;
         z /= zero;
         assertI(z,Integer.MAX_VALUE);
+        
+        short s2 = 55;
+        s2 *= 1.2;
+        assertI(s2,66);
+        s2 *= 1000000;
+        assertI(s2,5248);        
+        s2 += 40000;
+        assertI(s2,-20288);   
+        s2 |= 17;     
+        assertI(s2,-20271);
+        s2 &= 523;     
+        assertI(s2, 1);
+        s2 ^= 15;     
+        assertI(s2, 14);
     }
     
     public static void assignoperatortest() 

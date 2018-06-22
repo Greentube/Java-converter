@@ -224,6 +224,20 @@ var _idiv = function(a,b)
     return (a/b)|0;
 };
 
+// logic operation without short-circuit evaluation (rarely used)
+var _and = function(a,b)
+{   
+    return a && b;
+}
+var _or = function(a,b)
+{   
+    return a || b;
+}
+var _xor = function(a,b)
+{   
+    return ( a || b ) && ! ( a && b );
+}
+
 // do some numerical cast operations
 function _castTObyte(a) 
 {   return (_castTOint(a) << 24) >> 24;

@@ -462,14 +462,47 @@ aspect GenerateJS
     
     public void AssignAndExpr.generateJS(CodePrinterJS out) 
     {
-        generateWithOptionalCastJS(out,"&");
+        Expr d = getDest();
+        Expr s = getSource();
+        if (d.type().isBoolean() && s.type().isBoolean())
+        {   d.generateJS(out);
+            out.print(" = _and(");
+            d.generateJS(out);
+            out.print(" , ");
+            s.generateJS(out);
+            out.print(")");
+            return;                    
+        }
+        generateWithOptionalCastJS(out,"&"); 
     }
     public void AssignOrExpr.generateJS(CodePrinterJS out) 
     {
+        Expr d = getDest();
+        Expr s = getSource();
+        if (d.type().isBoolean() && s.type().isBoolean())
+        {   d.generateJS(out);
+            out.print(" = _or(");
+            d.generateJS(out);
+            out.print(" , ");
+            s.generateJS(out);
+            out.print(")");
+            return;                    
+        }
         generateWithOptionalCastJS(out,"|");
     }
     public void AssignXorExpr.generateJS(CodePrinterJS out) 
     {
+        Expr d = getDest();
+        Expr s = getSource();
+        if (d.type().isBoolean() && s.type().isBoolean())
+        {   d.generateJS(out);
+            out.print(" = _xor(");
+            d.generateJS(out);
+            out.print(" , ");
+            s.generateJS(out);
+            out.print(")");
+            return;                    
+        }
         generateWithOptionalCastJS(out,"^");
     }
     public void AssignModExpr.generateJS(CodePrinterJS out) 
@@ -627,18 +660,48 @@ aspect GenerateJS
     }   
     public void AndBitwiseExpr.generateJS(CodePrinterJS out) 
     {
-        getLeftOperand().generateUsingResultJS(out);
+        Expr l = getLeftOperand();
+        Expr r = getRightOperand();
+        if (l.type().isBoolean() && r.type().isBoolean())
+        {   out.print("_and(");
+            l.generateUsingResultJS(out);
+            out.print(",");        
+            r.generateUsingResultJS(out);
+            out.print(")");
+            return;
+        }
+        l.generateUsingResultJS(out);
         out.print(" & ");
-        getRightOperand().generateUsingResultJS(out);   
+        r.generateUsingResultJS(out);   
     }
     public void OrBitwiseExpr.generateJS(CodePrinterJS out) 
     {
+        Expr l = getLeftOperand();
+        Expr r = getRightOperand();
+        if (l.type().isBoolean() && r.type().isBoolean())
+        {   out.print("_or(");
+            l.generateUsingResultJS(out);
+            out.print(",");        
+            r.generateUsingResultJS(out);
+            out.print(")");
+            return;
+        }
         getLeftOperand().generateUsingResultJS(out);
         out.print(" | ");
         getRightOperand().generateUsingResultJS(out);   
     }
     public void XorBitwiseExpr.generateJS(CodePrinterJS out) 
     {
+        Expr l = getLeftOperand();
+        Expr r = getRightOperand();
+        if (l.type().isBoolean() && r.type().isBoolean())
+        {   out.print("_xor(");
+            l.generateUsingResultJS(out);
+            out.print(",");        
+            r.generateUsingResultJS(out);
+            out.print(")");
+            return;
+        }
         getLeftOperand().generateUsingResultJS(out);
         out.print(" ^ ");
         getRightOperand().generateUsingResultJS(out);   
