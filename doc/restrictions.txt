@@ -57,7 +57,7 @@ Basically the language features of java 8 are provided with the following restri
     it is possible to use  a[i]+=5  it is unsupported to write  a[i++]+=4.
     Same thing holds for ++ and --  (i[4]++ is ok, i[get()]++  is not).  
       
-    This is to avoid faulty double-evaluation behaviour in any conversion target. 
+    This is to avoid faulty double-evaluation behavior in any conversion target. 
       
 - Access to static members is not allowed by using an instance expression with side-effects
     It is legal in java to call a static method with something like: 
