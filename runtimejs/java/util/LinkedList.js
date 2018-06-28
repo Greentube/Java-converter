@@ -1,3 +1,5 @@
+//reference// java/lang/IndexOutOfBoundsException
+
 //load// java/util/AbstractList
 var java_util_LinkedList = 
 {   $: function() 
@@ -78,7 +80,9 @@ _class(java_util_LinkedList, java_util_AbstractList, null,
     
     seek_1: function(index) 
     {   var len = this._len;
-        if (index<0 || index>=len) throw _IndexOutOfBoundsException();
+        if (index<0 || index>=len)
+        {   throw (new java_lang_IndexOutOfBoundsException.$())._0()._e; 
+        }
         if (index===0) return this._head.next;
         if (index===this.len-1) return this._head.prev;
             

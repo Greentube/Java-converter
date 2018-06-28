@@ -1,9 +1,12 @@
+//reference// java/lang/NullPointerException
 //load// java/lang/Object
 var java_util_function_Consumer = 
 {   _superinterfaces: [], 
     _defaults:
     {   andThen_1: function(after)
-        {   if (after===null) throw _NullPointerException();
+        {   if (after===null) 
+            {   throw (new java_lang_NullPointerException.$())._0()._e;
+            }
             return new java_util_function_ConsumerAndThen.$(this,after);
         }
     },

@@ -31,10 +31,7 @@ a bug in the converter and will either be fixed or also documented here.
         NullPointerException        
         IndexOutOfBoundsException
         ArrayStoreException
-        NegativeArraySizeException
-        ClassCastException
-        ArithmeticException
-    Whenever the program attempts do do such a faulty operation, the behaviour is 
+    Whenever the program attempts to do such a faulty operation, the behavior is 
     undefined. It could very well wreck arbitrary data structures and bring the program
     into a situation from which it can not recover.
     The converter already enforces that such exceptions may never be caught, so the
@@ -54,5 +51,5 @@ a bug in the converter and will either be fixed or also documented here.
     definition impossible to compute exactly, the various libraries use different
     approaches to calculate a near solution, and this leads to slightly different
     results for various conversion targets.   
-    Specifically Math.exp and Math.pow show this behaviour even for small numbers.
+    Specifically Math.exp and Math.pow show this behavior even for small numbers.
     

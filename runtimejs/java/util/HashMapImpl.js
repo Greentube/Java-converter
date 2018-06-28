@@ -6,6 +6,8 @@
 //   _totalelements .. always keep track of the total size
 
 //reference// java/lang/IllegalStateException
+//reference// java/lang/NullPointerException
+//reference// java/lang/IndexOutOfBoundsException
 
 //load// java/lang/Object
 //load// java/util/Map
@@ -140,7 +142,9 @@ _class(java_util_HashMapImpl, java_lang_Object, [java_util_Map],
     },
     
     putAll_1: function(map) 
-    {   if (map===null) throw _NullPointerException();
+    {   if (map===null)
+        {   throw (new java_lang_NullPointerException.$())._0()._e;
+        }
         for (var it=map.keySet_0().iterator_0(); it.hasNext_0(); ) 
         {   var k = it.next_0();
             var v = map.get_1(k);
@@ -304,7 +308,9 @@ _class(java_util_HashMapIterator, java_lang_Object, [java_util_Iterator, java_ut
             
     next_0: function() 
     {   
-        if (this.n>=this.keys.length) throw _IndexOutOfBoundsException();
+        if (this.n>=this.keys.length)
+        {   throw (new java_lang_IndexOutOfBoundsException.$())._0()._e; 
+        }
         var k = this.keys[this.n++];
         return this.deliverKeys ? k : this.map.get_1(k);
     },       

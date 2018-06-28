@@ -24,6 +24,10 @@ the result to a double or int. For example:  double now = (double) System.curren
             "void println(java.lang.Object)",
             "void println(java.lang.String)",
         },
+        {   "java.lang.AutoCloseable",
+            
+            "void close()",
+        },
         {   "java.lang.Boolean",
             
             "<init>(boolean)", 
@@ -182,7 +186,7 @@ the result to a double or int. For example:  double now = (double) System.curren
             "java.lang.StringBuffer append(char)",
             "java.lang.StringBuffer append(int)",
             "java.lang.StringBuffer append(double)",
-            "int length()",			
+            "int length()",         
         },
         {   "java.lang.StringBuilder",
             
@@ -194,7 +198,7 @@ the result to a double or int. For example:  double now = (double) System.curren
             "java.lang.StringBuilder append(char)",
             "java.lang.StringBuilder append(int)",
             "java.lang.StringBuilder append(double)",
-            "int length()",			
+            "int length()",         
         },
         {   "java.lang.SuppressWarnings"
         },
@@ -224,7 +228,7 @@ the result to a double or int. For example:  double now = (double) System.curren
             "boolean isEmpty()",
             "java.util.Iterator iterator()",
             "int size()",
-            "java.lang.Object[] toArray()",	
+            "java.lang.Object[] toArray()", 
             "java.lang.Object[] toArray(java.lang.Object[])",
             "boolean removeIf(java.util.function.Predicate)",
 
@@ -250,7 +254,7 @@ the result to a double or int. For example:  double now = (double) System.curren
             "boolean isEmpty()",
             "java.util.Iterator iterator()",
             "int size()",
-            "java.lang.Object[] toArray()",	
+            "java.lang.Object[] toArray()", 
             "java.lang.Object[] toArray(java.lang.Object[])",
             "boolean removeIf(java.util.function.Predicate)",
 
@@ -270,8 +274,8 @@ the result to a double or int. For example:  double now = (double) System.curren
             "void sort(java.util.Comparator)",              
 
             "<init>()",
-            "<init>(java.util.Collection)",			
-            "void trimToSize()",						
+            "<init>(java.util.Collection)",         
+            "void trimToSize()",                        
         },
         {   "java.util.Arrays",
             
@@ -298,8 +302,8 @@ the result to a double or int. For example:  double now = (double) System.curren
         },
         {   "java.util.Enumeration",
             
-            "boolean hasMoreElements()",		
-            "java.lang.Object nextElement()",			
+            "boolean hasMoreElements()",        
+            "java.lang.Object nextElement()",           
         },
         {   "java.util.HashMap",
             
@@ -336,7 +340,7 @@ the result to a double or int. For example:  double now = (double) System.curren
             "boolean addAll(java.util.Collection)",
             "void clear()",                
             "boolean remove(java.lang.Object",
-            "boolean removeAll(java.util.Collection",			
+            "boolean removeAll(java.util.Collection",           
             "boolean retainAll(java.util.Collection",
         },
         {   "java.util.Hashtable",
@@ -364,7 +368,7 @@ the result to a double or int. For example:  double now = (double) System.curren
         },
         {   "java.util.Iterator",
             
-            "boolean hasNext()",		
+            "boolean hasNext()",        
             "java.lang.Object next()",
             "void remove()",
         },
@@ -375,7 +379,7 @@ the result to a double or int. For example:  double now = (double) System.curren
             "boolean isEmpty()",
             "java.util.Iterator iterator()",
             "int size()",
-            "java.lang.Object[] toArray()",	
+            "java.lang.Object[] toArray()", 
             "java.lang.Object[] toArray(java.lang.Object[])",
             "boolean removeIf(java.util.function.Predicate)",
 
@@ -401,7 +405,7 @@ the result to a double or int. For example:  double now = (double) System.curren
             "java.lang.Object getFirst()",
             "java.lang.Object getLast()",
             "java.lang.Object removeFirst()",
-            "java.lang.Object removeLast()",			
+            "java.lang.Object removeLast()",            
         },
         {   "java.util.List",
         
@@ -427,12 +431,12 @@ the result to a double or int. For example:  double now = (double) System.curren
             "void replaceAll(java.util.function.UnaryOperator)",
             "boolean retainAll(java.util.Collection)",
             "java.lang.Object set(int, java.lang.Object)",
-            "void sort(java.util.Comparator)",    		    
+            "void sort(java.util.Comparator)",              
         },
         {   "java.util.Map",
         
             "void clear()",
-            "boolean containsKey(java.lang.Object)",	
+            "boolean containsKey(java.lang.Object)",    
             "boolean containsValue(java.lang.Object)",
             "void forEach(java.util.function.BiConsumer)",                 
             "java.lang.Object get(java.lang.Object)",
@@ -463,7 +467,7 @@ the result to a double or int. For example:  double now = (double) System.curren
             "boolean isEmpty()",
             "java.util.Iterator iterator()",
             "int size()",
-            "java.lang.Object[] toArray()",	
+            "java.lang.Object[] toArray()", 
             "java.lang.Object[] toArray(java.lang.Object[])",
             "boolean removeIf(java.util.function.Predicate)",
 
@@ -562,6 +566,30 @@ the result to a double or int. For example:  double now = (double) System.curren
             "<init>()",            
             "<init>(java.lang.String)",            
         },
+        {   "java.lang.ArithmeticException",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
+            "<init>()",            
+            "<init>(java.lang.String)",            
+        },
+        {   "java.lang.ArrayStoreException",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
+            "<init>()",            
+            "<init>(java.lang.String)",            
+        },
+        {   "java.lang.ClassCastException",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
+            "<init>()",            
+            "<init>(java.lang.String)",            
+        },
         {   "java.lang.IllegalArgumentException",
             
             "java.lang.String getMessage()",
@@ -586,6 +614,14 @@ the result to a double or int. For example:  double now = (double) System.curren
             "<init>()",            
             "<init>(java.lang.String)",            
         },   
+        {   "java.util.NegativeArraySizeException",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
+            "<init>()",            
+            "<init>(java.lang.String)",            
+        },       
         {   "java.util.NoSuchElementException",
             
             "java.lang.String getMessage()",

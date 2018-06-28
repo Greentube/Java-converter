@@ -16,7 +16,8 @@ namespace java.lang { public class SYSTEM
     }
                     
     public static T[][] dim<T>(int n0, int n1) 
-    {   T[][] a = new T[n0][];
+    {   if (n0<0) throw new java.lang.NegativeArraySizeException();
+        T[][] a = new T[n0][];
         for (int i0=0; n1>=0 && i0<n0; i0++) {
             a[i0] = new T[n1];
         }
@@ -24,7 +25,8 @@ namespace java.lang { public class SYSTEM
     }
     
     public static T[][][] dim<T>(int n0, int n1, int n2) 
-    {   T[][][] a = new T[n0][][];
+    {   if (n0<0) throw new java.lang.NegativeArraySizeException();
+        T[][][] a = new T[n0][][];
         for (int i0=0; n1>=0 && i0<n0; i0++) {
             a[i0] = dim<T>(n1,n2);
         }
@@ -32,7 +34,8 @@ namespace java.lang { public class SYSTEM
     }
     
     public static T[][][][] dim<T>(int n0, int n1, int n2, int n3) 
-    {   T[][][][] a = new T[n0][][][];
+    {   if (n0<0) throw new java.lang.NegativeArraySizeException();
+        T[][][][] a = new T[n0][][][];
         for (int i0=0; n1>=0 && i0<n0; i0++) {
             a[i0] = dim<T>(n1,n2,n3);
         }
@@ -42,7 +45,8 @@ namespace java.lang { public class SYSTEM
     public static int div(int a, int b) 
     {   // handle a weird special case for java compatibility
         if (a==-2147483648 && b==-1) return a;
-        // normal arithmetic (may even throw DivideByZeroException)
+        if (b==0) throw new java.lang.ArithmeticException();
+        // normal arithmetic 
         return a / b;
     }
         

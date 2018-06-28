@@ -1,3 +1,6 @@
+//reference// java/lang/NegativeArraySizeException
+//reference// java/lang/ClassCastException
+//reference// java/lang/ArithmeticException
 
 // definition of the base class for all java classes except for String and arrays
 var java_lang_Object = 
@@ -28,14 +31,6 @@ java_lang_Object.$.prototype._baseclasses = [ java_lang_Object ];
 java_lang_Object.$.prototype._classname = 
 "java.lang.Object"  //replace-me-with-empty-string-for-production//
 ;
-
-// ---- global toolbox functions to create various error objects ----
-var _ClassCastException = function() { return new TypeError("ClassCastException"); };
-var _NullPointerException = function() { return new ReferenceError("NullPointerException"); };
-var _ArrayStoreException = function() { return new TypeError("ArrayStoreException"); };
-var _ArithmeticException = function() { return new RangeError("ArithmeticException"); };
-var _IndexOutOfBoundsException = function() { return new RangeError("IndexOutOfBounds"); };
-
 
 // set up a class to use its instances (set up prototype chain, etc.)
 function _class (classobject, base, interfaces, classname, instancemethods)
@@ -89,17 +84,17 @@ function _class (classobject, base, interfaces, classname, instancemethods)
 function _checkclass(x,cls)
 {
     if (x===null || x instanceof cls.$) return x;
-    throw _ClassCastException();    
+    throw (new java_lang_ClassCastException.$())._0().e;    
 }
 
 // test if an arbitrary java.lang.Object implements a given Interface
 function _isinterface(x,intrfc)
 {   return x!==null && x._interfaces.indexOf(intrfc)>=0;
 }
-// interface type check. If unsuccessfull, thows exception. Otherweise just return the value
+// interface type check. If unsuccessful, throws exception. Otherwise just return the value
 function _checkinterface(x,intrfc)
 {   if (x===null || x._interfaces.indexOf(intrfc)>=0) return x;
-    throw _ClassCastException();
+    throw (new java_lang_ClassCastException.$())._0().e;    
 }
 
 // test if an arbitrary object is a String
@@ -109,7 +104,7 @@ function _isstr(o)
 // string type check with exception if unsuccessful. on success just return the value again
 function _checkstr(o)
 {   if (o===null || o._isString) return o;
-    throw _ClassCastException();
+    throw (new java_lang_ClassCastException.$())._0().e;    
 }
 
 function _interfacehassuperinterface(intf, sintf)
@@ -159,7 +154,7 @@ function _isarray(o,typedescriptor,dimensions)
 // array type check with exception if unsuccessful. on success just return the value again
 function _checkarray(o,typedescriptor,dimensions)
 {   if (o===null || _isarray(o,typedescriptor,dimensions)) return o;
-    throw new TypeError("ClassCastException");
+    throw (new java_lang_ClassCastException.$())._0().e;    
 }
 
 // convert a unicode code number to a string with the corresponding letter 
@@ -220,7 +215,7 @@ var _imul = (typeof Math.imul === "function") ? Math.imul : function(a, b)
 // integer division with correct behaviour over the full ranges and 0 exception
 var _idiv = function(a,b)
 {
-    if (b===0) throw _ArithmeticException();
+    if (b===0) throw (new java_lang_ArithmeticException.$())._0()._e;
     return (a/b)|0;
 };
 
@@ -299,6 +294,8 @@ function _arr(typedescriptor,dimensions,a)
 function _dim(typedescriptor,dimensions,sizes,initvalue) 
 {   
     var arraysize = sizes[0];
+    if (arraysize<0) { throw (new java_lang_NegativeArraySizeException.$())._0()._e; }
+    
     var a = new Array(arraysize);    
     a._t = typedescriptor;
     a._d = dimensions;    

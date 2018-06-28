@@ -564,6 +564,30 @@ public class LibraryList
             "<init>()",            
             "<init>(java.lang.String)",            
         },
+        {   "java.lang.ArithmeticException",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
+            "<init>()",            
+            "<init>(java.lang.String)",            
+        },
+        {   "java.lang.ArrayStoreException",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
+            "<init>()",            
+            "<init>(java.lang.String)",            
+        },
+        {   "java.lang.ClassCastException",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
+            "<init>()",            
+            "<init>(java.lang.String)",            
+        },
         {   "java.lang.IllegalArgumentException",
             
             "java.lang.String getMessage()",
@@ -588,6 +612,14 @@ public class LibraryList
             "<init>()",            
             "<init>(java.lang.String)",            
         },   
+        {   "java.util.NegativeArraySizeException",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
+            "<init>()",            
+            "<init>(java.lang.String)",            
+        },       
         {   "java.util.NoSuchElementException",
             
             "java.lang.String getMessage()",

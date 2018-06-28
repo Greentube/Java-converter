@@ -1,5 +1,6 @@
 //reference// java/lang/IllegalStateException
 //reference// java/util/NoSuchElementException
+//reference// java/lang/NullPointerException
 //load// java/util/Iterator
 //load// java/util/Enumeration
 //load// java/util/List
@@ -95,12 +96,16 @@ _class(java_util_AbstractList, java_util_AbstractCollection, [java_util_List],
     },
  
     removeAll_1: function (collection) 
-    {   if (collection===null) throw _NullPointerException();
+    {   if (collection===null) 
+        {   throw (new java_lang_NullPointerException.$())._0()._e;
+        }
         return this._filter(collection,false);
     },
     
     retainAll_1: function (collection) 
-    {   if (collection===null) throw _NullPointerException();
+    {   if (collection===null)
+        {   throw (new java_lang_NullPointerException.$())._0()._e;
+        }
         return this._filter(collection,true);
     },
     

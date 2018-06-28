@@ -13,9 +13,6 @@ Basically the language features of java 8 are provided with the following restri
         NullPointerException
         IndexOutOfBoundsException
         ArrayStoreException
-        NegativeArraySizeException
-        ClassCastException
-        ArithmeticException
     You can also not catch any super-class of these, like RuntimeException or Exception.
     But you can and should throw such exceptions to signify program errors.
       
@@ -46,7 +43,7 @@ Basically the language features of java 8 are provided with the following restri
     to have multiple identically named methods with the same number of parameters 
     and the same static/non-static state in the same class.         
       
-- No shadowing of fields and methods 
+- No hiding of fields and methods 
     No two instance fields in objects that are somehow inherited from each other can have the 
     same name - even if one or both are private. 
     Same holds for methods - but there the "name" is considered to be the 

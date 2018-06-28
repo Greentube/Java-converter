@@ -1,9 +1,12 @@
+//reference// java/lang/NullPointerException
 //load// java/lang/Object
 var java_util_function_Predicate =  
 {   _superinterfaces: [], 
     _defaults:
     {   and_1: function(other)
-        {   if (other===null) throw _NullPointerException();
+        {   if (other===null)
+            {   throw (new java_lang_NullPointerException.$())._0()._e;
+            }
             return new java_util_function_PredicateAnd.$(this,other);
         }
         ,
@@ -11,7 +14,9 @@ var java_util_function_Predicate =
         {   return new java_util_function_PredicateNegate.$(this);
         },
         or_1: function(other)
-        {   if (other===null) throw _NullPointerException();
+        {   if (other===null)
+            {   throw (new java_lang_NullPointerException.$())._0()._e;
+            }
             return new java_util_function_PredicateOr.$(this, other);
         }
     },
