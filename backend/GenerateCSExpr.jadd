@@ -377,138 +377,93 @@ aspect GenerateCS
     
     // --- AssignExpr ---
     
-    public void AssignExpr.generateWithOptionalCastCS(CodePrinterCS out, String operator) 
+    public void AssignExpr.generateWithOptionalFallbackCS(CodePrinterCS out, String operator, String fallback) 
     {
         Expr d = getDest();
         Expr s = getSource();
-        // may need to refactor into normal binary operation
-        if (s.type()!=d.type()) 
+        // for identical types it is safe to use the operator
+        if ((s.type()==d.type() || fallback==null) && operator!=null) 
         {   d.generateCS(out);
-            out.print(" = ");
-            if (!d.type().isInt() || !s.type().isDouble()) 
-            {   out.print("(");                     
-                d.type().generateNameCS(out);
-                out.print(")");
-            }
-            if (s.type().isDouble()) 
-            {   out.print("SYSTEM.castToInt");
-            }       
-            out.print("(");         
-            d.generateCS(out);      
             out.print(" ");
             out.print(operator);
             out.print(" ");
             s.generateUsingResultCS(out);
-            out.print(")");     
-        // can use the compound operator    
-        } 
+        }
+        // otherwise use a fallback-method that is overloaded to handle all types
         else
-        {   d.generateCS(out);
-            out.print(" ");
-            out.print(operator);
-            out.print("= ");
+        {   out.print("SYSTEM.");
+            out.print(fallback);
+            out.print("(ref ");
+            d.generateCS(out);
+            out.print(",");
             s.generateUsingResultCS(out);
+            out.print(")");
         }
     }    
     public void AssignMinusExpr.generateCS(CodePrinterCS out) 
     {
-        generateWithOptionalCastCS(out, "-");
+        generateWithOptionalFallbackCS(out, "-=", "ASSIGNMINUS");
     }    
     public void AssignPlusExpr.generateCS(CodePrinterCS out) 
     {
-        // do some case discrimination if this is a string concatenation
-        if (type().isString()) 
-        {   Expr d = getDest();
-            Expr s = getSource();
-            d.generateCS(out);
-            out.print (" = ");
-            out.print("System.String.Join(\"\",SYSTEM.str(");
-            d.generateCS(out);
-            out.print("),SYSTEM.str(");
-            s.generateUsingResultCS(out);
+        // do a case discrimination if this is a string concatenation
+        if (type().isString())  
+        {   out.print("SYSTEM.ASSIGNPLUS(ref ");
+            getDest().generateCS(out);
+            out.print(",SYSTEM.str(");
+            getSource().generateUsingResultCS(out);
             out.print("))");
-        // may need to refactor into normal binary operation
         } 
         else
-        {   generateWithOptionalCastCS(out, "+");
+        {   generateWithOptionalFallbackCS(out, "+=", "ASSIGNPLUS");
         }
     }
     public void AssignDivExpr.generateCS(CodePrinterCS out) 
     {
-        Expr d = getDest();
-        Expr s = getSource();
-        if (d.type().isDouble() || s.type().isDouble()) 
-        {   generateWithOptionalCastCS(out, "/");
-        } 
-        else
-        {   d.generateCS(out);
-            out.print(" = ");
-            if (!d.type().isInt())
-            {   out.print("(");                     
-                d.type().generateNameCS(out);
-                out.print(")");
-            }
-            out.print("SYSTEM.div(");           
-            d.generateCS(out);      
-            out.print(",");
-            s.generateUsingResultCS(out);
-            out.print(")");     
-        }
+        generateWithOptionalFallbackCS(out, null, "ASSIGNDIV");        
     }
     public void AssignModExpr.generateCS(CodePrinterCS out) 
     {
-        generateWithOptionalCastCS(out, "%");
+        generateWithOptionalFallbackCS(out, "%=", "ASSIGNMOD");
     }
     public void AssignMulExpr.generateCS(CodePrinterCS out) 
     {
-        generateWithOptionalCastCS(out, "*");
+        generateWithOptionalFallbackCS(out, "*=", "ASSIGNMUL");
     }    
     
     public void AssignAndExpr.generateCS(CodePrinterCS out) 
     {
-        generateWithOptionalCastCS(out, "&"); 
-
+        generateWithOptionalFallbackCS(out, "&=", "ASSIGNAND"); 
     }
     public void AssignOrExpr.generateCS(CodePrinterCS out) 
     {
-        Expr d = getDest();
-        Expr s = getSource();
-        if (d.type().isShort() || d.type().isByte() || d.type().isChar())
-        {   d.generateCS(out);
-            out.print(" = (");
-            d.type().generateNameCS(out);
-            out.print(")(((int)(");
-            d.generateCS(out);
-            out.print("))|((int)(");      
-            s.generateUsingResultCS(out);
-            out.print(")))");             
-            return;   
-        }        
-        generateWithOptionalCastCS(out, "|");
+        generateWithOptionalFallbackCS(out, "|=", "ASSIGNOR");
     }
     public void AssignXorExpr.generateCS(CodePrinterCS out) 
     {
-        generateWithOptionalCastCS(out, "^"); 
+        generateWithOptionalFallbackCS(out, "^=", "ASSIGNXOR"); 
     }
     public void AssignLShiftExpr.generateCS(CodePrinterCS out) 
     {
-        generateWithOptionalCastCS(out, "<<"); 
+        generateWithOptionalFallbackCS(out, "<<=", "ASSIGNLSHIFT"); 
     }
     public void AssignRShiftExpr.generateCS(CodePrinterCS out) 
     {
-        generateWithOptionalCastCS(out, ">>"); 
+        generateWithOptionalFallbackCS(out, ">>=", "ASSIGNRSHIFT"); 
     }
     public void AssignURShiftExpr.generateCS(CodePrinterCS out) 
     {
-        getDest().generateCS(out);
-        out.print(" = (");
-        getDest().type().generateNameCS(out);        
-        out.print(")(((uint)(");
-        getDest().generateCS(out);
-        out.print(")) >> ");
-        getSource().generateUsingResultCS(out);
-        out.print(")");
+        generateWithOptionalFallbackCS(out, null, "ASSIGNURSHIFT"); 
     }
+//        getDest().generateCS(out);
+//        out.print(" = (");
+//        getDest().type().generateNameCS(out);        
+//        out.print(")(((uint)(");
+//        getDest().generateCS(out);
+//        out.print(")) >> ");
+//        getSource().generateUsingResultCS(out);
+//        out.print(")");
+//    }
     public void AssignSimpleExpr.generateCS(CodePrinterCS out) 
     {
         Expr d = getDest();

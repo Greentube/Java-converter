@@ -229,12 +229,12 @@ aspect CheckRestrictions
     // Compound assignments can only use limited types of destination
     public void AssignExpr.checkRestrictions(ArrayList<String> errorlist)
     {
-        if (!(this instanceof AssignSimpleExpr)) 
-        {   if (getDest().hasPotentialSideEffects()) 
-            {   reportRestriction(errorlist, "Can not use compound assignment when destination my have side effects");          
-            }
-        }
-        
+//        if (!(this instanceof AssignSimpleExpr)) 
+//        {   if (getDest().hasPotentialSideEffects()) 
+//            {   reportRestriction(errorlist, "Can not use compound assignment when destination my have side effects");          
+//            }
+//        }
+//        
         // Autoboxing in assignments
         checkAutoBoxing(getSource().type(), getDest().type(), errorlist);
         
