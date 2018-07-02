@@ -26,8 +26,8 @@ aspect GenerateJS
     
     public void Dot.generateJS(CodePrinterJS out) 
     {
-        // search down the tree to find the end of the AbstactDot sequence          
-        Access a = getRight();
+        // search down the tree to find the end of the Dot sequence
+        Access a = this;
         while (a instanceof Dot) 
         {   a = ((Dot)a).getRight();
         }
@@ -35,13 +35,11 @@ aspect GenerateJS
         {   // do not generate enclosing instance expression here - must be done by constructor
             a.generateJS(out);              
         } 
-        else if ((a instanceof MethodAccess) && ((MethodAccess)a).decl().isStatic()) 
-        {   // do not generate instance expression when calling static method
-            a.generateJS(out);              
-        } 
-        else if ((a instanceof VarAccess) && ((VarAccess)a).decl().isStatic()) 
-        {   // do not generate instance expression when accessing static variable
-            a.generateJS(out);              
+        else if 
+        (   ((a instanceof MethodAccess) && ((MethodAccess)a).decl().isStatic())
+        ||  ((a instanceof VarAccess) && ((VarAccess)a).decl().isStatic())
+        )
+        {   a.generateJS(out);
         } 
         else 
         {   // generate everything
@@ -166,7 +164,7 @@ aspect GenerateJS
                 }
             }
             
-            out.printAndMemorizeReference(t.packageName(),tname);
+            out.printAndMemorizeReference(t.packageName(),tname);            
             out.print(".");
             out.printJSIdentifier(n,"_"+m.getNumParameter());
             out.print("(");
@@ -294,7 +292,7 @@ aspect GenerateJS
         Variable v = varDecl();
         if (v.isClassVariable()) 
         {   TypeDecl t = v.hostType();
-            out.printAndMemorizeReference(t.packageName(),t.uniqueName());          
+            out.printAndMemorizeReference(t.packageName(),t.uniqueName());                      
             out.print(".");
             out.printJSIdentifier(getID(),"");  
             // check if this is inside a static initializer - must force early loading of accessed class

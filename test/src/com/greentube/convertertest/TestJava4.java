@@ -161,6 +161,9 @@ public class TestJava4
         StaticClass sc = new StaticClass();
         assertI(sc.a, StaticClass.a);
         assertO(sc.b, StaticClass.b);
+        StaticClass[] sca = new StaticClass[]{new StaticClass()};
+        assertI(sca[0].a, StaticClass.a);             
+        assertO("nixi".join("|","a","b"), "a|b");
         
         TestObject to = new TestObject();
         assertI(to.self.self.self.staticparentattribute, 55);
@@ -857,6 +860,7 @@ public class TestJava4
         assertI(dd,18);
         assertI(xx,15);
         assertI(xx=99,99);
+                
     }
 
        

@@ -356,6 +356,19 @@ aspect Util {
     {   
         return getOperand().hasPotentialSideEffects();
     }
+    public boolean PostfixExpr.hasPotentialSideEffects() 
+    {   
+        return true;
+    }
+    public boolean PreDecExpr.hasPotentialSideEffects() 
+    {   
+        return true;
+    }
+    public boolean PreIncExpr.hasPotentialSideEffects() 
+    {   
+        return true;
+    }    
+    
     public boolean MethodAccess.hasPotentialSideEffects()
     {
         // check side-effects of all arguments

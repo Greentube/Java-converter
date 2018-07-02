@@ -10,6 +10,7 @@ public class CodePrinter
     boolean linehasstarted;
     int indent;
     boolean afteropeningbrace;
+    int tmpidentifiercounter;
 
     public CodePrinter(File outputfolder, String filename) 
     {   
@@ -27,6 +28,7 @@ public class CodePrinter
         this.indent = 0;
         this.linehasstarted = false;
         this.afteropeningbrace = false;
+        this.tmpidentifiercounter = 0;
     }
 
     public CodePrinter(CodePrinter p, String filename) 
@@ -87,6 +89,13 @@ public class CodePrinter
     {
         print(s);
         println();
+    }
+    
+    public String createIdentifier(String prefix)
+    {
+        int n = tmpidentifiercounter;
+        tmpidentifiercounter++;
+        return prefix + n;
     }
 
     public static String escapeIdentifier(String id, boolean allowDollarSign) 

@@ -14,8 +14,8 @@ import java.util.Vector;
  *
  * @author  reinhard
  */
-public class StaticClass {
-    
+public class StaticClass 
+{
     static int a = 11+6;
     static String b = "hello" + " " + "kitty";
     static Vector c = new Vector();
@@ -28,37 +28,46 @@ public class StaticClass {
 
     // table of 32-bit integer values coded as two chars (high 16 bit first)
 	static final String Tvalues =
-		"\ud76a\ua478" + "\ue8c7\ub756" + "\u2420\u70db" + "\uc1bd\uceee" + 
-	    "\uf57c\u0faf" + "\u4787\uc62a" + "\ua830\u4613" + "\ufd46\u9501" + 
-		"\u6980\u98d8" + "\u8b44\uf7af" + "\uffff\u5bb1" + "\u895c\ud7be" + 
-		"\u6b90\u1122" + "\ufd98\u7193" + "\ua679\u438e" + "\u49b4\u0821" + 
-		"\uf61e\u2562" + "\uc040\ub340" + "\u265e\u5a51" + "\ue9b6\uc7aa" + 
-		"\ud62f\u105d" + "\u0244\u1453" + "\ud8a1\ue681" + "\ue7d3\ufbc8" + 
-		"\u21e1\ucde6" + "\uc337\u07d6" + "\uf4d5\u0d87" + "\u455a\u14ed" + 
-		"\ua9e3\ue905" + "\ufcef\ua3f8" + "\u676f\u02d9" + "\u8d2a\u4c8a" + 
-		"\ufffa\u3942" + "\u8771\uf681" + "\u6d9d\u6122" + "\ufde5\u380c" + 
-		"\ua4be\uea44" + "\u4bde\ucfa9" + "\uf6bb\u4b60" + "\ubebf\ubc70" + 
-		"\u289b\u7ec6" + "\ueaa1\u27fa" + "\ud4ef\u3085" + "\u0488\u1d05" + 
-		"\ud9d4\ud039" + "\ue6db\u99e5" + "\u1fa2\u7cf8" + "\uc4ac\u5665" + 
-		"\uf429\u2244" + "\u432a\uff97" + "\uab94\u23a7" + "\ufc93\ua039" + 
-		"\u655b\u59c3" + "\u8f0c\ucc92" + "\uffef\uf47d" + "\u8584\u5dd1" + 
-		"\u6fa8\u7e4f" + "\ufe2c\ue6e0" + "\ua301\u4314" + "\u4e08\u11a1" + 
-		"\uf753\u7e82" + "\ubd3a\uf235" + "\u2ad7\ud2bb" + "\ueb86\ud391";
-    
-    static int[][][] ia = { { { 4, 4 } ,
-                              { 6, 7 }
-                            },
-                            { { 11, 123, 123 } }
-                          };
+	"\ud76a\ua478" + "\ue8c7\ub756" + "\u2420\u70db" + "\uc1bd\uceee" 
+	+ "\uf57c\u0faf" + "\u4787\uc62a" + "\ua830\u4613" + "\ufd46\u9501" 
+	+ "\u6980\u98d8" + "\u8b44\uf7af" + "\uffff\u5bb1" + "\u895c\ud7be" 
+	+ "\u6b90\u1122" + "\ufd98\u7193" + "\ua679\u438e" + "\u49b4\u0821" 
+	+ "\uf61e\u2562" + "\uc040\ub340" + "\u265e\u5a51" + "\ue9b6\uc7aa" 
+	+ "\ud62f\u105d" + "\u0244\u1453" + "\ud8a1\ue681" + "\ue7d3\ufbc8" 
+	+ "\u21e1\ucde6" + "\uc337\u07d6" + "\uf4d5\u0d87" + "\u455a\u14ed" 
+	+ "\ua9e3\ue905" + "\ufcef\ua3f8" + "\u676f\u02d9" + "\u8d2a\u4c8a" 
+	+ "\ufffa\u3942" + "\u8771\uf681" + "\u6d9d\u6122" + "\ufde5\u380c"
+	+ "\ua4be\uea44" + "\u4bde\ucfa9" + "\uf6bb\u4b60" + "\ubebf\ubc70" 
+	+ "\u289b\u7ec6" + "\ueaa1\u27fa" + "\ud4ef\u3085" + "\u0488\u1d05" 
+	+ "\ud9d4\ud039" + "\ue6db\u99e5" + "\u1fa2\u7cf8" + "\uc4ac\u5665" 
+	+ "\uf429\u2244" + "\u432a\uff97" + "\uab94\u23a7" + "\ufc93\ua039" 
+	+ "\u655b\u59c3" + "\u8f0c\ucc92" + "\uffef\uf47d" + "\u8584\u5dd1" 
+	+ "\u6fa8\u7e4f" + "\ufe2c\ue6e0" + "\ua301\u4314" + "\u4e08\u11a1" 
+	+ "\uf753\u7e82" + "\ubd3a\uf235" + "\u2ad7\ud2bb" + "\ueb86\ud391";
+
+    static int[][][] ia = 
+    {   {   { 4, 4 },
+            { 6, 7 }
+        },
+        {   { 11, 123, 123 } 
+        }
+    };
     static String[] sa = { "one", "two", "three" };
     static String[][] saa = { { "x", "y" }, { "a", "b", "c"} };
 
     public static final int []ROWCOUNT = {3, 6, 9, 10};
-    public static int [][][]REFERENCES = { {{0,1},{2,3},{4,5}},{{0,1},{1,2},{3,4},{4,5},{6,7},{7,8}},{{0,1},{1,2},{2,3},{3,4},{4,5},{5,6},{6,7},{7,8},{8,9}}};
+    public static int [][][]REFERENCES = 
+    {   {   {0,1},{2,3},{4,5}
+        },
+        {   {0,1},{1,2},{3,4},{4,5},{6,7},{7,8}
+        },
+        {   {0,1},{1,2},{2,3},{3,4},{4,5},{5,6},{6,7},{7,8},{8,9}
+        }
+    };
 
     public static int fact(int n)
     {
-    	if (n<2) return 1;
+        if (n<2) { return 1; } 
     	return n*fact(n-1);
     }
     public static String hello()
@@ -194,4 +203,9 @@ public class StaticClass {
 //		System.out.println(b.toString());
 //	}
 	
+	public StaticClass self()
+	{
+	   return this;
+	}
+
 }

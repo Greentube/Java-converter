@@ -50,6 +50,13 @@ Basically the language features of java 8 are provided with the following restri
     identifier in conjunction with the number-of-parameters.
     Static fields or methods do not have this restriction.
     Also local variables and parameters may shadow fields just as normally.
+
+- Slightly different type inference algorithm
+    Compared to the standard java compiler, there are some slight differences what kind of
+    types the converter can actually infer for lambda expressions and for the "diamond" operator.
+    Since type inference is undecidable in the general case, a best effort approach is done
+    by the converter. This will not always succeed in the same set of cases as for the 
+    standard java compiler. When this happens, the problem will become apparent at compile time.    
       
 - Compound assignments and increment/decrement operators must not have side-effects in the target 
     When using any of the operators +=,-=,*=,... it is only possible to use 
@@ -65,6 +72,17 @@ Basically the language features of java 8 are provided with the following restri
     Since the expression will just be eliminated during conversion, it must not
     have any possible side effects.
       
+- Limited subset of java core classes
+    The converter core itself provides a limited subset of the java core classes and
+    also a limited number of methods in each. 
+    Mainly the most crucial parts of java.lang and java.util are provided and a
+    minimal version of java.io.PrintStream to make 'System.out' and 'System.err' available 
+    for simple logging. 
+    The java 8 Stream API is not provided, but similar functionality can be created
+    using generics and lambda expressions. The Supplier, Function, Consumer, BiConsumer, 
+    Predicate interfaces are provided to allow basic generic data transformation operations.
+    See the document libraries.txt for a complete list.
+
 - String.split() only accepts a simple search string
     Instead of supporting the whole regular expression framework for just this method, 
     the functionality is limited to have regular expressions that only match a single static
@@ -76,21 +94,3 @@ Basically the language features of java 8 are provided with the following restri
     The java converter enforces this in a conservative way. If it can not detect
     the non-nullness of the parameter from the usage, you can make it obvious by
     calling an otherwise useless ".reversed().reversed()" on the comparator object.
-      
-- Limited subset of java core classes
-    The converter core itself provides a limited subset of the java core classes and
-    also a limited number of methods in each. 
-    Mainly the most crucial parts of java.lang and java.util are provided and a
-    minimal version of java.io.PrintStream to make 'System.out' and 'System.err' available 
-    for simple logging. 
-    The java 8 Stream API is not provided, but similar functionality can be created
-    using generics and lambda expressions. The Supplier, Function, Consumer, BiConsumer, 
-    Predicate interfaces are provided to allow basic generic data transformation operations.
-    See the document libraries.txt for a complete list.
-      
-- Slightly different type inference algorithm
-    Compared to the standard java compiler, there are some slight differences what kind of
-    types the converter can actually infer for lambda expressions and for the "diamond" operator.
-    Since type inference is undecidable in the general case, a best effort approach is done
-    by the converter. This will not always succeed in the same set of cases as for the 
-    standard java compiler. When this happens, the problem will become apparent at compile time.    

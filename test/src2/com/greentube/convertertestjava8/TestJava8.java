@@ -130,15 +130,15 @@ public class TestJava8 extends TestJava7
         assertO(target.toString(), "[hey!, this!, is!, nice!]");
         
         HashMap<String,Integer> m = new HashMap<>();
-        m.put("a",Integer.valueOf(17));
-        m.put("b",Integer.valueOf(4));
-        m.put("c",Integer.valueOf(8));
-        m.put("d",Integer.valueOf(15));
+        m.put("a", Integer.valueOf(17));
+        m.put("b", Integer.valueOf(4));
+        m.put("c", Integer.valueOf(8));
+        m.put("d", Integer.valueOf(15));
         HashMap<String,Integer> x = new HashMap<>();
         int[] count = new int[1];
-        BiConsumer<String,Integer> bc = (k,v) -> x.put(k,v);
-        m.forEach(bc.andThen((k,v) -> count[0]++));
-        assertO(m,x);
+        BiConsumer<String,Integer> bc = (k, v) -> x.put(k, v);
+        m.forEach(bc.andThen((k, v) -> count[0]++));
+        assertO(m, x);
         assertI(count[0], 4);
     }
     
@@ -147,9 +147,9 @@ public class TestJava8 extends TestJava7
         System.out.println("- removeIf");
     
         List<String> l = makelist("hey", "this", "is", "nice");
-        l.removeIf(o->o.startsWith("h"));
+        l.removeIf(o -> o.startsWith("h"));
         assertO(l.toString(), "[this, is, nice]");
-        l.removeIf(o->o.contains("s"));
+        l.removeIf(o -> o.contains("s"));
         assertO(l.toString(), "[nice]");    
     }
     
@@ -171,7 +171,7 @@ public class TestJava8 extends TestJava7
         System.out.println("- replaceAll");
         
         List<String> l = makelist("this","are","some","words");
-        l.replaceAll(s->s.concat(s));
+        l.replaceAll(s -> s.concat(s));
         assertO(l.toString(), "[thisthis, areare, somesome, wordswords]");        
     }
     
@@ -204,10 +204,10 @@ public class TestJava8 extends TestJava7
         ArrayList<String> target = new ArrayList<>();
         
         // some generic building blocks
-        Predicate<String> hasEE = (s) -> s.contains("ee");        
-        Function<String,String> reverse = (s) -> 
+        Predicate<String> hasEE = s -> s.contains("ee");        
+        Function<String,String> reverse = s -> 
         {   StringBuilder b = new StringBuilder();
-            for (int i=s.length()-1; i>=0; i--) b.append(s.charAt(i));
+            for (int i=s.length()-1; i>=0; i--) { b.append(s.charAt(i)); }
             return b.toString();
         };
         Consumer<String> collect = s -> target.add(s);
@@ -220,22 +220,24 @@ public class TestJava8 extends TestJava7
             }   
         };
         // build the same pipeline using different means
-        Consumer<String> proc2 = new Filter<String>(hasEE, 
-                           new Processor<String>(reverse, collect));
+        Consumer<String> proc2 = new Filter<String>
+        (   hasEE, 
+            new Processor<String>(reverse, collect)
+        );
                  
                  
         Arrays.<String>asList("see","the","bee","buzzing","in","the","tree")
-              .forEach( processing );  
+        .forEach( processing );  
         assertO(target.toString(), "[ees, eeb, eert]"); 
         
         target.clear();
         Arrays.<String>asList("wee","free","men")
-              .forEach( processing );  
+        .forEach( processing );  
         assertO(target.toString(), "[eew, eerf]");         
         
         target.clear();
         Arrays.<String>asList("eepson","memory","mastermeend", "lee", "bravo")
-              .forEach( proc2 );  
+        .forEach( proc2 );  
         assertO(target.toString(), "[nospee, dneemretsam, eel]");   
         
     }   
@@ -268,8 +270,8 @@ public class TestJava8 extends TestJava7
         int[] n = new int[]{0};
         Consumer<String> putInL = o -> l.add(o); 
         // create numbers 0 to 9 / allow only even / multiply by 3 / collect
-        TestJava8.<Integer,String>process ( 
-            () -> n[0]<10?Integer.valueOf(n[0]++):null, 
+        TestJava8.<Integer,String>process 
+        (   () -> n[0]<10?Integer.valueOf(n[0]++):null, 
             (o) -> o.intValue()%2==0, 
             (o) -> ""+o.intValue()*3, 
             putInL 
@@ -280,8 +282,8 @@ public class TestJava8 extends TestJava7
         l.clear();
         n[0] = 0;
         Predicate<Integer> iseven = (o) -> o.intValue()%2==0;
-        TestJava8.<Integer,Integer>process ( 
-            () -> n[0]<20?Integer.valueOf(n[0]++):null, 
+        TestJava8.<Integer,Integer>process 
+        (   () -> n[0]<20?Integer.valueOf(n[0]++):null, 
             iseven.and((o) -> o.intValue()%3==0).or((o) -> o.intValue()==5).negate(), 
             Function.identity(), 
             o -> l.add(""+o) 
@@ -292,8 +294,8 @@ public class TestJava8 extends TestJava7
         l.clear();
         n[0] = 0;
         Predicate<Integer> eq7 = (o) -> o.intValue()==7;
-        TestJava8.<Integer,Integer>process ( 
-            () -> n[0]<10?Integer.valueOf(n[0]++):null, 
+        TestJava8.<Integer,Integer>process 
+        (   () -> n[0]<10?Integer.valueOf(n[0]++):null, 
             eq7.or((o)->o.intValue()==3).negate(), 
             Function.identity(), 
             o -> l.add(""+o) 
@@ -304,8 +306,8 @@ public class TestJava8 extends TestJava7
         l.clear();
         n[0] = 0;
         Function<Integer,Integer> mul = (o) -> Integer.valueOf(o.intValue()*7);
-        TestJava8.<Integer,Integer>process ( 
-            () -> n[0]<10?Integer.valueOf(n[0]++):null, 
+        TestJava8.<Integer,Integer>process 
+        (   () -> n[0]<10?Integer.valueOf(n[0]++):null, 
             null, 
             mul.andThen( (o) -> Integer.valueOf(o.intValue()+9) ), 
             o -> l.add(""+o) 
@@ -315,8 +317,8 @@ public class TestJava8 extends TestJava7
         // create numbers 0 to 9 / .. / multiply, but before that add / collect
         l.clear();
         n[0] = 0;
-        TestJava8.<Integer,Integer>process ( 
-            () -> n[0]<10?Integer.valueOf(n[0]++):null, 
+        TestJava8.<Integer,Integer>process 
+        (   () -> n[0]<10?Integer.valueOf(n[0]++):null, 
             null, 
             mul.compose( (o) -> Integer.valueOf(o.intValue()+9) ), 
             o -> l.add(""+o) 
@@ -326,8 +328,8 @@ public class TestJava8 extends TestJava7
         // create numbers 0 to 4 / .. / convert to String / collect twice
         l.clear();
         n[0] = 0;
-        process ( 
-            () -> n[0]<5?Integer.valueOf(n[0]++):null, 
+        process 
+        (   () -> n[0]<5?Integer.valueOf(n[0]++):null, 
             null, 
             o -> o.toString(), 
             putInL.andThen(o -> putInL.accept("!"+o)).andThen(putInL) 
@@ -396,16 +398,19 @@ public class TestJava8 extends TestJava7
     
 
     final static Comparator<String> c2 = 
-        ((Comparator<String>) (a,b)->b.length() - a.length() )
-              .thenComparing( (a,b)->a.compareTo(b) );
+    (   (Comparator<String>) 
+        (a,b) -> b.length() - a.length() 
+    )
+    .thenComparing( (a, b) -> a.compareTo(b) );
+    
     // non-final comparator object 
-    public static Comparator<String> cv2 = (Comparator<String>) (a,b)->a.compareTo(b);  
+    public static Comparator<String> cv2 = (Comparator<String>) (a, b) -> a.compareTo(b);  
 
     public static void sortliststest()
     {
         System.out.println("- sort lists");
 
-        final Comparator<String> c = (a,b)->((String)a).compareTo((String)b);
+        final Comparator<String> c = (a, b) -> ((String)a).compareTo((String)b);
         List l = new ArrayList();
         l.add("nixi");
         l.add("trixi");
@@ -486,7 +491,7 @@ public class TestJava8 extends TestJava7
     interface ReduceFunction<T> {  T apply(T a, T b);  }
     private static <T> T reduce(List<T> list, ReduceFunction<T> reducefunction)
     {
-        if (list.size()<2) return list.get(0);
+        if (list.size()<2) { return list.get(0); }
         T accu = list.get(0);
         for (int i=1; i<list.size(); i++)
         {   accu = reducefunction.apply(accu,list.get(i));
