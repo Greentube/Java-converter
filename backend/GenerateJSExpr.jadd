@@ -27,26 +27,47 @@ aspect GenerateJS
     public void Dot.generateJS(CodePrinterJS out) 
     {
         // search down the tree to find the end of the Dot sequence
-        Access a = this;
+        Access a = getRight();
         while (a instanceof Dot) 
         {   a = ((Dot)a).getRight();
         }
         if (a instanceof ClassInstanceExpr) 
         {   // do not generate enclosing instance expression here - must be done by constructor
-            a.generateJS(out);              
         } 
         else if 
         (   ((a instanceof MethodAccess) && ((MethodAccess)a).decl().isStatic())
         ||  ((a instanceof VarAccess) && ((VarAccess)a).decl().isStatic())
         )
-        {   a.generateJS(out);
+        {   // do not generate instance expression when accessing static field
         } 
         else 
-        {   // generate everything
-            getLeft().generateJS(out);
-            getRight().generateJS(out);
+        {   // generate everything from begin
+            a = this;
+            while (a instanceof Dot) 
+            {   ((Dot)a).getLeft().generateJS(out);
+                a = ((Dot)a).getRight();
+            }
         }
+          
+        a.generateJS(out);
+    }    
+    public void Dot.generateExcludingRightmostJS(CodePrinterJS out) 
+    {
+       Access a = this;
+       while (a instanceof Dot) 
+       {   ((Dot)a).getLeft().generateJS(out);
+           a = ((Dot)a).getRight();
+       }
+    }    
+    public Access Dot.findRightmostAccess()
+    {   
+        Access a = getRight();
+        while (a instanceof Dot) 
+        {   a = ((Dot)a).getRight();
+        }
+        return a;    
     }
+    
 //  public void Wildcard.generateJS(CodePrinterJS out) 
 //  {
 //  }
@@ -359,56 +380,131 @@ aspect GenerateJS
 
     // --- AssignExpr ---
 
-    public void AssignExpr.generateWithOptionalCastJS(CodePrinterJS out, String operator) 
+    public void AssignExpr.generateWithNativeOperatorJS(CodePrinterJS out, String operator)
+    {
+        getDest().generateJS(out);
+        out.print(" ");
+        out.print(operator);
+        out.print(" ");
+        getSource().generateJS(out);
+    }
+
+    public void AssignExpr.generateWithDecomposedOperatorJS(CodePrinterJS out, boolean addcast, String op)
     {
         Expr d = getDest();
         Expr s = getSource();
-        if (d.type().isDouble()) 
-        {   d.generateJS(out);
-            out.print(" ");
-            out.print(operator);
-            out.print("= ");
-            s.generateUsingResultJS(out);
-        } 
-        else if (s.type().isDouble() || !d.type().isInt()) 
-        {   d.generateJS(out);
-            out.print(" = ");
-            if (d.type().isByte()) { out.print("_castTObyte("); }
-            else if (d.type().isChar()) { out.print("_castTOchar("); }
-            else if (d.type().isShort()) { out.print("_castTOshort("); }
-            else if (d.type().isInt()) { out.print("_castTOint("); }
-            else { throw new RuntimeException("Can not implicitly cast to destination type"); }
-            out.print("(");
-            d.generateJS(out);
+    
+        // determine which kind of cast is needed  
+        String caststart = "";
+        String castend = "";
+        if (addcast)
+        {   if (s.type().isDouble()) 
+            {   if (d.type().isByte()) { caststart="_castTObyte("; }
+                else if (d.type().isChar()) { caststart="_castTOchar("; }
+                else if (d.type().isShort()) { caststart="_castTOshort("; }
+                else if (d.type().isInt()) { caststart="_castTOint("; }
+                else { throw new RuntimeException("Can not implicitly cast to destination type"); }
+                castend = ")";
+            }
+            else
+            {   if (d.type().isByte()) { caststart="(((("; castend=")|0)<<24)>>24)"; }
+                else if (d.type().isChar()) { caststart="(("; castend=")& 0xffff)"; }
+                else if (d.type().isShort()) { caststart="(((("; castend=")|0)<<16)>>16)"; }
+                else if (d.type().isInt()) { caststart="(("; castend=")|0)"; }
+                else { throw new RuntimeException("Can not implicitly cast to destination type"); }            
+            }
+        }
+    
+        // check if need to create an inner function to avoid double evaluation        
+        boolean usefunction = false;
+        Expr funcpar2 = null;
+        if (d instanceof Dot)
+        {   Access a = ((Dot)d).findRightmostAccess();
+            if (a instanceof ArrayAccess)
+            {   out.print("(function(a,i,x){return a[i]=");
+                out.print(caststart);
+                if (op.startsWith("_"))
+                {   out.print(op+"(a[i],x)");
+                }
+                else 
+                {   out.print("a[i] "+op+" x");
+                }
+                out.print(castend);
+                out.print("})");
+                usefunction = true; 
+                funcpar2 = ((ArrayAccess)a).getExpr();
+            }
+            else if (a instanceof VarAccess && ((VarAccess)a).varDecl().isInstanceVariable())
+            {   String id = out.escapeJSIdentifier(((VarAccess)a).getID(),"");
+                out.print("(function(o,x){return o."+id+"=");
+                out.print(caststart);
+                if (op.startsWith("_"))
+                {   out.print(op+"(o."+id+",x)");
+                }
+                else 
+                {   out.print("o."+id+" "+op+" x");
+                }
+                out.print(castend);
+                out.print("})");
+                usefunction = true;                    
+            }
+        }
+         
+        // call the anonymous function
+        if (usefunction)
+        {   out.print("(");
+            ((Dot)d).generateExcludingRightmostJS(out);
+            if (funcpar2!=null) 
+            {   out.print(",");
+                funcpar2.generateJS(out); 
+            }
+            out.print(",");
+            s.generateJS(out);        
             out.print(")");
-            out.print(operator);
-            out.print("(");
-            s.generateUsingResultJS(out);
-            out.print("))");
-        } 
+        }
+        // no function needed - use the operator directly
         else
-        {   // only int values
+        {
             d.generateJS(out);
-            out.print(" = (((");
-            d.generateJS(out);
-            out.print(")");
-            out.print(operator);
-            out.print("(");
-            getSource().generateUsingResultJS(out);
-            out.print("))|0)");          
+            out.print(" = ");
+            out.print(caststart);
+            
+            if (op.startsWith("_"))     // it is a function call  
+            {   out.print(op);
+                out.print("(");
+                d.generateJS(out);
+                out.print(",");
+                s.generateJS(out);
+                out.print(")");
+            }
+            else                        // it is an operator
+            {
+                out.print("((");
+                d.generateJS(out); 
+                out.print(")");
+                out.print(op);
+                out.print("(");
+                s.generateJS(out);
+                out.print("))");
+            }
+            out.print(castend);
         }
     }
-
+    
     public void AssignMinusExpr.generateJS(CodePrinterJS out) 
     {
-        generateWithOptionalCastJS(out,"-");
+        if (getDest().type().isDouble())
+        {   generateWithNativeOperatorJS(out, "-=");
+        }
+        else 
+        {   generateWithDecomposedOperatorJS(out, true, "-");           
+        }
     }
     public void AssignPlusExpr.generateJS(CodePrinterJS out) 
     {
-        // do some case discrimination if this is a string concatenation
         Expr d = getDest();
         Expr s = getSource();
-        if (type().isString()) 
+        if (d.type().isString())
         {   d.generateJS(out);
             out.print(" += \"\"+");
             if (s.type().isChar()) 
@@ -420,105 +516,125 @@ aspect GenerateJS
             {   s.generateJS(out);
             }
         } 
-        else
-        {   generateWithOptionalCastJS(out,"+");
+        else if (d.type().isDouble())
+        {   generateWithNativeOperatorJS(out, "+=");
+        }
+        else 
+        {   generateWithDecomposedOperatorJS(out, true, "+");           
         }
     }
     public void AssignMulExpr.generateJS(CodePrinterJS out)
     {   
-        // do some case discrimination if this is an int multiplication with large operands        
         Expr d = getDest();
         Expr s = getSource();
-        if (d.type().isInt() && s.type().isInt())
-        {   if (!d.hasLessThan20Bits() && !s.hasLessThan20Bits()) 
-            {   d.generateJS(out);
-                out.print(" = _imul(");
-                d.generateJS(out);
-                out.print(" , ");
-                s.generateJS(out);
-                out.print(")");
-                return;
-            }
+        if (d.type().isDouble())
+        {   generateWithNativeOperatorJS(out, "*=");
         }
-        generateWithOptionalCastJS(out,"*");
+        // do some case discrimination if this is an int multiplication with large operands        
+        else if (d.type().isInt() && s.type().isInt() && !d.hasLessThan20Bits() && !s.hasLessThan20Bits()) 
+        {   generateWithDecomposedOperatorJS(out, false, "_imul");            
+        }
+        else
+        {   generateWithDecomposedOperatorJS(out, true, "*");
+        }
     }   
     public void AssignDivExpr.generateJS(CodePrinterJS out) 
     {
         Expr d = getDest();
         Expr s = getSource();
-        if (d.type().isInt() && s.type().isInt()) 
-        {   d.generateJS(out);
-            out.print(" = _idiv(");
-            d.generateJS(out);
-            out.print(" , ");
-            s.generateJS(out);
-            out.print(")");
-            return;        
+        if (d.type().isDouble())
+        {   generateWithNativeOperatorJS(out, "/=");
         }
-        generateWithOptionalCastJS(out,"/");
+        else if (s.type().isDouble())
+        {   generateWithDecomposedOperatorJS(out, true, "/");
+        }
+        else if (d.type().isInt())
+        {   generateWithDecomposedOperatorJS(out, false, "_idiv");
+        }
+        else
+        {   generateWithDecomposedOperatorJS(out, true, "_idiv");
+        }
+    }
+    public void AssignModExpr.generateJS(CodePrinterJS out) 
+    {
+        if (getDest().type().isDouble())
+        {   generateWithNativeOperatorJS(out, "%=");
+        }
+        else
+        {   generateWithDecomposedOperatorJS(out, true, "%");
+        }
     }
     
     public void AssignAndExpr.generateJS(CodePrinterJS out) 
     {
         Expr d = getDest();
         Expr s = getSource();
-        if (d.type().isBoolean() && s.type().isBoolean())
-        {   d.generateJS(out);
-            out.print(" = _and(");
-            d.generateJS(out);
-            out.print(" , ");
-            s.generateJS(out);
-            out.print(")");
-            return;                    
+        if (d.type().isInt())
+        {   generateWithNativeOperatorJS(out, "&=");
         }
-        generateWithOptionalCastJS(out,"&"); 
+        else if (d.type().isBoolean() && s.type().isBoolean())
+        {   generateWithDecomposedOperatorJS(out, false, "_and");        
+        }
+        else
+        {   generateWithDecomposedOperatorJS(out, true, "&");
+        }
     }
     public void AssignOrExpr.generateJS(CodePrinterJS out) 
     {
         Expr d = getDest();
         Expr s = getSource();
-        if (d.type().isBoolean() && s.type().isBoolean())
-        {   d.generateJS(out);
-            out.print(" = _or(");
-            d.generateJS(out);
-            out.print(" , ");
-            s.generateJS(out);
-            out.print(")");
-            return;                    
+        if (d.type().isInt())
+        {   generateWithNativeOperatorJS(out, "|=");
         }
-        generateWithOptionalCastJS(out,"|");
+        else if (d.type().isBoolean() && s.type().isBoolean())
+        {   generateWithDecomposedOperatorJS(out, false, "_or");        
+        }
+        else
+        {   generateWithDecomposedOperatorJS(out, true, "|");
+        }
     }
     public void AssignXorExpr.generateJS(CodePrinterJS out) 
     {
         Expr d = getDest();
         Expr s = getSource();
-        if (d.type().isBoolean() && s.type().isBoolean())
-        {   d.generateJS(out);
-            out.print(" = _xor(");
-            d.generateJS(out);
-            out.print(" , ");
-            s.generateJS(out);
-            out.print(")");
-            return;                    
+        if (d.type().isInt())
+        {   generateWithNativeOperatorJS(out, "^=");
         }
-        generateWithOptionalCastJS(out,"^");
-    }
-    public void AssignModExpr.generateJS(CodePrinterJS out) 
-    {
-        generateWithOptionalCastJS(out,"%");
+        else if (d.type().isBoolean() && s.type().isBoolean())
+        {   generateWithDecomposedOperatorJS(out, false, "_xor");        
+        }
+        else
+        {   generateWithDecomposedOperatorJS(out, true, "^");
+        }
     }
     public void AssignLShiftExpr.generateJS(CodePrinterJS out) 
     {
-        generateWithOptionalCastJS(out,"<<");
+        if (getDest().type().isInt())
+        {   generateWithNativeOperatorJS(out, "<<=");
+        }
+        else
+        {   generateWithDecomposedOperatorJS(out, true, "<<");
+        }
     }
     public void AssignRShiftExpr.generateJS(CodePrinterJS out) 
     {
-        generateWithOptionalCastJS(out,">>");
+        if (getDest().type().isInt())
+        {   generateWithNativeOperatorJS(out, ">>=");
+        }
+        else
+        {   generateWithDecomposedOperatorJS(out, true, ">>");
+        }
     }
     public void AssignURShiftExpr.generateJS(CodePrinterJS out) 
     {
-        generateWithOptionalCastJS(out,">>>");
+        if (getDest().type().isInt())
+        {   generateWithNativeOperatorJS(out, ">>>=");
+        }
+        else
+        {   generateWithDecomposedOperatorJS(out, true, ">>>");
+        }
     }
+    
     public void AssignSimpleExpr.generateJS(CodePrinterJS out) 
     {
         getDest().generateJS(out);
@@ -965,78 +1081,116 @@ aspect GenerateJS
     }
     
     
-    public void Unary.generatePostOperatorJS(CodePrinterJS out, boolean inc)
+    public void Unary.generateWithDecomposedOperatorJS(CodePrinterJS out, boolean pre, boolean inc)
     {
-        Expr e = getOperand();
-        if (e.type().isDouble()) 
-        {   e.generateJS(out);
-            out.print(inc?" ++ ":" -- ");
-            return;
-        }
-        
+        Expr d = getOperand();
         boolean needresult = !(getParent() instanceof ExprStmt);
-        if (needresult) 
-        {   out.print("(((");
+        
+        // determine which cast operations is needed
+        String caststart = "";
+        String castend = "";
+        if (d.type().isByte()) { caststart="(((("; castend=")|0)<<24)>>24)"; }
+        else if (d.type().isChar()) { caststart="(("; castend=")& 0xffff)"; }
+        else if (d.type().isShort()) { caststart="(((("; castend=")|0)<<16)>>16)"; }
+        else if (d.type().isInt()) { caststart="(("; castend=")|0)"; }
+        else { throw new RuntimeException("Can not implicitly cast to destination type"); }                    
+
+        // check if need to create an inner function to avoid double evaluation        
+        boolean usefunction = false;
+        Expr funcpar2 = null;
+        if (d instanceof Dot)
+        {   Access a = ((Dot)d).findRightmostAccess();
+            if (a instanceof ArrayAccess)
+            {   out.print("(function(a,i){");
+                out.print(pre ? "return a[i]=" : "var t=a[i];a[i]=");
+                out.print(caststart);
+                out.print(inc ? "a[i]+1" : "a[i]-1");
+                out.print(castend);
+                out.print(pre ? ";" : ";return t;"); 
+                out.print("})");
+                usefunction = true; 
+                funcpar2 = ((ArrayAccess)a).getExpr();
+            }
+            else if (a instanceof VarAccess && ((VarAccess)a).varDecl().isInstanceVariable())
+            {   String id = out.escapeJSIdentifier(((VarAccess)a).getID(),"");
+                out.print("(function(o,x){");
+                out.print(pre ? "return o."+id+"=" : "var t=o."+id+";o."+id+"=");
+                out.print(caststart);
+                out.print(inc ? "o."+id+"+1" : "o."+id+"-1");
+                out.print(castend);
+                out.print(pre ? ";" : ";return t;"); 
+                out.print("})");
+                usefunction = true;                    
+            }
         }
         
-        e.generateUsingResultJS(out);
-        out.print("=(");
-        e.generateUsingResultJS(out);
-        out.print(inc?" +1)":" -1)");
-        if (e.type().isInt()) { out.print("|0"); } 
-        else if (e.type().isChar()) { out.print("&0xffff"); }
-        else if (e.type().isShort()) { out.print("<<16>>16"); }
-        else if (e.type().isByte()) { out.print("<<24>>24"); }
-    
-        if (needresult) 
-        {   out.print(")");
-            // must revert the operation to get the original value out
-            out.print(inc?" -1)":" +1)");
-            if (e.type().isInt()) { out.print("|0"); } 
-            else if (e.type().isChar()) { out.print("&0xffff"); } 
-            else if (e.type().isShort()) { out.print("<<16>>16"); }
-            else if (e.type().isByte()) { out.print("<<24>>24"); }
+        // call the anonymous function
+        if (usefunction)
+        {   out.print("(");
+            ((Dot)d).generateExcludingRightmostJS(out);
+            if (funcpar2!=null) 
+            {   out.print(",");
+                funcpar2.generateJS(out); 
+            }
             out.print(")");
-        }       
-    }
-    public void Unary.generatePreOperatorJS(CodePrinterJS out, boolean inc)
-    {
-        Expr e = getOperand();
-        if (e.type().isDouble()) 
-        {   out.print(inc?" ++ ":" -- ");
-            e.generateJS(out);
-            return;
         }
-        
-        boolean needresult = !(getParent() instanceof ExprStmt);
-        if (needresult) { out.print("("); }
-        
-        e.generateUsingResultJS(out);
-        out.print("=(");
-        e.generateUsingResultJS(out);
-        out.print(inc?" +1)":" -1)");
-        if (e.type().isInt()) { out.print("|0"); }
-        else if (e.type().isChar()) { out.print("&0xffff"); }
-        else if (e.type().isShort()) { out.print("<<16>>16"); }
-        else if (e.type().isByte()) { out.print("<<24>>24"); }
-        
-        if (needresult) { out.print(")"); }   
+        // no function was generated - perform work directly
+        else
+        {   if (!pre && needresult)     // call function to carry original value around the operation
+            {   out.print("_1st("); 
+                d.generateUsingResultJS(out);
+                out.print(",");
+            }       
+            d.generateUsingResultJS(out);
+            out.print("=");
+            out.print(caststart);
+            d.generateUsingResultJS(out);
+            out.print(inc?" +1":" -1");
+            out.print(castend);
+            if (!pre && needresult)
+            {   out.print(")");
+            }
+        }        
     }   
     public void PostDecExpr.generateJS(CodePrinterJS out) 
     {
-        generatePostOperatorJS(out, false);
+        if (type().isDouble()) 
+        {   getOperand().generateJS(out);
+            out.print("--");
+        }
+        else
+        {   generateWithDecomposedOperatorJS(out, false, false);
+        }
     }
     public void PostIncExpr.generateJS(CodePrinterJS out) 
     {
-        generatePostOperatorJS(out, true);
+        if (type().isDouble()) 
+        {   getOperand().generateJS(out);
+            out.print("++");
+        }
+        else
+        {   generateWithDecomposedOperatorJS(out, false, true);
+        }
     }
     public void PreDecExpr.generateJS(CodePrinterJS out) 
     {
-        generatePreOperatorJS(out,false);
+        if (type().isDouble()) 
+        {   out.print("--");
+            getOperand().generateJS(out);            
+        }
+        else
+        {   generateWithDecomposedOperatorJS(out, true, false);
+        }
     }
     public void PreIncExpr.generateJS(CodePrinterJS out) 
     {
-        generatePreOperatorJS(out,true);
+        if (type().isDouble()) 
+        {   out.print("++");
+            getOperand().generateJS(out);            
+        }
+        else
+        {   generateWithDecomposedOperatorJS(out, true, true);
+        }
     }   
 
     public void LambdaExpr.generateJS(CodePrinterJS out) 

@@ -22,8 +22,8 @@ Basically the language features of java 8 are provided with the following restri
     do anything useful reliably after one of these "bad" program faults have happened. 
       
 - no 'long' and no 'float'
-    These datatypes are impossible to implement correctly in javascript, since this
-    only supportes a single Number type. This type is identical to a java double and
+    These data types are impossible to implement correctly in javascript, since it
+    only supports a single Number type. This type is identical to a java double and
     can also be used to hold all integer values up to the size of int. A "long" can just
     not be squeezed into the 52-bit mantissa. On the other hand, 'float' would somehow
     fit, but because of the higher precision of the Number type, floating point computations
@@ -57,15 +57,7 @@ Basically the language features of java 8 are provided with the following restri
     Since type inference is undecidable in the general case, a best effort approach is done
     by the converter. This will not always succeed in the same set of cases as for the 
     standard java compiler. When this happens, the problem will become apparent at compile time.    
-      
-- Compound assignments and increment/decrement operators must not have side-effects in the target 
-    When using any of the operators +=,-=,*=,... it is only possible to use 
-    a target that is guaranteed to have no side effects on evaluation. While 
-    it is possible to use  a[i]+=5  it is unsupported to write  a[i++]+=4.
-    Same thing holds for ++ and --  (i[4]++ is ok, i[get()]++  is not).  
-      
-    This is to avoid faulty double-evaluation behavior in any conversion target. 
-      
+       
 - Access to static members is not allowed by using an instance expression with side-effects
     It is legal in java to call a static method with something like: 
     exp.valueOf(4711)    // where exp is of type Integer 

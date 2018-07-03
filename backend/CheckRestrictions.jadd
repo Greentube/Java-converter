@@ -3,7 +3,7 @@
  * All of those restrictions are checked at compile time to guarantee correct behavior
  * if the conversion succeeds.
  * The check is done recursively through the AST and all encountered problems are collected
- * into an ArrayList on the way. After checking the problems are reported and the conversion
+ * into an ArrayList on the way. After checking, the problems are reported and the conversion
  * is aborted if any error was encountered.    
  * See the documentation file 'restrictions.txt' for details.
  */
@@ -229,47 +229,11 @@ aspect CheckRestrictions
     // Compound assignments can only use limited types of destination
     public void AssignExpr.checkRestrictions(ArrayList<String> errorlist)
     {
-//        if (!(this instanceof AssignSimpleExpr)) 
-//        {   if (getDest().hasPotentialSideEffects()) 
-//            {   reportRestriction(errorlist, "Can not use compound assignment when destination my have side effects");          
-//            }
-//        }
-//        
         // Autoboxing in assignments
         checkAutoBoxing(getSource().type(), getDest().type(), errorlist);
         
         super.checkRestrictions(errorlist);                 
     }
-    
-    // Increment or decrement operators (++, --) only on operands without side effects  
-    public void PostDecExpr.checkRestrictions(ArrayList<String> errorlist) 
-    {
-        if (getOperand().hasPotentialSideEffects()) 
-        {   reportRestriction(errorlist, "Can not use -- when operand could have side effects");            
-        }   
-        super.checkRestrictions(errorlist);                 
-    }
-    public void PostIncExpr.checkRestrictions(ArrayList<String> errorlist) 
-    {
-        if (getOperand().hasPotentialSideEffects()) 
-        {   reportRestriction(errorlist, "Can not use ++ when operand could have side effects");            
-        }   
-        super.checkRestrictions(errorlist);                 
-    }
-    public void PreDecExpr.checkRestrictions(ArrayList<String> errorlist) 
-    {
-        if (getOperand().hasPotentialSideEffects()) 
-        {   reportRestriction(errorlist, "Can not use -- when operand could have side effects");            
-        }   
-        super.checkRestrictions(errorlist);                 
-    }
-    public void PreIncExpr.checkRestrictions(ArrayList<String> errorlist) 
-    {
-        if (getOperand().hasPotentialSideEffects()) 
-        {   reportRestriction(errorlist, "Can not use ++ when operand could have side effects");            
-        }   
-        super.checkRestrictions(errorlist);                 
-    }   
     
     
     // Autoboxing/unboxing in method call parameters

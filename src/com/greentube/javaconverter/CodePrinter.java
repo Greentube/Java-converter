@@ -10,8 +10,7 @@ public class CodePrinter
     boolean linehasstarted;
     int indent;
     boolean afteropeningbrace;
-    int tmpidentifiercounter;
-
+    
     public CodePrinter(File outputfolder, String filename) 
     {   
         try
@@ -28,7 +27,6 @@ public class CodePrinter
         this.indent = 0;
         this.linehasstarted = false;
         this.afteropeningbrace = false;
-        this.tmpidentifiercounter = 0;
     }
 
     public CodePrinter(CodePrinter p, String filename) 
@@ -91,13 +89,6 @@ public class CodePrinter
         println();
     }
     
-    public String createIdentifier(String prefix)
-    {
-        int n = tmpidentifiercounter;
-        tmpidentifiercounter++;
-        return prefix + n;
-    }
-
     public static String escapeIdentifier(String id, boolean allowDollarSign) 
     {   
         // escape special characters, so the output will never have characters >127

@@ -233,6 +233,10 @@ var _xor = function(a,b)
     return ( a || b ) && ! ( a && b );
 }
 
+var _1st = function(a,b)
+{   return a;
+}
+
 // do some numerical cast operations
 function _castTObyte(a) 
 {   return (_castTOint(a) << 24) >> 24;
@@ -251,12 +255,12 @@ function _castTOint(a)
     if (a>=0) 
     {   // is a positive number (comparator would fail otherwise)
         if (a>2147483647) return 2147483647
-        return Math.floor(a);
+        return Math.floor(a) | 0;
     }
     else if (a<=0) 
     { // is a negative number
         if (a<-2147483648) return -2147483648;
-        return Math.ceil(a);    
+        return Math.ceil(a) | 0;    
     }
     else
     {   // is no number at all

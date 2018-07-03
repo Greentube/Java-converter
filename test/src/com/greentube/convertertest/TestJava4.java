@@ -311,6 +311,13 @@ public class TestJava4
         Object[] tpa = passarray(new TestObject[2]);
         tpa[0] = new TestObject();
         
+        int[][] iaa = new int[3][4];        
+        int[][] ibb = iaa.clone();  // clone only first layer
+        ibb[2] = new int[4];        // set different sub-array 
+        iaa[1][1] = 17;
+        iaa[2][1] = 48;
+        assertI(ibb[1][1], 17);    // still references "old" sub-array   
+        assertI(ibb[2][1], 0);     // references "new" sub-array
     }
     
     private static int getArray()[]
@@ -861,6 +868,42 @@ public class TestJava4
         assertI(xx,15);
         assertI(xx=99,99);
                 
+        int[] aaa = new int[] { 3,4,5,6 };
+        i = 1;
+        aaa[i++] += 4;
+        aaa[i++] *= 4;
+        aaa[i++] -= 3;
+        assertI(aaa[1], 8);
+        assertI(aaa[2], 20);
+        assertI(aaa[3], 3); 
+        i=0;
+        aaa[i++]++;
+        aaa[i++]--;
+        ++aaa[i++];
+        --aaa[i++];
+        assertI(aaa[0], 4);
+        assertI(aaa[1], 7);
+        assertI(aaa[2], 21); 
+        assertI(aaa[3], 2); 
+        
+        TestObject to = new TestObject();
+        to.somestring += 5;
+        to.somestring += 'x';
+        to.somestring += 55.3;
+        to.self.self.somenumber += 78;
+        assertO(to.somestring,"defaulttext5x55.3");
+        assertI(to.somenumber,4789);
+
+        int keep = static1;
+        static1 = 66;
+        static1 += 55;
+        assertI(static1, 121);
+        static1 = keep;
+        
+        StaticClass.f += 55;
+        assertI(StaticClass.f, 55);
+        StaticClass.f -= 55;
+        assertI(StaticClass.f, 0);
     }
 
        

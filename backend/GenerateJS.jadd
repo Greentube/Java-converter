@@ -476,7 +476,7 @@ aspect GenerateJS
         }
         out.print("return this;");
         out.decreaseIndent();
-        out.println();
+        out.println();        
         out.println("}");
         out.println(",");
     }

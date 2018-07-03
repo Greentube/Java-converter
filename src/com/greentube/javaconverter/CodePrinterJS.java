@@ -62,16 +62,20 @@ public class CodePrinterJS extends CodePrinter
         )
     );
 
+    public String escapeJSIdentifier(String id, String suffix)
+    {   String escaped = escapeIdentifier(id,false) + suffix;
+        if (javascriptreserved.contains(escaped)) { escaped = "$" + escaped; }        
+        return escaped;
+    }
+
     public void printJSIdentifier(String id, String suffix) 
     {   
-        String escaped = escapeIdentifier(id,false) + suffix;
-        if (javascriptreserved.contains(escaped)) print("$");        
-        print(escaped);
+        print(escapeJSIdentifier(id,suffix));
     }
     
     public void printJSIdentifier(String id) 
     {   
-        printJSIdentifier(id,"");
+        print(escapeJSIdentifier(id,""));
     }
 
     public void printJSName(String packagename, String uniquename) 
@@ -123,4 +127,6 @@ public class CodePrinterJS extends CodePrinter
         {   storage.add(escapePackagePath(packagename) + escapeIdentifier(uniquename,true));
         }
     }
+    
+    
 }
