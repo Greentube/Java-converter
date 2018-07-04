@@ -45,7 +45,7 @@ _class(java_util_ComparatorThenComparing, java_lang_Object, [java_util_Comparato
 , 
 {   compare_2: function(x,y) 
     {   var v = this.a.compare_2(x,y);
-        if (v!=0) return v;
+        if (v!==0) return v;
         return this.b.compare_2(x,y);
     },        
 });

@@ -800,6 +800,21 @@ public class TestJava4
     	assertI(by, Byte.MIN_VALUE);
     	assertI(by++, Byte.MIN_VALUE);
     	assertI(by, Byte.MIN_VALUE+1);
+
+        byte[] ba = new byte[]{99};
+        assertI(ba[zero()]++, 99);
+        assertI(ba[zero()],100);
+        ba[zero()] = Byte.MIN_VALUE;
+        assertI(--ba[zero()], Byte.MAX_VALUE);
+        assertI(ba[zero()], Byte.MAX_VALUE);
+        assertI(ba[zero()]++, Byte.MAX_VALUE);
+        assertI(ba[zero()], Byte.MIN_VALUE);
+        assertI(ba[zero()]++, Byte.MIN_VALUE);
+        assertI(ba[zero()], Byte.MIN_VALUE+1);
+        ba[zero()]++;
+        assertI(ba[zero()], Byte.MIN_VALUE+2);
+        ba[zero()]--;
+        assertI(ba[zero()], Byte.MIN_VALUE+1);
     	    	
     	i = Integer.MIN_VALUE;
         i *= -1;
@@ -2803,6 +2818,11 @@ public class TestJava4
         catch (IllegalArgumentException e)
         {   e.printStackTrace();
         }
+    }
+    
+    private static int zero()
+    {   
+        return 0;
     }
     
     public static void assertI(int value, int expected)

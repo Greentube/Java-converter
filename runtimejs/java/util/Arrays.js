@@ -21,7 +21,7 @@ var java_util_Arrays =
         if (fromIndex<0 || toIndex>a.length)
         {   throw (new java_lang_IndexOutOfBoundsException.$())._0()._e; 
         }
-        if (comparator==null)
+        if (comparator===null)
         {   throw (new java_lang_NullPointerException.$())._0()._e;
         }
         var len = toIndex-fromIndex;
@@ -32,7 +32,7 @@ var java_util_Arrays =
     _mergesort: function(a, start, len, c,  tmp)
     {
     	// simple case: only two elements 
-    	if (len==2)
+    	if (len===2)
     	{	if (c.compare_2(a[start],a[start+1]) > 0)
     		{	var x = a[start];
     			a[start] = a[start+1];
@@ -40,7 +40,7 @@ var java_util_Arrays =
     		}
     	}
     	// more complex case, but also without full merging: 3 elements
-    	else if (len==3)
+    	else if (len===3)
     	{	// bring first two elements in correct order
     		if (c.compare_2(a[start],a[start+1]) > 0)
     		{	var x = a[start];

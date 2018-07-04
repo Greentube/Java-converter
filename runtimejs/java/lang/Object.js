@@ -390,7 +390,7 @@ String.prototype.endsWith_1 = function(suffix)
 
 String.prototype.equals_1 = function(str) 
 {   if (!str || !(str._isString)) return false;  
-	return this == str;
+	return this === str;
 };
 
 String.prototype.hashCode_0 = function()
@@ -494,12 +494,12 @@ String.prototype.split_2 = function(delimiter_o, limit)
             if (limit>l.length)
             {   l.push("");
             }
-            else if (limit==l.length)
+            else if (limit===l.length)
             {   l[limit-1] = this.substring(limit-1);
             }
             return l;
         } 
-        else if (limit==0) 
+        else if (limit===0) 
         {   return this.split("");  
         }
         else 
@@ -517,8 +517,8 @@ String.prototype.split_2 = function(delimiter_o, limit)
             l.length = limit;
         }
     }
-    else if (limit==0) 
-    {   while (l.length>1 && l[l.length-1]=="") l.pop();        
+    else if (limit===0) 
+    {   while (l.length>1 && l[l.length-1]==="") l.pop();        
     }
     return l;
 };
