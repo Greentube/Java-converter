@@ -1,3 +1,4 @@
+//reference// java/util/Arrays
 //load// java/util/Collection
 var java_util_List = { 
     _superinterfaces: [java_util_Collection] ,
