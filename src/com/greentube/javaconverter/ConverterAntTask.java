@@ -22,6 +22,10 @@ public class ConverterAntTask extends Task
     {   
         this.csdir = destdir;
     }
+    private String csruntime=null;
+    public void setCsruntime(String f)
+    {   csruntime = f;
+    }
     private String classpath=null;
     public void setClasspath(String path) 
     {   
@@ -38,6 +42,10 @@ public class ConverterAntTask extends Task
         if (csdir!=null) 
         {   args.add("-cs");
             args.add(csdir.toString());
+        }
+        if (csruntime!=null)
+        {   args.add("-csruntime");
+            args.add(csruntime);
         }
         if (classpath!=null) 
         {   args.add("-classpath");

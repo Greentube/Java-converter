@@ -1,4 +1,4 @@
-namespace java.lang { public class SYSTEM 
+namespace java.lang { public class SYSTEM  // need to uppercase to avoid name clashes
 {
     public static readonly java.io.PrintStream out_f = new java.io.PrintStream(false);
     public static readonly java.io.PrintStream err_f = new java.io.PrintStream(true);

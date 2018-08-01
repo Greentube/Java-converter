@@ -612,7 +612,7 @@ public class LibraryList
             "<init>()",            
             "<init>(java.lang.String)",            
         },   
-        {   "java.util.NegativeArraySizeException",
+        {   "java.lang.NegativeArraySizeException",
             
             "java.lang.String getMessage()",
             "void printStackTrace()",
@@ -670,6 +670,7 @@ public class LibraryList
             }
         }          
     }
+    
 
     public static boolean isAllowed(String fullclassname)
     {
@@ -718,4 +719,16 @@ public class LibraryList
         // provided class only allows whitelisted members
         return map.get(fullclassname).contains(membername);	
     }
+    
+    public static List<String> getRuntimeClassList()
+    {
+        if (map==null) { buildList(); }
+        
+        ArrayList<String> l = new ArrayList<>();
+        for (String s:map.keySet())
+        {   l.add(s);            
+        }
+        return l;        
+    }
+    
 }

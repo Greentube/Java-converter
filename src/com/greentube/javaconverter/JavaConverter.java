@@ -8,6 +8,8 @@ import org.extendj.ast.*;
 public class JavaConverter extends Frontend 
 {   private File destDirJS;
     private File destDirCS;
+    private boolean writecsruntime;
+    private File sourceDirCSRuntime;
     private int err;
 
     public JavaConverter() 
@@ -52,9 +54,50 @@ public class JavaConverter extends Frontend
             Program.defaultBytecodeReader(), 
             Program.defaultJavaParser()
         );
+        
         if (parseerr + err>0) 
         {   System.out.println("Total conversion errors: "+(parseerr+err));
         }
+        
+        else if (destDirCS!=null && writecsruntime) 
+        {   // extract included cs library classes from package and copy to destination
+            try
+            {   for (String cn:LibraryList.getRuntimeClassList())                
+                {   if 
+                    (   cn.equals("java.lang.SuppressWarnings") 
+                        || cn.equals("java.lang.Override")
+                        || cn.equals("java.lang.Object")
+                        || cn.equals("java.lang.String")
+                    )
+                    {   continue;
+                    }
+                    String filename = cn.replace('.','/') + ".cs";
+                    InputStream is = null;
+                    // use overridden library path
+                    if (sourceDirCSRuntime!=null)
+                    {   File test = new File(sourceDirCSRuntime, filename);
+                        if (test.exists()) 
+                        {   try { is = new FileInputStream(test); } catch (IOException e) {}
+                        } 
+                    }
+                    // extract from compiler itself  
+                    if (is==null)
+                    {   is = this.getClass().getResourceAsStream("/runtimecs/"+filename);
+                    }
+                    if (is==null) 
+                    {   throw new RuntimeException("Can not extract C# library file "+filename);
+                    }                            
+                    CodePrinter out = new CodePrinterCS(destDirCS, filename);                        
+                    out.copyDirectlyAndCloseInput(is);
+                    out.finish();
+                }     
+            }
+            catch (RuntimeException e)
+            {   err++;
+                System.out.println(e.getMessage());
+            }               
+        }
+        
         return parseerr+err;
     }
 
@@ -75,12 +118,12 @@ public class JavaConverter extends Frontend
             }
             if (destDirCS!=null) 
             {   try 
-                {   unit.generateCS(destDirCS);
+                {   unit.generateCS(destDirCS);       
                 }
                 catch (RuntimeException e) 
                 {   errorlist.add(e.getMessage());
                 }
-            }
+            }            
         }
         for (String s:errorlist) 
         {   System.out.println(unit.pathName()+":"+s);
@@ -95,6 +138,7 @@ public class JavaConverter extends Frontend
         Options options = program.options();		
         options.addKeyValueOption("-js");
         options.addKeyValueOption("-cs");
+        options.addKeyValueOption("-csruntime");
     }
 
     @Override
@@ -130,6 +174,13 @@ public class JavaConverter extends Frontend
                 }
             }
         }
+        if (program.options().hasValueForOption("-csruntime")) 
+        {   writecsruntime = true;
+            String d = program.options().getValueForOption("-csruntime");
+            if (!d.equalsIgnoreCase("true") && !d.equalsIgnoreCase("yes"))
+            {   sourceDirCSRuntime = new File(d);
+            }
+        }
         return EXIT_SUCCESS;
     }
 
@@ -138,7 +189,8 @@ public class JavaConverter extends Frontend
         super.printUsage();
         System.out.println(
             "  -js                       Directory where to store javascript files\n"
-          + "  -cs                       Directory where to store c# files" );
+          + "  -cs                       Directory where to store c# files\n"
+          + "  -csruntime                Also write C# runtime library files to output folder" );
           
     }
 

@@ -1,8 +1,8 @@
 /bin/
 /gen/
 /build/
-/test/build/
-/test/csharpproject/bin
-/test/csharpproject/obj
-/test/csharpproject/build
 /**/build/
+/**/csharpproject/bin
+/**/csharpproject/build
+/**/csharpproject/obj/Debug
+/**/csharpproject/obj/Release

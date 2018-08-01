@@ -89,6 +89,22 @@ public class CodePrinter
         println();
     }
     
+    public void copyDirectlyAndCloseInput(InputStream is)
+    {
+        try
+        {   InputStreamReader r = new InputStreamReader(is, "utf-8");        
+            char[] buffer = new char[1000];        
+            int l; 
+            while ( (l = r.read(buffer,0,buffer.length)) >= 0)
+            {       ow.write(buffer,0,l);
+            }
+            is.close();
+        }        
+        catch (IOException e) 
+        {   throw new RuntimeException(e.getMessage());
+        }               
+    }
+    
     public static String escapeIdentifier(String id, boolean allowDollarSign) 
     {   
         // escape special characters, so the output will never have characters >127
