@@ -51,5 +51,5 @@ a bug in the converter and will either be fixed or also documented here.
     definition impossible to compute exactly, the various libraries use different
     approaches to calculate a near solution, and this leads to slightly different
     results for various conversion targets.   
-    Specifically Math.exp and Math.pow show this behavior even for small numbers.
+    Specifically Math.exp and Math.pow show this behaviour even for small numbers.
     

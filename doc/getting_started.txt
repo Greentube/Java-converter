@@ -4,13 +4,15 @@ Java-Converter
 The java converter consists of a single .jar file that contains everything needed
 for converting java sources to all conversion targets and also includes the necessary core
 library files.
-It can be started to convert multiple java sources at once than may have dependencies to
+It can be started to convert multiple java sources at once that may have dependencies to
 other classes which need not be converted. When external dependencies exist, the .class files
 need to be provided to allow resolving the types.
 
 The converter can be used as a command-line tool (starting the executable .jar) or with Ant, 
 using the provided AntTask classes (com.greentube.javaconverter.ConverterAntTask, 
 com.greentube.javaconverter.JavaScriptLinkerAntTask). 
+
+Also see the provided examples for explicit use of the command line tools.
 
 
 Workflow Javascript
@@ -29,17 +31,19 @@ Workflow Javascript
         </fileset>
     </convertJava>
 
-2. Link all .js to a single .js program
+    
+2. Link all .js to a single .js program together with the included runtime libraries.
 
 2.1 using command line
-   java -jar converter.jar link -searchpath <path> -main <mainprogram> -output <output file> [-production]
+   java -jar converter.jar link -output <output file> -searchpath <path> -root <rootclass1,..> [-startup javascriptcode] [-production]
 
 2.2 using ant   
    <taskdef name="linkJavaScript" classname="com.greentube.javaconverter.JavaScriptLinkerAntTask"/> 
    <linkJavaScript 
-            searchpath="${basedir}/build/javascript"
-            main="Launcher"
             output="${basedir}/build/javascript/main.js" 
+            searchpath="${basedir}/build/javascript"
+            root="com/greentube/test/Launcher"
+            startup="com_greentube_test_Launcher.main_1([]);"            
             production="true"
             >
     </linkJavaScript>		
@@ -52,6 +56,10 @@ Converting the file to C# is basically identical as for javascript, but use
 the -cs instead of -js to generate .js files. It is even possible to generate
 both type of files in one go.
 
+   java -jar converter.jar -classpath <dependencies> -cs <outputdir> [-csruntime true] file ...
+
+The optional -csruntime parameter will cause the compiler to copy the C# runtime libraries 
+into the destination directory along with the generated C# code.
+   
 The generated .cs - files then need to be compiled into a .net assembly with
 some compiler of your choice.
- 

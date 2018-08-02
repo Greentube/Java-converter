@@ -21,6 +21,12 @@ Basically the language features of java 8 are provided with the following restri
     and just messes up the data structures in an unpredictable way. So you can not 
     do anything useful reliably after one of these "bad" program faults have happened. 
       
+- No reflection and no type annotations
+    Runtime type information is basically completely removed. Only the use of 'instanceof'
+    and of checked cast operations (throwing ClassCastException in case of faults) are provided.
+    For compatibility the compiler accepts (but ignores) annotations in the code
+    (like @Override and @SuppressWarnings).    
+      
 - no 'long' and no 'float'
     These data types are impossible to implement correctly in javascript, since it
     only supports a single Number type. This type is identical to a java double and
@@ -60,7 +66,7 @@ Basically the language features of java 8 are provided with the following restri
        
 - Access to static members is not allowed by using an instance expression with side-effects
     It is legal in java to call a static method with something like: 
-    exp.valueOf(4711)    // where exp is of type Integer 
+    exp.valueOf(4711)    // where exp evaluates to an object of type Integer 
     Since the expression will just be eliminated during conversion, it must not
     have any possible side effects.
       

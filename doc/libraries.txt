@@ -4,9 +4,16 @@ Supported core libraries
 The converter directly supports a certain set of java core classes and methods.
 This list here is copied directly from the converter and is given in a java syntax.
 Nevertheless, the meaning should be clear.
+
+Besides the methods listed below, all objects support the use of 
+"equals", "hashCode", "toString" (but nothing related to thread synchronization).
+Note that "clone" is not supported in the general case, but it is well supported to use with arrays. 
+
 Note, that there are a few methods that deliver a result type of 'long'. This is
-not fully supported by the converter, but the using code needs to explicitly cast
-the result to a double or int. For example:  double now = (double) System.currentTimeMillis(); 
+not fully supported by the converter, but the using code needs to immediately and explicitly cast
+the result to a double or int. For example:  double now = (double) System.currentTimeMillis();
+
+
  
         {   "java.io.PrintStream",
             

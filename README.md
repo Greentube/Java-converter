@@ -5,7 +5,7 @@ A java-to-javascript and java-to-C# source to source compiler.
 ## Summary
 
 To allow the use of existing java code inside a browser/node.js/.NET environment,
-java code can be transformed into equivalent javascript 
+java code can be compiled into equivalent javascript 
 (compatible with ECMAScript 5 or later) or C# (compatible with netcoreapp1.1).
 The compiler supports all language constructs of java 8 (including lambdas), but 
 imposes a few [restrictions of its own](doc/restrictions.txt) on the input code.
@@ -13,6 +13,11 @@ A large [subset of the functionality](doc/libraries.txt) of the java.lang and ja
 packages are provided to be used by the program at runtime. 
 The generated code replicates the behaviour of the java original with near perfection,
 with only some slight [incompatibilities](doc/incompatibilities.txt).
+
+As all comments are stripped and the generated code is generally not as readable as 
+natively written c# or javascript code, the main purpose of the compiler is to use it 
+as part of a toolchain for building and not for a one-off conversion step to generate
+maintainable source code.
 
 ## Integration possibilities
 
@@ -33,8 +38,8 @@ tasks. This is straight-forward for .NET. Creating native javascript classes is 
 The compiler can be used as a command-line tool or as an Ant task to compile a bunch of java source files
 to the equivalent .js (javascript) or .cs (C#) files. For the case of javascript, a linker
 step is also needed to put all the small .js files together to a big .js file in the correct loading order.
-A optional minifying step (using Google's closure compiler) will greatly reduce javascript code size. 
-The compiler is optimized to generate minify-able output. 
+You can later do a minifying step (using Google's closure compiler) that will greatly 
+reduce javascript code size. The compiler is optimized to generate minify-able output. 
 See the [getting started](doc/getting_started.txt) document for more details.
 
 
