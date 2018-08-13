@@ -84,7 +84,7 @@ function _class (classobject, base, interfaces, classname, instancemethods)
 function _checkclass(x,cls)
 {
     if (x===null || x instanceof cls.$) return x;
-    throw (new java_lang_ClassCastException.$())._0().e;    
+    throw (new java_lang_ClassCastException.$())._0()._e;    
 }
 
 // test if an arbitrary java.lang.Object implements a given Interface
@@ -94,7 +94,7 @@ function _isinterface(x,intrfc)
 // interface type check. If unsuccessful, throws exception. Otherwise just return the value
 function _checkinterface(x,intrfc)
 {   if (x===null || x._interfaces.indexOf(intrfc)>=0) return x;
-    throw (new java_lang_ClassCastException.$())._0().e;    
+    throw (new java_lang_ClassCastException.$())._0()._e;    
 }
 
 // test if an arbitrary object is a String
@@ -104,7 +104,7 @@ function _isstr(o)
 // string type check with exception if unsuccessful. on success just return the value again
 function _checkstr(o)
 {   if (o===null || o._isString) return o;
-    throw (new java_lang_ClassCastException.$())._0().e;    
+    throw (new java_lang_ClassCastException.$())._0()._e;    
 }
 
 function _interfacehassuperinterface(intf, sintf)
@@ -154,7 +154,7 @@ function _isarray(o,typedescriptor,dimensions)
 // array type check with exception if unsuccessful. on success just return the value again
 function _checkarray(o,typedescriptor,dimensions)
 {   if (o===null || _isarray(o,typedescriptor,dimensions)) return o;
-    throw (new java_lang_ClassCastException.$())._0().e;    
+    throw (new java_lang_ClassCastException.$())._0()._e;    
 }
 
 // convert a unicode code number to a string with the corresponding letter 
