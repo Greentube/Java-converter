@@ -398,7 +398,6 @@ aspect GenerateJS
                     out.print(" instanceof ");
                     TypeDecl t = par.type();
                     out.printAndMemorizeReference(t.packageName(),t.uniqueName());
-                    out.print(".$");
                 }
                 else if (cc instanceof MultiCatch)
                 {   CatchParameterDeclaration par = ((MultiCatch) cc).getParameter();
@@ -410,7 +409,7 @@ aspect GenerateJS
                         out.print(" instanceof ");
                         TypeDecl t = par.getTypeAccess(j).type();
                         out.printAndMemorizeReference(t.packageName(),t.uniqueName());
-                        out.print(".$)");
+                        out.print(")");
                     }                
                 }
                 else

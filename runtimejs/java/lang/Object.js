@@ -3,32 +3,30 @@
 //reference// java/lang/ArithmeticException
 
 // definition of the base class for all java classes except for String and arrays
-var java_lang_Object = 
-{   $: function() {}    // allocator function
-};
+var java_lang_Object = function() {};    // allocator function
 
 // add default member functions
-java_lang_Object.$.prototype._0 = function()
+java_lang_Object.prototype._0 = function()
 {   return this;
 };
 
-java_lang_Object.$.prototype.toString_0 = function()
+java_lang_Object.prototype.toString_0 = function()
 {   return this._classname+"@"+this.hashCode_0();
 };
 
-java_lang_Object.$.prototype.equals_1 = function(a)
+java_lang_Object.prototype.equals_1 = function(a)
 {   return this===a;
 };
 
-java_lang_Object.$.prototype.hashCode_0 = function()
+java_lang_Object.prototype.hashCode_0 = function()
 {   // there is no real way to access any true object identity, so use a hash of the class name instead
     return this._classname.hashCode_0();  
 };
 
 // add default attributes 
-java_lang_Object.$.prototype._interfaces = [];
-java_lang_Object.$.prototype._baseclasses = [ java_lang_Object ];
-java_lang_Object.$.prototype._classname = 
+java_lang_Object.prototype._interfaces = [];
+java_lang_Object.prototype._baseclasses = [ java_lang_Object ];
+java_lang_Object.prototype._classname = 
 "java.lang.Object"  //replace-me-with-empty-string-for-production//
 ;
 
@@ -36,18 +34,18 @@ java_lang_Object.$.prototype._classname =
 function _class (classobject, base, interfaces, classname, instancemethods)
 {
     // connect prototype chain
-    classobject.$.prototype = Object.create(base.$.prototype);
-    classobject.$.prototype.constructor = classobject.$;
+    classobject.prototype = Object.create(base.prototype);
+    classobject.prototype.constructor = classobject;
   
     // add attributes than can be used to check for class/interface type
-    classobject.$.prototype._classname = classname;
-    classobject.$.prototype._baseclasses = base.$.prototype._baseclasses . concat(classobject);
-    classobject.$.prototype._interfaces = base.$.prototype._interfaces;
+    classobject.prototype._classname = classname;
+    classobject.prototype._baseclasses = base.prototype._baseclasses . concat(classobject);
+    classobject.prototype._interfaces = base.prototype._interfaces;
     
     // add/overwrite methods that are newly defined
     if (instancemethods) 
     {   for (var name in instancemethods) 
-        {   classobject.$.prototype[name] = instancemethods[name];
+        {   classobject.prototype[name] = instancemethods[name];
         }
     }  
     
@@ -57,7 +55,7 @@ function _class (classobject, base, interfaces, classname, instancemethods)
     collectInterfaces(interfaces);
   
     function collectInterfaces(implementedinterfaces) 
-    {   var proto = classobject.$.prototype;
+    {   var proto = classobject.prototype;
         for (var index=0; implementedinterfaces && index<implementedinterfaces.length; index++) 
         {   var inf = implementedinterfaces[index];
             // make sure that there is a valid _superinterfaces attribute defined in all interfaces (even if empty list)
@@ -83,8 +81,8 @@ function _class (classobject, base, interfaces, classname, instancemethods)
 // throws exception if not, returns object again if ok.
 function _checkclass(x,cls)
 {
-    if (x===null || x instanceof cls.$) return x;
-    throw (new java_lang_ClassCastException.$())._0()._e;    
+    if (x===null || x instanceof cls) return x;
+    throw (new java_lang_ClassCastException())._0()._e;    
 }
 
 // test if an arbitrary java.lang.Object implements a given Interface
@@ -94,7 +92,7 @@ function _isinterface(x,intrfc)
 // interface type check. If unsuccessful, throws exception. Otherwise just return the value
 function _checkinterface(x,intrfc)
 {   if (x===null || x._interfaces.indexOf(intrfc)>=0) return x;
-    throw (new java_lang_ClassCastException.$())._0()._e;    
+    throw (new java_lang_ClassCastException())._0()._e;    
 }
 
 // test if an arbitrary object is a String
@@ -104,7 +102,7 @@ function _isstr(o)
 // string type check with exception if unsuccessful. on success just return the value again
 function _checkstr(o)
 {   if (o===null || o._isString) return o;
-    throw (new java_lang_ClassCastException.$())._0()._e;    
+    throw (new java_lang_ClassCastException())._0()._e;    
 }
 
 function _interfacehassuperinterface(intf, sintf)
@@ -118,43 +116,38 @@ function _interfacehassuperinterface(intf, sintf)
 }
 // test if arbitrary object is compatible with given array type
 function _isarray(o,typedescriptor,dimensions) 
-{   if (o===null || o._d !== dimensions) { return false; }
+{   // null or non-array or array with different dimensions (fast fail)
+    if (o===null || o._d !== dimensions || !o._t) { return false; } 
     var ot = o._t;
-    if (!ot) { return false; }  // no type information in the array!
+    // exactly matching descriptors (fast success)
+    if (typedescriptor===ot) { return true; } 
     
     // test for compatibility with Object[]
     if (typedescriptor===java_lang_Object)
-    {   if (ot.$ || ot===java_lang_String) { return true; }  // any object array is compatible
-        if (ot._superinterfaces) { return true; }            // any interface array is compatible
+    {   if (ot==="X") { return true; }            // string arrays are compatible
+        if (ot._superinterfaces) { return true; } // any interface array is compatible
+        if (ot.prototype && ot.prototype._baseclasses) { return true; }   // any object array is compatible
         return false;
     }        
     // test for compatibility with more specific object array types
-    else if (typedescriptor.$) 
-    {   if (ot.$)   // array of object type: must be exact or of type as base class
-        {   return ot.$.prototype._baseclasses.indexOf(typedescriptor) >= 0;
-        }
-        return false;
+    else if (typedescriptor.prototype && typedescriptor.prototype._baseclasses) 
+    {   return ot.prototype && ot.prototype._baseclasses && ot.prototype._baseclasses.indexOf(typedescriptor) >= 0;
     }
     // test for compatibility with interface array type
     else if (typedescriptor._superinterfaces)
-    {   
-        if (ot.$)  // array of object type: class must implement interface 
-        {   return ot.$.prototype._interfaces.indexOf(typedescriptor) >= 0;
+    {   if (ot.prototype && ot.prototype._interfaces)  // array of object type: class must implement interface 
+        {   return ot.prototype._interfaces.indexOf(typedescriptor) >= 0;
         }
         if (ot._superinterfaces)  // array of interface type: must be exact type or sub-interface
         {   return _interfacehassuperinterface(ot,typedescriptor);
         }
     }
-    // otherwise need exact match of either native type or object/interface
-    {   if (ot === typedescriptor) { return true; }
-    }
-    
     return false; 
 }        
 // array type check with exception if unsuccessful. on success just return the value again
 function _checkarray(o,typedescriptor,dimensions)
 {   if (o===null || _isarray(o,typedescriptor,dimensions)) return o;
-    throw (new java_lang_ClassCastException.$())._0()._e;    
+    throw (new java_lang_ClassCastException())._0()._e;    
 }
 
 // convert a unicode code number to a string with the corresponding letter 
@@ -272,12 +265,14 @@ function _castTOint(a)
 // attach runtime type information to an already created one-dimensional javascript array.
 // returns the array itself for easy chaining
 // typedescriptor is either one of the strings: 
+//  "I"  (int)
 //  "B"  (byte) 
 //  "C"  (char) 
-//  "I"  (int)
-//  "D"  (double)
+//  "S"  (short)
 //  "Z"  (boolean)
-// or a class definition object      (like java_lang_Object, java_lang_String)
+//  "D"  (double)
+//  "X"  (string)
+// or a class definition object      (like java_lang_Object)
 // or an interface definition object (like java_lang_Runnable)
 // dimensions: the declared number of dimensions for the array
 function _arr(typedescriptor,dimensions,a)
@@ -348,6 +343,7 @@ Array.prototype.clone_0 = function()
     a._d = this._d;
     return a; 
 };
+
 
 // Extend the javascript String object by monkey-patching in the necessary
 // java methods and attributes.
@@ -553,19 +549,16 @@ String.prototype.trim_0 = function()
 {   return this.trim();
 };
 
-var java_lang_String = {
-    join_2: function(delim_o, parts_o) 
-    {   
-        var delim = delim_o.toString_0();
-        // check if the array contains only Strings or other objects also
-        for (var i=0; i<parts_o.length; i++)
-        {   if (!parts_o[i]._isString)
-            {   // encountered non-string. must perform compliated join
-                return parts_o.map(function(o){return o.toString_0();}).join(delim);
-            }
-        }        
-        // if not encountered non-strings, the join is easy
-        return parts_o.join(delim);
-    }
+var java_lang_String_join_2 = function(delim_o, parts_o) 
+{   
+    var delim = delim_o.toString_0();
+    // check if the array contains only Strings or other objects also
+    for (var i=0; i<parts_o.length; i++)
+    {   if (!_isstr(parts_o[i]))
+        {   // encountered non-string. must perform complicated join
+            return parts_o.map(function(o){return o===null?"null":o.toString_0();}).join(delim);
+        }
+    }        
+    // if encountered only strings, the join is easy
+    return parts_o.join(delim);
 };
-

@@ -4,13 +4,13 @@ var java_util_Comparator = {
     _superinterfaces: [], 
     _defaults: {
         reversed_0: function()
-        {   return new java_util_ComparatorReversed.$(this);
+        {   return new java_util_ComparatorReversed(this);
         },
         thenComparing_1: function(other)
         {   if (other===null)
-            {   throw (new java_lang_NullPointerException.$())._0()._e;
+            {   throw (new java_lang_NullPointerException())._0()._e;
             }
-            return new java_util_ComparatorThenComparing.$(this,other);
+            return new java_util_ComparatorThenComparing(this,other);
         },
     }
 }; 
@@ -18,10 +18,9 @@ var java_util_Comparator = {
 // -- methods:
 // int compare(T o1, T o2)
 
-var java_util_ComparatorReversed =
-{   $: function(a)   // internal use only - integrate allocator with constructor 
-    {   this.a = a;
-    },
+var java_util_ComparatorReversed = function(a) 
+  // internal use only - integrate allocator with constructor 
+{   this.a = a;
 };
 _class(java_util_ComparatorReversed, java_lang_Object, [java_util_Comparator], 
 "java.util.ComparatorReversed"  //replace-me-with-empty-string-for-production//
@@ -34,11 +33,10 @@ _class(java_util_ComparatorReversed, java_lang_Object, [java_util_Comparator],
     },        
 });
 
-var java_util_ComparatorThenComparing =
-{   $: function(a,b)   // internal use only - integrate allocator with constructor 
-    {   this.a = a;
-        this.b = b;
-    },
+var java_util_ComparatorThenComparing = function(a,b)
+   // internal use only - integrate allocator with constructor 
+{   this.a = a;
+    this.b = b;
 };
 _class(java_util_ComparatorThenComparing, java_lang_Object, [java_util_Comparator], 
 "java.util.ComparatorThenComparing"  //replace-me-with-empty-string-for-production//

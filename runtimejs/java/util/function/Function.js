@@ -5,20 +5,17 @@ var java_util_function_Function =
     _defaults:
     {   andThen_1: function(other)
         {   if (other===null)
-            {   throw (new java_lang_NullPointerException.$())._0()._e;
+            {   throw (new java_lang_NullPointerException())._0()._e;
             }
-            return new java_util_function_FunctionAndThen.$(this,other);
+            return new java_util_function_FunctionAndThen(this,other);
         }
         ,
         compose_1: function(other)
         {   if (other===null)
-            {   throw (new java_lang_NullPointerException.$())._0()._e;
+            {   throw (new java_lang_NullPointerException())._0()._e;
             }
-            return new java_util_function_FunctionAndThen.$(other,this);
+            return new java_util_function_FunctionAndThen(other,this);
         }
-    },
-    identity_0: function() 
-    {   return new java_util_function_FunctionIdentity.$();
     },
 }; 
 
@@ -28,11 +25,10 @@ var java_util_function_Function =
 // default Function<T,V> compose(Function<V,T> before)
 // static Function<T,T> identity()
 
-var java_util_function_FunctionAndThen =
-{   $: function(a,b)   // internal use only - integrate allocator with constructor 
-    {   this.a = a;
-        this.b = b;    
-    },
+var java_util_function_FunctionAndThen = function(a,b)   
+// internal use only - integrate allocator with constructor 
+{   this.a = a;
+    this.b = b;    
 };
 _class(java_util_function_FunctionAndThen, java_lang_Object, [java_util_function_Function], 
 "java.util.function.FunctionAndThen"  //replace-me-with-empty-string-for-production//
@@ -41,10 +37,9 @@ _class(java_util_function_FunctionAndThen, java_lang_Object, [java_util_function
     },        
 });
 
-var java_util_function_FunctionIdentity =
-{   $: function()   // internal use only - integrate allocator with constructor 
-    {        
-    },
+var java_util_function_FunctionIdentity = function()   
+// internal use only - integrate allocator with constructor 
+{        
 };
 _class(java_util_function_FunctionIdentity, java_lang_Object, [java_util_function_Function], 
 "java.util.function.FunctionIdentity"  //replace-me-with-empty-string-for-production//
@@ -52,3 +47,8 @@ _class(java_util_function_FunctionIdentity, java_lang_Object, [java_util_functio
     {   return o;
     },        
 });
+
+var java_util_function_Function_identity_0 = function() 
+{   return new java_util_function_FunctionIdentity();
+};
+

@@ -1,14 +1,9 @@
 
 //load// java/lang/Object
-var java_io_PrintStream = 
-{   $: function() 
-    {   java_lang_Object.$.call(this);
-        this._logfunction = null;
-        this._line = null;
-    },
-    nothing: function()
-    {
-    }
+var java_io_PrintStream = function() 
+{   java_lang_Object.call(this);
+    this._logfunction = null;
+    this._line = null;    
 };
 _class (java_io_PrintStream, java_lang_Object, null, 
 "java.io.PrintStream"  //replace-me-with-empty-string-for-production//

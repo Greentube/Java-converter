@@ -411,6 +411,7 @@ public class TestJava5 extends TestJava4
         assertO(String.join("-", "a", new StringBuffer("b"), new StringBuilder("c")), "a-b-c");
         assertO(String.join("-", sl), "higgs-boson-nonsense");
         assertO(String.join("-", new String[]{"is","good"}), "is-good");
+        assertO(String.join("-", "more", null, "non", null), "more-null-non-null");
 
         assertO(s.replace(new StringBuilder("o"), "x"), "hellx, this,cxntains, cxmmas,...");
         assertO(s.replace("ll", ""), "heo, this,contains, commas,...");

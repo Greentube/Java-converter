@@ -2,17 +2,15 @@
 //load// java/util/Set
 //load// java/util/AbstractCollection
 //complete// java/lang/Object
-var java_util_HashSet = 
-{   $: function() 
-    {   this._map = null;
-    },
-    _PRESENT: new java_lang_Object.$()._0(),  
+var java_util_HashSet = function() 
+{   this._map = null;
 };
+
 _class(java_util_HashSet, java_util_AbstractCollection, [java_util_Set], 
 "java.util.HashSet"  //replace-me-with-empty-string-for-production//
 , 
 {   _0: function() 
-    {   this._map = new java_util_HashMap.$()._0();
+    {   this._map = new java_util_HashMap()._0();
         return this;
     },
         
@@ -23,7 +21,7 @@ _class(java_util_HashSet, java_util_AbstractCollection, [java_util_Set],
     },
         
     add_1: function(e) 
-    {   return this._map.put_2(e, java_util_HashSet._PRESENT)===null;
+    {   return this._map.put_2(e, java_util_HashSet_PRESENT)===null;
     },           
         
     addAll_1: function(c) 
@@ -102,3 +100,5 @@ _class(java_util_HashSet, java_util_AbstractCollection, [java_util_Set],
     // toArray   implemented by AbstractCollection 
     // toString  implemented by AbstractCollection
 });
+
+var java_util_HashSet_PRESENT = new java_lang_Object()._0();  

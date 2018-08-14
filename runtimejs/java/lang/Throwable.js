@@ -1,12 +1,10 @@
 //load// java/lang/Object
-var java_lang_Throwable = 
-{   $: function() 
-    {   
-        this.name = null;
-        this.message = null; 
-        this._e = new Error(this._classname);
-        this._e.throwable = this;
-    },
+var java_lang_Throwable = function() 
+{   
+    this.name = null;
+    this.message = null; 
+    this._e = new Error(this._classname);
+    this._e.throwable = this;
 };
 
 _class(java_lang_Throwable, java_lang_Object, null, "java.lang.Throwable",

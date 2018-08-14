@@ -2,10 +2,8 @@
 
 //reference// java/util/Enumeration
 //load// java/util/ArrayListImpl
-var java_util_Vector = 
-{   $: function() 
-    {   java_util_ArrayListImpl.$.call(this);
-    },
+var java_util_Vector = function() 
+{   java_util_ArrayListImpl.call(this);
 };
 _class(java_util_Vector, java_util_ArrayListImpl, null, 
 "java.util.Vector"  //replace-me-with-empty-string-for-production//
@@ -19,13 +17,13 @@ _class(java_util_Vector, java_util_ArrayListImpl, null,
     },
         
     clone_0: function () 
-    {   return new java_util_Vector.$()._1(this);
+    {   return new java_util_Vector()._1(this);
     },   
 
     copyInto_1: function(array) 
     {   var l = this.size_0();
         if (l>array.length)
-        {   throw (new java_lang_IndexOutOfBoundsException.$())._0()._e; 
+        {   throw (new java_lang_IndexOutOfBoundsException())._0()._e; 
         }
         for (var i=0; i<l; i++) 
         {   array[i] = this.get_1(i);
@@ -37,7 +35,7 @@ _class(java_util_Vector, java_util_ArrayListImpl, null,
     },
 
     elements_0: function() 
-    {   return new java_util_AbstractListIterator.$(this);
+    {   return new java_util_AbstractListIterator(this);
     },
     
     firstElement_0: function () 
@@ -93,7 +91,7 @@ _class(java_util_Vector, java_util_ArrayListImpl, null,
     {   
         if (newsize<=0) 
         {   if (newsize<0) 
-            {   throw (new java_lang_IndexOutOfBoundsException.$())._0()._e; 
+            {   throw (new java_lang_IndexOutOfBoundsException())._0()._e; 
             }
             this.clear_0();
         } 

@@ -4,7 +4,7 @@ var java_util_Iterator = {
     _superinterfaces: [], 
     _defaults: {
         remove_0: function() 
-        {   throw (new java_lang_UnsupportedOperationException.$())._0()._e;
+        {   throw (new java_lang_UnsupportedOperationException())._0()._e;
         }
     }
 }; 

@@ -1,8 +1,6 @@
 //load// java/util/HashMapImpl
-var java_util_Hashtable = 
-{   $: function() 
-    {   java_util_HashMapImpl.$.call(this);
-    },
+var java_util_Hashtable = function() 
+{   java_util_HashMapImpl.call(this);
 };
 _class(java_util_Hashtable, java_util_HashMapImpl, null, 
 "java.util.Hashtable"  //replace-me-with-empty-string-for-production//
@@ -10,7 +8,7 @@ _class(java_util_Hashtable, java_util_HashMapImpl, null,
     // legacy methods only supported by Hashtable but not the Map interface 
     
     clone_0: function() 
-    {   return new java_util_Hashtable.$()._1(this);
+    {   return new java_util_Hashtable()._1(this);
     },
     
     contains_1: function(value) 
@@ -18,10 +16,10 @@ _class(java_util_Hashtable, java_util_HashMapImpl, null,
     },
     
     elements_0: function() 
-    {   return new java_util_HashMapIterator.$(this, false, this._collectKeys_0());
+    {   return new java_util_HashMapIterator(this, false, this._collectKeys_0());
     },
     
     keys_0: function()
-    {   return new java_util_HashMapIterator.$(this, true, this._collectKeys_0());
+    {   return new java_util_HashMapIterator(this, true, this._collectKeys_0());
     },      
 });

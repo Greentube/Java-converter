@@ -1,10 +1,8 @@
 //reference// java/lang/IllegalArgumentException
 //load// java/lang/Object
-var java_lang_Enum = {
-    $: function()
-    {   this._name = null;
-        this._ordinal = 0;
-    },
+var java_lang_Enum = function()
+{   this._name = null;
+    this._ordinal = 0;
 };
 _class (java_lang_Enum, java_lang_Object, null, 
 "java.lang.Enum"  //replace-me-with-empty-string-for-production//

@@ -71,5 +71,11 @@ public class TestObject extends TestParentIntermediate
     public int depth(int multiplier) 
     {   return super.depth(multiplier) + 5;
     }
+    
+    public static int unusedmethod()
+    {
+        System.out.println("this method will not be used from anywhere (test dead-code elimination)");
+        return 4711;
+    }
 }
 

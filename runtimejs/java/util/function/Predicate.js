@@ -5,23 +5,20 @@ var java_util_function_Predicate =
     _defaults:
     {   and_1: function(other)
         {   if (other===null)
-            {   throw (new java_lang_NullPointerException.$())._0()._e;
+            {   throw (new java_lang_NullPointerException())._0()._e;
             }
-            return new java_util_function_PredicateAnd.$(this,other);
+            return new java_util_function_PredicateAnd(this,other);
         }
         ,
         negate_0: function()
-        {   return new java_util_function_PredicateNegate.$(this);
+        {   return new java_util_function_PredicateNegate(this);
         },
         or_1: function(other)
         {   if (other===null)
-            {   throw (new java_lang_NullPointerException.$())._0()._e;
+            {   throw (new java_lang_NullPointerException())._0()._e;
             }
-            return new java_util_function_PredicateOr.$(this, other);
+            return new java_util_function_PredicateOr(this, other);
         }
-    },
-    isEqual_1: function(tobj) 
-    {   return new java_util_function_PredicateIsEqual.$(tobj);
     },
 }; 
 
@@ -33,11 +30,10 @@ var java_util_function_Predicate =
 // boolean test(T t)
 
 
-var java_util_function_PredicateAnd =
-{   $: function(a,b)   // internal use only - integrate allocator with constructor 
-    {   this.a = a;
-        this.b = b;    
-    },
+var java_util_function_PredicateAnd = function(a,b)   
+// internal use only - integrate allocator with constructor 
+{   this.a = a;
+    this.b = b;    
 };
 _class(java_util_function_PredicateAnd, java_lang_Object, [java_util_function_Predicate], 
 "java.util.function.PredicateAnd"  //replace-me-with-empty-string-for-production//
@@ -46,10 +42,9 @@ _class(java_util_function_PredicateAnd, java_lang_Object, [java_util_function_Pr
     },        
 });
 
-var java_util_function_PredicateNegate =
-{   $: function(a)   // internal use only - integrate allocator with constructor 
-    {   this.a = a;
-    },
+var java_util_function_PredicateNegate = function(a)
+ // internal use only - integrate allocator with constructor 
+{   this.a = a;
 };
 _class(java_util_function_PredicateNegate, java_lang_Object, [java_util_function_Predicate], 
 "java.util.function.PredicateNegate"  //replace-me-with-empty-string-for-production//
@@ -58,11 +53,10 @@ _class(java_util_function_PredicateNegate, java_lang_Object, [java_util_function
     },        
 });
 
-var java_util_function_PredicateOr =
-{   $: function(a,b)   // internal use only - integrate allocator with constructor 
-    {   this.a = a;
-        this.b = b;    
-    },
+var java_util_function_PredicateOr = function(a,b) 
+ // internal use only - integrate allocator with constructor 
+{   this.a = a;
+    this.b = b;    
 };
 _class(java_util_function_PredicateOr, java_lang_Object, [java_util_function_Predicate], 
 "java.util.function.PredicateOr"  //replace-me-with-empty-string-for-production//
@@ -71,10 +65,9 @@ _class(java_util_function_PredicateOr, java_lang_Object, [java_util_function_Pre
     },        
 });
 
-var java_util_function_PredicateIsEqual =
-{   $: function(tobj)   // internal use only - integrate allocator with constructor 
-    {   this.tobj = tobj;
-    },
+var java_util_function_PredicateIsEqual = function(tobj) 
+  // internal use only - integrate allocator with constructor 
+{   this.tobj = tobj;
 };
 _class(java_util_function_PredicateIsEqual, java_lang_Object, [java_util_function_Predicate], 
 "java.util.function.PredicateIsEqual"  //replace-me-with-empty-string-for-production//
@@ -83,3 +76,6 @@ _class(java_util_function_PredicateIsEqual, java_lang_Object, [java_util_functio
     },        
 });
 
+var java_util_function_Predicate_isEqual_1 = function(tobj) 
+{   return new java_util_function_PredicateIsEqual(tobj);
+};

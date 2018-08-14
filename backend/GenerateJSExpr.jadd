@@ -107,7 +107,7 @@ aspect GenerateJS
         boolean foundpar=false;
         out.print("(new ");
         out.printAndMemorizeReference(type().packageName(), type().uniqueName());
-        out.print(".$(");
+        out.print("(");
         if (isRightChildOfDot()) 
         {   prevExpr().generateJS(out);
             foundpar=true;
@@ -147,7 +147,7 @@ aspect GenerateJS
         out.printAndMemorizeReference(ht.packageName(), ht.uniqueName());
 
         ConstructorDecl m = decl();
-        out.print(".$.prototype._" + m.getNumParameter() + ".call(this");
+        out.print(".prototype._" + m.getNumParameter() + ".call(this");
         for (int i=0; i<getNumArg(); i++) 
         {   out.print(",");
             getArg(i).generateUsingResultJS(out);
@@ -186,7 +186,7 @@ aspect GenerateJS
             }
             
             out.printAndMemorizeReference(t.packageName(),tname);            
-            out.print(".");
+            out.print("_");
             out.printJSIdentifier(n,"_"+m.getNumParameter());
             out.print("(");
 
@@ -211,7 +211,7 @@ aspect GenerateJS
         }
         else if (prevExpr().isSuperAccess()) 
         {   out.printAndMemorizeReference(m.hostType().packageName(),m.hostType().uniqueName());
-            out.print(".$.prototype.");         
+            out.print(".prototype.");         
             out.printJSIdentifier(m.name(),"_"+m.getNumParameter());
             out.print(".call(this");
             if (m.getNumParameter()>0) out.print(",");
@@ -314,7 +314,7 @@ aspect GenerateJS
         if (v.isClassVariable()) 
         {   TypeDecl t = v.hostType();
             out.printAndMemorizeReference(t.packageName(),t.uniqueName());                      
-            out.print(".");
+            out.print("_");
             out.printJSIdentifier(getID(),"");  
             // check if this is inside a static initializer - must force early loading of accessed class
             BodyDecl bd = enclosingBodyDecl();
@@ -1003,7 +1003,7 @@ aspect GenerateJS
             getExpr().generateUsingResultJS(out);
             out.print(" instanceof ");
             out.printAndMemorizeReference(t.packageName(),t.uniqueName());
-            out.print(".$)");
+            out.print(")");
         }
     }
 

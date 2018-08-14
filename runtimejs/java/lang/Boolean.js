@@ -1,20 +1,8 @@
 //load// java/lang/Object
-var java_lang_Boolean = 
-{   $: function() 
-    {   this.b = false;
-    },
-    
-    toString_1: function(b) 
-    {   return b ? "true" : "false";
-    },
-    
-    valueOf_1: function(b) 
-    {   return b ? java_lang_Boolean.TRUE : java_lang_Boolean.FALSE;
-    },   
-    
-    TRUE: null,
-    FALSE: null,
+var java_lang_Boolean = function() 
+{   this.b = false;
 };
+
 _class (java_lang_Boolean, java_lang_Object, null, 
 "java.lang.Boolean"  //replace-me-with-empty-string-for-production//
 ,{  _1: function(b) 
@@ -27,7 +15,7 @@ _class (java_lang_Boolean, java_lang_Object, null,
     },
     
     equals_1: function(b)
-    {   if (b!==null && (b instanceof java_lang_Boolean.$) && this.b === b.b) 
+    {   if (b!==null && (b instanceof java_lang_Boolean) && this.b === b.b) 
         {   return true;
         }
         return false;
@@ -42,5 +30,13 @@ _class (java_lang_Boolean, java_lang_Object, null,
     },    
 });
 
-java_lang_Boolean.TRUE = new java_lang_Boolean.$()._1(true);
-java_lang_Boolean.FALSE = new java_lang_Boolean.$()._1(false);
+var java_lang_Boolean_TRUE = new java_lang_Boolean()._1(true);
+var java_lang_Boolean_FALSE = new java_lang_Boolean()._1(false);
+
+var java_lang_Boolean_toString_1 = function(b) 
+{   return b ? "true" : "false";
+};
+var java_lang_Boolean_valueOf_1 = function(b) 
+{   return b ? java_lang_Boolean_TRUE : java_lang_Boolean_FALSE;
+};
+

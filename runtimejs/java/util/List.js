@@ -6,7 +6,7 @@ var java_util_List = {
         sort_1: function(comparator) 
         {   var a = this.toArray_0();
             var l = a.length;
-            java_util_Arrays.sort_4(a,0,l,comparator);
+            java_util_Arrays_sort_4(a,0,l,comparator);
             for (var i=0; i<l; i++) 
             {   this.set_2(i,a[i]);
             }

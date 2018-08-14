@@ -5,10 +5,8 @@
 //load// java/util/Enumeration
 //load// java/util/List
 //load// java/util/AbstractCollection
-var java_util_AbstractList = 
-{   $: function() 
-    {
-    },
+var java_util_AbstractList = function() 
+{
 };
 _class(java_util_AbstractList, java_util_AbstractCollection, [java_util_List], 
 "java.util.AbstractList"  //replace-me-with-empty-string-for-production//
@@ -85,7 +83,7 @@ _class(java_util_AbstractList, java_util_AbstractCollection, [java_util_List],
     },
 
     iterator_0: function() 
-    {   return new java_util_AbstractListIterator.$(this);
+    {   return new java_util_AbstractListIterator(this);
     },
    
     lastIndexOf_1: function (o) 
@@ -97,14 +95,14 @@ _class(java_util_AbstractList, java_util_AbstractCollection, [java_util_List],
  
     removeAll_1: function (collection) 
     {   if (collection===null) 
-        {   throw (new java_lang_NullPointerException.$())._0()._e;
+        {   throw (new java_lang_NullPointerException())._0()._e;
         }
         return this._filter(collection,false);
     },
     
     retainAll_1: function (collection) 
     {   if (collection===null)
-        {   throw (new java_lang_NullPointerException.$())._0()._e;
+        {   throw (new java_lang_NullPointerException())._0()._e;
         }
         return this._filter(collection,true);
     },
@@ -127,11 +125,10 @@ _class(java_util_AbstractList, java_util_AbstractCollection, [java_util_List],
 }); 
 
 
-var java_util_AbstractListIterator = 
-{   $: function(list)   // internal use only - merge allocator with constructor
-    {   this.list = list;
-        this.n = 0;
-    },
+var java_util_AbstractListIterator = function(list)  
+ // internal use only - merge allocator with constructor
+{   this.list = list;
+    this.n = 0;
 };
 _class(java_util_AbstractListIterator, java_lang_Object,  [java_util_Iterator, java_util_Enumeration], 
 "java.util.AbstractListIterator"  //replace-me-with-empty-string-for-production//
@@ -142,7 +139,7 @@ _class(java_util_AbstractListIterator, java_lang_Object,  [java_util_Iterator, j
     
     next_0: function() 
     {   if (this.n>=this.list.size_0())
-        {   throw (new java_util_NoSuchElementException.$())._0()._e;
+        {   throw (new java_util_NoSuchElementException())._0()._e;
         }
         var v = this.list.get_1(this.n);  
         this.n++;
@@ -152,7 +149,7 @@ _class(java_util_AbstractListIterator, java_lang_Object,  [java_util_Iterator, j
     remove_0: function() 
     {   
         var before = this.n-1;
-        if (before<0) throw (new java_lang_IllegalStateException.$())._0()._e;
+        if (before<0) throw (new java_lang_IllegalStateException())._0()._e;
         this.list.remove_1(before);  // will throw if unsupported
         this.n = before;
     },
