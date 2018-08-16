@@ -33,30 +33,42 @@ Linker directives:
     on other classes to be completely loaded already.
 
 
-Class definitions are done by creating a single global class object containing 
-an allocator function and all static methods and fields.
+Class definitions are done by creating a single allocator function that
+populates all members and sets them to their java default value (0 or null).
+Proper java-style construction will then be done with one of the special 
+instance methods named _0, _1, ...
 
-var c = {
-    $: function() {
-    },
-    static1: function(x) {},
-    static2: function(y) {},
-    staticfield: 4711,
+var c = function() {
+    this.member1 = 0;
+    this.member2 = null;
 };
 
-This class is enough when it is not necessary to create any instance objects 
-(like for java.lang.Math), but otherwise you need to connect the prototyping 
-chain and additional stuff. Do this by calling: 
+After that, you need to set up the prototyping chain and some additional internal
+stuff with this call:
 
-_class(class, baseclass, interfaces, name, instance_fields_and_methods);
+_class(class, baseclass, interfaces, name, instance_methods);
 
-Note, that the $ member has the special meaning to be the allocator function
-for the class. It will be referenced in various circumstances (allocation,
-type inclusion test).
-Additionally to the allocator function, there will also be various constructor
-functions that are just named _0 or _1 or anything like this, depending
-on how many call parameters the constructor takes. This constructor function
-must return a reference to 'this' for call chaining.
+An example:
+_class(com_greentube_MyClass, java_lang_Object, [], "com.greentube.MyClass", 
+{   _0: function() { this.member1= 47; this.member2=11; return this; }
+    print_0: function() { console.log(this.member1,this.member2); }
+});
+
+
+All static methods and fields need to be defined just as global variables with
+a proper fully qualified name:
+
+com_greentube_MyClass_static1_1 = function(x) {};
+com_greentube_MyClass_static2_1 =  function(y) {};
+com_greentube_MyClass_staticfield = 4711;
+
+For pure static classes for which it is not necessary to create any instance objects,
+you can leave out the allocator function and the _class() call. Just specify the
+global methods and variables  (like it is done for java.lang.Math or java.lang.System).
+
+There is no specific implementation class for java.lang.String, because 
+the existing javascript-strings are directly used, but enhanced with many 
+java-style methods. 
 
 
 Interface definitions are like so:
@@ -64,17 +76,16 @@ Interface definitions are like so:
 var i = { 
     _superinterfaces: [ ... ], 
     _defaults: { ... },
-    staticmember1: xx,
-    staticmember2: yy,     
 }; 
 
-Interfaces are very light-weight in javascript. They mainly consist of static fields
-and some references to super-interfaces for the type-inclusion checks.
-Optionally you can provide a set of default method implementations.
+var i_staticmember = 99;
+var i_staticmethod_0 = function() { return "something"; };
 
-There is no specific implementation class for java.lang.String, because 
-the existing javascript-strings are directly used, but enhanced with many 
-java-style methods. 
+Interfaces are very light-weight in javascript. They mainly consist of an object that
+references its super-interfaces for the type-inclusion checks.
+Optionally you can provide a set of default method implementations. These will be attached
+to all classes implementing this interface (inside the _class() call).
+Static members are just implemented as global javascript variables;
 
 
 Identifier escaping
@@ -104,6 +115,6 @@ class names and packages.
 Method overloading
 
 All methods have a suffix that denote the number of parameters 
-  (  java_lang_Integer.valueOf_1(i)  for example). 
+  (  java_lang_Integer_valueOf_1(i)  for example). 
 This allows a basic form of overloading, and is still compatible with the identifier 
 escaping (the _1 is not considered part of the identifier and will not be doubled).
