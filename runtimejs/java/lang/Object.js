@@ -117,33 +117,39 @@ function _interfacehassuperinterface(intf, sintf)
 // test if arbitrary object is compatible with given array type
 function _isarray(o,typedescriptor,dimensions) 
 {   // null or non-array or array with different dimensions (fast fail)
-    if (o===null || o._d !== dimensions || !o._t) { return false; } 
+    if (o===null || !o._isArray || o._d!==dimensions) { return false; } 
     var ot = o._t;
     // exactly matching descriptors (fast success)
     if (typedescriptor===ot) { return true; } 
+    // when the typedescriptor is a string itself, it denotes a primitive type or String
+    // - if this has was not exactly matching already, it never will match (even for the "X" descriptor)
+    if (typedescriptor._isString) { return false; }
+    // when the array is of a primitive type or String (its descriptor is a String), then the 
+    // match can only succeed if it is the String type and it is is attempted to match it 
+    // to a Object array
+    if (ot._isString) { return ot==="X" && typedescriptor===java_lang_Object; }
     
-    // test for compatibility with Object[]
-    if (typedescriptor===java_lang_Object)
-    {   if (ot==="X") { return true; }            // string arrays are compatible
-        if (ot._superinterfaces) { return true; } // any interface array is compatible
-        if (ot.prototype && ot.prototype._baseclasses) { return true; }   // any object array is compatible
-        return false;
-    }        
-    // test for compatibility with more specific object array types
-    else if (typedescriptor.prototype && typedescriptor.prototype._baseclasses) 
-    {   return ot.prototype && ot.prototype._baseclasses && ot.prototype._baseclasses.indexOf(typedescriptor) >= 0;
-    }
+    // after eliminating all cases involving primitive types or string, we only need
+    // to consider "normal" classes and interfaces from now on.
+    
+    // anything that survived up to here is surely compatible with Object arrays
+    if (typedescriptor===java_lang_Object) { return true; }
+    
     // test for compatibility with interface array type
-    else if (typedescriptor._superinterfaces)
-    {   if (ot.prototype && ot.prototype._interfaces)  // array of object type: class must implement interface 
-        {   return ot.prototype._interfaces.indexOf(typedescriptor) >= 0;
-        }
-        if (ot._superinterfaces)  // array of interface type: must be exact type or sub-interface
+    if (typedescriptor._superinterfaces)
+    {   if (ot._superinterfaces)  // array of interface type: must be compatible type
         {   return _interfacehassuperinterface(ot,typedescriptor);
         }
+        else   // array of class type: must implement interface
+        {   return ot.prototype._interfaces.indexOf(typedescriptor) >= 0;
+        }
+    }    
+    // test for compatibility with general object array types
+    else 
+    {   return ot.prototype._baseclasses.indexOf(typedescriptor) >= 0;
     }
-    return false; 
 }        
+
 // array type check with exception if unsuccessful. on success just return the value again
 function _checkarray(o,typedescriptor,dimensions)
 {   if (o===null || _isarray(o,typedescriptor,dimensions)) return o;
@@ -323,6 +329,7 @@ function _dim(typedescriptor,dimensions,sizes,initvalue)
 // DO NOT USE such a loop!
 
 Array.prototype._interfaces = [];
+Array.prototype._isArray = true;  // reliable way to test if anything is an array
 
 Array.prototype.equals_1 = function (o) 
 {   return this===o;
