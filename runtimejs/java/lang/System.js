@@ -11,7 +11,7 @@ var java_lang_System_arraycopy_5 = function(src, srcPos, dest, destPos, length)
     {   throw (new java_lang_NullPointerException())._0()._e;
     }
     if (!(src._isArray) || !(dest._isArray))
-    {   throw (new java_lang_ArrayStoreException.$())._0()._e; 
+    {   throw (new java_lang_ArrayStoreException())._0()._e; 
     }
     if 
     (   length<0 || srcPos<0 || srcPos+length>src.length

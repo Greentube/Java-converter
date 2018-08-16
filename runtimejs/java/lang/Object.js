@@ -208,7 +208,7 @@ var _imul = (typeof Math.imul === "function") ? Math.imul : function(a, b)
 // integer division with correct behaviour over the full ranges and 0 exception
 var _idiv = function(a,b)
 {
-    if (b===0) throw (new java_lang_ArithmeticException.$())._0()._e;
+    if (b===0) throw (new java_lang_ArithmeticException())._0()._e;
     return (a/b)|0;
 };
 
@@ -293,7 +293,7 @@ function _arr(typedescriptor,dimensions,a)
 function _dim(typedescriptor,dimensions,sizes,initvalue) 
 {   
     var arraysize = sizes[0];
-    if (arraysize<0) { throw (new java_lang_NegativeArraySizeException.$())._0()._e; }
+    if (arraysize<0) { throw (new java_lang_NegativeArraySizeException())._0()._e; }
     
     var a = new Array(arraysize);    
     a._t = typedescriptor;
@@ -323,7 +323,6 @@ function _dim(typedescriptor,dimensions,sizes,initvalue)
 // DO NOT USE such a loop!
 
 Array.prototype._interfaces = [];
-Array.prototype._isArray = true;
 
 Array.prototype.equals_1 = function (o) 
 {   return this===o;
@@ -351,8 +350,8 @@ Array.prototype.clone_0 = function()
 // but adding methods to the String prototype makes the literals
 // know the methods and properties just as well.
 
-String.prototype._isString = true;  // reliable way to test if anything is a string
 String.prototype._interfaces = [];
+String.prototype._isString = true;  // reliable way to test if anything is a string
 
 String.prototype.charAt_1 = function(x) 
 {   return this.charCodeAt(x);
