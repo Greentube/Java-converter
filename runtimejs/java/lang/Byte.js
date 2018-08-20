@@ -3,9 +3,7 @@ var java_lang_Byte = function()
 {   this.b = 0;
 };
 
-_class(java_lang_Byte, java_lang_Object, null, 
-"java.lang.Byte"  //replace-me-with-empty-string-for-production//
-, 
+_defclass(java_lang_Byte, java_lang_Object, null, 
 {   _1: function(b) 
     {   this.b = b;
         return this;

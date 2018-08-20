@@ -4,9 +4,8 @@ var java_lang_Integer = function()
 {   this.i = 0;
 };
 
-_class(java_lang_Integer, java_lang_Object, null, 
-"java.lang.Integer"  //replace-me-with-empty-string-for-production//
-,{  _1: function(i) 
+_defclass(java_lang_Integer, java_lang_Object, null,
+{  _1: function(i) 
     {   this.i = i;
         return this;
     },

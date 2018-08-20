@@ -35,8 +35,8 @@ Workflow Javascript
 2. Link all .js to a single .js program together with the included runtime libraries.
 
 2.1 using command line
-   java -jar converter.jar link -output <output file> -searchpath <path> -root <rootclass1,..> [-startup javascriptcode] [-production]
-
+   java -jar converter.jar link -output <output file> -searchpath <path> -root <rootclass1,..> [-startup javascriptcode] 
+   
 2.2 using ant   
    <taskdef name="linkJavaScript" classname="com.greentube.javaconverter.JavaScriptLinkerAntTask"/> 
    <linkJavaScript 
@@ -44,7 +44,6 @@ Workflow Javascript
             searchpath="${basedir}/build/javascript"
             root="com/greentube/test/Launcher"
             startup="com_greentube_test_Launcher_main_1([]);"            
-            production="true"
             >
     </linkJavaScript>		
        

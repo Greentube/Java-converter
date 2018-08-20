@@ -3,9 +3,8 @@ var java_lang_Boolean = function()
 {   this.b = false;
 };
 
-_class (java_lang_Boolean, java_lang_Object, null, 
-"java.lang.Boolean"  //replace-me-with-empty-string-for-production//
-,{  _1: function(b) 
+_defclass (java_lang_Boolean, java_lang_Object, null, 
+{  _1: function(b) 
     {   this.b = b;
         return this;
     },

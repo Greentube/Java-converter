@@ -1,32 +1,32 @@
 //load// java/lang/Object
 var java_lang_Throwable = function() 
 {   
-    this.name = null;
     this.message = null; 
-    this._e = new Error(this._classname);
-    this._e.throwable = this;
+    this._e = null;
 };
 
-_class(java_lang_Throwable, java_lang_Object, null, "java.lang.Throwable",
+_defclass(java_lang_Throwable, java_lang_Object, null,
 {
     _0: function()
     {   
-        this.name = this._classname;
         this.message = null;    
+        this._e = new Error(this.constructor.name);
+        this._e.throwable = this;        
         return this;
     },
     _1: function(message)
     {   
-        this.name = this._classname;
         this.message = message;
+        this._e = new Error(this.constructor.name);
+        this._e.throwable = this;        
         return this;
     },
 
     toString_0: function()
     {   
         var m = this.getMessage_0();
-        if (m===null) { return this._classname; }
-        else { return this._classname + ": " + m; }
+        if (m===null) { return this.constructor.name; }
+        else { return this.constructor.name + ": " + m; }
     },
     
     getMessage_0 : function()

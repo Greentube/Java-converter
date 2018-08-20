@@ -6,9 +6,7 @@ var java_util_HashSet = function()
 {   this._map = null;
 };
 
-_class(java_util_HashSet, java_util_AbstractCollection, [java_util_Set], 
-"java.util.HashSet"  //replace-me-with-empty-string-for-production//
-, 
+_defclass(java_util_HashSet, java_util_AbstractCollection, [java_util_Set], 
 {   _0: function() 
     {   this._map = new java_util_HashMap()._0();
         return this;

@@ -5,9 +5,9 @@ var java_io_PrintStream = function()
     this._logfunction = null;
     this._line = null;    
 };
-_class (java_io_PrintStream, java_lang_Object, null, 
-"java.io.PrintStream"  //replace-me-with-empty-string-for-production//
-,{  _1: function(logfunction) 
+_defclass (java_io_PrintStream, java_lang_Object, null, 
+{
+    _1: function(logfunction) 
     {   this._logfunction = logfunction;
         this._line = [];
         return this;

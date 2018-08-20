@@ -30,7 +30,6 @@
     		searchpath="${basedir}/build/javascript,${basedir}/../runtimejs"
     		root="com/greentube/test/Launcher"
             startup="com_greentube_test_Launcher_main_1([]);"
-    	    production="yes"
     		>
     </linkJavaScript>
     <!-- minify the javascript -->
@@ -67,7 +66,6 @@
             output="${basedir}/build/javascript/mainperformance.js" 
             searchpath="${basedir}/build/javascript,${basedir}/../runtimejs"
             root="Performance;com/greentube/hectoc/HecToc"
-            production="no" 
             >
     </linkJavaScript>
     

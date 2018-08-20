@@ -21,9 +21,7 @@ var java_util_function_BiConsumerAndThen = function(a,b)
 {   this.a = a;
     this.b = b;    
 };
-_class(java_util_function_BiConsumerAndThen, java_lang_Object, [java_util_function_BiConsumer], 
-"java.util.function.ConsumerAndThen"  //replace-me-with-empty-string-for-production//
-, 
+_defclass(java_util_function_BiConsumerAndThen, java_lang_Object, [java_util_function_BiConsumer], 
 {   accept_2: function(t,u) 
     {   this.a.accept_2(t,u);
         this.b.accept_2(t,u);

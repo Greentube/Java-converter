@@ -30,9 +30,8 @@ var java_util_function_FunctionAndThen = function(a,b)
 {   this.a = a;
     this.b = b;    
 };
-_class(java_util_function_FunctionAndThen, java_lang_Object, [java_util_function_Function], 
-"java.util.function.FunctionAndThen"  //replace-me-with-empty-string-for-production//
-,{  apply_1: function(o) 
+_defclass(java_util_function_FunctionAndThen, java_lang_Object, [java_util_function_Function], 
+{  apply_1: function(o) 
     {   return this.b.apply_1(this.a.apply_1(o));
     },        
 });
@@ -41,9 +40,8 @@ var java_util_function_FunctionIdentity = function()
 // internal use only - integrate allocator with constructor 
 {        
 };
-_class(java_util_function_FunctionIdentity, java_lang_Object, [java_util_function_Function], 
-"java.util.function.FunctionIdentity"  //replace-me-with-empty-string-for-production//
-,{   apply_1: function(o) 
+_defclass(java_util_function_FunctionIdentity, java_lang_Object, [java_util_function_Function], 
+{   apply_1: function(o) 
     {   return o;
     },        
 });

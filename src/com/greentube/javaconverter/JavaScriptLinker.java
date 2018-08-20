@@ -9,8 +9,7 @@ public class JavaScriptLinker
     (   String rootclasses, 
         String searchpath, 
         String output, 
-        String startupcode, 
-        boolean production
+        String startupcode
     ) 
     throws IOException
     {   if (rootclasses == null) 
@@ -35,7 +34,7 @@ public class JavaScriptLinker
         
         // load all
         JavaScriptLinker linker = new JavaScriptLinker(cp);
-        linker.loadAll(roots,production);		
+        linker.loadAll(roots);		
         int[] o = linker.computeOrdering();
 
         // write all modules
@@ -69,7 +68,7 @@ public class JavaScriptLinker
         this.searchpath = searchpath; 
     }
 
-    private void loadAll(String[] roots, boolean production) throws IOException 
+    private void loadAll(String[] roots) throws IOException 
     {   
         name2index = new HashMap<>();
         index2name = new HashMap<>();
@@ -94,7 +93,7 @@ public class JavaScriptLinker
             ArrayList<String> reference = new ArrayList<>();
             ArrayList<String> load = new ArrayList<>();
             ArrayList<String> complete = new ArrayList<>();
-            byte[] data = loadModule(fn, reference,load,complete,production);
+            byte[] data = loadModule(fn, reference,load,complete);
             modules.add(data);
 
             // while loading memorize the dependency relations
@@ -167,8 +166,7 @@ public class JavaScriptLinker
     (   String filename, 
         ArrayList<String> reference,
         ArrayList<String> load,
-        ArrayList<String> complete,
-        boolean production
+        ArrayList<String> complete
     ) 
     throws IOException
     {   
@@ -194,10 +192,7 @@ public class JavaScriptLinker
         StringBuilder sb = new StringBuilder();
         String l;
         while ( (l = r.readLine()) != null) 
-        {   if (production && l.endsWith("//replace-me-with-empty-string-for-production//"))
-            {   l = "\"\"";
-            }   
-            if (l.startsWith("//reference//")) 
+        {   if (l.startsWith("//reference//")) 
             {   reference.add(l.substring(13).trim());
             }
             if (l.startsWith("//load//")) 

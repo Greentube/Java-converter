@@ -2,6 +2,4 @@
 var java_lang_UnsupportedOperationException = function() 
 {   java_lang_RuntimeException.call(this);
 };
-_class (java_lang_UnsupportedOperationException, java_lang_RuntimeException, null, 
-"java.lang.UnsupportedOperationException"  
-, {});
+_defclass (java_lang_UnsupportedOperationException, java_lang_RuntimeException, null, {});

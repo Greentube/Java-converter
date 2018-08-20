@@ -19,9 +19,7 @@ var java_util_HashMapImpl = function()
 {   this._table = null;
     this._totalelements = 0;
 };    
-_class(java_util_HashMapImpl, java_lang_Object, [java_util_Map], 
-"java.util.HashMapImpl"  //replace-me-with-empty-string-for-production//
-, 
+_defclass(java_util_HashMapImpl, java_lang_Object, [java_util_Map], 
 {   _0: function() 
     {   this._table = new Map();
         return this;
@@ -213,9 +211,7 @@ var java_util_HashMapKeyView = function(map)
      // internal use only - can merge allocator with constructor
 {   this.map = map;
 };    
-_class(java_util_HashMapKeyView, java_util_AbstractCollection, [java_util_Set], 
-"java.util.HashMapKeyView"  //replace-me-with-empty-string-for-production//
-, 
+_defclass(java_util_HashMapKeyView, java_util_AbstractCollection, [java_util_Set], 
 {    
     contains_1: function(o) 
     {   return this.map.containsKey_1(o);
@@ -261,9 +257,7 @@ var java_util_HashMapValueView = function(map)
     // internal use only - can merge allocator with constructor
 {   this.map = map;
 };
-_class(java_util_HashMapValueView, java_util_AbstractCollection, [java_util_Collection], 
-"java.util.HashMapValueView"  //replace-me-with-empty-string-for-production//
-, 
+_defclass(java_util_HashMapValueView, java_util_AbstractCollection, [java_util_Collection], 
 { 
     contains_1: function(o) 
     {   return this.map.containsValue_1(o);
@@ -293,9 +287,7 @@ var java_util_HashMapIterator = function(map, deliverKeys, keys)
     this.keys = keys;
     this.n = 0;
 };
-_class(java_util_HashMapIterator, java_lang_Object, [java_util_Iterator, java_util_Enumeration], 
-"java.util.HashMapIterator"   //replace-me-with-empty-string-for-production//
-, 
+_defclass(java_util_HashMapIterator, java_lang_Object, [java_util_Iterator, java_util_Enumeration], 
 {       
     hasNext_0: function() 
     {   return this.n<this.keys.length;

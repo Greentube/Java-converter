@@ -7,9 +7,7 @@ var java_util_LinkedList = function()
     this._currentNode = null;
     this._currentIndex = 0;        
 };
-_class(java_util_LinkedList, java_util_AbstractList, null, 
-"java.util.LinkedList"  //replace-me-with-empty-string-for-production//
-, 
+_defclass(java_util_LinkedList, java_util_AbstractList, null, 
 {   _0: function() 
     {   var h = { element:null, next:null, prev: null };
         h.next = h;

@@ -59,7 +59,12 @@ public class TestJava4
         System.out.print((char)' ');
         System.out.print(true);
         System.out.print(Character.valueOf(' '));
-        System.out.print(4);
+        System.out.println(4);
+        System.out.print(new ClassWithNoToString());
+        System.out.print(" ");
+        System.out.print(new int[1]);
+        System.out.print(" ");
+        System.out.print(new TestObject[0]);
         System.out.println();
 
         staticattributestest();
@@ -1164,7 +1169,7 @@ public class TestJava4
         finally
         {   b.append("finally");
         }
-        assertO(b.toString(), "49catchcom.greentube.convertertest.CustomException: Can not halve odd numberfinally");
+        assertO(b.toString().substring(b.length()-33), ": Can not halve odd numberfinally");
         
         b = new StringBuffer();
         try {

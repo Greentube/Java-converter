@@ -9,9 +9,8 @@
 var java_util_AbstractCollection = function() 
 {
 };
-_class(java_util_AbstractCollection, java_lang_Object, [java_util_Collection], 
-"java.util.AbstractCollection"  //replace-me-with-empty-string-for-production//
-,{   
+_defclass(java_util_AbstractCollection, java_lang_Object, [java_util_Collection], 
+{   
     contains_1: function(obj) 
     {   var i = this.iterator_0();
         while (i.hasNext_0()) 

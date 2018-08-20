@@ -5,9 +5,7 @@
 var java_util_Vector = function() 
 {   java_util_ArrayListImpl.call(this);
 };
-_class(java_util_Vector, java_util_ArrayListImpl, null, 
-"java.util.Vector"  //replace-me-with-empty-string-for-production//
-, 
+_defclass(java_util_Vector, java_util_ArrayListImpl, null, 
 {
     // legacy methods only supported by Vector (but not the List interface )
     // everything can be easily implemented by just using the existing methods

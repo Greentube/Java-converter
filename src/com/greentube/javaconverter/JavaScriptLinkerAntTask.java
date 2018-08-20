@@ -22,15 +22,11 @@ public class JavaScriptLinkerAntTask extends Task
     public void setStartup(String code) 
     {   this.startupcode = code;
     }
-    private boolean production = false;    
-    public void setProduction(boolean prod)
-    {   this.production = prod;
-    }
 
     public void execute() throws BuildException 
     {   
         try 
-        {   JavaScriptLinker.link(roots, searchpath, outputfile, startupcode, production);
+        {   JavaScriptLinker.link(roots, searchpath, outputfile, startupcode);
         }
         catch (IOException e)
         {   throw new BuildException(e.getMessage());

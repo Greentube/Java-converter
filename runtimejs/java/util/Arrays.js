@@ -114,9 +114,7 @@ var java_util_FixSizedArrayList = function(_storage)
    // only used internally. combined allocator and constructor.
 {   this._storage = _storage;  
 };
-_class(java_util_FixSizedArrayList, java_util_AbstractList, null, 
-"java.util.FixSizedArrayList"  //replace-me-with-empty-string-for-production//
-, 
+_defclass(java_util_FixSizedArrayList, java_util_AbstractList, null, 
 {   
     get_1: function(index) 
     {   if (index<0 || index>=this._storage.length)

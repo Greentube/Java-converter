@@ -3,9 +3,8 @@ var java_lang_StringBuilder = function()
 {   this._parts = null;
     this._length = 0;
 };
-_class(java_lang_StringBuilder, java_lang_Object, null, 
-"java.lang.StringBuilder"  //replace-me-with-empty-string-for-production//
-,{  _0: function() 
+_defclass(java_lang_StringBuilder, java_lang_Object, null,
+{  _0: function() 
     {   this._parts = [];        
         return this;
     },

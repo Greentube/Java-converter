@@ -11,7 +11,7 @@ java_lang_Object.prototype._0 = function()
 };
 
 java_lang_Object.prototype.toString_0 = function()
-{   return this._classname+"@"+this.hashCode_0();
+{   return this.constructor.name;
 };
 
 java_lang_Object.prototype.equals_1 = function(a)
@@ -20,25 +20,21 @@ java_lang_Object.prototype.equals_1 = function(a)
 
 java_lang_Object.prototype.hashCode_0 = function()
 {   // there is no real way to access any true object identity, so use a hash of the class name instead
-    return this._classname.hashCode_0();  
+    return this.constructor.name.hashCode_0();  
 };
 
 // add default attributes 
 java_lang_Object.prototype._interfaces = [];
 java_lang_Object.prototype._baseclasses = [ java_lang_Object ];
-java_lang_Object.prototype._classname = 
-"java.lang.Object"  //replace-me-with-empty-string-for-production//
-;
 
 // set up a class to use its instances (set up prototype chain, etc.)
-function _class (classobject, base, interfaces, classname, instancemethods)
+function _defclass (classobject, base, interfaces, instancemethods)
 {
     // connect prototype chain
     classobject.prototype = Object.create(base.prototype);
     classobject.prototype.constructor = classobject;
   
     // add attributes than can be used to check for class/interface type
-    classobject.prototype._classname = classname;
     classobject.prototype._baseclasses = base.prototype._baseclasses . concat(classobject);
     classobject.prototype._interfaces = base.prototype._interfaces;
     
@@ -75,6 +71,10 @@ function _class (classobject, base, interfaces, classname, instancemethods)
             collectInterfaces(inf._superinterfaces);
         }
     }
+}
+// legacy method (with unused classname parameter)
+function _class (classobject, base, interfaces, classname, instancemethods)
+{   _defclass (classobject, base, interfaces, instancemethods);
 }
 
 // test if an arbitrary Object is of a given class (or subclass). 
@@ -344,7 +344,7 @@ Array.prototype.toString_0 = function ()
     for (var i=1; i<this._d; i++) { s=s+"["; }
     if (this._t._isString) { return s+this._t; }
     if (this._t._superinterfaces) { return s+"L?;"; }
-    return s+"L"+this._t._classname + ";";
+    return s+"L"+this._t.name + ";";
 };
 
 Array.prototype.hashCode_0 = function () 

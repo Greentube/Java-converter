@@ -202,7 +202,6 @@ public class JavaConverter extends Frontend
             String searchpath = null;
             String outputfile = null;
             String startupcode = null;
-            boolean production = false;
             
             for (int i=1; i<args.length-1; i++) 
             {   if (args[i].equals("-root")) 
@@ -221,12 +220,10 @@ public class JavaConverter extends Frontend
                 {   startupcode = args[i+1];
                     i++; 
                 }
-                else if (args[i].equals("-production"))
-                {   production = true;                
-                }
+
             }
             try 
-            {   JavaScriptLinker.link(roots, searchpath, outputfile, startupcode, production);
+            {   JavaScriptLinker.link(roots, searchpath, outputfile, startupcode);
             }
             catch (IOException e) 
             {   System.out.println(e.getMessage());

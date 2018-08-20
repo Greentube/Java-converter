@@ -46,10 +46,10 @@ var c = function() {
 After that, you need to set up the prototyping chain and some additional internal
 stuff with this call:
 
-_class(class, baseclass, interfaces, name, instance_methods);
+_defclass(class, baseclass, interfaces, instance_methods);
 
 An example:
-_class(com_greentube_MyClass, java_lang_Object, [], "com.greentube.MyClass", 
+_defclass(com_greentube_MyClass, java_lang_Object, [],  
 {   _0: function() { this.member1= 47; this.member2=11; return this; }
     print_0: function() { console.log(this.member1,this.member2); }
 });

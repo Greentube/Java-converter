@@ -4,9 +4,8 @@ var java_lang_Enum = function()
 {   this._name = null;
     this._ordinal = 0;
 };
-_class (java_lang_Enum, java_lang_Object, null, 
-"java.lang.Enum"  //replace-me-with-empty-string-for-production//
-,{  _2: function(name,ordinal) 
+_defclass (java_lang_Enum, java_lang_Object, null,
+{  _2: function(name,ordinal) 
     {   this._name = name;
         this._ordinal = ordinal;
         return this;

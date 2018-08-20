@@ -4,9 +4,8 @@ var java_lang_Double = function()
 {   this.d = 0;
 };
 
-_class (java_lang_Double, java_lang_Object, null, 
-"java.lang.Double"  //replace-me-with-empty-string-for-production//
-,{   _1: function(d) 
+_defclass (java_lang_Double, java_lang_Object, null,
+{   _1: function(d) 
     {   this.d = d;
         return this;
     },

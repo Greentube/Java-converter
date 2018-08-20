@@ -159,7 +159,7 @@ aspect GenerateJS
         }           
                         
 
-        out.print("_class(");
+        out.print("_defclass(");
         out.printJSName(packageName(), uniqueName());
         out.print(", ");
         out.printAndMemorizeLoad(superclass().packageName(),superclass().uniqueName());
@@ -182,13 +182,6 @@ aspect GenerateJS
             }
             out.print("]");
         } 
-        out.println(",");
-        out.print("\"");
-        out.print(fullName());
-        out.print("\"");
-        if (!isDerivedFromThrowable())
-        {   out.println(" //replace-me-with-empty-string-for-production//");
-        }
         out.println(",{");        
         out.increaseIndent();                                     
 

@@ -22,9 +22,7 @@ var java_util_ComparatorReversed = function(a)
   // internal use only - integrate allocator with constructor 
 {   this.a = a;
 };
-_class(java_util_ComparatorReversed, java_lang_Object, [java_util_Comparator], 
-"java.util.ComparatorReversed"  //replace-me-with-empty-string-for-production//
-, 
+_defclass(java_util_ComparatorReversed, java_lang_Object, [java_util_Comparator], 
 {   compare_2: function(x,y) 
     {   return this.a.compare_2(y,x);
     },        
@@ -38,9 +36,7 @@ var java_util_ComparatorThenComparing = function(a,b)
 {   this.a = a;
     this.b = b;
 };
-_class(java_util_ComparatorThenComparing, java_lang_Object, [java_util_Comparator], 
-"java.util.ComparatorThenComparing"  //replace-me-with-empty-string-for-production//
-, 
+_defclass(java_util_ComparatorThenComparing, java_lang_Object, [java_util_Comparator], 
 {   compare_2: function(x,y) 
     {   var v = this.a.compare_2(x,y);
         if (v!==0) return v;

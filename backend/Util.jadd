@@ -210,21 +210,7 @@ aspect Util {
          }
          return false;
     }
-    
-    /** 
-     * Check if a given class is ultimately derived from Throwable
-     */
-    public boolean ClassDecl.isDerivedFromThrowable()
-    {
-        ClassDecl cd = this;
-        while (!cd.isObject())
-        {   if (cd.fullName().equals("java.lang.Throwable")) 
-            {   return true;
-            }
-            cd = (ClassDecl) cd.superclass();           
-        }
-        return false;
-    }
+
         
     /**
      * Determine the internal ordinal number of an Enum constant. This is needed for 

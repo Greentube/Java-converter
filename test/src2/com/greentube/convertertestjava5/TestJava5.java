@@ -300,24 +300,24 @@ public class TestJava5 extends TestJava4
         } 
         catch (NoSuchElementException e) 
         {   caught.append("NSE:");
-            caught.append(e);
+            caught.append(e.getMessage());
         }
-        assertO(caught.toString(), "ISE:nullUOE:nullNSE:java.util.NoSuchElementException");
+        assertO(caught.toString(), "ISE:nullUOE:nullNSE:null");
         
         caught = new StringBuffer();
         try 
         {   l.add("more");
         } 
         catch (UnsupportedOperationException e) 
-        {   caught.append(e);
+        {   caught.append("UOE");
         }
         try 
         {   l.remove(3);
         } 
         catch (UnsupportedOperationException e) 
-        {   caught.append(e);
+        {   caught.append("UOE:"+e.getMessage());
         }
-        assertO(caught.toString(), "java.lang.UnsupportedOperationExceptionjava.lang.UnsupportedOperationException");
+        assertO(caught.toString(), "UOEUOE:null");
     }
 
 

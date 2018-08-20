@@ -17,7 +17,7 @@ Basically the language features of java 8 are provided with the following restri
     But you can and should throw such exceptions to signify program errors.
       
     This restriction is necessary because the target systems will not throw these Exceptions
-    in the same way as the java-VM does. Sometimes it will not throw any Exception at all
+    in the same way as the java-VM does. Often it will not throw any Exception at all
     and just messes up the data structures in an unpredictable way. So you can not 
     do anything useful reliably after one of these "bad" program faults have happened. 
       

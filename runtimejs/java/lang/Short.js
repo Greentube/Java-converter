@@ -3,9 +3,7 @@ var java_lang_Short = function()
 {   this.s = 0;
 };
     
-_class(java_lang_Short, java_lang_Object, null, 
-"java.lang.Short"  //replace-me-with-empty-string-for-production//
-, 
+_defclass(java_lang_Short, java_lang_Object, null, 
 {   _1: function(s) 
     {   this.s = s;
         return this;

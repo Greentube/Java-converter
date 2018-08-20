@@ -3,9 +3,8 @@ var java_lang_Character = function()
 {   this.c = 0;
 };
 
-_class(java_lang_Character, java_lang_Object, null, 
-"java.lang.Character"  //replace-me-with-empty-string-for-production//
-,{  _1: function(c) 
+_defclass(java_lang_Character, java_lang_Object, null, 
+{  _1: function(c) 
     {   this.c = c;
         return this;
     },
