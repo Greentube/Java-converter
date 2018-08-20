@@ -93,24 +93,14 @@ Identifier escaping
 To avoid any potential name clashes with converted java code, the following rules are
 applied to java identifiers:
     A-Z,a-z,0-9 are used directly
-    _ is converted to __
-    anything else is escaped in hexadecimal unicode with _xxxx_
+    anything else - even underscores - are escaped in hexadecimal unicode with $xxxx
     
-    A direct consequence of this method is that there can never be an odd number of 
-    underscores in a converted identifier. So if you want to have private fields or methods
+    A direct consequence of this method is that there can never be any underscores
+    in converted identifier (beside what is inserted by the converter itself).
+    So if you want to have private fields or methods
     in native code that will not clash with any java identifier, 
     you can simply prefix it with a single _
    
-Java class names are even further escaped to allow the usage of _ as a delimiter
-between package parts and class name: After initial escaping (what may result
-in having some _ in the names), all _ are then converted to $. Then the individual
-parts of the fully qualified class name are connected together with _ 
-This results in things like  java_lang_Object  or the like.
-As example the following java class  com.X_friends.Jane_Gray  will be escaped 
-as    com_X$friends_Jane$Gray
-Normally you don't need to worry about this extreme escaping as long as you use sensible 
-class names and packages.
-
 
 Method overloading
 

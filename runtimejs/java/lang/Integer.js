@@ -31,8 +31,8 @@ _class(java_lang_Integer, java_lang_Object, null,
     },
 });
 
-var java_lang_Integer_MAX__VALUE = 2147483647;
-var java_lang_Integer_MIN__VALUE = -2147483648;
+var java_lang_Integer_MAX$005fVALUE = 2147483647;
+var java_lang_Integer_MIN$005fVALUE = -2147483648;
  
 var java_lang_Integer_parseInt_1 = function(s) 
 {   

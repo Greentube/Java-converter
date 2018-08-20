@@ -2,6 +2,7 @@
  * Implement the C# code generation for all Stmt nodes.
  */
 
+import com.greentube.javaconverter.CodePrinter;
 import com.greentube.javaconverter.CodePrinterCS;
 
 aspect GenerateCS 
@@ -45,9 +46,9 @@ aspect GenerateCS
             }
             s.generateCS(out);
         }
-        if (continuelabel!=null && out.hasPendingLabel(continuelabel)) 
-        {   out.print(continuelabel);
-            out.println(":;");
+        if (continuelabel!=null && out.removePendingLabel(continuelabel,"c")) 
+        {   out.printIdentifier(continuelabel);
+            out.println("_c:;");
         }
         out.decreaseIndent();
         out.print("}");
@@ -77,9 +78,9 @@ aspect GenerateCS
             out.print("{");
             out.increaseIndent();
             stmt.generateCS(out);
-            if (out.hasPendingLabel(continuelabel))
-            {   out.print(continuelabel);
-                out.println(":;");
+            if (out.removePendingLabel(continuelabel,"c"))
+            {   out.printIdentifier(continuelabel);
+                out.println("_c:;");
             }            
             out.decreaseIndent();
             out.println();
@@ -107,7 +108,7 @@ aspect GenerateCS
         {   out.print("foreach (");
             getVariableDecl().getTypeAccess().generateCS(out);
             out.print(" ");
-            out.printCSIdentifier(vname, "");
+            out.printIdentifier(vname);
             out.print(" in ");
             e.generateUsingResultCS(out);
             out.print(") ");
@@ -115,11 +116,11 @@ aspect GenerateCS
         }
         else if (e.type().isIterable()) 
         {   out.print("for (java.util.Iterator ");
-            out.printCSIdentifier(vname, "_i");
+            out.printIdentifier(vname, "_i");
             out.print(" = ");
             e.generateUsingResultCS(out);
             out.print(".iterator(); ");
-            out.printCSIdentifier(vname, "_i");
+            out.printIdentifier(vname, "_i");
             out.print(".hasNext(); ) ");
 
             out.println();
@@ -127,12 +128,12 @@ aspect GenerateCS
             out.increaseIndent();
             getVariableDecl().getTypeAccess().generateCS(out);
             out.print(" ");
-            out.printCSIdentifier(vname, "");
+            out.printIdentifier(vname);
             out.print(" = ");
             out.print("(");
             getVariableDecl().getTypeAccess().generateCS(out);
             out.print(") ");
-            out.printCSIdentifier(vname, "_i");
+            out.printIdentifier(vname, "_i");
             out.print(".next();");
 
             generateInnerStmtCS(out,getStmt(),continuelabel);
@@ -177,16 +178,16 @@ aspect GenerateCS
     {
         Stmt stmt = getStmt();
         if (stmt instanceof BranchTargetStmt) 
-        {   ((BranchTargetStmt) stmt).generateCS(out, getLabel()+"_c");
+        {   ((BranchTargetStmt) stmt).generateCS(out, getLabel());
         }
         else 
         {   stmt.generateCS(out);
         }
         
-        String breaklabel = getLabel()+"_b";
-        if (out.hasPendingLabel(breaklabel))
-        {   out.print(breaklabel);
-            out.println(":;");
+        String breaklabel = getLabel();
+        if (out.removePendingLabel(breaklabel,"b"))
+        {   out.printIdentifier(breaklabel);
+            out.println("_b:;");
         }            
     }
 
@@ -239,7 +240,10 @@ aspect GenerateCS
         {   out.print("break;");
         }
         else
-        {   out.printJumpToLabel(CodePrinterCS.escapeIdentifier(label,false)+"_b");
+        {   out.setPendingLabel(label,"b");
+            out.print("goto ");
+            out.printIdentifier(label);            
+            out.print("_b;");
         }
         out.println();
     }
@@ -284,7 +288,10 @@ aspect GenerateCS
         {   out.print("continue;");
         }
         else
-        {   out.printJumpToLabel(CodePrinterCS.escapeIdentifier(label,false)+"_c");
+        {   out.setPendingLabel(label,"c");
+            out.print("goto ");
+            out.printIdentifier(label);
+            out.print("_c;");
         }
         out.println();
     }
@@ -379,7 +386,7 @@ aspect GenerateCS
         {   ResourceDeclaration d = getResource(i);
             d.getTypeAccess().type().generateNameCS(out);  
             out.print(" ");              
-            out.printCSIdentifier(d.name(), "");
+            out.printIdentifier(d.name());
             out.print(" = ");
             d.getInit().generateUsingResultCS(out);
             out.println(";");
@@ -399,17 +406,17 @@ aspect GenerateCS
                 out.println("}");
             }
             out.print("catch(System.Exception _e1) { try { if(");
-            out.printCSIdentifier(d.name());
+            out.printIdentifier(d.name());
             out.print("!=null) ");
-            out.printCSIdentifier(d.name());
+            out.printIdentifier(d.name());
             out.print(".close(); } catch(System.Exception) {} ");
-            out.printCSIdentifier(d.name());
+            out.printIdentifier(d.name());
             out.println("=null; throw _e1; }");
             
             out.print("finally { if (");
-            out.printCSIdentifier(d.name(), "");
+            out.printIdentifier(d.name());
             out.print("!=null) { ");
-            out.printCSIdentifier(d.name(), "");
+            out.printIdentifier(d.name());
             out.print(".close(); ");
             out.println("} }");
         }
@@ -435,7 +442,7 @@ aspect GenerateCS
         par.type().generateNameCS(out);                        
         if (getBlock().usesParameterSomewhere(par.getID()))
         {   out.print(" ");
-            out.printCSIdentifier(par.getID(), "");
+            out.printIdentifier(par.getID());
         }
         out.println(")");
         getBlock().generateCS(out);
@@ -448,7 +455,7 @@ aspect GenerateCS
             par.getTypeAccess(i).type().generateNameCS(out);
             if (getBlock().usesParameterSomewhere(par.getID())) 
             {   out.print(" ");
-                out.printCSIdentifier(par.getID(), "");
+                out.printIdentifier(par.getID());
             }
             out.println(")");
             getBlock().generateCS(out);
@@ -474,7 +481,7 @@ aspect GenerateCS
             TypeDecl t = d.getTypeAccess().type();
             if (i>0) out.print(",");
             out.print(" ");         
-            out.printCSIdentifier(d.name(), "");
+            out.printIdentifier(d.name());
             Expr e = d.getInit();
             if (e!=null) 
             {   out.print(" = ");                               

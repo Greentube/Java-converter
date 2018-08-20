@@ -29,32 +29,32 @@ namespace java.lang { public class Math {
             return y>0 ? PI_f-(z-PI_L) : z-PI_L - PI_f;
         }
         
-        if (y==Double.POSITIVE__INFINITY_f) 
-        {   if (x==Double.POSITIVE__INFINITY_f) 
+        if (y==Double.POSITIVE_005fINFINITY_f) 
+        {   if (x==Double.POSITIVE_005fINFINITY_f) 
             {   return PI_f/4;
             } 
-            else if (x==Double.NEGATIVE__INFINITY_f) 
+            else if (x==Double.NEGATIVE_005fINFINITY_f) 
             {   return 3*PI_f/4;
             }
             else 
             {   return PI_f/2;                
             }
         }
-        if (y==Double.NEGATIVE__INFINITY_f) 
-        {   if (x==Double.POSITIVE__INFINITY_f) 
+        if (y==Double.NEGATIVE_005fINFINITY_f) 
+        {   if (x==Double.POSITIVE_005fINFINITY_f) 
             {   return -PI_f/4;
             }
-            else if (x==Double.NEGATIVE__INFINITY_f) 
+            else if (x==Double.NEGATIVE_005fINFINITY_f) 
             {   return -3*PI_f/4;
             }
             else 
             {   return -PI_f/2;                
             }
         }
-        if (x==Double.POSITIVE__INFINITY_f) 
+        if (x==Double.POSITIVE_005fINFINITY_f) 
         {   return (y==0) ? y : ((y>0) ? 0.0 : -0.0);
         }
-        if (x==Double.NEGATIVE__INFINITY_f) 
+        if (x==Double.NEGATIVE_005fINFINITY_f) 
         {   return PI_f;            
         }
         if (x==0) 

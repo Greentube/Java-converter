@@ -31,8 +31,8 @@ _class(java_lang_Short, java_lang_Object, null,
     },    
 });
 
-var java_lang_Short_MIN__VALUE = -32768;
-var java_lang_Short_MAX__VALUE = 32767;
+var java_lang_Short_MIN$005fVALUE = -32768;
+var java_lang_Short_MAX$005fVALUE = 32767;
 
 var java_lang_Short_toString_1 = function (s) 
 {   return s.toString();

@@ -5,6 +5,7 @@
  * inner classes or lambas and such). 
  */
 
+import com.greentube.javaconverter.CodePrinter;
 import com.greentube.javaconverter.CodePrinterJS;
 
 aspect GenerateJS 
@@ -20,8 +21,8 @@ aspect GenerateJS
         for (TypeDecl t:getTypeDecls()) 
         {   CodePrinterJS out = new CodePrinterJS
             (   outputfolder,
-                    CodePrinterJS.escapePackagePath(t.packageName()) 
-                    + CodePrinterJS.escapeIdentifier(t.uniqueName(), true) + ".js"
+                    CodePrinter.escapePackagePath(t.packageName(),"$") 
+                    + CodePrinter.escapeIdentifier(t.uniqueName(),".js","$",null)
             );
             t.generateJS(out);
             out.finish();                   
@@ -32,9 +33,9 @@ aspect GenerateJS
     {
         for (TypeDecl t:nestedTypes()) 
         {   CodePrinterJS o2 = new CodePrinterJS
-            (   out, 
-                CodePrinterJS.escapePackagePath(t.packageName()) 
-                   + CodePrinterJS.escapeIdentifier(t.uniqueName(), true) + ".js"
+            (   out.getOutputFolder(), 
+                CodePrinter.escapePackagePath(t.packageName(),"$") 
+                   + CodePrinter.escapeIdentifier(t.uniqueName(),".js","$",null)
             );
             t.generateJS(o2);
             o2.finish();            
@@ -52,7 +53,7 @@ aspect GenerateJS
         }
         for (Variable v:enclosingVariables()) 
         {   if (foundpar) out.print(",");
-            out.printJSIdentifier(v.name(),"_o");
+            out.printIdentifier(v.name(),"_o");
             foundpar=true;
         }
         out.println(")");
@@ -67,9 +68,9 @@ aspect GenerateJS
         }
         for (Variable v:enclosingVariables()) 
         {   out.print("this.");
-            out.printJSIdentifier(v.name(),"_o");
+            out.printIdentifier(v.name(),"_o");
             out.print(" = ");
-            out.printJSIdentifier(v.name(),"_o");
+            out.printIdentifier(v.name(),"_o");
             out.println(";");
         }
         for (BodyDecl bd:getBodyDeclList()) 
@@ -77,7 +78,7 @@ aspect GenerateJS
             {   for (FieldDeclarator fd:bd.fieldDeclarations()) 
                 {   if (!fd.isStatic()) 
                     {   out.print("this.");
-                        out.printJSIdentifier(fd.getID(),"");
+                        out.printIdentifier(fd.getID());
                         out.print(" = ");
                         fd.fieldDecl().type().generateDefaultValueJS(out);
                         out.println(";");
@@ -101,7 +102,7 @@ aspect GenerateJS
                     out.print("var ");
                     out.printJSName(packageName(), uniqueName());                   
                     out.print("_");
-                    out.printJSIdentifier(fd.getID(),"");
+                    out.printIdentifier(fd.getID());
                     out.print(" = ");
                     if (fd.getInit()!=null && fd.getInit().isConstant() && fd.isFinal()) 
                     {   fd.getInit().generateUsingResultJS(out);
@@ -125,7 +126,7 @@ aspect GenerateJS
             for (EnumConstant ec:((EnumDecl)this).enumConstants()) 
             {   out.printJSName(packageName(), uniqueName());           
                 out.print("_");
-                out.printJSIdentifier(ec.getID(),"");
+                out.printIdentifier(ec.getID());
                 out.println(",");
             }
             out.decreaseIndent();
@@ -147,7 +148,7 @@ aspect GenerateJS
                 out.print(": return ");                            
                 out.printJSName(packageName(), uniqueName());           
                 out.print("_");
-                out.printJSIdentifier(ec.getID(),"");                
+                out.printIdentifier(ec.getID());                
                 out.println(";");
             }
             out.println("default: throw (new java_lang_IllegalArgumentException())._0()._e;");
@@ -222,7 +223,7 @@ aspect GenerateJS
                     {   if (fd.getInit()!=null && !(fd.isFinal() && fd.getInit().isConstant()) ) 
                         {   out.printJSName(packageName(), uniqueName());                   
                             out.print("_");
-                            out.printJSIdentifier(fd.getID(),"");
+                            out.printIdentifier(fd.getID());
                             out.print(" = ");
                             fd.getInit().generateUsingResultJS(out);
                             out.println(";");
@@ -251,7 +252,7 @@ aspect GenerateJS
             {   out.print("var ");
                 out.printJSName(packageName(), uniqueName());           
                 out.print("_");
-                out.printJSIdentifier(ec.getID(),"");
+                out.printIdentifier(ec.getID());
                 out.print(" = ");
                 out.print("new ");
                 out.printJSName(packageName(), uniqueName());
@@ -273,9 +274,9 @@ aspect GenerateJS
         {   out.memorizeReference(packageName(),uniqueName()+"$init");
             
             CodePrinterJS o2 = new CodePrinterJS
-            (   out,
-                CodePrinterJS.escapePackagePath(packageName()) 
-                   + CodePrinterJS.escapeIdentifier(uniqueName()+"$init", true) + ".js"
+            (   out.getOutputFolder(),
+                CodePrinterJS.escapePackagePath(packageName(),"$") 
+                   + CodePrinterJS.escapeIdentifier(uniqueName()+"$init",".js","$",null)
             );
 
             ordinal = 0;
@@ -284,7 +285,7 @@ aspect GenerateJS
                 {   o2.print("var ");
                     o2.printJSName(packageName(), uniqueName());                    
                     o2.print("_");
-                    o2.printJSIdentifier(ec.getID(),"");
+                    o2.printIdentifier(ec.getID());
                     o2.print(" = ");
                     o2.print("new ");
                     TypeDecl t = ec.getInit().type();
@@ -360,7 +361,7 @@ aspect GenerateJS
                         {   out.print("var ");
                             out.printJSName(packageName(), uniqueName());                   
                             out.print("_");
-                            out.printJSIdentifier(fd.getID(),"");
+                            out.printIdentifier(fd.getID());
                             out.print(" = ");
                             fd.getInit().generateUsingResultJS(out);
                             out.println(";");
@@ -422,7 +423,7 @@ aspect GenerateJS
         out.print("_"+numpar+": function(");
         for (int i=0; i<numpar; i++) 
         {   if (i>0) out.print(",");
-            out.printJSIdentifier(getParameter(i).name(), "");
+            out.printIdentifier(getParameter(i).name());
         }
         out.println(")");
         out.println("{");
@@ -446,7 +447,7 @@ aspect GenerateJS
                 {   for (FieldDeclarator fd:bd.fieldDeclarations()) 
                     {   if (!fd.isStatic() && fd.getInit()!=null) 
                         {   out.print("this.");
-                            out.printJSIdentifier(fd.getID(),"");
+                            out.printIdentifier(fd.getID());
                             out.print(" = ");
                             fd.getInit().generateUsingResultJS(out);
                             out.println(";");
@@ -495,17 +496,17 @@ aspect GenerateJS
             out.print("var ");
             out.printJSName(t.packageName(), t.uniqueName());
             out.print("_");
-            out.printJSIdentifier(name(), "_"+numpar);
+            out.printIdentifier(name(), "_"+numpar);
             out.print(" = ");
         }
         else
-        {   out.printJSIdentifier(name(), "_"+numpar);
+        {   out.printIdentifier(name(), "_"+numpar);
             out.print(": ");
         }
         out.print("function(");
         for (int i=0; i<numpar; i++) 
         {   if (i>0) out.print(",");
-            out.printJSIdentifier(getParameter(i).name(), "");
+            out.printIdentifier(getParameter(i).name());
         }
         out.println(")");
         

@@ -59,8 +59,8 @@ namespace java.lang { public class Double
     {   return new java.lang.Double(d);
     }
         
-    public const double MIN__VALUE_f = 4.9E-324;
-    public const double MAX__VALUE_f = 1.7976931348623157E308;
-    public const double POSITIVE__INFINITY_f = 1.0/0.0;
-    public const double NEGATIVE__INFINITY_f = -1.0/0.0;
+    public const double MIN_005fVALUE_f = 4.9E-324;
+    public const double MAX_005fVALUE_f = 1.7976931348623157E308;
+    public const double POSITIVE_005fINFINITY_f = 1.0/0.0;
+    public const double NEGATIVE_005fINFINITY_f = -1.0/0.0;
 }}

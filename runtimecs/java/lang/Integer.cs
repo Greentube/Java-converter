@@ -51,6 +51,6 @@ namespace java.lang { public class Integer
         return new java.lang.Integer(i);
     }
 
-    public const int MIN__VALUE_f = -2147483648;
-    public const int MAX__VALUE_f =  2147483647;        
+    public const int MIN_005fVALUE_f = -2147483648;
+    public const int MAX_005fVALUE_f =  2147483647;        
 }}

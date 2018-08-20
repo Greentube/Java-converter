@@ -2,6 +2,7 @@
  * Implement the javascript code generation for all Expr nodes.
  */
 
+import com.greentube.javaconverter.CodePrinter;
 import com.greentube.javaconverter.CodePrinterJS;
 
 aspect GenerateJS 
@@ -118,7 +119,7 @@ aspect GenerateJS
         }
         for (Variable v:type().enclosingVariables()) 
         {   if (foundpar) { out.print(","); }
-            out.printJSIdentifier(v.name());
+            out.printIdentifier(v.name());
             foundpar=true;
         }        
         out.print("))");
@@ -187,7 +188,7 @@ aspect GenerateJS
             
             out.printAndMemorizeReference(t.packageName(),tname);            
             out.print("_");
-            out.printJSIdentifier(n,"_"+m.getNumParameter());
+            out.printIdentifier(n,"_"+m.getNumParameter());
             out.print("(");
 
             // check if this is inside a static initializer - 
@@ -206,19 +207,19 @@ aspect GenerateJS
                     t = t.enclosingType();
                 }
             }
-            out.printJSIdentifier(m.name(),"_"+m.getNumParameter());
+            out.printIdentifier(m.name(),"_"+m.getNumParameter());
             out.print("(");
         }
         else if (prevExpr().isSuperAccess()) 
         {   out.printAndMemorizeReference(m.hostType().packageName(),m.hostType().uniqueName());
             out.print(".prototype.");         
-            out.printJSIdentifier(m.name(),"_"+m.getNumParameter());
+            out.printIdentifier(m.name(),"_"+m.getNumParameter());
             out.print(".call(this");
             if (m.getNumParameter()>0) out.print(",");
         }
         else
         {   out.print(".");
-            out.printJSIdentifier(m.name(),"_"+m.getNumParameter());
+            out.printIdentifier(m.name(),"_"+m.getNumParameter());
             out.print("(");
         }
 
@@ -315,7 +316,7 @@ aspect GenerateJS
         {   TypeDecl t = v.hostType();
             out.printAndMemorizeReference(t.packageName(),t.uniqueName());                      
             out.print("_");
-            out.printJSIdentifier(getID(),"");  
+            out.printIdentifier(getID());  
             // check if this is inside a static initializer - must force early loading of accessed class
             BodyDecl bd = enclosingBodyDecl();
             if (bd.isField() || (bd instanceof StaticInitializer)) 
@@ -337,16 +338,16 @@ aspect GenerateJS
             else
             {   out.print(".");
             } 
-            out.printJSIdentifier(getID(),"");
+            out.printIdentifier(getID());
         } 
         else if (v.isLocalVariable() || v.isParameter()) 
         {   if (v.hostType() == hostType()) 
-            {   out.printJSIdentifier(getID(), "");
+            {   out.printIdentifier(getID());
             }
             else 
             {   // this must be an access to local variable of calling method
                 out.print("this.");
-                out.printJSIdentifier(getID(), "_o");
+                out.printIdentifier(getID(), "_o");
             }
         }
         else if (getID().equals("length")) 
@@ -435,14 +436,20 @@ aspect GenerateJS
                 funcpar2 = ((ArrayAccess)a).getExpr();
             }
             else if (a instanceof VarAccess && ((VarAccess)a).varDecl().isInstanceVariable())
-            {   String id = out.escapeJSIdentifier(((VarAccess)a).getID(),"");
-                out.print("(function(o,x){return o."+id+"=");
+            {   String id = ((VarAccess)a).getID(); // out.escapeJSIdentifier(((VarAccess)a).getID());
+                out.print("(function(o,x){return o.");
+                out.printIdentifier(id);
+                out.print("=");
                 out.print(caststart);
                 if (op.startsWith("_"))
-                {   out.print(op+"(o."+id+",x)");
+                {   out.print(op+"(o.");
+                    out.printIdentifier(id);
+                    out.print(",x)");
                 }
                 else 
-                {   out.print("o."+id+" "+op+" x");
+                {   out.print("o.");
+                    out.printIdentifier(id);
+                    out.print(" "+op+" x");
                 }
                 out.print(castend);
                 out.print("})");
@@ -1112,15 +1119,35 @@ aspect GenerateJS
                 funcpar2 = ((ArrayAccess)a).getExpr();
             }
             else if (a instanceof VarAccess && ((VarAccess)a).varDecl().isInstanceVariable())
-            {   String id = out.escapeJSIdentifier(((VarAccess)a).getID(),"");
+            {   String id = ((VarAccess)a).getID(); // out.escapeJSIdentifier(((VarAccess)a).getID());
                 out.print("(function(o,x){");
-                out.print(pre ? "return o."+id+"=" : "var t=o."+id+";o."+id+"=");
+                if (pre)
+                {   out.print("return o.");
+                    out.printIdentifier(id);
+                    out.print("=");
+                } 
+                else
+                {   out.print("var t=o.");
+                    out.printIdentifier(id);
+                    out.print(";o.");
+                    out.printIdentifier(id);
+                    out.print("=");
+                }
                 out.print(caststart);
-                out.print(inc ? "o."+id+"+1" : "o."+id+"-1");
+                out.print("o.");
+                out.printIdentifier(id);
+                if (inc)
+                {   out.print("+1");
+                }
+                else
+                {   out.print("-1");
+                }                
                 out.print(castend);
-                out.print(pre ? ";" : ";return t;"); 
+                out.print(";");
+                if (!pre) 
+                {   out.print("return t;");
+                } 
                 out.print("})");
-                usefunction = true;                    
             }
         }
         

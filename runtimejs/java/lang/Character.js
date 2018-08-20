@@ -31,8 +31,8 @@ _class(java_lang_Character, java_lang_Object, null,
 });
  
     
-var java_lang_Character_MAX__VALUE = 0xffff;
-var java_lang_Character_MIN__VALUE = 0;
+var java_lang_Character_MAX$005fVALUE = 0xffff;
+var java_lang_Character_MIN$005fVALUE = 0;
 
 var java_lang_Character_toString_1 = function(c) 
 {   return String.fromCharCode(c);

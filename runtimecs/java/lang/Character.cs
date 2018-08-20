@@ -31,6 +31,6 @@ namespace java.lang { public class Character
     {   return new java.lang.Character(c);
     }
       
-    public const char MIN__VALUE_f = (char) 0;
-    public const char MAX__VALUE_f = (char) 0xffff;        
+    public const char MIN_005fVALUE_f = (char) 0;
+    public const char MAX_005fVALUE_f = (char) 0xffff;        
 }}

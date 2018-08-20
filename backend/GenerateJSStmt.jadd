@@ -2,6 +2,7 @@
  * Implement the javascript code generation for all Stmt nodes.
  */
 
+import com.greentube.javaconverter.CodePrinter;
 import com.greentube.javaconverter.CodePrinterJS;
 
 aspect GenerateJS 
@@ -46,42 +47,42 @@ aspect GenerateJS
         Expr e = getExpr();
         if (e.type().isArrayDecl()) 
         {   out.print("for (var ");
-            out.printJSIdentifier(vname, "");
+            out.printIdentifier(vname);
             out.print(", ");
-            out.printJSIdentifier(vname, "_i");
+            out.printIdentifier(vname, "_i");
             out.print("=0, ");
-            out.printJSIdentifier(vname, "_a");
+            out.printIdentifier(vname, "_a");
             out.print("=");
             e.generateUsingResultJS(out);
             out.print("; ");
             out.print("(");
-            out.printJSIdentifier(vname, "_i");
+            out.printIdentifier(vname, "_i");
             out.print("<");
-            out.printJSIdentifier(vname, "_a");
+            out.printIdentifier(vname, "_a");
             out.print(".length)&&");
             out.print("((");
-            out.printJSIdentifier(vname, "");
+            out.printIdentifier(vname, "");
             out.print("=");
-            out.printJSIdentifier(vname, "_a");
+            out.printIdentifier(vname, "_a");
             out.print("[");
-            out.printJSIdentifier(vname, "_i");
+            out.printIdentifier(vname, "_i");
             out.print("])||true); ");
-            out.printJSIdentifier(vname, "_i");
+            out.printIdentifier(vname, "_i");
             out.print("++)");
         } 
         else if (e.type().isIterable()) 
         {   out.print("for (var ");
-            out.printJSIdentifier(vname, "");
+            out.printIdentifier(vname, "");
             out.print(", ");
-            out.printJSIdentifier(vname, "_i");
+            out.printIdentifier(vname, "_i");
             out.print("=");         
             e.generateUsingResultJS(out);
             out.print(".iterator_0(); ");
-            out.printJSIdentifier(vname, "_i");
+            out.printIdentifier(vname, "_i");
             out.print(".hasNext_0()&&((");
-            out.printJSIdentifier(vname, "");
+            out.printIdentifier(vname, "");
             out.print("=");
-            out.printJSIdentifier(vname, "_i");
+            out.printIdentifier(vname, "_i");
             out.print(".next_0())||true)");         
             out.print(";)");   
         } 
@@ -129,12 +130,12 @@ aspect GenerateJS
             || (s instanceof WhileStmt) 
             || (s instanceof DoStmt) 
         )
-        {   out.printJSIdentifier(getLabel(),"");
+        {   out.printIdentifier(getLabel());
             out.print(": ");
             s.generateJS(out);
         }
         else if (s instanceof Block)
-        {   out.printJSIdentifier(getLabel(),"");
+        {   out.printIdentifier(getLabel());
             out.println(":");
             out.println("{");
             out.increaseIndent();
@@ -147,7 +148,7 @@ aspect GenerateJS
             out.println("}");
         }
         else
-        {   out.printJSIdentifier(getLabel(),"");
+        {   out.printIdentifier(getLabel());
             out.println(":");
             out.println("{");
             out.increaseIndent();            
@@ -200,7 +201,7 @@ aspect GenerateJS
         String label = getLabel();
         if (label!=null && label.length()>0) 
         {   out.print(" ");
-            out.printJSIdentifier(getLabel(), "");
+            out.printIdentifier(getLabel());
         }
         out.println(";"); 
     }
@@ -227,7 +228,7 @@ aspect GenerateJS
         String label = getLabel();
         if (label!=null && label.length()>0) 
         {   out.print(" ");
-            out.printJSIdentifier(getLabel(), "");
+            out.printIdentifier(getLabel());
         }
         out.println(";");
     }
@@ -321,7 +322,7 @@ aspect GenerateJS
         for (int i=0; i<getNumResource(); i++) 
         {   ResourceDeclaration d = getResource(i);
             out.print("var ");              
-            out.printJSIdentifier(d.name(), "");
+            out.printIdentifier(d.name());
             out.print(" = ");
             d.getInit().generateUsingResultJS(out);
             out.println(";");
@@ -341,17 +342,17 @@ aspect GenerateJS
                 out.println("}");
             }
             out.print("catch($e1) { try { if(");
-            out.printJSIdentifier(d.name());
+            out.printIdentifier(d.name());
             out.print(") ");
-            out.printJSIdentifier(d.name());
+            out.printIdentifier(d.name());
             out.print(".close_0(); } catch($e2) {} ");
-            out.printJSIdentifier(d.name());
+            out.printIdentifier(d.name());
             out.println("=null; throw $e1; }");
             
             out.print("finally { if (");
-            out.printJSIdentifier(d.name(), "");
+            out.printIdentifier(d.name(), "");
             out.print(") { ");
-            out.printJSIdentifier(d.name(), "");
+            out.printIdentifier(d.name(), "");
             out.print(".close_0(); ");
             out.println("} }");
         }
@@ -376,14 +377,14 @@ aspect GenerateJS
             }
             
             out.print("catch (");
-            out.printJSIdentifier(varid,"$");
+            out.printIdentifier(varid,"$");
             out.println(")");
             out.println("{");
             out.increaseIndent();
             out.print("var ");
-            out.printJSIdentifier(varid,"");
+            out.printIdentifier(varid,"");
             out.print(" = ");
-            out.printJSIdentifier(varid,"$");
+            out.printIdentifier(varid,"$");
             out.println(".throwable;");
             for (int i=0; i<n; i++)
             {   cc = getCatchClause(i);
@@ -394,7 +395,7 @@ aspect GenerateJS
                 if (cc instanceof BasicCatch)
                 {   ParameterDeclaration par = ((BasicCatch) cc).getParameter();
                     var2id = par.getID();
-                    out.printJSIdentifier(varid,"");
+                    out.printIdentifier(varid);
                     out.print(" instanceof ");
                     TypeDecl t = par.type();
                     out.printAndMemorizeReference(t.packageName(),t.uniqueName());
@@ -405,7 +406,7 @@ aspect GenerateJS
                     for (int j=0; j<par.getNumTypeAccess(); j++) 
                     {   if (j>0) { out.print(" || "); }
                         out.print("(");
-                        out.printJSIdentifier(varid,"");
+                        out.printIdentifier(varid);
                         out.print(" instanceof ");
                         TypeDecl t = par.getTypeAccess(j).type();
                         out.printAndMemorizeReference(t.packageName(),t.uniqueName());
@@ -420,9 +421,9 @@ aspect GenerateJS
                 if (!var2id.equals(varid)) 
                 {   out.println();
                     out.print("{   var ");
-                    out.printJSIdentifier(var2id);
+                    out.printIdentifier(var2id);
                     out.print(" = ");
-                    out.printJSIdentifier(varid);
+                    out.printIdentifier(varid);
                     out.print(";");
                     out.increaseIndent();
                     out.println();                
@@ -435,7 +436,7 @@ aspect GenerateJS
                 }
             }
             out.print("else { throw ");
-            out.printJSIdentifier(varid,"$");
+            out.printIdentifier(varid,"$");
             out.println("; }");
             
             out.decreaseIndent();
@@ -458,7 +459,7 @@ aspect GenerateJS
         for (int i=0; i<getNumDeclarator(); i++) 
         {   if (i>0) { out.print(", "); }
             VariableDeclarator d = getDeclarator(i);            
-            out.printJSIdentifier(d.name(), "");
+            out.printIdentifier(d.name(), "");
             out.print(" = ");
             Expr e = d.getInit();
             if (e!=null) 

@@ -31,6 +31,6 @@ namespace java.lang { public class Short
     {   return new java.lang.Short(b);
     }
        
-    public const short MIN__VALUE_f = -32768;
-    public const short MAX__VALUE_f = 32767;
+    public const short MIN_005fVALUE_f = -32768;
+    public const short MAX_005fVALUE_f = 32767;
 }}

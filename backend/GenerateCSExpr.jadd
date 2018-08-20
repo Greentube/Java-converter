@@ -3,6 +3,7 @@
  */
 
 import java.util.ArrayList;
+import com.greentube.javaconverter.CodePrinter;
 import com.greentube.javaconverter.CodePrinterCS;
 
 aspect GenerateCS 
@@ -143,7 +144,7 @@ aspect GenerateCS
         
         for (Variable v:type().enclosingVariables()) 
         {   if (foundpar) out.print(",");
-            out.printCSIdentifier(v.name());
+            out.printIdentifier(v.name());
             foundpar=true;
         }
         
@@ -182,7 +183,7 @@ aspect GenerateCS
         if (!(this instanceof SuperConstructorAccess)) 
         {   for (Variable v:encvar) 
             {   if (encvarcount>0 || passouter) { out.print(","); }
-                out.printCSIdentifier(v.name(),"_o");
+                out.printIdentifier(v.name(),"_o");
                 encvarcount++;
             }
         }
@@ -326,7 +327,7 @@ aspect GenerateCS
             {   out.print("_c"); 
             }
             out.print(".");
-            out.printCSIdentifier(getID(), "_f");
+            out.printIdentifier(getID(), "_f");
         } 
         else if (v.isInstanceVariable()) 
         {   if (isRightChildOfDot()) 
@@ -342,15 +343,15 @@ aspect GenerateCS
                     }
                 }       
             }       
-            out.printCSIdentifier(getID(), "_f");
+            out.printIdentifier(getID(), "_f");
         } 
         else if (v.isLocalVariable() || v.isParameter()) 
         {   if (v.hostType() == hostType()) 
-            {   out.printCSIdentifier(getID(), "");
+            {   out.printIdentifier(getID());
             } 
             else 
             {   out.print("this.");
-                out.printCSIdentifier(getID(), "_o");
+                out.printIdentifier(getID(), "_o");
             }
         }
         else if (getID().equals("length")) 

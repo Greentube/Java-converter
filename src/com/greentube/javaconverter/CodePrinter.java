@@ -10,8 +10,10 @@ public class CodePrinter
     boolean linehasstarted;
     int indent;
     boolean afteropeningbrace;
+    String escapesign;
+    HashSet<String> reservedidentifiers;
     
-    public CodePrinter(File outputfolder, String filename) 
+    public CodePrinter(File outputfolder, String filename, String escapesign, HashSet<String> reservedidentifiers) 
     {   
         try
         {   File f = new File(outputfolder,filename);
@@ -27,11 +29,13 @@ public class CodePrinter
         this.indent = 0;
         this.linehasstarted = false;
         this.afteropeningbrace = false;
+        this.escapesign = escapesign;
+        this.reservedidentifiers = reservedidentifiers;
     }
 
-    public CodePrinter(CodePrinter p, String filename) 
-    {   
-        this(p.outputfolder,filename);
+    public File getOutputFolder()
+    {
+        return outputfolder;
     }
 
     public void finish()  
@@ -89,6 +93,16 @@ public class CodePrinter
         println();
     }
     
+    public void printIdentifier(String id)
+    {
+        print(escapeIdentifier(id,"",escapesign,reservedidentifiers));
+    }
+    
+    public void printIdentifier(String id,String suffix)
+    {
+        print(escapeIdentifier(id,suffix,escapesign,reservedidentifiers));
+    }
+    
     public void copyDirectlyAndCloseInput(InputStream is)
     {
         try
@@ -105,7 +119,9 @@ public class CodePrinter
         }               
     }
     
-    public static String escapeIdentifier(String id, boolean allowDollarSign) 
+    public static String escapeIdentifier(
+        String id, String suffix,
+        String escapesign, HashSet<String> reservedidentifiers) 
     {   
         // escape special characters, so the output will never have characters >127
         StringBuffer b = new StringBuffer();
@@ -115,26 +131,28 @@ public class CodePrinter
             (   (c>='a' && c<='z')
                 || (c>='A' && c<='Z')
                 || (c>='0' && c<='9')
-                || (allowDollarSign && c=='$') 
             )
             {   b.append(c);
             }
             else 
-            {   b.append("_");
-                if (c!='_')   // '_' simply escapes to '__'
-                {   b.append(Integer.toHexString(c));
-                }
-                b.append("_");
+            {   b.append(escapesign);
+                String h = Integer.toHexString(c);
+                for (int pad=h.length(); pad<4; pad++) { b.append("0"); } 
+                b.append(h);
             }
         }
-        return b.toString();
+        String e = b.toString() + suffix;
+        while (reservedidentifiers!=null && reservedidentifiers.contains(e))
+        {   e = escapesign + e;
+        }
+        return e;
     }
 
-    public static String escapePackagePath(String packagename) 
+    public static String escapePackagePath(String packagename,String escapesign) 
     {   
         StringBuffer b = new StringBuffer();
         for (StringTokenizer t = new StringTokenizer(packagename,"."); t.hasMoreElements(); ) 
-        {   b.append(escapeIdentifier(t.nextToken(), true));
+        {   b.append(escapeIdentifier(t.nextToken(),"",escapesign,null));
             b.append("/");
         }
         return b.toString();

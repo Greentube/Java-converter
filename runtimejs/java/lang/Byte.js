@@ -31,8 +31,8 @@ _class(java_lang_Byte, java_lang_Object, null,
     },    
 });
 
-var java_lang_Byte_MIN__VALUE = -128;
-var java_lang_Byte_MAX__VALUE = 127;
+var java_lang_Byte_MIN$005fVALUE = -128;
+var java_lang_Byte_MAX$005fVALUE = 127;
   
 var java_lang_Byte_toString_1 = function (b) 
 {   return b.toString();

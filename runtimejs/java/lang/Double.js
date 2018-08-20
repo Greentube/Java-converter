@@ -42,10 +42,10 @@ _class (java_lang_Double, java_lang_Object, null,
 });
 
     
-var java_lang_Double_MIN__VALUE = 4.9E-324;
-var java_lang_Double_MAX__VALUE = 1.7976931348623157E308;
-var java_lang_Double_POSITIVE__INFINITY = 1.0/0.0;
-var java_lang_Double_NEGATIVE__INFINITY = -1.0/0.0;
+var java_lang_Double_MIN$005fVALUE = 4.9E-324;
+var java_lang_Double_MAX$005fVALUE = 1.7976931348623157E308;
+var java_lang_Double_POSITIVE$005fINFINITY = 1.0/0.0;
+var java_lang_Double_NEGATIVE$005fINFINITY = -1.0/0.0;
 
 var java_lang_Double_isNaN_1 = function(d) 
 {   return isNaN(d); 

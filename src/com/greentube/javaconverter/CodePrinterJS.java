@@ -11,17 +11,30 @@ public class CodePrinterJS extends CodePrinter
 
     public CodePrinterJS(File outputfolder, String filename) 
     {   
-        super(outputfolder,filename);
+        super
+        (   outputfolder,
+            filename,
+            "$",
+            new HashSet<String>
+            (   Arrays.asList
+                (   "abstract", "arguments", "await", "boolean", "break", "byte", "case", "catch",
+                    "char", "class", "const", "continue", "debugger", "default", "delete", "do",
+                    "double", "else", "enum", "eval", "export", "extends", "false", "final",
+                    "finally", "float", "for", "function", "goto", "if", "implements", "import",
+                    "in", "instanceof", "int", "interface", "let", "long", "native", "new",
+                    "null", "package", "private", "protected", "public", "return", "short", "static",
+                    "super", "switch", "synchronized", "this", "throw", "throws", "transient", "true",
+                    "NaN", "try", "typeof", "var" ,"void", "volatile", "while", "with", "yield",
+                    "toString", "length", "__proto__", "prototype"
+                )
+            )            
+        );
         
         reference = new HashSet<>();
         load = new HashSet<>();
         complete = new HashSet<>();
     }
 
-    public CodePrinterJS(CodePrinterJS p, String filename) 
-    {   
-        this(p.outputfolder,filename);
-    }
 
     public void finish()  
     {   
@@ -47,37 +60,6 @@ public class CodePrinterJS extends CodePrinter
     }
 
 
-    private static Set<String> javascriptreserved = new HashSet<String>
-    (   Arrays.asList
-        (   "abstract", "arguments", "await", "boolean", "break", "byte", "case", "catch",
-            "char", "class", "const", "continue", "debugger", "default", "delete", "do",
-            "double", "else", "enum", "eval", "export", "extends", "false", "final",
-            "finally", "float", "for", "function", "goto", "if", "implements", "import",
-            "in", "instanceof", "int", "interface", "let", "long", "native", "new",
-            "null", "package", "private", "protected", "public", "return", "short", "static",
-            "super", "switch", "synchronized", "this", "throw", "throws", "transient", "true",
-            "NaN", "try", "typeof", "var" ,"void", "volatile", "while", "with", "yield",
-            // keys with special meaning in javascript objects
-            "toString", "length", "__proto__", "prototype"
-        )
-    );
-
-    public String escapeJSIdentifier(String id, String suffix)
-    {   String escaped = escapeIdentifier(id,false) + suffix;
-        if (javascriptreserved.contains(escaped)) { escaped = "$" + escaped; }        
-        return escaped;
-    }
-
-    public void printJSIdentifier(String id, String suffix) 
-    {   
-        print(escapeJSIdentifier(id,suffix));
-    }
-    
-    public void printJSIdentifier(String id) 
-    {   
-        print(escapeJSIdentifier(id,""));
-    }
-
     public void printJSName(String packagename, String uniquename) 
     {   
         StringTokenizer t = new StringTokenizer(packagename,".");
@@ -86,11 +68,12 @@ public class CodePrinterJS extends CodePrinter
         }
         else 
         {   while (t.hasMoreElements()) 
-            {   print(escapeIdentifier(t.nextToken(),false).replace('_', '$'));
+            {   // printIdentifier(t.nextToken());
+                print(escapeIdentifier(t.nextToken(),"","$",null));
                 print("_");
             }
         }
-        print(escapeIdentifier(uniquename,false).replace('_', '$'));
+        printIdentifier(uniquename);
     }
 
     public void printAndMemorizeReference(String packagename, String uniquename) 
@@ -124,7 +107,8 @@ public class CodePrinterJS extends CodePrinter
     private void mem(HashSet<String>storage, String packagename, String uniquename) 
     {   
         if (! (packagename.equals("java.lang") && (uniquename.equals("String")||uniquename.equals("CharSequence")) )) 
-        {   storage.add(escapePackagePath(packagename) + escapeIdentifier(uniquename,true));
+        {   storage.add(escapePackagePath(packagename,escapesign) 
+            + escapeIdentifier(uniquename,"",escapesign,null));
         }
     }
     

@@ -10,16 +10,30 @@ public class CodePrinterCS extends CodePrinter
 
     public CodePrinterCS(File outputfolder, String filename) 
     {   
-        super(outputfolder,filename);
+        super
+        (   outputfolder,
+            filename,
+            "_",
+            new HashSet<String>
+            (   Arrays.asList
+                (   "abstract", "as", "base", "bool", "break", "byte", "case", "catch",
+                    "char", "checked", "class", "const", "continue", "decimal", "default", "delegate",
+                    "do", "double", "else", "enum", "event", "explicit", "extern", "false",
+                    "finally", "fixed", "float", "for", "foreach", "goto", "if", "implicit",
+                    "in", "int", "interface", "internal", "is", "lock", "long",
+                    "namespace", "new", "null", "object", "operator",   "out", "override",
+                    "params", "private", "protected", "public", "readonly", "ref", "return" ,"sbyte",
+                    "sealed", "short", "sizeof", "stackalloc", "static", "string", "struct", "switch",
+                    "this", "throw", "true", "try", "typeof", "uint", "ulong", "unchecked",
+                    "unsafe", "ushort", "using", "static", "virtual", "void", "volatile", "while"  
+                )                     
+            )
+        );
         
         pendingLabels = new HashSet<>();
         dims = new HashMap<>();
     }
 
-    public CodePrinterCS(CodePrinterCS p, String filename) 
-    {   
-        this(p.outputfolder,filename);
-    }
 
     public void finish()  
     {   
@@ -32,40 +46,6 @@ public class CodePrinterCS extends CodePrinter
         }
     }
 
-    private static Set<String> csharpreserved = new HashSet<String>
-    (   Arrays.asList
-        (   "abstract", "as", "base", "bool", "break", "byte", "case", "catch",
-            "char", "checked", "class", "const", "continue", "decimal", "default", "delegate",
-            "do", "double", "else", "enum", "event", "explicit", "extern", "false",
-            "finally", "fixed", "float", "for", "foreach", "goto", "if", "implicit",
-            "in", "int", "interface", "internal", "is", "lock", "long",
-            "namespace", "new", "null", "object", "operator", 	"out", "override",
-            "params", "private", "protected", "public", "readonly", "ref", "return" ,"sbyte",
-            "sealed", "short", "sizeof", "stackalloc", "static", "string", "struct", "switch",
-            "this", "throw", "true", "try", "typeof", "uint", "ulong", "unchecked",
-            "unsafe", "ushort", "using", "static", "virtual", "void", "volatile", "while"						
-       )
-    );
-
-    public void printCSIdentifier(String id, String suffix) 
-    {   
-        String escaped = escapeIdentifier(id,false) + suffix;
-        if (csharpreserved.contains(escaped)) print("@");
-        print(escaped);
-    }
-
-    public void printCSIdentifier(String id)     
-    {   
-        printCSIdentifier(id,"");
-    }
-
-    public static String escapeIdentifierCS(String id) 
-    {   
-        String escaped = escapeIdentifier(id,false);
-        if (csharpreserved.contains(escaped)) return "@"+escaped;		
-        return escaped;
-    }
-
     public void printCSMethodName(String name, boolean isstatic)
     {   
         if (!isstatic) 
@@ -74,21 +54,19 @@ public class CodePrinterCS extends CodePrinter
             else if (name.equals("hashCode")) { name = "GetHashCode"; }
             else if (name.equals("clone")) { name = "Clone"; }
         }   
-        printCSIdentifier(name);
+        printIdentifier(name);
+    }
+    
+    public void setPendingLabel(String l, String suffix)
+    {
+        pendingLabels.add(l+"\u0000"+suffix);
     }
 
-    public void printJumpToLabel(String l) 
+    public boolean removePendingLabel(String l, String suffix) 
     {   
-        print("goto ");
-        print(l);
-        print(";");
-        pendingLabels.add(l);
-    }
-
-    public boolean hasPendingLabel(String l) 
-    {   
-        if (pendingLabels.contains(l)) 
-        {   pendingLabels.remove(l);
+        String x = l+"\u0000"+suffix;
+        if (pendingLabels.contains(x)) 
+        {   pendingLabels.remove(x);
             return true;
         }
         return false;

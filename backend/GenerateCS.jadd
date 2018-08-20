@@ -3,6 +3,7 @@
  * This covers mainly the class and interface declarations and the attached methods and fields.
  */
 
+import com.greentube.javaconverter.CodePrinter;
 import com.greentube.javaconverter.CodePrinterCS;
 
 aspect GenerateCS 
@@ -18,8 +19,8 @@ aspect GenerateCS
         for (TypeDecl t:getTypeDecls()) 
         {   CodePrinterCS out = new CodePrinterCS
             (   outputfolder,
-                CodePrinterCS.escapePackagePath(t.packageName()) 
-                  + CodePrinterCS.escapeIdentifier(t.uniqueName(), true) + ".cs"
+                CodePrinter.escapePackagePath(t.packageName(),"_") 
+                  + CodePrinter.escapeIdentifier(t.uniqueName(),".cs","_",null)
             );
             t.generateCS(out);
             out.finish();       
@@ -29,9 +30,9 @@ aspect GenerateCS
     public void ClassDecl.generateCS(CodePrinterCS out) 
     {   
         for (TypeDecl t:nestedTypes()) 
-        {   CodePrinterCS o2 = new CodePrinterCS(out, 
-                  CodePrinterCS.escapePackagePath(t.packageName()) 
-                + CodePrinterCS.escapeIdentifier(t.uniqueName(), true) + ".cs"
+        {   CodePrinterCS o2 = new CodePrinterCS(out.getOutputFolder(), 
+                  CodePrinter.escapePackagePath(t.packageName(),"_") 
+                + CodePrinter.escapeIdentifier(t.uniqueName(),".cs","_",null)
             );
             t.generateCS(o2);
             o2.finish();
@@ -52,7 +53,7 @@ aspect GenerateCS
             }
         }        
         out.print(hasAbstract() || enum_has_abstract ? "public abstract class ":"public class ");
-        out.printCSIdentifier(uniqueName());
+        out.printIdentifier(uniqueName());
         out.print(": ");
 
         if (hasSuperClass()) 
@@ -80,7 +81,7 @@ aspect GenerateCS
         {   out.print("public ");
             v.type().generateNameCS(out);
             out.print(" ");
-            out.printCSIdentifier(v.name(),"_o");            
+            out.printIdentifier(v.name(),"_o");            
             out.println(";");
         }
 
@@ -108,7 +109,7 @@ aspect GenerateCS
                     }                    
                     fd.fieldDecl().getTypeAccess().generateCS(out);
                     out.print(" ");
-                    out.printCSIdentifier(fd.getID(),"_f");
+                    out.printIdentifier(fd.getID(),"_f");
                     out.println(";");                     
                 }
             }
@@ -173,13 +174,13 @@ aspect GenerateCS
                 {   if (fd.isStatic() && fd.getInit()!=null) 
                     {   if (!havestaticconstructor) 
                         {   out.print("static ");
-                            out.printCSIdentifier(uniqueName());
+                            out.printIdentifier(uniqueName());
                             out.println("()");
                             out.println("{");
                             out.increaseIndent();
                             havestaticconstructor=true;
                         }                           
-                        out.printCSIdentifier(fd.getID(),"_f");
+                        out.printIdentifier(fd.getID(),"_f");
                         out.print(" = ");
                         fd.getInit().generateUsingResultCS(out);
                         out.println(";");
@@ -189,7 +190,7 @@ aspect GenerateCS
             else if (bd instanceof StaticInitializer) 
             {   if (!havestaticconstructor) 
                 {   out.print("static ");
-                    out.printCSIdentifier(uniqueName());
+                    out.printIdentifier(uniqueName());
                     out.println("() {");
                     out.increaseIndent();
                     havestaticconstructor=true;
@@ -207,11 +208,11 @@ aspect GenerateCS
             int ordinal = 0;
             for (EnumConstant ec:ed.enumConstants()) 
             {   out.print("public static ");
-                out.printCSIdentifier(uniqueName());
+                out.printIdentifier(uniqueName());
                 out.print(" ");
-                out.printCSIdentifier(ec.getID(),"_f");     
+                out.printIdentifier(ec.getID(),"_f");     
                 out.print(" = new ");                               
-                out.printCSIdentifier(ec.getInit().type().uniqueName());
+                out.printIdentifier(ec.getInit().type().uniqueName());
                 out.print("(\""+ec.getID()+"\","+ordinal);
                 for (int i=0; i<ec.getNumArg(); i++) 
                 {   out.print(",");
@@ -221,17 +222,17 @@ aspect GenerateCS
                 ordinal++;          
             }   
             out.print("public static ");
-            out.printCSIdentifier(uniqueName());
+            out.printIdentifier(uniqueName());
             out.println("[] values()");
             out.println("{");
             out.increaseIndent();
             out.print("return new ");
-            out.printCSIdentifier(uniqueName());
+            out.printIdentifier(uniqueName());
             out.print("[]{");
             boolean hasfirst=false;
             for (EnumConstant ec:ed.enumConstants()) 
             {   if (hasfirst) { out.print(","); }  
-                out.printCSIdentifier(ec.getID(),"_f");
+                out.printIdentifier(ec.getID(),"_f");
                 hasfirst=true;
             }
             out.println("};");
@@ -239,7 +240,7 @@ aspect GenerateCS
             out.println("}");
             
             out.print("public static ");
-            out.printCSIdentifier(uniqueName());
+            out.printIdentifier(uniqueName());
             out.println(" valueOf(System.String s)");
             out.println("{");
             out.increaseIndent();
@@ -250,7 +251,7 @@ aspect GenerateCS
             {   out.print("case ");
                 (new Constant.ConstantString(ec.getID())).generateCS(out);
                 out.print(": return ");
-                out.printCSIdentifier(ec.getID(),"_f");
+                out.printIdentifier(ec.getID(),"_f");
                 out.println(";");
             }
             out.println("default: throw new java.lang.IllegalArgumentException();");
@@ -284,7 +285,7 @@ aspect GenerateCS
         {   out.print("public virtual ");
             md.getTypeAccess().generateCS(out);
             out.print(" ");
-            out.printCSIdentifier(md.name());
+            out.printIdentifier(md.name());
             out.print("(");
             int numpar = md.getNumParameter();
             for (int i=0; i<numpar; i++)
@@ -332,7 +333,7 @@ aspect GenerateCS
             out.print(" { ");                     
         }
         out.print("public interface ");
-        out.printCSIdentifier(uniqueName());
+        out.printIdentifier(uniqueName());
 
         if (hasSuperInterface()) 
         {   out.print(": ");
@@ -378,7 +379,7 @@ aspect GenerateCS
                 out.print(" { ");
             }
             out.print("public static class ");
-            out.printCSIdentifier(uniqueName());
+            out.printIdentifier(uniqueName());
             out.println("_c ");
             out.println("{");
             out.increaseIndent();
@@ -390,7 +391,7 @@ aspect GenerateCS
                         {   out.print("public static ");
                             fd.getTypeAccess().generateCS(out);
                             out.print(" ");                             
-                            out.printCSIdentifier(fd.getID(),"_f");
+                            out.printIdentifier(fd.getID(),"_f");
                             out.print(" = ");
                             fd.getInit().generateUsingResultCS(out);
                             out.println(";");     
@@ -491,7 +492,7 @@ aspect GenerateCS
         int numpar = getNumParameter();
                 
         out.print("public ");       
-        out.printCSIdentifier(hostType().uniqueName());
+        out.printIdentifier(hostType().uniqueName());
         out.print("(");         
         // pass reference to the enclosing object 
         if (needouter) 
@@ -504,7 +505,7 @@ aspect GenerateCS
         {   if (countencvar>0 || needouter) { out.print(","); }
             v.type().generateNameCS(out);
             out.print(" ");
-            out.printCSIdentifier(v.name(),"_o");   
+            out.printIdentifier(v.name(),"_o");   
             countencvar++;
         }
         for (int i=0; i<numpar; i++) 
@@ -514,7 +515,7 @@ aspect GenerateCS
             {   out.print("[]");
             } 
             out.print(" ");
-            out.printCSIdentifier(getParameter(i).name(), "");
+            out.printIdentifier(getParameter(i).name());
         }
         out.print(")");
         out.print(":");
@@ -535,9 +536,9 @@ aspect GenerateCS
             }           
             for (Variable v:encvar) 
             {   out.print("this.");
-                out.printCSIdentifier(v.name(),"_o");
+                out.printIdentifier(v.name(),"_o");
                 out.print(" = ");   
-                out.printCSIdentifier(v.name(),"_o");
+                out.printIdentifier(v.name(),"_o");
                 out.println(";");
             }
             
@@ -547,7 +548,7 @@ aspect GenerateCS
                 {   for (FieldDeclarator fd:bd.fieldDeclarations()) 
                     {   if (!fd.isStatic() && fd.getInit()!=null) 
                         {   out.print("this.");
-                            out.printCSIdentifier(fd.getID(), "_f");
+                            out.printIdentifier(fd.getID(), "_f");
                             out.print(" = ");
                             fd.getInit().generateUsingResultCS(out);
                             out.println(";");                     
@@ -660,7 +661,7 @@ aspect GenerateCS
             {   out.print("[]");
             } 
             out.print(" ");
-            out.printCSIdentifier(getParameter(i).name(), "");
+            out.printIdentifier(getParameter(i).name());
         }
         out.print(")");
         
@@ -716,7 +717,7 @@ aspect GenerateCS
             {   StringTokenizer t = new StringTokenizer(s,".");
                 for (int i=0; t.hasMoreElements(); i++) 
                 {   if (i>0) { out.print("."); }
-                    out.printCSIdentifier(t.nextToken());
+                    out.printIdentifier(t.nextToken());
                 }
             }
         }
@@ -726,7 +727,7 @@ aspect GenerateCS
         StringTokenizer t = new StringTokenizer(erasure().packageName(),".");
         for (int i=0; t.hasMoreElements(); i++) 
         {   if (i>0) { out.print("."); }
-            out.printCSIdentifier(t.nextToken());
+            out.printIdentifier(t.nextToken());
         }
     }
 
