@@ -96,7 +96,7 @@ applied to java identifiers:
     anything else - even underscores - are escaped in hexadecimal unicode with $xxxx
     
     A direct consequence of this method is that there can never be any underscores
-    in converted identifier (beside what is inserted by the converter itself).
+    in converted identifiers (beside what is inserted by the converter itself).
     So if you want to have private fields or methods
     in native code that will not clash with any java identifier, 
     you can simply prefix it with a single _
@@ -107,4 +107,4 @@ Method overloading
 All methods have a suffix that denote the number of parameters 
   (  java_lang_Integer_valueOf_1(i)  for example). 
 This allows a basic form of overloading, and is still compatible with the identifier 
-escaping (the _1 is not considered part of the identifier and will not be doubled).
+escaping (the _1 is not considered part of the identifier and will not be escaped).
