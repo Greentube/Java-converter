@@ -1948,6 +1948,12 @@ public class TestJava4
         assertB(! a.equals(null));
         assertB("TestParent3".equals(new TestParent(3).toString()));
         assertB(!"TestParent3".equals(new Integer(5)));
+        String empty = "";
+        assertB("".equals(empty));
+        assertB(empty.equals(""));
+        assertB(! empty.equals("hi"));
+        assertB(! empty.equals(null));
+        assertB(! "null".equals(null));
         
         assertI(a.hashCode(), a.hashCode());
         assertI("nothing useful".hashCode(), "nothing useful".hashCode());

@@ -399,7 +399,7 @@ String.prototype.endsWith_1 = function(suffix)
 };
 
 String.prototype.equals_1 = function(str) 
-{   if (!str || !(str._isString)) return false;  
+{   if ((str===null) || !(str._isString)) return false;  
 	return this === str;
 };
 
