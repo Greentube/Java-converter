@@ -46,19 +46,21 @@
         <arg value="ECMASCRIPT5_STRICT"/>           
         <arg value="--jscomp_off=uselessCode"/> 
   	</java>
-    <java jar="${basedir}/../lib/closure-compiler-v20180402.jar" fork="true">
+    <java jar="${basedir}/../lib/closure-compiler-v20180402.jar" fork="true" dir="${basedir}/build/javascript/">
         <arg value="--compilation_level"/>
         <arg value="ADVANCED"/>                  
         <arg value="--js"/>    	
-        <arg value="${basedir}/build/javascript/main.js"/>
+        <arg value="main.js"/>
         <arg value="--js_output_file"/>
-        <arg value="${basedir}/build/javascript/main_advanced.js"/>
+        <arg value="main_advanced.js"/>
         <arg value="--language_out"/>
         <arg value="ECMASCRIPT5_STRICT"/>
         <arg value="--language_in"/>
         <arg value="ECMASCRIPT5_STRICT"/>           
         <arg value="--jscomp_off=uselessCode"/> 
     	<arg value="--jscomp_off=checkTypes"/>
+    	<arg value="--create_source_map"/>
+        <arg value="main_advanced.js.map"/>
     </java>  	
   	
   	<!-- build performance tests --> 
