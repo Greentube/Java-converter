@@ -1159,9 +1159,6 @@ public class TestJava4
             b.append(CustomException.halve(98));
             b.append(CustomException.halve(99));
         } 
-        catch (NumberFormatException e)
-        {   b.append("N");
-        }
         catch (CustomException e7)
         {   b.append("catch");
             b.append(e7);
@@ -1176,7 +1173,7 @@ public class TestJava4
             CustomException.halveWithLogging(4,b);
             CustomException.halveWithLogging(3,b);
         }
-        catch (CustomException|NumberFormatException ex) 
+        catch (CustomException ex) 
         {   b.append("catch");
         }
         finally
@@ -1187,9 +1184,10 @@ public class TestJava4
         StringBuffer sb = new StringBuffer();
         try
         {   int cnt=0;
+            cnt++;
+            assertI(cnt,1);
             try
-            {   cnt++;
-                assertI(cnt,1);
+            {   
                 Integer.parseInt("x");        
             }
             catch (NumberFormatException e)

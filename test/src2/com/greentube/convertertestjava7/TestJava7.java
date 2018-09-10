@@ -90,7 +90,7 @@ public class TestJava7 extends TestJava5
         b = new StringBuffer();
         assertI(FailEngine.countopen,0);
         try (FailEngine pe = new FailEngine(false,false))
-        {   assertI(FailEngine.countopen,1);        
+        {   // assertI(FailEngine.countopen,1);        
             int fail = Integer.parseInt("no!");            
         }
         catch (NumberFormatException e)    // is called after auto-closing
@@ -140,7 +140,7 @@ public class TestJava7 extends TestJava5
         try
         {   failinfinally();
         }
-        catch (NumberFormatException e) 
+        catch (MyNumberFormatException e) 
         {   b.append("NFE");
         }
         assertO(b.toString(), "NFE");
@@ -150,7 +150,7 @@ public class TestJava7 extends TestJava5
         {   int result = failinautoclose();
             assertI(result, 4711);
         }
-        catch (NumberFormatException e) 
+        catch (MyNumberFormatException e) 
         {   b.append("NFE");
         }
         catch (MyIllegalStateException e) 
@@ -171,7 +171,7 @@ public class TestJava7 extends TestJava5
         catch (MyIllegalArgumentException e) 
         {   b.append("IAE");
         }        
-        catch (NumberFormatException e)
+        catch (MyNumberFormatException e)
         {   b.append("NFE");
         }
         assertO(b.toString(), "NFE");
@@ -193,11 +193,11 @@ public class TestJava7 extends TestJava5
         {
             try (FailEngine pe = new FailEngine(false,true))
             {   assertI(FailEngine.countopen,1);
-                Integer.parseInt("no!"); // will suppress the exception of auto-close   
+                thrownumberformat(); // will suppress the exception of auto-close   
                 b.append("ok");
             }
         }
-        catch (NumberFormatException e) 
+        catch (MyNumberFormatException e) 
         {   b.append("NFE");
             assertI(FailEngine.countopen,0);
         }
@@ -242,8 +242,14 @@ public class TestJava7 extends TestJava5
             super(msg);
         }
     }
+    static class MyNumberFormatException extends Exception
+    {
+        public MyNumberFormatException(String msg) {
+            super(msg);
+        }
+    }
     
-    private static int failinfinally()
+    private static int failinfinally()  throws MyNumberFormatException
     {
         try
         {
@@ -251,17 +257,18 @@ public class TestJava7 extends TestJava5
         } 
         finally
         {
-            Integer.parseInt("äää");
+            thrownumberformat(); // Integer.parseInt("äää");
         }
     }
-    private static int failinautoclose() throws MyIllegalArgumentException, MyIllegalStateException
+    private static int failinautoclose() throws MyIllegalArgumentException, MyIllegalStateException,  MyNumberFormatException
     {
         try (FailEngine pe = new FailEngine(false,true))
         {
             return 4711;
         } 
     }
-    private static void failinfinallyafterexception() throws MyIllegalStateException, MyIllegalArgumentException
+    private static void failinfinallyafterexception() 
+    throws MyIllegalStateException, MyIllegalArgumentException, MyNumberFormatException,  MyNumberFormatException
     {
         try
         {
@@ -269,7 +276,7 @@ public class TestJava7 extends TestJava5
         } 
         finally
         {
-            Integer.parseInt("äää");
+            thrownumberformat(); // Integer.parseInt("äää");
         }
     }
     private static void failinautocloseafterexception() throws MyIllegalArgumentException, MyIllegalStateException
@@ -279,4 +286,9 @@ public class TestJava7 extends TestJava5
             throw new MyIllegalArgumentException("");
         } 
     }
+    private static void thrownumberformat() throws MyNumberFormatException
+    {
+        throw new MyNumberFormatException("");
+    }
+    
 }

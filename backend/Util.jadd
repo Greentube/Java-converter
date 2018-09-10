@@ -450,4 +450,31 @@ aspect Util {
         return v.isParameter() && name.equals(getID());
     }
     
+    public boolean ASTNode.hasMethodCallOtherThanParse()
+    {
+        for (int i=0; i<getNumChild(); i++) 
+        {   if (getChild(i).hasMethodCallOtherThanParse()) { return true; }
+        }
+        return false;
+    }
+    
+    public boolean MethodAccess.hasMethodCallOtherThanParse() 
+    {   
+        MethodDecl m = decl();
+        if (m.isStatic()) 
+        {   TypeDecl t = m.hostType();
+            if 
+            (   t.packageName().equals("java.lang") 
+             && t.uniqueName().equals("Integer") 
+             && m.name().equals("parseInt")
+            ) { return super.hasMethodCallOtherThanParse(); }
+            if 
+            (   t.packageName().equals("java.lang") 
+             && t.uniqueName().equals("Double") 
+             && m.name().equals("parseDouble")
+            ) { return super.hasMethodCallOtherThanParse(); }
+        }
+        return true;
+    }
+    
 }

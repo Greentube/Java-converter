@@ -62,8 +62,8 @@ aspect CheckRestrictions
     public void BasicCatch.checkRestrictions(ArrayList<String> errorlist) 
     {
         TypeDecl t = getParameter().type(); // .typeName();
-        if (isForbiddenCatch((ClassDecl)t))
-        {   reportRestriction(errorlist, "Can not catch exception of type "+t.typeName());
+        if (isForbiddenCatch((ClassDecl)t, (TryStmt)getParent().getParent()))
+        {   reportRestriction(errorlist, "May not catch exception of type "+t.typeName());
         }
         super.checkRestrictions(errorlist);
     }   
@@ -72,22 +72,25 @@ aspect CheckRestrictions
         CatchParameterDeclaration par = getParameter();        
         for (int i=0; i<par.getNumTypeAccess(); i++)
         {   TypeDecl t = par.getTypeAccess(i).type(); // .typeName();
-            if (isForbiddenCatch((ClassDecl)t))
-            {   reportRestriction(errorlist, "Can not catch exception of type "+t.typeName());
+            if (isForbiddenCatch((ClassDecl)t, (TryStmt)getParent().getParent()))
+            {   reportRestriction(errorlist, "May not catch exception of type "+t.typeName());
             }
         }
         super.checkRestrictions(errorlist);
     }   
-    protected static boolean CatchClause.isForbiddenCatch(ClassDecl t)
+    protected static boolean CatchClause.isForbiddenCatch(ClassDecl t, TryStmt stmt)
     {
+        if (t.typeName().equals("java.lang.NumberFormatException"))
+        {   Block b = stmt.getBlock();
+            if (b==null) { return false; }
+            return b.hasMethodCallOtherThanParse();
+        }
+
         if (t.typeName().equals("java.lang.Throwable")
          || t.typeName().equals("java.lang.Exception")
          || t.typeName().equals("java.lang.RuntimeException")
         )
         {   return true; }        
-        if (t.typeName().equals("java.lang.NumberFormatException"))
-        {   return false;
-        }
         while (t.hasSuperClass())
         {   t = (ClassDecl) t.superclass();
             if (t.typeName().equals("java.lang.RuntimeException")) 
