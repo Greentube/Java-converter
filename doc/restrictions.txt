@@ -9,17 +9,14 @@ Basically the language features of java 8 are provided with the following restri
       
 - Exceptions
     While exceptions are largely supported, it is not possible to use a catch-clause
-    for any of the following exceptions: 
-        NullPointerException
-        IndexOutOfBoundsException
-        ArrayStoreException
-    You can also not catch any super-class of these, like RuntimeException or Exception.
+    for any RuntimeException (all exceptions that need not be declared in the method
+    signature).
+    You can also not catch any super-class of these, like Exception or Throwable.
     But you can and should throw such exceptions to signify program errors.
       
-    This restriction is necessary because the target systems will not throw these Exceptions
-    in the same way as the java-VM does. Often it will not throw any Exception at all
-    and just messes up the data structures in an unpredictable way. So you can not 
-    do anything useful reliably after one of these "bad" program faults have happened. 
+    The only exception to this rule is the NumberFormatException which may actually 
+    be caught because there is no real way for a program to prevent
+    this exception to happen on unknown input data (as in contrast to NullPointerException, etc.)
       
 - No reflection and no type annotations
     Runtime type information is basically completely removed. Only the use of 'instanceof'

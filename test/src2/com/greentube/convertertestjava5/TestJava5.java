@@ -191,16 +191,7 @@ public class TestJava5 extends TestJava4
             }
             public void run() {}
         };
-        assertO(r.toString(), "a=null");
-        
-        Day x = null;
-        try 
-        {   x = Day.valueOf("NEVERDAY");
-        }
-        catch (IllegalArgumentException e)
-        {   
-        }
-        assertO(x,null);
+        assertO(r.toString(), "a=null");        
     }
 
     public static void varargstest() 
@@ -274,50 +265,7 @@ public class TestJava5 extends TestJava4
         assertO(Arrays.asList(a).toString(), "[we, bee, see, thee, lee, me]");
         
         Arrays.sort(a, strcmp2);
-        assertO(Arrays.asList(a).toString(), "[bee, lee, me, see, thee, we]");
-        
-        StringBuffer caught = new StringBuffer();
-        try 
-        {   Iterator<Object> it = l.iterator();
-            it.remove();
-        } 
-        catch (IllegalStateException e) 
-        {   caught.append("ISE:");
-            caught.append(e.getMessage());
-        }
-        try 
-        {   Iterator<Object> it = l.iterator();
-            it.next();
-            it.remove();
-        } 
-        catch (UnsupportedOperationException e) 
-        {   caught.append("UOE:");
-            caught.append(e.getMessage());
-        }
-        try 
-        {   Iterator<Object> it = l.iterator();
-            for (;;) { it.next(); }
-        } 
-        catch (NoSuchElementException e) 
-        {   caught.append("NSE:");
-            caught.append(e.getMessage());
-        }
-        assertO(caught.toString(), "ISE:nullUOE:nullNSE:null");
-        
-        caught = new StringBuffer();
-        try 
-        {   l.add("more");
-        } 
-        catch (UnsupportedOperationException e) 
-        {   caught.append("UOE");
-        }
-        try 
-        {   l.remove(3);
-        } 
-        catch (UnsupportedOperationException e) 
-        {   caught.append("UOE:"+e.getMessage());
-        }
-        assertO(caught.toString(), "UOEUOE:null");
+        assertO(Arrays.asList(a).toString(), "[bee, lee, me, see, thee, we]");        
     }
 
 

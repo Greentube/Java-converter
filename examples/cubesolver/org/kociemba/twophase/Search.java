@@ -140,12 +140,8 @@ public class Search {
 
 		// +++++++++++++++++++++check for wrong input +++++++++++++++++++++++++++++
 		int[] count = new int[6];
-		try {
-			for (int i = 0; i < 54; i++)
-				count[Color.valueOf(facelets.substring(i, i + 1)).ordinal()]++;
-		} catch (IllegalArgumentException e) {
-			return "Error 1";
-		}
+		for (int i = 0; i < 54; i++)
+			count[Color.valueOf(facelets.substring(i, i + 1)).ordinal()]++;
 		for (int i = 0; i < 6; i++)
 			if (count[i] != 9)
 				return "Error 1";

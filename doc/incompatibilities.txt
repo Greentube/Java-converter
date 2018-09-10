@@ -35,9 +35,8 @@ a bug in the converter and will either be fixed or also documented here.
     The converter already enforces that such exceptions may never be caught, so the
     developer may probably be aware of the problem. Nevertheless testing the original
     java code to see if these exceptions could occur, is strongly recommended.
-    
-    Other RuntimeExceptions are fine to catch and all library methods should implement
-    the exact same functionality in this respect as their java original.
+    Other RuntimeExceptions behave more consistent, but are also not allowed
+    to be caught.
    
 - transcendental operations in java.lang.Math
     All conversion targets use the same internal representation of values 

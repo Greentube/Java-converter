@@ -83,6 +83,7 @@ public class TestJava7 extends TestJava5
         try (FailEngine pe = new FailEngine(false,false))
         {   b.append("ok");     
         }
+        catch (MyIllegalArgumentException | MyIllegalStateException e) {}
         assertI(FailEngine.countopen,0);
         assertO(b.toString(), "ok");
 
@@ -96,6 +97,7 @@ public class TestJava7 extends TestJava5
         {   assertI(FailEngine.countopen,0);  
             b.append("NFE");
         }
+        catch (MyIllegalArgumentException | MyIllegalStateException e) { }
         finally                            // is called last
         {   assertI(FailEngine.countopen,0);
             b.append("fin");
@@ -108,10 +110,13 @@ public class TestJava7 extends TestJava5
         {   assertI(FailEngine.countopen,0);
             b.append("should not be reached");
         }
-        catch (IllegalArgumentException e) 
+        catch (MyIllegalArgumentException e) 
         {   assertI(FailEngine.countopen,0);
             b.append("IAE");
         }
+        catch (MyIllegalStateException e)
+        {
+        } 
         assertI(FailEngine.countopen,0);
         assertO(b.toString(), "IAE");
         
@@ -120,10 +125,11 @@ public class TestJava7 extends TestJava5
         {   assertI(FailEngine.countopen,1);
             b.append("ok");
         }
-        catch (IllegalStateException e) 
+        catch (MyIllegalStateException e) 
         {   b.append("ISE");
             assertI(FailEngine.countopen,0);
         }
+        catch (MyIllegalArgumentException e) {}
         finally
         {   assertI(FailEngine.countopen,0);
         }        
@@ -147,8 +153,11 @@ public class TestJava7 extends TestJava5
         catch (NumberFormatException e) 
         {   b.append("NFE");
         }
-        catch (IllegalStateException e) 
+        catch (MyIllegalStateException e) 
         {   b.append("ISE");
+        }
+        catch (MyIllegalArgumentException e) 
+        {   b.append("IAE");
         }
         assertO(b.toString(), "ISE");
         
@@ -156,22 +165,25 @@ public class TestJava7 extends TestJava5
         try
         {   failinfinallyafterexception();  // will suppress the original exception
         }
-        catch (IllegalStateException e) 
+        catch (MyIllegalStateException e) 
         {   b.append("ISE");
         }
-        catch (IllegalArgumentException e) 
+        catch (MyIllegalArgumentException e) 
         {   b.append("IAE");
         }        
-        assertO(b.toString(), "IAE");
+        catch (NumberFormatException e)
+        {   b.append("NFE");
+        }
+        assertO(b.toString(), "NFE");
         
         b = new StringBuffer();
         try
         {   failinautocloseafterexception();  // will suppress the exception of auto-close
         }
-        catch (IllegalStateException e) 
+        catch (MyIllegalStateException e) 
         {   b.append("ISE");
         }
-        catch (IllegalArgumentException e) 
+        catch (MyIllegalArgumentException e) 
         {   b.append("IAE");
         }
         assertO(b.toString(), "IAE");
@@ -189,10 +201,10 @@ public class TestJava7 extends TestJava5
         {   b.append("NFE");
             assertI(FailEngine.countopen,0);
         }
-        catch (IllegalArgumentException e) 
+        catch (MyIllegalArgumentException e) 
         {   b.append("IAE");
         }
-        catch (IllegalStateException e) 
+        catch (MyIllegalStateException e) 
         {   b.append("ISE");
         }
         assertI(FailEngine.countopen,0);
@@ -204,17 +216,30 @@ public class TestJava7 extends TestJava5
         public static int countopen = 0;
         private boolean failonclose;
         
-        public FailEngine(boolean failonopen, boolean failonclose)
+        public FailEngine(boolean failonopen, boolean failonclose) throws MyIllegalArgumentException
         {
-            if (failonopen) { throw new IllegalArgumentException(""); }
+            if (failonopen) { throw new MyIllegalArgumentException(""); }
             this.failonclose = failonclose;
             countopen++;
         }
         
-        public void close()
+        public void close() throws MyIllegalStateException
         {            
             countopen--;
-            if (failonclose) { throw new IllegalStateException(""); }
+            if (failonclose) { throw new MyIllegalStateException(""); }
+        }
+    }
+    
+    static class MyIllegalArgumentException extends Exception
+    {
+        public MyIllegalArgumentException(String msg) {
+            super(msg);
+        }
+    }
+    static class MyIllegalStateException extends Exception
+    {
+        public MyIllegalStateException(String msg) {
+            super(msg);
         }
     }
     
@@ -229,29 +254,29 @@ public class TestJava7 extends TestJava5
             Integer.parseInt("äää");
         }
     }
-    private static int failinautoclose()
+    private static int failinautoclose() throws MyIllegalArgumentException, MyIllegalStateException
     {
         try (FailEngine pe = new FailEngine(false,true))
         {
             return 4711;
         } 
     }
-    private static void failinfinallyafterexception()
+    private static void failinfinallyafterexception() throws MyIllegalStateException, MyIllegalArgumentException
     {
         try
         {
-            throw new IllegalStateException();
+            throw new MyIllegalStateException("");
         } 
         finally
         {
             Integer.parseInt("äää");
         }
     }
-    private static void failinautocloseafterexception()
+    private static void failinautocloseafterexception() throws MyIllegalArgumentException, MyIllegalStateException
     {
         try (FailEngine pe = new FailEngine(false,true))
         {
-            throw new IllegalArgumentException();
+            throw new MyIllegalArgumentException("");
         } 
     }
 }

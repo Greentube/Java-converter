@@ -1182,7 +1182,7 @@ public class TestJava4
         finally
         {   b.append("finally");
         }
-        assertO(b.toString(), "start2donestartdonecatchfinally");
+        assertO(b.toString(), "start2donestartNdonefinally");
         
         StringBuffer sb = new StringBuffer();
         try
@@ -1202,10 +1202,10 @@ public class TestJava4
                 cnt--;
                 assertI(cnt,0);
                 // throw inside finally after exception will suppress original exception
-                if (cnt==0) throw new IllegalStateException();  
+                if (cnt==0) throw new CustomException("ISE");  
             }
         }
-        catch (IllegalStateException e) { sb.append("ISE"); }
+        catch (CustomException e) { sb.append(e.getMessage()); }
 //        catch (NumberFormatException e) { assertB(false); }
 //        catch (Throwable e) { throw e; };
         assertO(sb.toString(), "ISE");
@@ -2835,9 +2835,9 @@ public class TestJava4
         
     private static void printstack()
     {   try 
-        {   throw new IllegalArgumentException();
+        {   throw new CustomException("");
         }
-        catch (IllegalArgumentException e)
+        catch (CustomException e)
         {   e.printStackTrace();
         }
     }
