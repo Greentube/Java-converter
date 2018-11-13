@@ -14,13 +14,13 @@ public class AnnotationsTest
     
     
     @Deprecated    
-    public void oldstuff()
+    public static void oldstuff()
     {
     }
     
     /** @deprecated
      */     
-    public void oldstuff2()
+    public static void oldstuff2()
     {
     }
         
@@ -35,6 +35,9 @@ public class AnnotationsTest
     public static void main(String[] args) {
         String[] plant = broken("seed");
         System.out.println(plant[0]);
+        
+        oldstuff();
+        oldstuff2();
     }
  
     
