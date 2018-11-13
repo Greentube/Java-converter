@@ -14,7 +14,13 @@ public class AnnotationsTest
     
     
     @Deprecated    
-    public void gimme()
+    public void oldstuff()
+    {
+    }
+    
+    /** @deprecated
+     */     
+    public void oldstuff2()
     {
     }
         
