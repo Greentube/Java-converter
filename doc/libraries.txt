@@ -14,7 +14,7 @@ not fully supported by the converter, but the using code needs to immediately an
 the result to a double or int. For example:  double now = (double) System.currentTimeMillis();
 
 
- 
+        // normal classes/interfaces and methods
         {   "java.io.PrintStream",
             
             "void print(boolean)",
@@ -138,8 +138,6 @@ the result to a double or int. For example:  double now = (double) System.curren
             
             "<init>()",
         },
-        {   "java.lang.Override"
-        },
         {   "java.lang.Runnable",
             
             "void run()",
@@ -206,8 +204,6 @@ the result to a double or int. For example:  double now = (double) System.curren
             "java.lang.StringBuilder append(int)",
             "java.lang.StringBuilder append(double)",
             "int length()",         
-        },
-        {   "java.lang.SuppressWarnings"
         },
         {   "java.lang.System",
             
@@ -549,7 +545,7 @@ the result to a double or int. For example:  double now = (double) System.curren
             "java.lang.Object get()",
         },
         
-        
+        // exceptions
         {   "java.lang.Throwable",
             
             "java.lang.String getMessage()",
@@ -621,7 +617,7 @@ the result to a double or int. For example:  double now = (double) System.curren
             "<init>()",            
             "<init>(java.lang.String)",            
         },   
-        {   "java.util.NegativeArraySizeException",
+        {   "java.lang.NegativeArraySizeException",
             
             "java.lang.String getMessage()",
             "void printStackTrace()",
@@ -661,3 +657,15 @@ the result to a double or int. For example:  double now = (double) System.curren
             "<init>()",            
             "<init>(java.lang.String)",            
         },       
+        
+        // annotations
+        {   "java.lang.Deprecated"
+        },
+        {   "java.lang.FunctionalInterface"
+        },
+        {   "java.lang.Override"
+        },
+        {   "java.lang.SafeVarargs"
+        },
+        {   "java.lang.SuppressWarnings"
+        },

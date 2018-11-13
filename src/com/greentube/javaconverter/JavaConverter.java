@@ -64,8 +64,11 @@ public class JavaConverter extends Frontend
             try
             {   for (String cn:LibraryList.getRuntimeClassList())                
                 {   if 
-                    (   cn.equals("java.lang.SuppressWarnings") 
+                    (   cn.equals("java.lang.Deprecated") 
+                        || cn.equals("java.lang.FunctionalInterface")
                         || cn.equals("java.lang.Override")
+                        || cn.equals("java.lang.SafeVarargs")
+                        || cn.equals("java.lang.SuppressWarnings")
                         || cn.equals("java.lang.Object")
                         || cn.equals("java.lang.String")
                     )

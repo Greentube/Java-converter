@@ -33,7 +33,8 @@ public class TestJava8 extends TestJava7
         customiterator();
         customcomparator();
         sortliststest();
-        featureshowcase();        
+        featureshowcase();
+        assertO(new AnnotationsTest().toString(),"[]AnnotationsTest");        
     }
     
     public static void lambdatest()

@@ -115,6 +115,9 @@
         <!-- extract necessary bootstrap classes (file format of java 1.8) for use with the converter -->
         <unzip src="${basedir}/rt.jar" dest="${basedir}/build/package">
             <patternset>
+                <include name="java/io/PrintStream.class" />
+                <include name="java/io/FilterOutputStream.class" />
+                <include name="java/io/OutputStream.class" />
                 <include name="java/lang/AbstractStringBuilder.class" />
             	<include name="java/lang/AutoCloseable.class" />
             	<include name="java/lang/Boolean.class" />              
@@ -128,16 +131,13 @@
                 <include name="java/lang/Math.class" />
                 <include name="java/lang/Number.class" />
                 <include name="java/lang/Object.class" />
-                <include name="java/lang/Override.class" />             
                 <include name="java/lang/Runnable.class" />
                 <include name="java/lang/Short.class" />
                 <include name="java/lang/StringBuffer.class" />
                 <include name="java/lang/StringBuilder.class" />
                 <include name="java/lang/String.class" />
-                <include name="java/lang/SuppressWarnings.class" />             
                 <include name="java/lang/System.class" />
                 <include name="java/lang/Throwable.class" />
-                <include name="java/lang/annotation/*.class" />
                 <include name="java/util/AbstractCollection.class" />
                 <include name="java/util/AbstractList.class" />
                 <include name="java/util/AbstractMap.class" />
@@ -163,9 +163,6 @@
                 <include name="java/util/function.UnaryOperator.class" />
                 <include name="java/util/function.Consumer.class" />
                 <include name="java/util/function.BiConsumer.class" />
-                <include name="java/io/PrintStream.class" />
-                <include name="java/io/FilterOutputStream.class" />
-                <include name="java/io/OutputStream.class" />
 
                 <include name="java/lang/Throwable.class" />
                 <include name="java/lang/Exception.class" />
@@ -177,7 +174,14 @@
                 <include name="java/lang/NumberFormatException.class" />
                 <include name="java/long/UnsupportedOperationException.class" /> 
                 <include name="java/util/NoSuchElementException.class" />
-            	
+
+                <include name="java/lang/annotation/*.class" />
+                <include name="java/lang/Deprecated.class" />             
+                <include name="java/lang/FunctionalInterface.class" />
+                <include name="java/lang/Override.class" />
+                <include name="java/lang/SafeVarargss.class" />
+                <include name="java/lang/SuppressWarnings.class" />
+
                 <include name="java/applet/Applet.class" /> 
                 <include name="java/awt/Panel.class" /> 
                 <include name="java/awt/Container.class" />

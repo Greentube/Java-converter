@@ -6,6 +6,7 @@ public class LibraryList
 {   
     static String[][] supported = 
     {   
+        // normal classes/interfaces and methods
         {   "java.io.PrintStream",
             
             "void print(boolean)",
@@ -129,8 +130,6 @@ public class LibraryList
             
             "<init>()",
         },
-        {   "java.lang.Override"
-        },
         {   "java.lang.Runnable",
             
             "void run()",
@@ -197,8 +196,6 @@ public class LibraryList
             "java.lang.StringBuilder append(int)",
             "java.lang.StringBuilder append(double)",
             "int length()",			
-        },
-        {   "java.lang.SuppressWarnings"
         },
         {   "java.lang.System",
             
@@ -540,7 +537,7 @@ public class LibraryList
             "java.lang.Object get()",
         },
         
-        
+        // exceptions
         {   "java.lang.Throwable",
             
             "java.lang.String getMessage()",
@@ -652,6 +649,19 @@ public class LibraryList
             "<init>()",            
             "<init>(java.lang.String)",            
         },       
+        
+        // annotations
+        {   "java.lang.Deprecated"
+        },
+        {   "java.lang.FunctionalInterface"
+        },
+        {   "java.lang.Override"
+        },
+        {   "java.lang.SafeVarargs"
+        },
+        {   "java.lang.SuppressWarnings"
+        },
+
     };
 
 
