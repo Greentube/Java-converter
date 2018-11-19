@@ -74,6 +74,7 @@ public class JavaConverter extends Frontend
                     )
                     {   continue;
                     }
+                    if (cn.equals("java.lang.System")) { cn="java.lang.SYSTEM"; }
                     String filename = cn.replace('.','/') + ".cs";
                     InputStream is = null;
                     // use overridden library path
