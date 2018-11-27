@@ -218,7 +218,7 @@
         </jar>          
         
         <!-- TEMP CC STUFF -->
-        <copy tofile="${basedir}/Converter-2.9.5.CC01.jar" file="${basedir}/build/converter.jar" />
+        <copy tofile="${basedir}/Converter-0.101.1.jar" file="${basedir}/build/converter.jar" />
     </target>   
     
     <target name="clean" description="Clean all built files">

@@ -118,7 +118,7 @@ aspect GenerateCS
                     for (int di=0; di<fd.getNumDims(); ++di) // [CC]
                     {   out.print("[]");
                     }
-                    if (fd.isFinal()) // [CC]
+                    if (fd.isFinal() && (fd.getInit() != null)) // [CC]
                     {   out.print(" = ");
                         fd.getInit().generateUsingResultCS(out);
                     }
