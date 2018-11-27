@@ -197,9 +197,9 @@
             <src path="${extendjpath}/src/frontend-main"/>
             <src path="${extendjpath}/src/backend"/>
             <src path="${extendjpath}/src/backend-main"/>
-            <src path="${extendjpath}/src/gen/org/extendj/parser"/>
-            <src path="${extendjpath}/src/gen/org/extendj/scanner"/>
-            <src path="${extendjpath}/java8/src"/>
+            <src path="${extendjpath}/java8/src/gen/org/extendj/parser"/>
+            <src path="${extendjpath}/java8/src/gen/org/extendj/scanner"/>
+            <src path="${extendjpath}/java8/src/main"/>
         </javac>    
 
         <!-- add documentation files -->
@@ -216,6 +216,9 @@
                  <attribute name="Version-Date" value="${timestamp}"/>
             </manifest>         
         </jar>          
+        
+        <!-- TEMP CC STUFF -->
+        <copy tofile="${basedir}/Converter-2.9.5.CC01.jar" file="${basedir}/build/converter.jar" />
     </target>   
     
     <target name="clean" description="Clean all built files">
