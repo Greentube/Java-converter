@@ -90,7 +90,12 @@ aspect GenerateCS
             {   for (FieldDeclarator fd:bd.fieldDeclarations()) 
                 {   out.print("public ");
                     if (fd.isStatic()) 
-                    {   out.print("static ");
+                    {   if (fd.isFinal()) // [CC]
+                        {   out.print("const ");
+                        }
+                        else
+                        {   out.print("static ");
+                        }
                         // test if shadowing a previous static field - need "new" keyword 
                         ClassDecl cd = (ClassDecl) superclass();
                         findoriginal: while(!cd.isObject()) 
@@ -110,6 +115,13 @@ aspect GenerateCS
                     fd.fieldDecl().getTypeAccess().generateCS(out);
                     out.print(" ");
                     out.printIdentifier(fd.getID(),"_f");
+                    for (int di=0; di<fd.getNumDims(); ++di) // [CC]
+                    {   out.print("[]");
+                    }
+                    if (fd.isFinal()) // [CC]
+                    {   out.print(" = ");
+                        fd.getInit().generateUsingResultCS(out);
+                    }
                     out.println(";");                     
                 }
             }
@@ -180,10 +192,12 @@ aspect GenerateCS
                             out.increaseIndent();
                             havestaticconstructor=true;
                         }                           
-                        out.printIdentifier(fd.getID(),"_f");
-                        out.print(" = ");
-                        fd.getInit().generateUsingResultCS(out);
-                        out.println(";");
+                        if (!fd.isFinal()) // [CC]
+                        {   out.printIdentifier(fd.getID(),"_f");
+                            out.print(" = ");
+                            fd.getInit().generateUsingResultCS(out);
+                            out.println(";");
+                        }
                     }
                 }
             } 
