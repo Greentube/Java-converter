@@ -139,9 +139,6 @@ namespace java.lang { public class SYSTEM  // need to uppercase to avoid name cl
     public static double ASSIGNPLUS(ref double dest, int s)
     {   return dest = dest+s;
     }    
-    public static double ASSIGNPLUS(ref int dest, int s)
-    {   return dest = dest+s;
-    }    
     public static int ASSIGNPLUS(ref int dest, double s)
     {   return dest = castToInt(dest+s);
     }
@@ -154,9 +151,6 @@ namespace java.lang { public class SYSTEM  // need to uppercase to avoid name cl
     public static sbyte ASSIGNPLUS(ref sbyte dest, double s)
     {   return dest = castToByte(dest+s);
     }
-    public static double ASSIGNPLUS(ref double dest, double s)
-    {   return dest = dest+s;
-    }    
 
     public static short ASSIGNMINUS(ref short dest, int s)
     {   return dest = (short) (dest-s);
@@ -168,9 +162,6 @@ namespace java.lang { public class SYSTEM  // need to uppercase to avoid name cl
     {   return dest = (sbyte) (dest-s);
     }    
     public static double ASSIGNMINUS(ref double dest, int s)
-    {   return dest = dest-s;
-    }    
-    public static double ASSIGNMINUS(ref int dest, int s)
     {   return dest = dest-s;
     }    
     public static int ASSIGNMINUS(ref int dest, double s)
@@ -185,9 +176,6 @@ namespace java.lang { public class SYSTEM  // need to uppercase to avoid name cl
     public static sbyte ASSIGNMINUS(ref sbyte dest, double s)
     {   return dest = castToByte(dest-s);
     }
-    public static double ASSIGNMINUS(ref double dest, double s)
-    {   return dest = dest-s;
-    }    
 
     public static int ASSIGNDIV(ref int dest, int s)
     {
@@ -205,9 +193,6 @@ namespace java.lang { public class SYSTEM  // need to uppercase to avoid name cl
     public static double ASSIGNDIV(ref double dest, int s)
     {   return dest = dest / s;
     }    
-    public static double ASSIGNDIV(ref int dest, int s)
-    {   return dest = dest / s;
-    }    
     public static int ASSIGNDIV(ref int dest, double s)
     {   return dest = castToInt(dest/s);
     }
@@ -220,9 +205,6 @@ namespace java.lang { public class SYSTEM  // need to uppercase to avoid name cl
     public static sbyte ASSIGNDIV(ref sbyte dest, double s)
     {   return dest = castToByte(dest/s);
     }
-    public static double ASSIGNDIV(ref double dest, double s)
-    {   return dest = dest / s;
-    }    
 
     public static short ASSIGNMUL(ref short dest, int s)
     {   return dest = (short) (dest*s);
@@ -234,9 +216,6 @@ namespace java.lang { public class SYSTEM  // need to uppercase to avoid name cl
     {   return dest = (sbyte) (dest*s);
     }    
     public static double ASSIGNMUL(ref double dest, int s)
-    {   return dest = dest*s;
-    }    
-    public static double ASSIGNMUL(ref int dest, int s)
     {   return dest = dest*s;
     }    
     public static int ASSIGNMUL(ref int dest, double s)
@@ -251,9 +230,6 @@ namespace java.lang { public class SYSTEM  // need to uppercase to avoid name cl
     public static sbyte ASSIGNMUL(ref sbyte dest, double s)
     {   return dest = castToByte(dest*s);
     }
-    public static double ASSIGNMUL(ref double dest, double s)
-    {   return dest = dest*s;
-    }    
 
     public static short ASSIGNMOD(ref short dest, int s)
     {   return dest = (short) (dest%s);
@@ -265,9 +241,6 @@ namespace java.lang { public class SYSTEM  // need to uppercase to avoid name cl
     {   return dest = (sbyte) (dest%s);
     }    
     public static double ASSIGNMOD(ref double dest, int s)
-    {   return dest = dest%s;
-    }    
-    public static double ASSIGNMOD(ref int dest, int s)
     {   return dest = dest%s;
     }    
     public static int ASSIGNMOD(ref int dest, double s)
@@ -282,9 +255,6 @@ namespace java.lang { public class SYSTEM  // need to uppercase to avoid name cl
     public static sbyte ASSIGNMOD(ref sbyte dest, double s)
     {   return dest = castToByte(dest%s);
     }
-    public static double ASSIGNMOD(ref double dest, double s)
-    {   return dest = dest%s;
-    }    
 
     public static short ASSIGNAND(ref short dest, int s)
     {   return dest = (short) (((int)dest)&((int)s));
@@ -294,9 +264,6 @@ namespace java.lang { public class SYSTEM  // need to uppercase to avoid name cl
     }    
     public static sbyte ASSIGNAND(ref sbyte dest, int s)
     {   return dest = (sbyte) (((int)dest)&((int)s));
-    }    
-    public static sbyte ASSIGNAND(ref int dest, int s)
-    {   return dest = (int) (((int)dest)&((int)s));
     }    
 
     public static short ASSIGNOR(ref short dest, int s)
@@ -308,9 +275,6 @@ namespace java.lang { public class SYSTEM  // need to uppercase to avoid name cl
     public static sbyte ASSIGNOR(ref sbyte dest, int s)
     {   return dest = (sbyte) (((int)dest)|((int)s));
     }    
-    public static sbyte ASSIGNOR(ref int dest, int s)
-    {   return dest = (int) (((int)dest)|((int)s));
-    }    
 
     public static short ASSIGNXOR(ref short dest, int s)
     {   return dest = (short) (((int)dest)^((int)s));
@@ -320,9 +284,6 @@ namespace java.lang { public class SYSTEM  // need to uppercase to avoid name cl
     }    
     public static sbyte ASSIGNXOR(ref sbyte dest, int s)
     {   return dest = (sbyte) (((int)dest)^((int)s));
-    }    
-    public static sbyte ASSIGNXOR(ref int dest, int s)
-    {   return dest = (int) (((int)dest)^((int)s));
     }    
 
     public static short ASSIGNLSHIFT(ref short dest, int s)
@@ -334,9 +295,6 @@ namespace java.lang { public class SYSTEM  // need to uppercase to avoid name cl
     public static sbyte ASSIGNLSHIFT(ref sbyte dest, int s)
     {   return dest = (sbyte) (((int)dest)<<((int)s));
     }    
-    public static sbyte ASSIGNLSHIFT(ref int dest, int s)
-    {   return dest = (int) (((int)dest)<<((int)s));
-    }    
 
     public static short ASSIGNRSHIFT(ref short dest, int s)
     {   return dest = (short) (((int)dest)>>((int)s));
@@ -347,10 +305,10 @@ namespace java.lang { public class SYSTEM  // need to uppercase to avoid name cl
     public static sbyte ASSIGNRSHIFT(ref sbyte dest, int s)
     {   return dest = (sbyte) (((int)dest)>>((int)s));
     }    
-    public static sbyte ASSIGNRSHIFT(ref int dest, int s)
-    {   return dest = (int) (((int)dest)>>((int)s));
-    }    
 
+    public static int ASSIGNURSHIFT(ref int dest, int s)
+    {   return dest = (int) (((uint)dest)>>((int)s));
+    }    
     public static short ASSIGNURSHIFT(ref short dest, int s)
     {   return dest = (short) (((uint)dest)>>((int)s));
     }    
@@ -359,9 +317,6 @@ namespace java.lang { public class SYSTEM  // need to uppercase to avoid name cl
     }    
     public static sbyte ASSIGNURSHIFT(ref sbyte dest, int s)
     {   return dest = (sbyte) (((uint)dest)>>((int)s));
-    }    
-    public static int ASSIGNURSHIFT(ref int dest, int s)
-    {   return dest = (int) (((uint)dest)>>((int)s));
     }    
     
 }}
