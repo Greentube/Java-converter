@@ -474,7 +474,7 @@ aspect GenerateCS
         getTypeAccess().generateCS(out);
 
         for (int i=0; i<extradims; i++) 
-        {   out.print("[]_477c");
+        {   out.print("[]");
         }               
         for (int i=0; i<getNumDeclarator(); i++) 
         {   VariableDeclarator d = getDeclarator(i);

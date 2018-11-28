@@ -305,7 +305,7 @@ aspect GenerateCS
                 return;
             }
         }
-        out.print("[]_308b");
+        out.print("[]");
     }
     
     public void ArrayTypeWithSizeAccess.generateCS(CodePrinterCS out) 
