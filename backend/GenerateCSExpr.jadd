@@ -305,7 +305,7 @@ aspect GenerateCS
                 return;
             }
         }
-        out.print("[]");
+        out.print("[]_308b");
     }
     
     public void ArrayTypeWithSizeAccess.generateCS(CodePrinterCS out) 
@@ -421,7 +421,7 @@ aspect GenerateCS
     }
     public void AssignDivExpr.generateCS(CodePrinterCS out) 
     {
-        generateWithOptionalFallbackCS(out, null, "ASSIGNDIV");        
+        generateWithOptionalFallbackCS(out, "/=", "ASSIGNDIV"); // [CC] replaced null with /=
     }
     public void AssignModExpr.generateCS(CodePrinterCS out) 
     {

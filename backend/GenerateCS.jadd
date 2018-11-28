@@ -90,10 +90,7 @@ aspect GenerateCS
             {   for (FieldDeclarator fd:bd.fieldDeclarations()) 
                 {   out.print("public ");
                     if (fd.isStatic()) 
-                    {   if (fd.isFinal()) // [CC]
-                        {   out.print("const ");
-                        }
-                        else
+                    {   if (!fd.isFinal()) // [CC] set static for non-final members
                         {   out.print("static ");
                         }
                         // test if shadowing a previous static field - need "new" keyword 
@@ -111,14 +108,17 @@ aspect GenerateCS
                             }
                             cd = (ClassDecl) cd.superclass();
                         }                   
+                        if (fd.isFinal()) // [CC] set const for final members
+                        {   out.print("const ");
+                        }
                     }                    
                     fd.fieldDecl().getTypeAccess().generateCS(out);
                     out.print(" ");
                     out.printIdentifier(fd.getID(),"_f");
                     for (int di=0; di<fd.getNumDims(); ++di) // [CC]
-                    {   out.print("[]");
+                    {   out.print("[]_119");
                     }
-                    if (fd.isFinal() && (fd.getInit() != null)) // [CC]
+                    if (fd.isFinal() && (fd.getInit() != null)) // [CC] initialize const values here (TODO: maybe do this for non-const as well?)
                     {   out.print(" = ");
                         fd.getInit().generateUsingResultCS(out);
                     }
@@ -192,7 +192,7 @@ aspect GenerateCS
                             out.increaseIndent();
                             havestaticconstructor=true;
                         }                           
-                        if (!fd.isFinal()) // [CC]
+                        if (!fd.isFinal()) // [CC] only initialize non-const values here (TODO: maybe do this for all fields?)
                         {   out.printIdentifier(fd.getID(),"_f");
                             out.print(" = ");
                             fd.getInit().generateUsingResultCS(out);
@@ -242,7 +242,7 @@ aspect GenerateCS
             out.increaseIndent();
             out.print("return new ");
             out.printIdentifier(uniqueName());
-            out.print("[]{");
+            out.print("[]_245{");
             boolean hasfirst=false;
             for (EnumConstant ec:ed.enumConstants()) 
             {   if (hasfirst) { out.print(","); }  
@@ -306,7 +306,7 @@ aspect GenerateCS
             {   if (i!=0) { out.print(", "); }
                 md.getParameter(i).getTypeAccess().generateCS(out);
                 if (i==numpar-1 && md.isVariableArity()) 
-                {   out.print("[]");
+                {   out.print("[]_309");
                 }        
                 out.print(" p"+i);                     
             }
@@ -439,7 +439,7 @@ aspect GenerateCS
             for (int d=5; d<=id_and_depth[1]; d++) 
             {   out.print("private static ");
                 type.generateNameCS(out);
-                for (int i=0; i<d; i++) { out.print("[]"); }
+                for (int i=0; i<d; i++) { out.print("[]_442"); }
                 out.print(" _dim"+id_and_depth[0]+"(");
                 for (int i=0; i<d; i++) 
                 {   if (i>0) { out.print(", "); }
@@ -449,11 +449,11 @@ aspect GenerateCS
                 out.println("{");
                 out.increaseIndent();
                 type.generateNameCS(out);
-                for (int i=0; i<d; i++) { out.print("[]"); }
+                for (int i=0; i<d; i++) { out.print("[]_452"); }
                 out.print(" a = new ");
                 type.generateNameCS(out);
                 out.print("[n0]");
-                for (int i=1; i<d; i++) { out.print("[]"); }
+                for (int i=1; i<d; i++) { out.print("[]_456"); }
                 out.println(";");
                 out.print("for (int i0=0; n1>=0 && i0<n0; i0++)");
                 out.println();
@@ -526,7 +526,7 @@ aspect GenerateCS
         {   if (i>0 || needouter || encvar.size()>0) { out.print(","); }
             getParameter(i).getTypeAccess().generateCS(out);
             if (i==numpar-1 && isVariableArity()) 
-            {   out.print("[]");
+            {   out.print("[]_529");
             } 
             out.print(" ");
             out.printIdentifier(getParameter(i).name());
@@ -672,7 +672,7 @@ aspect GenerateCS
         {   if (i>0 || isinterfaceextension) { out.print(", "); }
             getParameter(i).getTypeAccess().generateCS(out);
             if (i==numpar-1 && isVariableArity()) 
-            {   out.print("[]");
+            {   out.print("[]_675");
             } 
             out.print(" ");
             out.printIdentifier(getParameter(i).name());
@@ -717,7 +717,7 @@ aspect GenerateCS
         else if (isArrayDecl()) 
         {   elementType().generateNameCS(out);
             for (int i=dimension(); i>0; i--) 
-            {   out.print("[]");
+            {   out.print("[]_720");
             }
         } 
         else 
