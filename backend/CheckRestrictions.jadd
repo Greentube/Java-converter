@@ -244,6 +244,14 @@ aspect CheckRestrictions
     {
         MethodDecl m = decl().erasedMethod();
         
+        // check if the called method may be unresolved or contain unresolved types
+        for (int i=0; i<m.getNumParameter(); i++)
+        {   if (m.getParameter(i)==null) 
+            {   reportRestriction(errorlist, "Unresolved method call");
+                return;
+            }
+        }
+        
         // check if this is a call using the variable arguments syntax
         int straightargs = 0;
         if (!m.isVariableArity() 
@@ -255,7 +263,14 @@ aspect CheckRestrictions
         }
         // test for boxing of "normal parameters"
         for (int i=0; i<straightargs; i++) 
-        {   checkAutoBoxing(getArg(i).type(), m.getParameter(i).type(), errorlist);
+        {   if (m.getParameter(i)==null)
+            {   reportRestriction(errorlist, "Unresolved type for method parameter "+i+" of "+m.name()+"."+m.hostType().name());    
+                getArg(i).dumpTree(System.err);                        
+                return;
+            }
+            TypeDecl t1 = getArg(i).type();
+            TypeDecl t2 = m.getParameter(i).type();
+            checkAutoBoxing(t1, t2, errorlist);
         }
         // test for boxing of the parameters that are packaged into array
         for (int i=straightargs; i<getNumArg(); i++) 

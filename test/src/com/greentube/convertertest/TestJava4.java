@@ -202,7 +202,7 @@ public class TestJava4
         
     }
     
-
+    private static int staticintarray[] = new int[]{4711};
     static public void arraytest() 
     {   System.out.println ("- array");
     
@@ -229,9 +229,9 @@ public class TestJava4
         assertI(ar[2],5);
         
         // create multidimensional array
-        boolean[][] b2 = new boolean[4][2];
+        boolean[] b2[] = new boolean[4][2];
         assertB(b2[2][1] == false);
-        int[][]a = new int[4][5];                
+        int a[][] = new int[4][5];                
         assertI(a.length, 4);
         a[0][2] = 77;
         assertI((a[0]).length, 5);
@@ -260,9 +260,9 @@ public class TestJava4
         assertI(d[0], 0);
         assertI(d[1], 0);
         
-        String[] sa = new String[]{"this","is","some","text"};
+        String sa[] = new String[]{"this","is","some","text"};
         assertO(sa[1], "is");
-        String[][] sa2 = new String[4][];
+        String sa2[][] = new String[4][];
         sa2[2] = sa;
         assertO(sa2[2][3], "text");
         
@@ -323,6 +323,8 @@ public class TestJava4
         iaa[2][1] = 48;
         assertI(ibb[1][1], 17);    // still references "old" sub-array   
         assertI(ibb[2][1], 0);     // references "new" sub-array
+        
+        assertI(staticintarray[0], 4711);
     }
     
     private static int getArray()[]
@@ -667,6 +669,8 @@ public class TestJava4
         d *= 3;
         assertD(d, 10.5);
         d /= 3;
+        assertD(d, 3.5);
+        d /= 1.0;
         assertD(d, 3.5);
         d++;
         ++d;
@@ -1131,7 +1135,7 @@ public class TestJava4
     {
         int n=0;
         l: switch (i) 
-        {   case 1: 
+        {   case StaticClass.one: 
                 n++; 
             case 2: 
                 n++;
