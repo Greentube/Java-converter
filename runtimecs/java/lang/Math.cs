@@ -183,8 +183,8 @@ namespace java.lang { public class Math {
     {   return angdeg * (System.Math.PI/180.0);
     }
 
-    public static readonly double E_f  = System.Math.E;
-    public static readonly double PI_f = System.Math.PI;  
+    public const double E_f  = System.Math.E;
+    public const double PI_f = System.Math.PI;  
     
     private const double PI_L = 1.2246467991473532e-16; // Long bits 0x3ca1a62633145c07L.    
 }}

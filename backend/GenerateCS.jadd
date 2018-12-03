@@ -26,7 +26,7 @@ aspect GenerateCS
             out.finish();       
         }
     }
-
+    
     public void ClassDecl.generateCS(CodePrinterCS out) 
     {   
         for (TypeDecl t:nestedTypes()) 
@@ -90,7 +90,9 @@ aspect GenerateCS
             {   for (FieldDeclarator fd:bd.fieldDeclarations()) 
                 {   out.print("public ");
                     if (fd.isStatic()) 
-                    {   out.print("static ");
+                    {   if (!fd.isConstant()) // [CC] set static for non-constant members
+                        {   out.print("static ");
+                        }
                         // test if shadowing a previous static field - need "new" keyword 
                         ClassDecl cd = (ClassDecl) superclass();
                         findoriginal: while(!cd.isObject()) 
@@ -106,10 +108,20 @@ aspect GenerateCS
                             }
                             cd = (ClassDecl) cd.superclass();
                         }                   
+                        if (fd.isConstant()) // [CC] set const for constant members
+                        {   out.print("const ");
+                        }
                     }                    
                     fd.fieldDecl().getTypeAccess().generateCS(out);
+                    for (int di=0; di<fd.getNumDims(); ++di) // [CC] extra dimensions (stated after variable name)
+                    {   out.print("[]");
+                    }
                     out.print(" ");
                     out.printIdentifier(fd.getID(),"_f");
+                    if (fd.isConstant() && (fd.getInit() != null)) // [CC] initialize const values here (TODO: maybe do this for non-const as well?)
+                    {   out.print(" = ");
+                        fd.getInit().generateUsingResultCS(out);
+                    }
                     out.println(";");                     
                 }
             }
@@ -180,10 +192,12 @@ aspect GenerateCS
                             out.increaseIndent();
                             havestaticconstructor=true;
                         }                           
-                        out.printIdentifier(fd.getID(),"_f");
-                        out.print(" = ");
-                        fd.getInit().generateUsingResultCS(out);
-                        out.println(";");
+                        if (!fd.isConstant()) // [CC] only initialize non-const values here (TODO: maybe do this for all fields?)
+                        {   out.printIdentifier(fd.getID(),"_f");
+                            out.print(" = ");
+                            fd.getInit().generateUsingResultCS(out);
+                            out.println(";");
+                        }
                     }
                 }
             } 

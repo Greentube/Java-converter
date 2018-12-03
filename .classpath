@@ -8,5 +8,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/ant.jar"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/extendj"/>
+	<classpathentry kind="lib" path="/extendj/java8/extendj.jar" sourcepath="/extendj/java8/src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
