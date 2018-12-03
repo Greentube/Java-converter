@@ -22,6 +22,21 @@ public class TestParent
         {   dummyvector.addElement("el:"+i);
         }
     }
+    
+    private TestParent(int vectorsize, String initvalue)
+    {
+        this(vectorsize);
+        for (int i=0; i<vectorsize; i++) 
+        {   dummyvector.set(i,initvalue);
+        }
+    }
+    
+    public TestParent(int vectorsize, String initvalue, String firstvalue)
+    {
+        this(vectorsize,initvalue);
+        dummyvector.set(0, firstvalue);        
+    }
+
 
     public DummyClass gimmedummy() 
     {   return null;

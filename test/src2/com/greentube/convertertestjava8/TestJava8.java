@@ -285,7 +285,13 @@ public class TestJava8 extends TestJava7
         Predicate<Integer> iseven = (o) -> o.intValue()%2==0;
         TestJava8.<Integer,Integer>process 
         (   () -> n[0]<20?Integer.valueOf(n[0]++):null, 
-            iseven.and((o) -> o.intValue()%3==0).or((o) -> o.intValue()==5).negate(), 
+            iseven.and
+            (   (o) -> o.intValue()%3==0
+            )
+            .or 
+            (   (o) -> o.intValue()==5 
+            )
+            .negate(), 
             Function.identity(), 
             o -> l.add(""+o) 
         );

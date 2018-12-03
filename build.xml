@@ -94,8 +94,16 @@
                 <include name="*.jrag"/>
                 <include name="*.jadd"/>
             </fileset>
-            
         </jastadd>
+    	
+    	<!-- add the compilier and scanner from the extendj folder as is -->
+        <copy todir="${basedir}/gen/org/extendj/parser" >
+            <fileset dir="${extendjpath}/java8/src/gen/org/extendj/parser"/>
+        </copy>
+        <copy todir="${basedir}/gen/org/extendj/scanner" >
+            <fileset dir="${extendjpath}/java8/src/gen/org/extendj/scanner"/>
+        </copy>
+    	
     </target>
 
     
@@ -197,8 +205,6 @@
             <src path="${extendjpath}/src/frontend-main"/>
             <src path="${extendjpath}/src/backend"/>
             <src path="${extendjpath}/src/backend-main"/>
-            <src path="${extendjpath}/java8/src/gen/org/extendj/parser"/>
-            <src path="${extendjpath}/java8/src/gen/org/extendj/scanner"/>
             <src path="${extendjpath}/java8/src/main"/>
         </javac>    
 
@@ -212,7 +218,7 @@
             <fileset dir="${basedir}/build/package"/>
             <manifest>
                  <attribute name="Main-Class" value="com.greentube.javaconverter.JavaConverter"/>
-                 <attribute name="Implementation-Version" value="2.9.5"/>
+                 <attribute name="Implementation-Version" value="2.9.6"/>
                  <attribute name="Version-Date" value="${timestamp}"/>
             </manifest>         
         </jar>          

@@ -14,4 +14,21 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>extendj_backend</name>
+			<type>2</type>
+			<location>C:/Users/rgraf/Documents/extendj/src/backend</location>
+		</link>
+		<link>
+			<name>extendj_frontend</name>
+			<type>2</type>
+			<location>C:/Users/rgraf/Documents/extendj/src/frontend</location>
+		</link>
+		<link>
+			<name>java8_main</name>
+			<type>2</type>
+			<location>C:/Users/rgraf/Documents/extendj/java8/src/main/java</location>
+		</link>
+	</linkedResources>
 </projectDescription>

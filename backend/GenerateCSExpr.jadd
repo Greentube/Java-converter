@@ -421,7 +421,7 @@ aspect GenerateCS
     }
     public void AssignDivExpr.generateCS(CodePrinterCS out) 
     {
-        generateWithOptionalFallbackCS(out, "/=", "ASSIGNDIV"); // [CC] replaced null with /=
+        generateWithOptionalFallbackCS(out, null, "ASSIGNDIV");
     }
     public void AssignModExpr.generateCS(CodePrinterCS out) 
     {

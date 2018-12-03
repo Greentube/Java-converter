@@ -1893,7 +1893,7 @@ public class TestJava4
         a = "" + a + " you";             // string building with + 
         a = a + " " + 4711;              // add a number to a string
         assertO(a,"hello you 4711");
-        a = "some " + 44 + " more " + (new Integer(88)) + " concats " + new TestParent(3);
+        a = "some " + 44 + " more " + (new Integer(88)) + " concats " + new TestParent(3,"?","xx");
         assertO(a, "some 44 more 88 concats TestParent3");
         assertO (44 - 33 + "hi", "11hi");
         assertO (44 + "" + 33 + "hi", "4433hi");

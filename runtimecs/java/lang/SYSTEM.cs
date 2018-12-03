@@ -205,6 +205,9 @@ namespace java.lang { public class SYSTEM  // need to uppercase to avoid name cl
     public static sbyte ASSIGNDIV(ref sbyte dest, double s)
     {   return dest = castToByte(dest/s);
     }
+    public static double ASSIGNDIV(ref double dest, double s)
+    {   return dest = dest / s;
+    }    
 
     public static short ASSIGNMUL(ref short dest, int s)
     {   return dest = (short) (dest*s);

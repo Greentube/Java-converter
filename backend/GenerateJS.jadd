@@ -191,16 +191,15 @@ aspect GenerateJS
         {   // check if need to suppress auto-generated bridge methods 
             if (bridgemethods.contains(bd)) continue;
               
-            // check if need to suppress auto-generated methods related to Enums            
+            // check need to suppress everything static here. will be added later on.            
             if (bd instanceof MethodDecl) 
             {   MethodDecl md = (MethodDecl) bd;
-                if (md.isStatic()) continue;                
+                if (md.isStatic()) { continue; }                 
             }
+            // suppress synthetic constructors
             else if (bd instanceof ConstructorDecl) 
             {   ConstructorDecl cd = (ConstructorDecl) bd;
-                if (this instanceof EnumDecl) 
-                {   if (cd.isSynthetic()) continue;
-                }           
+                  if (cd.isSynthetic()) { continue; }
             }
             bd.generateJS(out);
         }       
