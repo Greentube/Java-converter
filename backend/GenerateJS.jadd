@@ -43,7 +43,7 @@ aspect GenerateJS
       
         out.print("var ");
         out.printJSName(packageName(), uniqueName());
-        out.println(" = function(");
+        out.print(" = function(");
 
         // allocator function
         boolean foundpar=false; 
@@ -52,7 +52,7 @@ aspect GenerateJS
             foundpar=true;
         }
         for (Variable v:enclosingVariables()) 
-        {   if (foundpar) out.print(",");
+        {   if (foundpar) out.print(", ");
             out.printIdentifier(v.name(),"_o");
             foundpar=true;
         }
@@ -127,7 +127,7 @@ aspect GenerateJS
             {   out.printJSName(packageName(), uniqueName());           
                 out.print("_");
                 out.printIdentifier(ec.getID());
-                out.println(",");
+                out.println(", ");
             }
             out.decreaseIndent();
             out.println("];");        
@@ -172,7 +172,7 @@ aspect GenerateJS
         {   out.print("[");
             int n=0;
             for (Access ac: getImplementsList()) 
-            {   if (n>0) out.print(",");
+            {   if (n>0) out.print(", ");
                 while (ac instanceof Dot) ac=((Dot)ac).getRight();
                 TypeDecl t = (ac instanceof TypeAccess) ? ((TypeAccess) ac).type()    
                                                         : ((ParTypeAccess) ac).type(); 
@@ -182,7 +182,8 @@ aspect GenerateJS
             }
             out.print("]");
         } 
-        out.println(",{");        
+        out.println(",");
+        out.println("{");        
         out.increaseIndent();                                     
 
         Collection<MethodDecl> bridgemethods = bridgeMethods();
@@ -250,9 +251,9 @@ aspect GenerateJS
                 out.printJSName(packageName(), uniqueName());
                 out.print("()._"+(ec.getNumArg()+2)+"(");
                 Constant.generateStringJS(out, ec.getID());
-                out.print(","+ordinal);             
+                out.print(", "+ordinal);             
                 for (int i=0; i<ec.getNumArg(); i++) 
-                {   out.print(",");
+                {   out.print(", ");
                     ec.getArg(i).generateJS(out);
                 }
                 out.println(");");                
@@ -284,9 +285,9 @@ aspect GenerateJS
                     o2.printAndMemorizeComplete(t.packageName(),t.uniqueName());
                     o2.print("()._"+(ec.getNumArg()+2)+"(");
                     Constant.generateStringJS(o2, ec.getID());
-                    o2.print(","+ordinal);
+                    o2.print(", "+ordinal);
                     for (int i=0; i<ec.getNumArg(); i++) 
-                    {   o2.print(",");
+                    {   o2.print(", ");
                         ec.getArg(i).generateJS(o2);
                     }
                     o2.println(");");
@@ -310,7 +311,7 @@ aspect GenerateJS
         if (hasSuperInterface()) 
         {   int n=0;
             for (Access ac: getSuperInterfaceList()) 
-            {   if (n>0) { out.print(","); }
+            {   if (n>0) { out.print(", "); }
                 while (ac instanceof Dot) { ac=((Dot)ac).getRight(); }
                 TypeDecl t = (ac instanceof TypeAccess) ? ((TypeAccess) ac).type() 
                                                         : ((ParTypeAccess) ac).type();
@@ -331,14 +332,13 @@ aspect GenerateJS
         }
         if (defaults.size()>0) 
         {     out.println("_defaults:");
-              out.print("{   ");
+              out.print("{");
               out.increaseIndent();           
               for (MethodDecl md:defaults)
               {     md.generateJS(out);
               }     
               out.decreaseIndent();
-              out.println("}");
-              out.println(",");
+              out.println("},");
         }   
         
         out.decreaseIndent();
@@ -414,7 +414,7 @@ aspect GenerateJS
 
         out.print("_"+numpar+": function(");
         for (int i=0; i<numpar; i++) 
-        {   if (i>0) out.print(",");
+        {   if (i>0) out.print(", ");
             out.printIdentifier(getParameter(i).name());
         }
         out.println(")");
@@ -460,8 +460,7 @@ aspect GenerateJS
         out.print("return this;");
         out.decreaseIndent();
         out.println();        
-        out.println("}");
-        out.println(",");
+        out.println("},");
     }
 
 //  public void EnumConstant.generateJS(CodePrinterJS out) {
@@ -497,14 +496,12 @@ aspect GenerateJS
         }
         out.print("function(");
         for (int i=0; i<numpar; i++) 
-        {   if (i>0) out.print(",");
+        {   if (i>0) out.print(", ");
             out.printIdentifier(getParameter(i).name());
         }
         out.println(")");
         
-        block.generateJS(out);
-
-        out.println(isStatic() ? ";" : ",");
+        block.generateJSWithDelimiter(out, isStatic() ? ";" : ",");
     }
 
     public void StaticInitializer.generateJS(CodePrinterJS out) 
@@ -553,7 +550,7 @@ aspect GenerateJS
             }
         }
         
-        out.print(",");
+        out.print(", ");
         out.print(""+dimension());    
     }
     

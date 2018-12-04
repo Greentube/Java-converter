@@ -1129,7 +1129,17 @@ public class TestJava4
 		; // empty statement
 		for (int i=0; i<2; i++);  // loop with empty body
 		if (y++<0);                 // if with empty body
-		if (y++>0); else;           // more empty bodies		
+		if (y++>0); else;           // more empty bodies
+		
+		// constructs without curly braces
+		if (y<10) y++;
+		if (y<20) y--;
+		else y++;
+		while (y==100)
+		   y++;
+		for (y=1; y<2; y++) y++;
+		do y++; while (y<1);   
+		switch (y) { case 1: case 2: break; default: break; }
     }
     private static String swtst(int i) 
     {

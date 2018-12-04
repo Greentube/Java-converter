@@ -7,6 +7,16 @@ import com.greentube.javaconverter.CodePrinterJS;
 
 aspect GenerateJS 
 {
+    public void Stmt.generateJSWithCurlyBraces(CodePrinterJS out)
+    {
+        out.println("{");
+        out.increaseIndent();
+        generateJS(out);
+        out.decreaseIndent();
+        out.println("}");        
+    }
+
+
     // --- AssertStmt ---
     
     public void AssertStmt.generateJS(CodePrinterJS out)
@@ -28,14 +38,33 @@ aspect GenerateJS
         out.decreaseIndent();
         out.println("}");
     }
+    
+    public void Block.generateJSWithDelimiter(CodePrinterJS out, String delimiter)
+    {
+        out.println("{");
+        out.increaseIndent();
+        int n = getNumStmt();
+        for (int i=0; i<n; i++) 
+        {   getStmt(i).generateJS(out);
+        }
+        out.decreaseIndent();
+        out.print("}");
+        out.println(delimiter);
+    }
+
+    public void Block.generateJSWithCurlyBraces(CodePrinterJS out)
+    {
+        generateJS(out);
+    }
+  
   
     // --- BranchTargetStmt ---
 
     public void DoStmt.generateJS(CodePrinterJS out) 
     {   
         out.print("do ");
-        if (getStmt() instanceof Block) out.println();
-        getStmt().generateJS(out);
+        out.println();
+        getStmt().generateJSWithCurlyBraces(out);
         out.print("while (");
         getCondition().generateUsingResultJS(out);
         out.println(");");
@@ -89,8 +118,8 @@ aspect GenerateJS
         else 
         {   throw new RuntimeException("Expression is neither an array or an Iterable");
         }
-        if (getStmt() instanceof Block) { out.println(); }
-        getStmt().generateJS(out);              
+        out.println();
+        getStmt().generateJSWithCurlyBraces(out);              
         out.println();
     }
  
@@ -98,7 +127,7 @@ aspect GenerateJS
     {   
         out.print("for (");
         for (int i=0; i<getNumInitStmt(); i++) 
-        {   if (i>0) out.print(",");               
+        {   if (i>0) out.print(", ");               
             Stmt s = getInitStmt(i);
             if (s instanceof ExprStmt)
             {   ((ExprStmt)s).getExpr().generateJS(out);
@@ -113,12 +142,12 @@ aspect GenerateJS
         }
         out.print("; ");
         for (int i=0; i<getNumUpdateStmt(); i++) 
-        {   if (i>0) out.print(",");
+        {   if (i>0) out.print(", ");
             ((ExprStmt)getUpdateStmt(i)).getExpr().generateJS(out);
         }
         out.print(") ");
-        if (getStmt() instanceof Block) out.println();
-        getStmt().generateJS(out);
+        out.println();
+        getStmt().generateJSWithCurlyBraces(out);
     }
 
     public void LabeledStmt.generateJS(CodePrinterJS out) 
@@ -188,9 +217,8 @@ aspect GenerateJS
     {   
         out.print("while (");
         getCondition().generateUsingResultJS(out);
-        out.print(") ");
-        if (getStmt() instanceof Block) out.println();
-        getStmt().generateJS(out);
+        out.println(")");
+        getStmt().generateJSWithCurlyBraces(out);
     }
 
     // --- BreakStmt ---
@@ -236,7 +264,13 @@ aspect GenerateJS
     // --- EmptyStmt ---
     public void EmptyStmt.generateJS(CodePrinterJS out)
     {   
-        out.println("{}");
+        out.println("{");
+        out.println("}");
+    }
+    public void EmptyStmt.generateJSWithCurlyBraces(CodePrinterJS out)
+    {   
+        out.println("{");
+        out.println("}");
     }
     
     // --- ExprStmt ---
@@ -255,13 +289,11 @@ aspect GenerateJS
         Stmt e = getElse();
         out.print("if (");
         getCondition().generateUsingResultJS(out);
-        out.print(") ");
-        if (t instanceof Block) { out.println(); }
-        t.generateJS(out);
+        out.println(")");
+        t.generateJSWithCurlyBraces(out);
         if (e!=null) 
-        {   if (!(t instanceof Block) && !(t instanceof EmptyStmt)) out.println();
-            out.print("else ");
-            e.generateJS(out);
+        {   out.println("else");
+            e.generateJSWithCurlyBraces(out);
         }
     }
     
@@ -435,9 +467,14 @@ aspect GenerateJS
                 {   cc.getBlock().generateJS(out);
                 }
             }
-            out.print("else { throw ");
+            out.println("else");
+            out.println("{");
+            out.increaseIndent();
+            out.print("throw ");
             out.printIdentifier(varid,"$");
-            out.println("; }");
+            out.println(";");
+            out.decreaseIndent();
+            out.println("}");
             
             out.decreaseIndent();
             out.println("}");

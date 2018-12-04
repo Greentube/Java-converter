@@ -98,7 +98,7 @@ aspect GenerateJS
         {   out.print(getNumArg()<=1 ? "_array2str" : "_subarray2str");
             out.print("(");
             for (int i=0; i<getNumArg(); i++) 
-            {   if (i>0) { out.print(","); }
+            {   if (i>0) { out.print(", "); }
                 getArg(i).generateUsingResultJS(out);
             }
             out.print(")");
@@ -118,7 +118,7 @@ aspect GenerateJS
             foundpar=true;
         }
         for (Variable v:type().enclosingVariables()) 
-        {   if (foundpar) { out.print(","); }
+        {   if (foundpar) { out.print(", "); }
             out.printIdentifier(v.name());
             foundpar=true;
         }        
@@ -127,7 +127,7 @@ aspect GenerateJS
         ConstructorDecl m = decl();
         out.print("._"+m.getNumParameter()+"(");        
         for (int i=0; i<getNumArg(); i++) 
-        {   if (i>0) { out.print(","); }
+        {   if (i>0) { out.print(", "); }
             getArg(i).generateUsingResultJS(out);
         }
         out.print(")");
@@ -150,7 +150,7 @@ aspect GenerateJS
         ConstructorDecl m = decl();
         out.print(".prototype._" + m.getNumParameter() + ".call(this");
         for (int i=0; i<getNumArg(); i++) 
-        {   out.print(",");
+        {   out.print(", ");
             getArg(i).generateUsingResultJS(out);
         }
         out.print(")");
@@ -215,7 +215,7 @@ aspect GenerateJS
             out.print(".prototype.");         
             out.printIdentifier(m.name(),"_"+m.getNumParameter());
             out.print(".call(this");
-            if (m.getNumParameter()>0) out.print(",");
+            if (m.getNumParameter()>0) out.print(", ");
         }
         else
         {   out.print(".");
@@ -225,7 +225,7 @@ aspect GenerateJS
 
         // generate parameters 
         for (int i=0; i<getNumArg(); i++) 
-        {   if (i>0) { out.print(","); }
+        {   if (i>0) { out.print(", "); }
             // do necessary data conversion for some built-in methods 
             // to clarify the use of a char instead of a int 
             TypeDecl ht = m.hostType();
@@ -306,7 +306,9 @@ aspect GenerateJS
     {
         getAccess().generateJS(out);
         getExpr().generateJS(out);
-        out.print(",");
+        if (getParent() instanceof ArrayTypeWithSizeAccess)
+        {   out.print(", ");
+        }
     }       
 
     public void VarAccess.generateJS(CodePrinterJS out) 
@@ -370,10 +372,10 @@ aspect GenerateJS
     {   
         out.print("_arr(");
         type().generateElementTypeAndDimensionsJS(out);
-        out.print(",");
+        out.print(", ");
         out.print("[");
         for (int i=0; i<getNumInit(); i++) 
-        {   if (i>0) { out.print(","); }
+        {   if (i>0) { out.print(", "); }
             getInit(i).generateUsingResultJS(out);
         }
         out.print("])");
@@ -462,10 +464,10 @@ aspect GenerateJS
         {   out.print("(");
             ((Dot)d).generateExcludingRightmostJS(out);
             if (funcpar2!=null) 
-            {   out.print(",");
+            {   out.print(", ");
                 funcpar2.generateJS(out); 
             }
-            out.print(",");
+            out.print(", ");
             s.generateJS(out);        
             out.print(")");
         }
@@ -480,7 +482,7 @@ aspect GenerateJS
             {   out.print(op);
                 out.print("(");
                 d.generateJS(out);
-                out.print(",");
+                out.print(", ");
                 s.generateJS(out);
                 out.print(")");
             }
@@ -704,13 +706,13 @@ aspect GenerateJS
         } 
         else if (type().isDouble()) 
         {   l.generateUsingResultJS(out);
-            out.print(" + ");
+            out.print("+");
             r.generateUsingResultJS(out);
         } 
         else
         {   out.print("((");
             l.generateUsingResultJS(out);
-            out.print(" + ");
+            out.print("+");
             r.generateUsingResultJS(out);
             out.print(")|0)");
         }
@@ -721,13 +723,13 @@ aspect GenerateJS
         Expr r = getRightOperand();     
         if (type().isDouble()) 
         {   l.generateUsingResultJS(out);
-            out.print(" - ");
+            out.print("-");
             r.generateUsingResultJS(out);
         }
         else
         {   out.print("((");
             l.generateUsingResultJS(out);
-            out.print(" - ");
+            out.print("-");
             r.generateUsingResultJS(out);
             out.print(")|0)");
         }
@@ -738,7 +740,7 @@ aspect GenerateJS
         Expr r = getRightOperand();     
         if (type().isDouble()) 
         {   l.generateUsingResultJS(out);
-            out.print(" / ");
+            out.print("/");
             r.generateUsingResultJS(out);
         } 
         else
@@ -755,13 +757,13 @@ aspect GenerateJS
         Expr r = getRightOperand();     
         if (type().isDouble()) 
         {   l.generateUsingResultJS(out);
-            out.print(" * ");
+            out.print("*");
             r.generateUsingResultJS(out);
         }
         else if (l.hasLessThan20Bits() || r.hasLessThan20Bits()) 
         {   out.print("((");
             l.generateUsingResultJS(out);
-            out.print(" * ");
+            out.print("*");
             r.generateUsingResultJS(out);
             out.print(")|0)");
         }
@@ -776,7 +778,7 @@ aspect GenerateJS
     public void ModExpr.generateJS(CodePrinterJS out) 
     {   
         getLeftOperand().generateUsingResultJS(out);
-        out.print(" % ");
+        out.print("%");
         getRightOperand().generateUsingResultJS(out);
     }   
     public void AndBitwiseExpr.generateJS(CodePrinterJS out) 
@@ -786,13 +788,13 @@ aspect GenerateJS
         if (l.type().isBoolean() && r.type().isBoolean())
         {   out.print("_and(");
             l.generateUsingResultJS(out);
-            out.print(",");        
+            out.print(", ");        
             r.generateUsingResultJS(out);
             out.print(")");
             return;
         }
         l.generateUsingResultJS(out);
-        out.print(" & ");
+        out.print("&");
         r.generateUsingResultJS(out);   
     }
     public void OrBitwiseExpr.generateJS(CodePrinterJS out) 
@@ -802,13 +804,13 @@ aspect GenerateJS
         if (l.type().isBoolean() && r.type().isBoolean())
         {   out.print("_or(");
             l.generateUsingResultJS(out);
-            out.print(",");        
+            out.print(", ");        
             r.generateUsingResultJS(out);
             out.print(")");
             return;
         }
         getLeftOperand().generateUsingResultJS(out);
-        out.print(" | ");
+        out.print("|");
         getRightOperand().generateUsingResultJS(out);   
     }
     public void XorBitwiseExpr.generateJS(CodePrinterJS out) 
@@ -818,13 +820,13 @@ aspect GenerateJS
         if (l.type().isBoolean() && r.type().isBoolean())
         {   out.print("_xor(");
             l.generateUsingResultJS(out);
-            out.print(",");        
+            out.print(", ");        
             r.generateUsingResultJS(out);
             out.print(")");
             return;
         }
         getLeftOperand().generateUsingResultJS(out);
-        out.print(" ^ ");
+        out.print("^");
         getRightOperand().generateUsingResultJS(out);   
     }
     public void AndLogicalExpr.generateJS(CodePrinterJS out) 
@@ -842,55 +844,55 @@ aspect GenerateJS
     public void EQExpr.generateJS(CodePrinterJS out) 
     {
         getLeftOperand().generateUsingResultJS(out);
-        out.print(" === ");
+        out.print("===");
         getRightOperand().generateUsingResultJS(out);   
     }
     public void NEExpr.generateJS(CodePrinterJS out) 
     {
         getLeftOperand().generateUsingResultJS(out);
-        out.print(" !== ");
+        out.print("!==");
         getRightOperand().generateUsingResultJS(out);   
     }
     public void GEExpr.generateJS(CodePrinterJS out) 
     {
         getLeftOperand().generateUsingResultJS(out);
-        out.print(" >= ");
+        out.print(">=");
         getRightOperand().generateUsingResultJS(out);   
     }
     public void GTExpr.generateJS(CodePrinterJS out) 
     {
         getLeftOperand().generateUsingResultJS(out);
-        out.print(" > ");
+        out.print(">");
         getRightOperand().generateUsingResultJS(out);   
     }
     public void LEExpr.generateJS(CodePrinterJS out) 
     {
         getLeftOperand().generateUsingResultJS(out);
-        out.print(" <= ");
+        out.print("<=");
         getRightOperand().generateUsingResultJS(out);   
     }
     public void LTExpr.generateJS(CodePrinterJS out) 
     {
         getLeftOperand().generateUsingResultJS(out);
-        out.print(" < ");
+        out.print("<");
         getRightOperand().generateUsingResultJS(out);   
     }
     public void LShiftExpr.generateJS(CodePrinterJS out) 
     {
         getLeftOperand().generateUsingResultJS(out);
-        out.print(" << ");
+        out.print("<<");
         getRightOperand().generateUsingResultJS(out);
     }
     public void RShiftExpr.generateJS(CodePrinterJS out) 
     {
         getLeftOperand().generateUsingResultJS(out);
-        out.print(" >> ");
+        out.print(">>");
         getRightOperand().generateUsingResultJS(out);   
     }
     public void URShiftExpr.generateJS(CodePrinterJS out) 
     {
         getLeftOperand().generateUsingResultJS(out);
-        out.print(" >>> ");
+        out.print(">>>");
         getRightOperand().generateUsingResultJS(out);   
     }
     
@@ -932,14 +934,14 @@ aspect GenerateJS
         else if (t.isArrayDecl()) 
         {   out.print("_checkarray(");
             getExpr().generateUsingResultJS(out);
-            out.print(",");
+            out.print(", ");
             t.generateElementTypeAndDimensionsJS(out);
             out.print(")");
         } 
         else if (t.isInterfaceDecl()) 
         {   out.print("_checkinterface(");
             getExpr().generateUsingResultJS(out);
-            out.print(",");
+            out.print(", ");
             out.printAndMemorizeReference(t.packageName(),t.uniqueName());
             out.print(")");
         }
@@ -954,7 +956,7 @@ aspect GenerateJS
         else 
         {   out.print("_checkclass(");
             getExpr().generateUsingResultJS(out);
-            out.print(",");
+            out.print(", ");
             out.printAndMemorizeReference(t.packageName(),t.uniqueName());
             out.print(")");
         }
@@ -965,9 +967,9 @@ aspect GenerateJS
     public void ConditionalExpr.generateJS(CodePrinterJS out) 
     {
         getCondition().generateUsingResultJS(out);
-        out.print("?");
+        out.print(" ? ");
         getTrueExpr().generateUsingResultJS(out);
-        out.print(":");
+        out.print(" : ");
         getFalseExpr().generateUsingResultJS(out);
     }
     
@@ -979,7 +981,7 @@ aspect GenerateJS
         if (t.isArrayDecl())
         {   out.print("_isarray(");
             getExpr().generateUsingResultJS(out);
-            out.print(",");
+            out.print(", ");
             t.generateElementTypeAndDimensionsJS(out);
             out.print(")");
         }
@@ -990,7 +992,7 @@ aspect GenerateJS
         else if (t.isInterfaceDecl()) 
         {   out.print("_isinterface(");
             getExpr().generateUsingResultJS(out);
-            out.print(",");
+            out.print(", ");
             out.printAndMemorizeReference(t.packageName(),t.uniqueName());
             out.print(")");
         }
@@ -1025,9 +1027,9 @@ aspect GenerateJS
         {   Access ta = getTypeAccess();
             out.print("_dim(");
             type().generateElementTypeAndDimensionsJS(out);
-            out.print(",[");
+            out.print(", [");
             ta.generateJS(out);
-            out.print("],");
+            out.print("], ");
             if 
             (   (ta instanceof ArrayTypeWithSizeAccess) 
                 && ta.type().elementType().isPrimitiveType()
@@ -1062,12 +1064,12 @@ aspect GenerateJS
     // --- Unary ---
     public void BitNotExpr.generateJS(CodePrinterJS out) 
     {
-        out.print(" ~ ");
+        out.print("~");
         getOperand().generateUsingResultJS(out);    
     }
     public void LogNotExpr.generateJS(CodePrinterJS out) 
     {
-        out.print(" ! ");
+        out.print("!");
         getOperand().generateUsingResultJS(out);    
     }
     public void MinusExpr.generateJS(CodePrinterJS out) 
@@ -1157,7 +1159,7 @@ aspect GenerateJS
         {   out.print("(");
             ((Dot)d).generateExcludingRightmostJS(out);
             if (funcpar2!=null) 
-            {   out.print(",");
+            {   out.print(", ");
                 funcpar2.generateJS(out); 
             }
             out.print(")");
@@ -1173,7 +1175,7 @@ aspect GenerateJS
             out.print("=");
             out.print(caststart);
             d.generateUsingResultJS(out);
-            out.print(inc?" +1":" -1");
+            out.print(inc?"+1":"-1");
             out.print(castend);
             if (!pre && needresult)
             {   out.print(")");
