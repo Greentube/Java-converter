@@ -476,6 +476,7 @@ public class TestJava4
     public static void operatortest() 
     {   System.out.println("- operator");
 
+        int zeroi = 0;
         boolean bo;
         bo=true;
         int i=0;
@@ -497,6 +498,7 @@ public class TestJava4
         assertI ( (4-5-1) , -2);
         assertI ( (4-5+5),  4);
         assertO (""+bo,"true");
+        assertI (zeroi - Integer.MIN_VALUE, Integer.MIN_VALUE); 
         
         boolean t=true;
         boolean f=false;
@@ -504,7 +506,7 @@ public class TestJava4
         assertB ( (f && f2 || t), true);
         assertB ( (f && t || t), true);
         assertB ( 3 < 4, true);
-        assertB ( - -3 > + + +4, false);
+        assertB ( zeroi- - - -3 > + + +4, false);
         assertB (t | f, true);
         assertB (t & f, false);
         assertB (t ^ f, true);

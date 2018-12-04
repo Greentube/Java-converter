@@ -4,14 +4,16 @@ import java.io.*;
 import java.util.*;
 
 public class CodePrinter 
-{   // general code generation
+{   final String escapesign;    
+    final HashSet<String> reservedidentifiers;
+
+    // general code generation
     File outputfolder;
     OutputStreamWriter ow;
     boolean linehasstarted;
     int indent;
     boolean afteropeningbrace;
-    String escapesign;
-    HashSet<String> reservedidentifiers;
+    char lastchar;
     
     public CodePrinter(File outputfolder, String filename, String escapesign, HashSet<String> reservedidentifiers) 
     {   
@@ -31,6 +33,7 @@ public class CodePrinter
         this.afteropeningbrace = false;
         this.escapesign = escapesign;
         this.reservedidentifiers = reservedidentifiers;
+        this.lastchar = 0;
     }
 
     public File getOutputFolder()
@@ -61,13 +64,21 @@ public class CodePrinter
 
     public void print(String s) 
     {   
+        if (s.length()<1) { return; }
         try        
         {   if (!linehasstarted) 
             {   for (int i=0; i<indent; i++) ow.write("    ",0,4);
                 linehasstarted=true;
             }
+            
+            // prevent clashing '-' operators 
+            if (lastchar=='-' && s.charAt(0)=='-') 
+            {   ow.write(' ');
+            }
+            
             ow.write(s,0,s.length());
             afteropeningbrace = s.equals("{");
+            lastchar = s.charAt(s.length()-1);
         } 
         catch (IOException e) 
         {   e.printStackTrace();
