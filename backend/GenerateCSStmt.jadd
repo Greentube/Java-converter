@@ -7,6 +7,14 @@ import com.greentube.javaconverter.CodePrinterCS;
 
 aspect GenerateCS 
 {
+    public void Stmt.generateCSWithCurlyBraces(CodePrinterCS out) 
+    {
+        out.println("{");
+        out.increaseIndent();
+        generateCS(out);
+        out.decreaseIndent();
+        out.println("}");
+    }    
 
     // --- AssertStmt ---
     
@@ -20,6 +28,10 @@ aspect GenerateCS
     // --- Block ---
 
     public void Block.generateCS(CodePrinterCS out) 
+    {
+        generateCS(out,null);
+    }    
+    public void Block.generateCSWithCurlyBraces(CodePrinterCS out) 
     {
         generateCS(out,null);
     }    
@@ -57,7 +69,7 @@ aspect GenerateCS
         }
         out.println();
     }
-
+    
     // --- BranchTargetStmt ---
     public void BranchTargetStmt.generateCS(CodePrinterCS out)
     {   generateCS(out,null);
@@ -87,7 +99,14 @@ aspect GenerateCS
             out.print("}");
         } 
         else 
-        {   stmt.generateCS(out);
+        {   out.println();
+            out.println("{");
+            if (! (stmt instanceof EmptyStmt))
+            {   out.increaseIndent();
+                stmt.generateCS(out);
+                out.decreaseIndent();
+            }
+            out.println("}");
         }
     }
 
@@ -95,7 +114,7 @@ aspect GenerateCS
     {
         out.print("do ");
         generateInnerStmtCS(out, getStmt(), continuelabel);
-        out.print("while(");
+        out.print("while (");
         getCondition().generateUsingResultCS(out);
         out.println(");");
     }
@@ -150,7 +169,7 @@ aspect GenerateCS
     {  
         out.print("for (");
         for (int i=0; i<getNumInitStmt(); i++) 
-        {   if (i>0) out.print(",");               
+        {   if (i>0) out.print(", ");               
             Stmt s = getInitStmt(i);
             if (s instanceof ExprStmt)
             {   ((ExprStmt)s).getExpr().generateCS(out);
@@ -169,7 +188,7 @@ aspect GenerateCS
         {   if (i>0) out.print(", ");
             ((ExprStmt)getUpdateStmt(i)).getExpr().generateUsingResultCS(out);
         }
-        out.print(") ");
+        out.print(")");
 
         generateInnerStmtCS(out, getStmt(), continuelabel);
     }
@@ -228,7 +247,7 @@ aspect GenerateCS
     public void WhileStmt.generateCS(CodePrinterCS out, String continuelabel) 
     {   out.print("while (");
         getCondition().generateUsingResultCS(out);
-        out.print(") ");
+        out.print(")");
         generateInnerStmtCS(out, getStmt(), continuelabel);
     }
 
@@ -299,8 +318,13 @@ aspect GenerateCS
     // --- EmptyStmt ---
     public void EmptyStmt.generateCS(CodePrinterCS out)
     {   
-        out.println("{}");
+        out.println("{");
+        out.println("}");
     }    
+    public void EmptyStmt.generateCSWithCurlyBraces(CodePrinterCS out)
+    {
+        generateCS(out);
+    } 
     
     // --- ExprStmt ---
   
@@ -315,12 +339,13 @@ aspect GenerateCS
     public void IfStmt.generateCS(CodePrinterCS out) 
     {   out.print("if (");
         getCondition().generateUsingResultCS(out);
-        out.println(") ");
-        getThen().generateCS(out);
+        out.println(")");
+        Stmt t = getThen();
+        t.generateCSWithCurlyBraces(out);                
         Stmt e = getElse();
         if (e!=null) 
         {   out.println("else ");
-            e.generateCS(out);
+            e.generateCSWithCurlyBraces(out);
         }
     }
     
@@ -479,7 +504,7 @@ aspect GenerateCS
         for (int i=0; i<getNumDeclarator(); i++) 
         {   VariableDeclarator d = getDeclarator(i);
             TypeDecl t = d.getTypeAccess().type();
-            if (i>0) out.print(",");
+            if (i>0) out.print(", ");
             out.print(" ");         
             out.printIdentifier(d.name());
             Expr e = d.getInit();

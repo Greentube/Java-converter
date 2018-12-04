@@ -229,7 +229,7 @@ aspect GenerateCS
                 out.printIdentifier(ec.getInit().type().uniqueName());
                 out.print("(\""+ec.getID()+"\","+ordinal);
                 for (int i=0; i<ec.getNumArg(); i++) 
-                {   out.print(",");
+                {   out.print(", ");
                     ec.getArg(i).generateCS(out);
                 }
                 out.println(");");    
@@ -245,7 +245,7 @@ aspect GenerateCS
             out.print("[]{");
             boolean hasfirst=false;
             for (EnumConstant ec:ed.enumConstants()) 
-            {   if (hasfirst) { out.print(","); }  
+            {   if (hasfirst) { out.print(", "); }  
                 out.printIdentifier(ec.getID(),"_f");
                 hasfirst=true;
             }
@@ -353,7 +353,7 @@ aspect GenerateCS
         {   out.print(": ");
             int n=0;
             for (Access ac: getSuperInterfaceList()) 
-            {   if (n>0) { out.print(","); }
+            {   if (n>0) { out.print(", "); }
                 ac.generateCS(out);
                 n++;
             }           
@@ -516,14 +516,14 @@ aspect GenerateCS
         // pass accessible local variables of constructing method
         int countencvar=0;
         for (Variable v:encvar) 
-        {   if (countencvar>0 || needouter) { out.print(","); }
+        {   if (countencvar>0 || needouter) { out.print(", "); }
             v.type().generateNameCS(out);
             out.print(" ");
             out.printIdentifier(v.name(),"_o");   
             countencvar++;
         }
         for (int i=0; i<numpar; i++) 
-        {   if (i>0 || needouter || encvar.size()>0) { out.print(","); }
+        {   if (i>0 || needouter || encvar.size()>0) { out.print(", "); }
             getParameter(i).getTypeAccess().generateCS(out);
             if (i==numpar-1 && isVariableArity()) 
             {   out.print("[]");

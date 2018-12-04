@@ -143,13 +143,13 @@ aspect GenerateCS
         }
         
         for (Variable v:type().enclosingVariables()) 
-        {   if (foundpar) out.print(",");
+        {   if (foundpar) out.print(", ");
             out.printIdentifier(v.name());
             foundpar=true;
         }
         
         for (int i=0; i<n; i++) 
-        {   if (i>0 || foundpar) { out.print(","); }
+        {   if (i>0 || foundpar) { out.print(", "); }
             getArg(i).generateUsingResultCS(out);
         }
         out.print(")");
@@ -182,14 +182,14 @@ aspect GenerateCS
         int encvarcount=0;
         if (!(this instanceof SuperConstructorAccess)) 
         {   for (Variable v:encvar) 
-            {   if (encvarcount>0 || passouter) { out.print(","); }
+            {   if (encvarcount>0 || passouter) { out.print(", "); }
                 out.printIdentifier(v.name(),"_o");
                 encvarcount++;
             }
         }
         
         for (int i=0; i<getNumArg(); i++) 
-        {   if (i>0 || passouter || encvarcount>0) { out.print(","); }
+        {   if (i>0 || passouter || encvarcount>0) { out.print(", "); }
             getArg(i).generateUsingResultCS(out);
         }
         out.print(")");
@@ -241,7 +241,7 @@ aspect GenerateCS
 
         out.print("(");
         for (int i=0; i<getNumArg(); i++) 
-        {   if (i>0) out.print(",");
+        {   if (i>0) out.print(", ");
             // do conversion of regex parameter for the String.split method
             if (i==0 && m.name().equals("split") && m.hostType().isString())
             {   String ss = getArg(0).regexToSearchString();
@@ -313,7 +313,7 @@ aspect GenerateCS
         Access a = getAccess();
         if (a instanceof ArrayTypeWithSizeAccess) 
         {   a.generateCS(out);
-            out.print(",");
+            out.print(", ");
         }       
         getExpr().generateUsingResultCS(out);
     }       
@@ -370,7 +370,7 @@ aspect GenerateCS
         type().generateNameCS(out);
         out.print("{");
         for (int i=0; i<getNumInit(); i++) 
-        {   if (i>0) { out.print(","); }
+        {   if (i>0) { out.print(", "); }
             getInit(i).generateUsingResultCS(out);
         }
         out.print("}");
@@ -396,7 +396,7 @@ aspect GenerateCS
             out.print(fallback);
             out.print("(ref ");
             d.generateCS(out);
-            out.print(",");
+            out.print(", ");
             s.generateUsingResultCS(out);
             out.print(")");
         }
@@ -532,7 +532,7 @@ aspect GenerateCS
         else
         {   out.print("(SYSTEM.div(");
             getLeftOperand().generateUsingResultCS(out);
-            out.print(",");
+            out.print(", ");
             getRightOperand().generateUsingResultCS(out);
             out.print("))");        
         }
@@ -586,13 +586,13 @@ aspect GenerateCS
     public void AndLogicalExpr.generateCS(CodePrinterCS out) 
     {
         getLeftOperand().generateUsingResultCS(out);
-        out.print("&&");
+        out.print(" && ");
         getRightOperand().generateUsingResultCS(out);   
     }
     public void OrLogicalExpr.generateCS(CodePrinterCS out) 
     {
         getLeftOperand().generateUsingResultCS(out);
-        out.print("||");
+        out.print(" || ");
         getRightOperand().generateUsingResultCS(out);   
     }
     public void EQExpr.generateCS(CodePrinterCS out) 
@@ -729,9 +729,9 @@ aspect GenerateCS
     public void ConditionalExpr.generateCS(CodePrinterCS out) 
     {   
         getCondition().generateUsingResultCS(out);
-        out.print("?");
+        out.print("? ");
         getTrueExpr().generateUsingResultCS(out);
-        out.print(":");
+        out.print(" : ");
         getFalseExpr().generateUsingResultCS(out);
     }
     
@@ -812,32 +812,32 @@ aspect GenerateCS
     }
     public void MinusExpr.generateCS(CodePrinterCS out) 
     {
-        out.print(" - ");
+        out.print("-");
         getOperand().generateUsingResultCS(out);    
     }
     public void PlusExpr.generateCS(CodePrinterCS out) 
     {
-        out.print(" + ");    
+        out.print("+");    
         getOperand().generateUsingResultCS(out);    
     }
     public void PostDecExpr.generateCS(CodePrinterCS out) 
     {
         getOperand().generateCS(out);   
-        out.print(" -- ");    
+        out.print("--");    
     }
     public void PostIncExpr.generateCS(CodePrinterCS out) 
     {
         getOperand().generateCS(out);   
-        out.print(" ++ ");    
+        out.print("++");    
     }
     public void PreDecExpr.generateCS(CodePrinterCS out) 
     {
-        out.print(" -- ");    
+        out.print("--");    
         getOperand().generateCS(out);   
     }
     public void PreIncExpr.generateCS(CodePrinterCS out) 
     {
-        out.print(" ++ ");    
+        out.print("++");    
         getOperand().generateCS(out);   
     }
 
