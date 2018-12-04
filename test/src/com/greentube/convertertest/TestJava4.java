@@ -499,6 +499,7 @@ public class TestJava4
         assertI ( (4-5+5),  4);
         assertO (""+bo,"true");
         assertI (zeroi - Integer.MIN_VALUE, Integer.MIN_VALUE); 
+        assertI (j++ + +j, 2*j-1);
         
         boolean t=true;
         boolean f=false;

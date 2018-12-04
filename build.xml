@@ -223,8 +223,6 @@
             </manifest>         
         </jar>          
         
-        <!-- TEMP CC STUFF -->
-        <copy tofile="${basedir}/Converter-0.101.1.jar" file="${basedir}/build/converter.jar" />
     </target>   
     
     <target name="clean" description="Clean all built files">

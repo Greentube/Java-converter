@@ -71,8 +71,8 @@ public class CodePrinter
                 linehasstarted=true;
             }
             
-            // prevent clashing '-' operators 
-            if (lastchar=='-' && s.charAt(0)=='-') 
+            // prevent clashing '-' and '+' operators 
+            if ( lastchar==s.charAt(0) && (lastchar=='-' || lastchar=='+') ) 
             {   ow.write(' ');
             }
             
