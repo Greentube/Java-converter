@@ -500,6 +500,10 @@ public class TestJava4
         assertO (""+bo,"true");
         assertI (zeroi - Integer.MIN_VALUE, Integer.MIN_VALUE); 
         assertI (j++ + +j, 2*j-1);
+        assertI (j + ++j, 846162471);
+        assertI (j + j++, 846162472);
+        assertI (j + j--, 846162474);
+        assertI (j + --j, 846162471);
         
         boolean t=true;
         boolean f=false;

@@ -1170,16 +1170,17 @@ aspect GenerateJS
             {   out.print("_1st("); 
                 d.generateUsingResultJS(out);
                 out.print(",");
-            }       
+            }
+            else
+            {   out.print("(");
+            }
             d.generateUsingResultJS(out);
             out.print("=");
             out.print(caststart);
             d.generateUsingResultJS(out);
             out.print(inc?"+1":"-1");
             out.print(castend);
-            if (!pre && needresult)
-            {   out.print(")");
-            }
+            out.print(")");           
         }        
     }   
     public void PostDecExpr.generateJS(CodePrinterJS out) 
