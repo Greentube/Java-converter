@@ -1906,6 +1906,7 @@ public class TestJava4
     	System.out.println ("- string");
     	
         String a = StaticClass.hello();
+        String empty = "";
         assertO(a,"hello");
         a = "" + a + " you";             // string building with + 
         a = a + " " + 4711;              // add a number to a string
@@ -1914,7 +1915,7 @@ public class TestJava4
         assertO(a, "some 44 more 88 concats TestParent3");
         assertO (44 - 33 + "hi", "11hi");
         assertO (44 + "" + 33 + "hi", "4433hi");
-        assertO ("" + 44 + 33 + "hi", "4433hi");
+        assertO ("" + 44 + 33 + "hi+" + empty + "+plus", "4433hi++plus");
         a = null;
         assertO(a+null,"nullnull");
         // doing weird stuff with characters and the string + operator
@@ -1967,7 +1968,6 @@ public class TestJava4
         assertB(! a.equals(null));
         assertB("TestParent3".equals(new TestParent(3).toString()));
         assertB(!"TestParent3".equals(new Integer(5)));
-        String empty = "";
         assertB("".equals(empty));
         assertB(empty.equals(""));
         assertB(! empty.equals("hi"));
