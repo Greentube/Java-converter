@@ -1,7 +1,7 @@
 namespace java.lang { public class Throwable: System.Exception
 {    
-    private System.String message;
-    private System.String trace;
+    private readonly System.String message;
+    private readonly System.String trace;
     
     public Throwable() : this(null)
     {   

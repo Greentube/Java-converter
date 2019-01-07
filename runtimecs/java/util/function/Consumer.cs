@@ -14,8 +14,8 @@ namespace java.util.function { public static class Consumer_c
 
 namespace java.util.function { public class ConsumerAndThen : Consumer
 {
-    private Consumer a;
-    private Consumer b;
+    private readonly Consumer a;
+    private readonly Consumer b;
     public ConsumerAndThen(Consumer a, Consumer b) 
     {   this.a = a;
         this.b = b;

@@ -14,8 +14,8 @@ namespace java.util.function { public static class BiConsumer_c
 
 namespace java.util.function { public class BiConsumerAndThen : BiConsumer
 {
-    private BiConsumer a;
-    private BiConsumer b;
+    private readonly BiConsumer a;
+    private readonly BiConsumer b;
     public BiConsumerAndThen(BiConsumer a, BiConsumer b) 
     {   this.a = a;
         this.b = b;

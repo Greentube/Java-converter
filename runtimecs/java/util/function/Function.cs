@@ -41,8 +41,8 @@ namespace java.util.function { public class FunctionIdentity: Function
 
 namespace java.util.function { public class FunctionAndThen : FunctionIdentity
 {
-    private Function a;
-    private Function b;
+    private readonly Function a;
+    private readonly Function b;
     public FunctionAndThen(Function a, Function b) : base()
     {   this.a = a;
         this.b = b;

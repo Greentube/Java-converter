@@ -12,7 +12,7 @@ namespace java.util { public class HashMap : HashMapImpl
 
 namespace java.util { public class HashMapImpl : Map
 {
-    internal System.Collections.Generic.Dictionary<System.Object,System.Object> data;        
+    internal readonly System.Collections.Generic.Dictionary<System.Object,System.Object> data;        
     private bool hasNullKey;
     private System.Object valueForNullKey;
         
@@ -178,7 +178,7 @@ namespace java.util { public class HashMapImpl : Map
         
 namespace java.util { class HashMapKeyView : AbstractCollection, Set 
 {       
-    private HashMapImpl map;
+    private readonly HashMapImpl map;
              
     public HashMapKeyView(HashMapImpl m) 
     {   this.map = m;
@@ -225,7 +225,7 @@ namespace java.util { class HashMapKeyView : AbstractCollection, Set
         
 namespace java.util { class HashMapValueView : AbstractCollection 
 {
-    private HashMapImpl map;
+    private readonly HashMapImpl map;
 
     public HashMapValueView(HashMapImpl m) 
     {   this.map = m;
@@ -254,10 +254,10 @@ namespace java.util { class HashMapValueView : AbstractCollection
     
 namespace java.util { class HashMapIterator : Iterator, Enumeration 
 {
-    HashMapImpl map;
-    bool deliverKeys;
-    System.Object[] keys;
-    int n;
+    private readonly HashMapImpl map;
+    private readonly bool deliverKeys;
+    private readonly System.Object[] keys;
+    private int n;
         
     public HashMapIterator(HashMapImpl map, bool deliverKeys) 
     {   this.map = map;

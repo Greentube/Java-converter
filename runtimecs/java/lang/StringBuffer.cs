@@ -11,35 +11,49 @@ namespace java.lang { public class StringBuffer
     }
 
     public StringBuffer append(System.Object o)
-    {   content.Append(SYSTEM.str(o));
-        return this;
+    {   lock (content)
+        {   content.Append(SYSTEM.str(o));
+            return this;
+        }
     }
         
     public StringBuffer append(bool b)
-    {   content.Append(SYSTEM.str(b));
-        return this;
+    {   lock (content)
+        {   content.Append(SYSTEM.str(b));
+            return this;
+        }
     }
 
     public StringBuffer append(char c)
-    {   content.Append(c);
-        return this;
+    {   lock (content)
+        {   content.Append(c);
+            return this;
+        }
     }
 
     public StringBuffer append(int i)
-    {   content.Append(i);
-        return this;
+    {   lock (content)
+        {   content.Append(i);
+            return this;
+        }
     }
         
     public StringBuffer append(double d)
-    {   content.Append(SYSTEM.str(d));
-        return this;
+    {   lock (content)
+        {   content.Append(SYSTEM.str(d));
+            return this;
+        }
     }
         
     public int length()
-    {   return content.Length;
+    {   lock (content)
+        {   return content.Length;
+        }
     }
 
     public override System.String ToString()
-    {   return content.ToString();
+    {   lock (content)
+        {   return content.ToString();
+        }
     }
 }}

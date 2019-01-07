@@ -19,7 +19,7 @@ namespace java.util { public static class Comparator_c
 
 namespace java.util { internal class ComparatorReversed: Comparator
 {
-    protected Comparator other;
+    protected readonly Comparator other;
     public ComparatorReversed(Comparator other) 
     {   this.other = other;
     }
@@ -36,7 +36,7 @@ namespace java.util { internal class ComparatorReversed: Comparator
 }}        
 namespace java.util { internal class ComparatorThenComparing: ComparatorReversed
 {
-    Comparator second;
+    private readonly Comparator second;
     public ComparatorThenComparing(Comparator other, Comparator second) : base(other)
     { this.second = second;
     }

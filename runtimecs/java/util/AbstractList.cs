@@ -115,8 +115,8 @@ namespace java.util { public abstract class AbstractList : AbstractCollection, L
     
 namespace java.util { class AbstractListIterator : Iterator, Enumeration 
 {
-    AbstractList list;
-    int n;
+    private readonly AbstractList list;
+    private int n;
 
     public AbstractListIterator(AbstractList list) 
     {   this.list = list;

@@ -31,7 +31,7 @@ namespace java.util.function { public static class Predicate_c
 
 namespace java.util.function { public class PredicateIsEqual : Predicate
 {
-    private System.Object tobj;
+    private readonly System.Object tobj;
     public PredicateIsEqual(System.Object tobj) 
     {   this.tobj = tobj;
     }
@@ -51,8 +51,8 @@ namespace java.util.function { public class PredicateIsEqual : Predicate
 
 namespace java.util.function { public class PredicateAnd : PredicateIsEqual
 {
-    private Predicate a;
-    private Predicate b;
+    private readonly Predicate a;
+    private readonly Predicate b;
     public PredicateAnd(Predicate a, Predicate b) : base(null)
     {   this.a = a;
         this.b = b;
@@ -64,7 +64,7 @@ namespace java.util.function { public class PredicateAnd : PredicateIsEqual
 
 namespace java.util.function { public class PredicateNegate : PredicateIsEqual
 {
-    private Predicate a;
+    private readonly Predicate a;
     public PredicateNegate(Predicate a) : base(null)
     {   this.a = a;
     }
@@ -75,8 +75,8 @@ namespace java.util.function { public class PredicateNegate : PredicateIsEqual
 
 namespace java.util.function { public class PredicateOr : PredicateIsEqual
 {
-    private Predicate a;
-    private Predicate b;
+    private readonly Predicate a;
+    private readonly Predicate b;
     public PredicateOr(Predicate a, Predicate b) : base(null)
     {   this.a = a;
         this.b = b;
@@ -85,5 +85,3 @@ namespace java.util.function { public class PredicateOr : PredicateIsEqual
     {   return a.test(o) || b.test(o);
     }
 }}        
-
-        

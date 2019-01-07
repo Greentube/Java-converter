@@ -103,7 +103,7 @@ namespace java.util { public static class Arrays {
 
 namespace java.util { public class FixSizedArrayList: AbstractList
 {        
-    private System.Object[] buffer;
+    private readonly System.Object[] buffer;
     
     internal FixSizedArrayList(System.Object[] buffer) : base() 
     {   this.buffer = buffer;    

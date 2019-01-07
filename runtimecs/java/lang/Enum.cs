@@ -1,7 +1,7 @@
 namespace java.lang { public class Enum 
 {
-    private System.String n;
-    private int o;
+    private readonly System.String n;
+    private readonly int o;
            
     public Enum(System.String name, int ordinal) 
     {   n = name;
