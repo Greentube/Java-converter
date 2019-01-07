@@ -16,7 +16,17 @@ public class TestJava5 extends TestJava4
         varargstest();
         staticimportstest();
         arraystest();
-        extendedstringtest();        
+        extendedstringtest();      
+        
+//        Vector<Object> o = new Vector<>();
+//        Vector<Character> o2 = (Vector)(o);
+//        o.add(new Character('c'));
+//        System.out.println("c1: " + (char) o.elementAt(0));
+//        System.out.println("c2: " + (char) (Character) o.elementAt(0));
+//        char c = (Character) o.elementAt(0);
+//        System.out.println("c3: " + c);
+//        c = o2.elementAt(0);
+//        System.out.println("c3: " + c);        
     }
     
     public static void genericstest() 

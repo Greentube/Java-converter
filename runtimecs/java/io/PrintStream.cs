@@ -10,61 +10,86 @@ namespace java.io { public class PrintStream {
         this.line = new System.Text.StringBuilder();
     }
 
-    public void print(bool b) 
-    {   line.Append(java.lang.SYSTEM.str(b));
-    }
-    
-    public void print(double d) 
-    {   line.Append(java.lang.SYSTEM.str(d));
-    }
-    
-    public void print(char c) 
-    {   line.Append(c);
-    }
-    
-    public void print(int i) 
-    {   line.Append(i);
-    }
-    
-    public void print(System.Object o) 
-    {   line.Append(java.lang.SYSTEM.str(o));
-    }
-        
-    public void println() 
-    {   line.Append("\n");
-        if (iserr) 
-        {   System.Console.Error.Write(line.ToString());
-//            System.Console.Error.Write(System.Environment.StackTrace);
-//            System.Console.Error.Write("\n");
+    private void finishLine()       // must be called with a lock on 'line'
+    {   if (iserr) 
+        {   System.Console.Error.WriteLine(line.ToString());
         }
         else 
-        {   System.Console.Write(line.ToString());
+        {   System.Console.WriteLine(line.ToString());
         }  
         line.Clear();
     }
 
+    // public interface is thread-safe
+    
+    public void print(bool b) 
+    {   lock (line) 
+        {   line.Append(java.lang.SYSTEM.str(b)); 
+        }
+    }
+    
+    public void print(double d) 
+    {   lock (line)
+        {   line.Append(java.lang.SYSTEM.str(d));
+        }
+    }
+    
+    public void print(char c) 
+    {   lock (line)
+        {   line.Append(c);
+        }
+    }
+    
+    public void print(int i) 
+    {   lock (line)
+        {   line.Append(i);
+        }
+    }
+    
+    public void print(System.Object o) 
+    {   lock (line)
+        {   line.Append(java.lang.SYSTEM.str(o));
+        }
+    }
+        
+    public void println() 
+    {   lock (line)
+        {   finishLine();
+        }
+    }
+    
     public void println(bool b) 
-    {   print(b);
-        println();
+    {   lock (line)
+        {   line.Append(java.lang.SYSTEM.str(b));
+            finishLine();
+        }
     }
     
     public void println(double d) 
-    {   print(d);
-        println();
+    {   lock (line)
+        {   line.Append(java.lang.SYSTEM.str(d));
+            finishLine();
+        }
     }
     
     public void println(char c) 
-    {   print(c);
-        println();
+    {   lock (line)
+        {   line.Append(c);
+            finishLine();
+        }
     }
     
     public void println(int i) 
-    {   print(i);
-        println();
+    {   lock (line)
+        {   line.Append(i);
+            finishLine();
+        }
     }
     
     public void println(System.Object o) 
-    {   print(o);
-        println();
+    {   lock (line)
+        {   line.Append(java.lang.SYSTEM.str(o));
+            finishLine();
+        }
     }
 }}
