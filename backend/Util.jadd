@@ -29,6 +29,8 @@ aspect Util {
      * "basic" type of the generic implementation. In these cases a downcast must be
      * added for the C# target to satisfy the compiler (since the generic types are already 
      * erased in the C# output) 
+     * This will also check if a method overwrite has a covariant return type,
+     * in these cases a down-cast is also needed.
      */
     public TypeDecl Expr.neededDownCast() {
         return null;
@@ -44,9 +46,24 @@ aspect Util {
     }    
     public TypeDecl MethodAccess.neededDownCast() {
         MethodDecl m = decl();
+        // check if need downcast because of type erasure
         if (m.erasedMethod().type()!=m.type()) {
             return m.type();
         }
+        // check if need downcast because of covariant return type in overwrite
+        if (m.hostType() instanceof ClassDecl)
+        {   ClassDecl c = (ClassDecl)(m.hostType());
+            while (!c.isObject()) 
+            {   c = (ClassDecl) (c.superclass());
+                for (BodyDecl b : c.methodsAndConstructors()) 
+                {   if (b instanceof MethodDecl && m.overrides((MethodDecl)b) ) 
+                    {   if (((MethodDecl)b).type()!=m.type())
+                        {   return m.type();
+                        }
+                    }
+                }                                 
+            }
+        }                 
         return null;
     }
     
