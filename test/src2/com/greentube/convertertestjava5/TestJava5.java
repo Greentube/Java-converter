@@ -17,6 +17,7 @@ public class TestJava5 extends TestJava4
         staticimportstest();
         arraystest();
         extendedstringtest();      
+        covariantreturntypetest();
         
 //        Vector<Object> o = new Vector<>();
 //        Vector<Character> o2 = (Vector)(o);
@@ -416,7 +417,15 @@ public class TestJava5 extends TestJava4
         assertSA(withzeroes.split("\u0000",3), new String[]{"","lo","hi\u0000"});   
         assertSA(withzeroes.split("\u0000",4), new String[]{"","lo","hi",""});   
         assertSA(withzeroes.split("\u0000",5), new String[]{"","lo","hi",""});
-        
-           
     } 
+    
+    
+    public static void covariantreturntypetest()
+    {
+        System.out.println("- overwrite with covariant return type");
+        Overwriter w = new Overwriter();
+        Integer x = w.x();
+        assertI(x.intValue(), 1);
+        assertD(w.y().doubleValue(), 1.5);
+    }
 }
