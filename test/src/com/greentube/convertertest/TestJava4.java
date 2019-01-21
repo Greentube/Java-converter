@@ -2875,6 +2875,7 @@ public class TestJava4
         
         assertO(oc.plus("1","1"),"1+1");
         assertI(oc.plus(1,1),2);
+        assertD(oc.plus(1.2,1.2),2.4);
         assertB(OverloadedClass.plus(true,true),true);
         assertO(OverloadedClass.add("1","1"),"11");
         assertI(OverloadedClass.add(1,1),2);
@@ -2883,13 +2884,14 @@ public class TestJava4
         assertI(oi.plus(1,1),2);
         
         assertO(oc2.plus("1","1"),"1+1");
-        assertI(oc2.plus(1,1),4);
+        assertI(oc2.plus(1,1),2);
+        assertD(oc2.plus(1.1,1.1),4.2);
         assertB(OverloadedClass2.plus(true,true),true);
         assertO(OverloadedClass2.add("1","1"),"11");
         assertI(OverloadedClass2.add(1,1),2);
         
         assertO(oi2.plus("1","1"),"1+1");
-        assertI(oi2.plus(1,1),4);
+        assertI(oi2.plus(1,1),2);
         
         assertO((new OverloadedClass("!")).plus("x","y"), "x!y");
         assertO((new OverloadedClass(13)).plus("x","y"), "x13y");

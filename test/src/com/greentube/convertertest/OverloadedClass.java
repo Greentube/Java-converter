@@ -29,6 +29,10 @@ public class OverloadedClass implements OverloadedInterface
     {   
         return a + b;         
     }
+    public double plus(double a, double b)
+    {   
+        return a + b;         
+    }
     
     public static boolean plus(boolean a, boolean b)
     {

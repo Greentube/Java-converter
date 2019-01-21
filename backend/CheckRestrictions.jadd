@@ -404,6 +404,21 @@ aspect CheckRestrictions
         
         super.checkRestrictions(errorlist);                                     
     }
+    
+    // unboxing when casting to primitive type
+    public void CastExpr.checkRestrictions(ArrayList<String> errorlist) 
+    {
+        TypeDecl from = getExpr().type();
+        TypeDecl to = type();
+
+        if (to.isPrimitiveType() && !from.isPrimitiveType())
+        {   reportRestriction(errorlist, "Auto-unboxing is not supported");
+        }
+        
+        super.checkRestrictions(errorlist);
+    }
+    
+    
     // autoboxing/unboxing at variable declarators  
     public void VariableDeclarator.checkRestrictions(ArrayList<String> errorlist) 
     {
