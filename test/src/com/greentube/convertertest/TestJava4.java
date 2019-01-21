@@ -54,7 +54,8 @@ public class TestJava4
 //thrw2();    
         System.out.print ("--");
         System.out.print(" converter test suite for java ");
-        System.out.print("1.");
+        System.out.print(1);
+        System.out.print(".");
         System.out.print(4.0);
         System.out.print((char)' ');
         System.out.print(true);
@@ -64,8 +65,11 @@ public class TestJava4
         System.out.print(" ");
         System.out.print(new int[1]);
         System.out.print(" ");
-        System.out.print(new TestObject[0]);
-        System.out.println();
+        System.out.println(new TestObject[0]);
+        System.out.println("1");
+        System.out.println(true);
+        System.out.println(3.1415);
+        System.out.println('X');
 
         staticattributestest();
         constructortest();
@@ -1332,7 +1336,7 @@ public class TestJava4
     	assertD(Double.MIN_VALUE, 4.9E-324);
     	assertD(Double.MAX_VALUE, 1.7976931348623157E308);
     	Double d = new Double(5);
-    	Double d2 = new Double(7);
+    	Double d2 = new Double(7.0);
     	Double d3 = Double.valueOf(5.00);
     	assertI(d.hashCode(), d3.hashCode());
     	
@@ -1960,6 +1964,9 @@ public class TestJava4
         assertI( a.compareTo("Th"), 34);
         assertI( a.compareTo("The test string to do some nonesense with"), -5);
         
+        assertB( a.contains("ring"), true); 
+        assertB( a.contains("blubsi"), false); 
+        
         assertO( a.concat(" extra"), "The test string to do some nonesense extra");
 
         assertB( a.endsWith("nonesense"));
@@ -1992,12 +1999,16 @@ public class TestJava4
         assertI (a.lastIndexOf('q',10), -1);
         assertI (a.lastIndexOf('t'), 16);
         assertI (a.lastIndexOf('t',6), 4);
+        assertI (a.lastIndexOf("ring"), 11);
+        assertI (a.lastIndexOf("ring",20), 11);
+        assertI (a.lastIndexOf("ring",5), -1);
 
         assertI (a.length(), 36);
         assertI ("".length(), 0);
         
         assertO (a.replace('t', 'q'), "The qesq sqring qo do some nonesense");
         assertO ("".replace(' ','x'), "");
+        assertO (a.replace("es","?!"), "The t?!t string to do some non?!ense");
 
         assertB (a.startsWith("The te"));
         assertB (a.startsWith(""));
@@ -2092,10 +2103,11 @@ public class TestJava4
     	c.append(47);
     	c.append("yes");
     	c.append(66.7);
-    	c.append(Character.valueOf('?'));
+    	c.append('?');
     	c.append(-66555.7423);
     	c.append((Object)null);
-    	assertO(c.toString(),"!no47yes66.7?-66555.7423null");
+    	c.append(true);
+    	assertO(c.toString(),"!no47yes66.7?-66555.7423nulltrue");
     	
     	c = new StringBuffer("nulltest:");
     	Object o = null;
@@ -2131,10 +2143,11 @@ public class TestJava4
     	assertI(b.length(), 2);
     	assertO(b.toString(), "V8");
     	b.append((String)null);
-    	b.append(66);
-    	b.append((Object)null);    	
-    	assertO(b.toString(), "V8null66null");
-    	
+    	b.append(66.8);
+    	b.append((Object)null);   
+    	b.append('-');
+    	b.append(false); 	
+    	assertO(b.toString(), "V8null66.8null-false");
     	
     	b = new StringBuilder("init");
     	b.append(new Integer(5));
