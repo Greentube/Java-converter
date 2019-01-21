@@ -412,7 +412,7 @@ aspect GenerateJS
             return;  // can safely ommit
         }
 
-        out.print("_"+numpar+": function(");
+        out.print("_"+makeJSSuffix()+": function(");
         for (int i=0; i<numpar; i++) 
         {   if (i>0) out.print(", ");
             out.printIdentifier(getParameter(i).name());
@@ -463,6 +463,21 @@ aspect GenerateJS
         out.println("},");
     }
 
+    public String ConstructorDecl.makeJSSuffix()
+    {
+        int numpar = getNumParameter();
+        if (! ((ClassDecl)hostType()).hasSimilarConstructors(numpar) ) 
+        {   return "" + numpar;
+        }
+        
+        StringBuilder sb = new StringBuilder();        
+        sb.append(numpar);
+        for (int i=0; i<numpar; i++)
+        {   sb.append(getParameter(i).type().makeJSSignature());        
+        }        
+        return sb.toString();
+    }
+
 //  public void EnumConstant.generateJS(CodePrinterJS out) {
 //  }
 
@@ -481,20 +496,20 @@ aspect GenerateJS
         Block block = getBlock();
         if (block==null) { return; }
 
-        int numpar = getNumParameter();
         if (isStatic())
         {   TypeDecl t = hostType();
             out.print("var ");
             out.printJSName(t.packageName(), t.uniqueName());
             out.print("_");
-            out.printIdentifier(name(), "_"+numpar);
+            out.printIdentifier(name(), "_"+makeJSSuffix());
             out.print(" = ");
         }
         else
-        {   out.printIdentifier(name(), "_"+numpar);
+        {   out.printIdentifier(name(), "_"+makeJSSuffix());
             out.print(": ");
         }
         out.print("function(");
+        int numpar = getNumParameter();
         for (int i=0; i<numpar; i++) 
         {   if (i>0) out.print(", ");
             out.printIdentifier(getParameter(i).name());
@@ -503,6 +518,22 @@ aspect GenerateJS
         
         block.generateJSWithDelimiter(out, isStatic() ? ";" : ",");
     }
+
+    public String MethodDecl.makeJSSuffix()
+    {
+        int numpar = getNumParameter();
+        if (! hostType().hasSimilarMethods(name(), numpar, isStatic()) ) 
+        {   return "" + numpar;
+        }
+        
+        StringBuilder sb = new StringBuilder();        
+        sb.append(numpar);
+        for (int i=0; i<numpar; i++)
+        {   sb.append(getParameter(i).type().makeJSSignature());        
+        }        
+        return sb.toString();
+    }
+        
 
     public void StaticInitializer.generateJS(CodePrinterJS out) 
     {
@@ -521,6 +552,33 @@ aspect GenerateJS
         } 
         else
         {   out.print("null");
+        }
+    }
+     
+    public String TypeDecl.makeJSSignature()
+    {
+        if (isPrimitiveType())
+        {   if (isInt()) { return "I"; }
+            else if (isByte()) { return "B"; }
+            else if (isChar()) { return "C"; }
+            else if (isShort()) { return "S"; }
+            else if (isBoolean()) { return "Z"; }
+            else if (isDouble()) { return "D"; }
+            else 
+            {   throw new RuntimeException("Type not supported:"+fullName());
+            }
+        }
+        else {
+            if (isArrayDecl())
+            {   String leading = "A";
+                for (int i=1; i<dimension(); i++) { leading+="A"; }
+                return leading + elementType().erasure().makeJSSignature();
+            }
+            else
+            {   TypeDecl et = erasure();
+                String fullname = et.packageName()+"."+et.uniqueName();
+                return "L" + fullname.replace('.','_') + "$";
+            }
         }
     }
             

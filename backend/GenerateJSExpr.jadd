@@ -125,7 +125,7 @@ aspect GenerateJS
         out.print("))");
 
         ConstructorDecl m = decl();
-        out.print("._"+m.getNumParameter()+"(");        
+        out.print("._"+m.makeJSSuffix()+"(");        
         for (int i=0; i<getNumArg(); i++) 
         {   if (i>0) { out.print(", "); }
             getArg(i).generateUsingResultJS(out);
@@ -148,7 +148,7 @@ aspect GenerateJS
         out.printAndMemorizeReference(ht.packageName(), ht.uniqueName());
 
         ConstructorDecl m = decl();
-        out.print(".prototype._" + m.getNumParameter() + ".call(this");
+        out.print(".prototype._" + m.makeJSSuffix() + ".call(this");
         for (int i=0; i<getNumArg(); i++) 
         {   out.print(", ");
             getArg(i).generateUsingResultJS(out);
@@ -172,12 +172,8 @@ aspect GenerateJS
             String tname = t.uniqueName();
             String n = m.name();
             if (t.packageName().equals("java.lang") && (t.uniqueName().equals("Math") || t.uniqueName().equals("System"))) 
-            {   // special handling of the Math.abs method            
-                if (n.equals("abs") && m.type().isInt()) 
-                {   n = "absInt";
-                }
-                // special handling of the Math.round and System.currentTimeMillis methods
-                else if (m.type().isLong())      
+            {   // special handling of the Math.round and System.currentTimeMillis methods
+                if (m.type().isLong())      
                 {   Expr parentexp = (Expr) getParent();
                     while ((parentexp instanceof Dot) && (parentexp.getParent() instanceof Expr)) 
                     {   parentexp = (Expr) parentexp.getParent();
@@ -188,7 +184,7 @@ aspect GenerateJS
             
             out.printAndMemorizeReference(t.packageName(),tname);            
             out.print("_");
-            out.printIdentifier(n,"_"+m.getNumParameter());
+            out.printIdentifier(n,"_"+m.makeJSSuffix());
             out.print("(");
 
             // check if this is inside a static initializer - 
@@ -207,19 +203,19 @@ aspect GenerateJS
                     t = t.enclosingType();
                 }
             }
-            out.printIdentifier(m.name(),"_"+m.getNumParameter());
+            out.printIdentifier(m.name(),"_"+m.makeJSSuffix());
             out.print("(");
         }
         else if (prevExpr().isSuperAccess()) 
         {   out.printAndMemorizeReference(m.hostType().packageName(),m.hostType().uniqueName());
             out.print(".prototype.");         
-            out.printIdentifier(m.name(),"_"+m.getNumParameter());
+            out.printIdentifier(m.name(),"_"+m.makeJSSuffix());
             out.print(".call(this");
             if (m.getNumParameter()>0) out.print(", ");
         }
         else
         {   out.print(".");
-            out.printIdentifier(m.name(),"_"+m.getNumParameter());
+            out.printIdentifier(m.name(),"_"+m.makeJSSuffix());
             out.print("(");
         }
 
@@ -230,36 +226,8 @@ aspect GenerateJS
             // to clarify the use of a char instead of a int 
             TypeDecl ht = m.hostType();
             String tn = ht.packageName() + "." + ht.uniqueName();
-            if 
-            (   i==0 && getNumArg()==1 && 
-                (   (m.name().equals("append") && tn.equals("java.lang.StringBuffer"))
-                    || (m.name().equals("append") && tn.equals("java.lang.StringBuilder"))
-                    || (m.name().equals("print") && tn.equals("java.io.PrintStream"))
-                    || (m.name().equals("println") && tn.equals("java.io.PrintStream"))
-                ) 
-            ) 
-            {   TypeDecl at = getArg(0).type(); 
-                if (at.isChar()) 
-                {   out.print("_c2s(");     
-                    getArg(i).generateUsingResultJS(out);
-                    out.print(")");
-                }
-                else if (at.isDouble()) 
-                {   out.print("_d2s(");     
-                    getArg(i).generateUsingResultJS(out);
-                    out.print(")");
-                }
-                else if (at.isPrimitiveType()) 
-                {   out.print("_p2s(");     
-                    getArg(i).generateUsingResultJS(out);
-                    out.print(")");
-                }
-                else 
-                {   getArg(i).generateUsingResultJS(out);
-                }   
-            } 
             // do conversion of regex parameter for the String.split method
-            else if (i==0 && m.name().equals("split") && tn.equals("java.lang.String"))
+            if (i==0 && m.name().equals("split") && tn.equals("java.lang.String"))
             {   String ss = getArg(0).regexToSearchString();
                 Constant.generateStringJS(out,ss);
             }

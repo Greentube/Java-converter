@@ -4,7 +4,7 @@ var java_lang_Short = function()
 };
     
 _defclass(java_lang_Short, java_lang_Object, null, 
-{   _1: function(s) 
+{   _1S: function(s) 
     {   this.s = s;
         return this;
     },
@@ -35,6 +35,6 @@ var java_lang_Short_MAX$005fVALUE = 32767;
 var java_lang_Short_toString_1 = function (s) 
 {   return s.toString();
 };
-var java_lang_Short_valueOf_1 = function (s) 
-{   return new java_lang_Short()._1(s);
+var java_lang_Short_valueOf_1S = function (s) 
+{   return new java_lang_Short()._1S(s);
 };

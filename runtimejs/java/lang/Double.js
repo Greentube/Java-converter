@@ -5,7 +5,7 @@ var java_lang_Double = function()
 };
 
 _defclass (java_lang_Double, java_lang_Object, null,
-{   _1: function(d) 
+{   _1D: function(d) 
     {   this.d = d;
         return this;
     },
@@ -61,6 +61,6 @@ var java_lang_Double_parseDouble_1 = function(s)
 var java_lang_Double_toString_1= function(d) 
 {   return _d2s(d);
 };   
-var java_lang_Double_valueOf_1 = function (d) 
-{   return new java_lang_Double()._1(d);
+var java_lang_Double_valueOf_1D = function (d) 
+{   return new java_lang_Double()._1D(d);
 };

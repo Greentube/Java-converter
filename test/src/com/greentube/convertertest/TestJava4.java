@@ -102,6 +102,7 @@ public class TestJava4
         innerclasstest();
         identifi€rmanglingtest();
         accessmodifiertest();
+        overloadingtest();
         
         // have some assert statements that are just eliminated in conversion
         int i=staticint;
@@ -2849,8 +2850,38 @@ public class TestJava4
         assertI(mos.testownaccess(), 134);
         assertI(mos.testforeignsuperaccess(m), 40);
         assertI(mos.testrelatedsuperaccess(mos), 134);        
-    }    
+    }
         
+    public static void overloadingtest()
+    {   System.out.println("- overloading");
+    
+        OverloadedClass oc = new OverloadedClass();
+        OverloadedClass2 oc2 = new OverloadedClass2();
+        OverloadedInterface oi = oc;
+        OverloadedInterface2 oi2 = oc2;
+        
+        assertO(oc.plus("1","1"),"1+1");
+        assertI(oc.plus(1,1),2);
+        assertB(OverloadedClass.plus(true,true),true);
+        assertO(OverloadedClass.add("1","1"),"11");
+        assertI(OverloadedClass.add(1,1),2);
+        
+        assertO(oi.plus("1","1"),"1+1");
+        assertI(oi.plus(1,1),2);
+        
+        assertO(oc2.plus("1","1"),"1+1");
+        assertI(oc2.plus(1,1),4);
+        assertB(OverloadedClass2.plus(true,true),true);
+        assertO(OverloadedClass2.add("1","1"),"11");
+        assertI(OverloadedClass2.add(1,1),2);
+        
+        assertO(oi2.plus("1","1"),"1+1");
+        assertI(oi2.plus(1,1),4);
+        
+        assertO((new OverloadedClass("!")).plus("x","y"), "x!y");
+        assertO((new OverloadedClass(13)).plus("x","y"), "x13y");
+        assertO((new OverloadedClass('#')).plus("x","y"), "x#y");
+    }    
         
     private static void printstack()
     {   try 

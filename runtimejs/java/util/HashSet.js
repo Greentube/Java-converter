@@ -12,7 +12,7 @@ _defclass(java_util_HashSet, java_util_AbstractCollection, [java_util_Set],
         return this;
     },
         
-    _1: function(collection) 
+    _1Ljava_util_Collection$: function(collection) 
     {   this._0();
         this.addAll_1(collection);
         return this;

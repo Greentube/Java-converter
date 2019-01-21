@@ -1,8 +1,8 @@
 var java_lang_Math_E =  Math.E;
 var java_lang_Math_PI =  Math.PI;
 
-var java_lang_Math_abs_1 = Math.abs;
-var java_lang_Math_absInt_1 = function(x) 
+var java_lang_Math_abs_1D = Math.abs;
+var java_lang_Math_abs_1I = function(x) 
 {   return (x>=0) ? x : (-x)|0;
 };
 var java_lang_Math_acos_1 = Math.acos;
@@ -38,8 +38,10 @@ var java_lang_Math_log10_1 =
         var rounded = Math.round(result);        
         return Math.abs(rounded-result) < 0.00000000000001 ? rounded : result;
     };    
-var java_lang_Math_max_2 = Math.max;    
-var java_lang_Math_min_2 = Math.min;
+var java_lang_Math_max_2DD = Math.max;    
+var java_lang_Math_max_2II = Math.max;    
+var java_lang_Math_min_2DD = Math.min;
+var java_lang_Math_min_2II = Math.min;
 var java_lang_Math_pow_2 = Math.pow;
 var java_lang_Math_rint_1 = function (x) 
 {   if (x % 0.5 !== 0) 
@@ -49,21 +51,21 @@ var java_lang_Math_rint_1 = function (x)
     {   return (Math.floor(x) % 2 === 0) ? Math.floor(x) : Math.round(x);
     }
 };
-var java_lang_Math_roundAsDouble_1 = function (x) 
+var java_lang_Math_roundAsDouble_1D = function (x) 
 {   if (isNaN(x)) return 0;
     var large = 9.223372036854776E18;
     if (x>=large)  return large;
     if (x<=-large) return -large;
     return Math.round(x);
 };
-var java_lang_Math_roundAsInt_1 = function (x) 
+var java_lang_Math_roundAsInt_1D = function (x) 
 {   if (isNaN(x)) return 0;
     var large = 9.223372036854776E18;
     if (x>=large) return -1;
     if (x<=-large) return 0;
     return Math.round(x) | 0;
 };
-var java_lang_Math_signum_1 = function(x) 
+var java_lang_Math_signum_1D = function(x) 
 {   return x<0 ? -1 : x>0 ? 1 : x;
 };
 var java_lang_Math_sin_1 = Math.sin;
@@ -83,4 +85,3 @@ var java_lang_Math_toDegrees_1 = function(x)
 var java_lang_Math_toRadians_1 = function(x) 
 {   return x*(Math.PI/180);
 };    
-

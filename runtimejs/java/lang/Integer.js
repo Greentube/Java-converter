@@ -5,7 +5,7 @@ var java_lang_Integer = function()
 };
 
 _defclass(java_lang_Integer, java_lang_Object, null,
-{  _1: function(i) 
+{  _1I: function(i) 
     {   this.i = i;
         return this;
     },
@@ -51,6 +51,6 @@ var java_lang_Integer_toString_1 = function(i)
 var java_lang_Integer_toHexString_1 = function(i) 
 {   return (i<0 ? 4294967296+i : i).toString(16);
 };
-var java_lang_Integer_valueOf_1 = function(i) 
-{   return new java_lang_Integer()._1(i);
+var java_lang_Integer_valueOf_1I = function(i) 
+{   return new java_lang_Integer()._1I(i);
 };

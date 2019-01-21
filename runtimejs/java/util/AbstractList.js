@@ -44,7 +44,7 @@ _defclass(java_util_AbstractList, java_util_AbstractCollection, [java_util_List]
     
 	clear_0: function() 
     {   for (var i=this.size_0()-1; i>=0; i--) 
-        {   this.remove_1(i);
+        {   this.remove_1I(i);
         }
 	},      
     
@@ -113,7 +113,7 @@ _defclass(java_util_AbstractList, java_util_AbstractCollection, [java_util_List]
         {   var o = this.get_1(i);
             var c = collection.contains_1(o);
             if ((c && !keep) || (!c && keep)) 
-            {   this.remove_1(i);
+            {   this.remove_1I(i);
                 modified = true;
             }
         }
@@ -148,7 +148,7 @@ _defclass(java_util_AbstractListIterator, java_lang_Object,  [java_util_Iterator
     {   
         var before = this.n-1;
         if (before<0) throw (new java_lang_IllegalStateException())._0()._e;
-        this.list.remove_1(before);  // will throw if unsupported
+        this.list.remove_1I(before);  // will throw if unsupported
         this.n = before;
     },
 

@@ -4,7 +4,7 @@ var java_lang_Boolean = function()
 };
 
 _defclass (java_lang_Boolean, java_lang_Object, null, 
-{  _1: function(b) 
+{  _1Z: function(b) 
     {   this.b = b;
         return this;
     },
@@ -29,13 +29,13 @@ _defclass (java_lang_Boolean, java_lang_Object, null,
     },    
 });
 
-var java_lang_Boolean_TRUE = new java_lang_Boolean()._1(true);
-var java_lang_Boolean_FALSE = new java_lang_Boolean()._1(false);
+var java_lang_Boolean_TRUE = new java_lang_Boolean()._1Z(true);
+var java_lang_Boolean_FALSE = new java_lang_Boolean()._1Z(false);
 
 var java_lang_Boolean_toString_1 = function(b) 
 {   return b ? "true" : "false";
 };
-var java_lang_Boolean_valueOf_1 = function(b) 
+var java_lang_Boolean_valueOf_1Z = function(b) 
 {   return b ? java_lang_Boolean_TRUE : java_lang_Boolean_FALSE;
 };
 

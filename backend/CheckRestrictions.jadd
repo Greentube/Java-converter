@@ -141,7 +141,7 @@ aspect CheckRestrictions
         {     
             reportRestriction(errorlist, "Threading is not supported");
         }
-        
+/*        
         // restrictions for Interface methods
         if (hostType() instanceof InterfaceDecl)
         {  
@@ -188,9 +188,10 @@ aspect CheckRestrictions
                 }
             }
         }
+*/        
         super.checkRestrictions(errorlist);     
     }
-    
+/*    
     // check constructor overloading  (and exception declaration) 
     public void ConstructorDecl.checkRestrictions(ArrayList<String> errorlist) 
     {
@@ -207,6 +208,7 @@ aspect CheckRestrictions
         }
         super.checkRestrictions(errorlist);             
     }
+*/
     
     // shadowing field identifiers
     public void FieldDeclarator.checkRestrictions(ArrayList<String> errorlist) 

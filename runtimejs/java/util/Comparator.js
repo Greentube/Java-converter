@@ -6,7 +6,7 @@ var java_util_Comparator = {
         reversed_0: function()
         {   return new java_util_ComparatorReversed(this);
         },
-        thenComparing_1: function(other)
+        thenComparing_1Ljava_util_Comparator$: function(other)
         {   if (other===null)
             {   throw (new java_lang_NullPointerException())._0()._e;
             }

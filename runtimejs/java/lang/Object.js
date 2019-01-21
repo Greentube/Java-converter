@@ -412,65 +412,74 @@ String.prototype.hashCode_0 = function()
     return h;
 };
 
-String.prototype.indexOf_1 = function(str) 
+String.prototype.indexOf_1Ljava_lang_String$ = function(str) 
 {   if (str===null) 
     {   return -1;
     }
-    else if (str._isString) 
+    else 
     {   return this.indexOf(str);
     } 
-    else 
-    {   return this.indexOf(String.fromCharCode(str));
-    }
 };
 
-String.prototype.indexOf_2 = function(str, x) 
+String.prototype.indexOf_1I = function(c) 
+{   return this.indexOf(String.fromCharCode(c));    
+};
+
+String.prototype.indexOf_2Ljava_lang_String$I = function(str, x) 
 {   if (str===null) 
     {   return -1;
     }
-    else if (str._isString) 
+    else
     {   return this.indexOf(str,x);
     }
-    else 
-    {   return this.indexOf(String.fromCharCode(str),x);
-    }
+
+};
+
+String.prototype.indexOf_2II = function(c, x) 
+{   
+    return this.indexOf(String.fromCharCode(c),x);
 };
 
 String.prototype.isEmpty_0 = function()
 {   return this.length_0() === 0;  
 };   
 
-String.prototype.lastIndexOf_1 = function(str) 
+String.prototype.lastIndexOf_1Ljava_lang_String$ = function(str) 
 {   if (str===null) 
     {   return -1;
     } 
-    else if (str._isString) 
-    {   return this.lastIndexOf(str);
-    }
     else 
-    {   return this.lastIndexOf(String.fromCharCode(str));
+    {   return this.lastIndexOf(str);
     }
 };
 
-String.prototype.lastIndexOf_2 = function(str, x) 
+String.prototype.lastIndexOf_1I = function(c) 
+{   
+    return this.lastIndexOf(String.fromCharCode(c));
+};
+
+String.prototype.lastIndexOf_2Ljava_lang_String$I = function(str, x) 
 {   if (str===null) 
     {   return -1;
     }
-    else if (str._isString) 
+    else
     {   return this.lastIndexOf(str, x);
     } 
-    else 
-    {   return this.lastIndexOf(String.fromCharCode(str), x);
-    }
+};
+
+String.prototype.lastIndexOf_2II = function(c, x) 
+{   
+    return this.lastIndexOf(String.fromCharCode(c), x);
 };
 
 String.prototype.length_0 = function () 
 {   return this.length;
 };
 
-String.prototype.replace_2 = function (find, substitute) 
-{   var s = substitute.toString_0 ? substitute.toString_0() : String.fromCharCode(substitute);
-    var f = find.toString_0 ? find.toString_0() : String.fromCharCode(find);
+String.prototype.replace_2Ljava_lang_CharSequence$Ljava_lang_CharSequence$ = 
+function (find, substitute) 
+{   var s = substitute.toString_0();
+    var f = find.toString_0();
     
     var findlength = f.length;
     var r = this;
@@ -482,6 +491,13 @@ String.prototype.replace_2 = function (find, substitute)
     }
     return r;    
 };
+
+String.prototype.replace_2CC = function (find, substitute) 
+{
+    return this.replace_2Ljava_lang_CharSequence$Ljava_lang_CharSequence$ (
+        String.fromCharCode(find), String.fromCharCode(substitute) 
+    );
+}
 
 String.prototype.split_1 = function(delimiter)
 {
@@ -563,7 +579,8 @@ String.prototype.trim_0 = function()
 {   return this.trim();
 };
 
-var java_lang_String_join_2 = function(delim_o, parts_o) 
+var java_lang_String_join_2Ljava_lang_CharSequence$ALjava_lang_CharSequence$ = 
+function(delim_o, parts_o) 
 {   
     var delim = delim_o.toString_0();
     // check if the array contains only Strings or other objects also

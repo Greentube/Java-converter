@@ -15,7 +15,7 @@ _defclass(java_util_Vector, java_util_ArrayListImpl, null,
     },
         
     clone_0: function () 
-    {   return new java_util_Vector()._1(this);
+    {   return (new java_util_Vector())._1Ljava_util_Collection$(this);
     },   
 
     copyInto_1: function(array) 
@@ -69,7 +69,7 @@ _defclass(java_util_Vector, java_util_ArrayListImpl, null,
     removeElement_1: function (o) 
     {   var idx = this.indexOf_1(o);
         if (idx>=0) 
-        {   this.remove_1(idx);
+        {   this.remove_1I(idx);
             return true;
         } 
         else
@@ -78,7 +78,7 @@ _defclass(java_util_Vector, java_util_ArrayListImpl, null,
     },
 
     removeElementAt_1: function(index) 
-    {   this.remove_1(index);
+    {   this.remove_1I(index);
     }, 
 
     setElementAt_2: function(o, index) 
@@ -99,7 +99,7 @@ _defclass(java_util_Vector, java_util_ArrayListImpl, null,
             {   for (var i=0; i<need; i++) this.add_1(null);
             } 
             else if (need<0) 
-            {   for (var i=this.size_0()-1; i>=newsize; i--) this.remove_1(i);
+            {   for (var i=this.size_0()-1; i>=newsize; i--) this.remove_1I(i);
             }
         }
 	},   

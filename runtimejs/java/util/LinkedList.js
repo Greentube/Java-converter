@@ -54,7 +54,7 @@ _defclass(java_util_LinkedList, java_util_AbstractList, null,
         this._len++;            
     },
 
-    remove_1: function (index) 
+    remove_1I: function (index) 
     {   var n = this.seek_1(index);      // may throw IndexOutOfBoundsException
         var x = n.prev;
         var y = n.next;
@@ -147,11 +147,11 @@ _defclass(java_util_LinkedList, java_util_AbstractList, null,
     },
         
     removeFirst_0: function() 
-    {   return this.remove_1(0);
+    {   return this.remove_1I(0);
     },        
             
     removeLast_0: function()
-    {   return this.remove_1(this.size_0()-1);
+    {   return this.remove_1I(this.size_0()-1);
     },
     
     // optimized operations

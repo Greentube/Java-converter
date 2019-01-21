@@ -13,7 +13,15 @@ class OverwriterBase
     {   
         return "nonsense";   
     }
-
+    
+    int z(int i)
+    {
+        return i+1;
+    }
+    int z(double d)
+    {
+        return (int) d;
+    }
 }
 
 public class Overwriter extends OverwriterBase
@@ -26,6 +34,15 @@ public class Overwriter extends OverwriterBase
     Double y() 
     {   
         return new Double(1.5);   
+    }
+    
+    int z(int i)
+    {
+        return i-1;
+    }
+    int z(String s)
+    {
+        return s.length();
     }
 
 } 

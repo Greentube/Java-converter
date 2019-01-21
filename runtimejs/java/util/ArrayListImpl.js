@@ -10,7 +10,7 @@ _defclass(java_util_ArrayListImpl, java_util_AbstractList, null,
         return this;
     },
     
-    _1: function(collection) 
+    _1Ljava_util_Collection$: function(collection) 
     {   this._0();
         this.addAll_1(collection);  // will throw if null
         return this;
@@ -46,7 +46,7 @@ _defclass(java_util_ArrayListImpl, java_util_AbstractList, null,
         }
     },
 
-    remove_1: function (idx) 
+    remove_1I: function (idx) 
     {   var s = this._storage;
         if (idx<0 || idx>=s.length)
         {   throw (new java_lang_IndexOutOfBoundsException())._0()._e; 

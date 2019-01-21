@@ -648,10 +648,17 @@ aspect GenerateCS
         }
         // perform some checks for interface methods
         else
-        {   if (getBlock()!=null && !omitbody)   // static or default interface method
+        {           
+            if (getBlock()!=null && !omitbody)   // static or default interface method
             {   out.print("public static ");
                 isinterfaceextension = isDefault();
-            }       
+            }
+            else   
+            {   // test if overriding method of any super-interface         
+                if (overridesInterfaceMethodOf( (InterfaceDecl)(hostType()), true ) )
+                {   out.print("new ");
+                }
+            }
         }
         
         if (overwritereturntype!=null)

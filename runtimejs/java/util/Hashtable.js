@@ -7,7 +7,7 @@ _defclass(java_util_Hashtable, java_util_HashMapImpl, null,
     // legacy methods only supported by Hashtable but not the Map interface 
     
     clone_0: function() 
-    {   return new java_util_Hashtable()._1(this);
+    {   return new java_util_Hashtable()._1Ljava_util_Map$(this);
     },
     
     contains_1: function(value) 

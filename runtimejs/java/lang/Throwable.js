@@ -14,7 +14,7 @@ _defclass(java_lang_Throwable, java_lang_Object, null,
         this._e.throwable = this;        
         return this;
     },
-    _1: function(message)
+    _1Ljava_lang_String$: function(message)
     {   
         this.message = message;
         this._e = new Error(this.constructor.name);

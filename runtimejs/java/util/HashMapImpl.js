@@ -25,7 +25,7 @@ _defclass(java_util_HashMapImpl, java_lang_Object, [java_util_Map],
         return this;
     },
 
-    _1: function(map) 
+    _1Ljava_util_Map$: function(map) 
     {   this._0();
         this.putAll_1(map);
         return this;

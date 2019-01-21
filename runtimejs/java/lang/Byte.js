@@ -4,7 +4,7 @@ var java_lang_Byte = function()
 };
 
 _defclass(java_lang_Byte, java_lang_Object, null, 
-{   _1: function(b) 
+{   _1B: function(b) 
     {   this.b = b;
         return this;
     },
@@ -35,7 +35,7 @@ var java_lang_Byte_MAX$005fVALUE = 127;
 var java_lang_Byte_toString_1 = function (b) 
 {   return b.toString();
 };
-var java_lang_Byte_valueOf_1 = function (b) 
-{   return new java_lang_Byte()._1(b);
+var java_lang_Byte_valueOf_1B = function (b) 
+{   return new java_lang_Byte()._1B(b);
 };
 

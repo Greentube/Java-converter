@@ -493,5 +493,83 @@ aspect Util {
         }
         return true;
     }
+
+    public boolean TypeDecl.hasSimilarMethods(String name, int numpar, boolean isstatic)
+    {
+        // check if there are two or more methods with the same name and number of parameters
+        // in this class
+        int count = 0;        
+        for (BodyDecl b : this.getBodyDecls())
+        {
+            if (b instanceof MethodDecl)
+            {   MethodDecl m = (MethodDecl) b;
+                if (m.name().equals(name) && m.getNumParameter()==numpar && m.isStatic()==isstatic)
+                {   count++;
+                }
+            }
+        }
+        if (count>=2) 
+        {   // System.out.println("found similar methods: "+name+" "+numpar+" "+isstatic+" in "+name());
+            return true; 
+        }        
+        
+        // continue searching up the inheritance chain
+        if (!isstatic)
+        {   if (this instanceof ClassDecl) 
+            {   ClassDecl c = (ClassDecl) this;
+                if (c!=null && !c.isObject())
+                {   return c.superclass().hasSimilarMethods(name,numpar,isstatic);
+                }          
+            }
+            else if (this instanceof InterfaceDecl)
+            {   InterfaceDecl i = (InterfaceDecl) this;
+                for (Access ac : i.getSuperInterfaceList())
+                {   
+                    while (ac instanceof Dot) { ac=((Dot)ac).getRight(); }
+                    TypeDecl t = (ac instanceof TypeAccess) ? ((TypeAccess) ac).type() 
+                                                            : ((ParTypeAccess) ac).type();            
+                    if (t.hasSimilarMethods(name,numpar,isstatic)) { return true; }
+                }
+            }
+        }
+        
+        return false;
+    }
+    
+    public boolean ClassDecl.hasSimilarConstructors(int numpar)
+    {
+        // check if there are two or more constructors with the same number of parameters
+        int count = 0;        
+        for (BodyDecl b : this.getBodyDecls())
+        {
+            if (b instanceof ConstructorDecl)
+            {   if ( ((ConstructorDecl) b).getNumParameter() == numpar)
+                {   count++;
+                }
+            }
+        }
+        return count>=2;
+    }
+    
+    public boolean MethodDecl.overridesInterfaceMethodOf(InterfaceDecl id, boolean checkonlyparent)
+    {   
+        if (!checkonlyparent)
+        {   for (BodyDecl b : id.getBodyDecls()) 
+            {   if (b instanceof MethodDecl && overrides((MethodDecl)b) ) 
+                {   return true;
+                }
+            }
+        }                                 
+        for (Access ac: id.getSuperInterfaceList()) 
+        {   while (ac instanceof Dot) { ac=((Dot)ac).getRight(); }
+            TypeDecl t = (ac instanceof TypeAccess) ? ((TypeAccess) ac).type() 
+                                                    : ((ParTypeAccess) ac).type();      
+            if (overridesInterfaceMethodOf ( (InterfaceDecl) t , false )) 
+            {   return true;
+            }           
+        }
+        return false;
+    }
+    
     
 }

@@ -423,9 +423,16 @@ public class TestJava5 extends TestJava4
     public static void covariantreturntypetest()
     {
         System.out.println("- overwrite with covariant return type");
+        OverwriterBase b = new OverwriterBase();
         Overwriter w = new Overwriter();
         Integer x = w.x();
         assertI(x.intValue(), 1);
         assertD(w.y().doubleValue(), 1.5);
+        
+        assertI(b.z(5),6);
+        assertI(b.z(7.8),7);
+        assertI(w.z(3),2);
+        assertI(w.z(1.1),1);
+        assertI(w.z("hi"),2);
     }
 }
