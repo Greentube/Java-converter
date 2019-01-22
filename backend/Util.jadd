@@ -536,6 +536,60 @@ aspect Util {
         return false;
     }
     
+    public boolean TypeDecl.hasSimilarMethodInParent(MethodDecl m2, boolean findonlyoverrides)
+    {
+        // search up the inheritance chain
+        if (this instanceof ClassDecl) 
+        {   TypeDecl c = ((ClassDecl)this).superclass();
+            if (c!=null && !c.isObject())
+            {   if (c.hasSimilarMethod(m2,findonlyoverrides)) { return true; }
+                if (c.hasSimilarMethodInParent(m2,findonlyoverrides)) { return true; }
+            }          
+        }
+        else if (this instanceof InterfaceDecl)
+        {   for (Access ac : ((InterfaceDecl) this).getSuperInterfaceList())
+            {   
+                while (ac instanceof Dot) { ac=((Dot)ac).getRight(); }
+                TypeDecl t = (ac instanceof TypeAccess) ? ((TypeAccess) ac).type() 
+                                                        : ((ParTypeAccess) ac).type();            
+                if (t.hasSimilarMethod(m2,findonlyoverrides)) { return true; }
+                if (t.hasSimilarMethodInParent(m2,findonlyoverrides)) { return true; }  
+            }
+        }
+        
+        return false;
+    }
+    
+    public boolean TypeDecl.hasSimilarMethod(MethodDecl m2, boolean findonlyoverrides)
+    {
+        // check if there is a methods with the same name and number of parameters
+        for (BodyDecl b : this.getBodyDecls())
+        {
+            if (b instanceof MethodDecl)
+            {   MethodDecl m = (MethodDecl) b;
+                if 
+                (   !m.isStatic() 
+                    && m.name().equals(m2.name()) 
+                    && m.getNumParameter()==m2.getNumParameter()
+                )
+                {   if (findonlyoverrides && !m2.overrides(m))
+                    {   // do not consider this now
+                    }
+                    else                
+                    {   
+//                        System.out.println
+//                        (   "similar ("+(findonlyoverrides?"overrides":"any")+"): "
+//                            +m.hostType().name()+"."+m.signature()
+//                            +" -> "+m2.hostType().name()+"."+m2.signature()
+//                        );
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    
     public boolean ClassDecl.hasSimilarConstructors(int numpar)
     {
         // check if there are two or more constructors with the same number of parameters

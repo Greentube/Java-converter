@@ -141,74 +141,20 @@ aspect CheckRestrictions
         {     
             reportRestriction(errorlist, "Threading is not supported");
         }
-/*        
-        // restrictions for Interface methods
-        if (hostType() instanceof InterfaceDecl)
-        {  
-        }
-        // restrictions for class methods 
-        else if (hostType() instanceof ClassDecl) 
-        { 
-            // check method name collisions in same class       
-            ClassDecl cd = (ClassDecl)hostType();
-            for (BodyDecl bd:cd.getBodyDeclList()) 
-            {   // no two methods with same name and number of arguments in same class
-                // if both are either static or non-static
-                if ((bd instanceof MethodDecl) && bd!=this) 
-                {   MethodDecl md = (MethodDecl) bd;
-                    if (md.getID().equals(getID())
-                    &&  md.getNumParameter()==getNumParameter()
-                    &&  md.isStatic() == isStatic()) 
-                    {
-                        reportRestriction(errorlist, 
-                         (isStatic() ? "Static" : "Non-static") + " method "
-                            + "'"+getID()+"' with "+getNumParameter()
-                            + " parameter(s) conflicts with other method defined in same class");
-                    }               
-                }
-            }
-            
-            // check for collisions in the inheritance chain            
-            if (!isStatic()) 
-            {          
-                cd = (ClassDecl) cd.superclass();
-                while(!cd.isObject()) 
-                {   for (BodyDecl bd:cd.getBodyDeclList()) 
-                    {   if ((bd instanceof MethodDecl)) 
-                        {   MethodDecl md = (MethodDecl) bd;                            
-                            if (!md.isStatic() && md.getID().equals(getID()) 
-                              && md.getNumParameter()==getNumParameter()
-                              && !overrides(md) ) {
-                                reportRestriction(errorlist, "Method '"+getID() +"' with "
-                                 +getNumParameter()+" parameters conflicts with method in parent class");                               
-                            }
-                        }
-                    }
-                    cd = (ClassDecl) cd.superclass();
-                }
+        
+        // it is not allowed to add method overloads in a sub-class or sub-interface
+        if (!this.isStatic())
+        {   TypeDecl t = hostType();
+            boolean overloading = t.hasSimilarMethodInParent(this,false);
+            boolean overriding = t.hasSimilarMethodInParent(this,true);
+            if (overloading && !overriding)
+            {   reportRestriction(errorlist, "Can not overload methods of parent class or interface: "
+                  + t.name()+"."+signature());
             }
         }
-*/        
+        
         super.checkRestrictions(errorlist);     
     }
-/*    
-    // check constructor overloading  (and exception declaration) 
-    public void ConstructorDecl.checkRestrictions(ArrayList<String> errorlist) 
-    {
-        ClassDecl cd = (ClassDecl)hostType();
-        for (BodyDecl bd:cd.getBodyDeclList()) 
-        {   // no two constructors with same number of arguments
-            if ((bd instanceof ConstructorDecl) && bd!=this) 
-            {   ConstructorDecl md = (ConstructorDecl) bd;
-                if (md.getNumParameter()==getNumParameter())
-                {   reportRestriction(errorlist, 
-                      "Multiple constructors with "+getNumParameter()+" parameters");                                
-                }
-            }
-        }
-        super.checkRestrictions(errorlist);             
-    }
-*/
     
     // shadowing field identifiers
     public void FieldDeclarator.checkRestrictions(ArrayList<String> errorlist) 

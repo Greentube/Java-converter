@@ -40,10 +40,6 @@ public class Overwriter extends OverwriterBase
     {
         return i-1;
     }
-    int z(String s)
-    {
-        return s.length();
-    }
 
 } 
 

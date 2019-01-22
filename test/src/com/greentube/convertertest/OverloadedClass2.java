@@ -7,7 +7,7 @@ public class OverloadedClass2 extends OverloadedClass implements OverloadedInter
         return a + b + 2.0;
     }
 
-    public static double add(double a, double b)
+    static double add(double a, double b)
     {   
         return a + b;         
     }

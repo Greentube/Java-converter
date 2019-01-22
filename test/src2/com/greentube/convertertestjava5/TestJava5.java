@@ -433,6 +433,5 @@ public class TestJava5 extends TestJava4
         assertI(b.z(7.8),7);
         assertI(w.z(3),2);
         assertI(w.z(1.1),1);
-        assertI(w.z("hi"),2);
     }
 }
