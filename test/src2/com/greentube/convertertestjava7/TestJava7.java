@@ -15,6 +15,7 @@ public class TestJava7 extends TestJava5
         stringinswitchtest();
         underscoreinnumbertest();
         diamondoperatortest();
+//        castobjecttoprimitivetest();
         trywithresourcestest();
     }
 
@@ -72,7 +73,27 @@ public class TestJava7 extends TestJava5
         list.addAll(list2);
         assertO(list.toString(), "[A, B]");
     }
-    
+/*    
+    static void castobjecttoprimitivetest()
+    {   System.out.println("- cast object to primitive");
+
+        Object o = Integer.valueOf(17);
+        assertI( (int) o, 17);
+        o = Double.valueOf(14.1);
+        assertD( (double) o, 14.1); 
+        o = Character.valueOf('x');
+        assertI( (char) o, 'x'); 
+        o = Short.valueOf((short)4);
+        assertI( (short) o, 4); 
+        o = Byte.valueOf((byte)3);
+        assertI( (byte) o, 3); 
+        o = Boolean.TRUE;
+        assertB( (boolean) o );        
+        Boolean b = Boolean.TRUE;
+        assertB( (boolean) b );
+        assertB( b );
+    }
+*/
     public static void trywithresourcestest() 
     {   System.out.println("- try with resources");
 
@@ -291,4 +312,6 @@ public class TestJava7 extends TestJava5
         throw new MyNumberFormatException("");
     }
     
+    
+
 }
