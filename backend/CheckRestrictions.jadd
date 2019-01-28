@@ -357,8 +357,8 @@ aspect CheckRestrictions
         TypeDecl from = getExpr().type();
         TypeDecl to = type();
 
-        if (to.isPrimitiveType() && !from.isPrimitiveType())
-        {   reportRestriction(errorlist, "Auto-unboxing is not supported");
+        if (to.isPrimitiveType() != from.isPrimitiveType())
+        {   reportRestriction(errorlist, "Autoboxing is not supported");
         }
         
         super.checkRestrictions(errorlist);
