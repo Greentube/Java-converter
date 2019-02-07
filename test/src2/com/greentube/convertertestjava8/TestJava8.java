@@ -1,15 +1,11 @@
 package com.greentube.convertertestjava8;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.*;
 
 import com.greentube.convertertestjava7.TestJava7;
+
+import static com.greentube.convertertestjava8.p2.WithStaticMethod.m;
 
 public class TestJava8 extends TestJava7
 {
@@ -33,6 +29,7 @@ public class TestJava8 extends TestJava7
         customiterator();
         customcomparator();
         sortliststest();
+        staticimporttest();
         featureshowcase();
         assertO(new AnnotationsTest().toString(),"[]AnnotationsTest");        
     }
@@ -458,6 +455,11 @@ public class TestJava8 extends TestJava7
         
     }
 
+    public static void staticimporttest()
+    {
+        System.out.println("- test static import");
+        assertI(m(), 7);
+    }
 
     
     public static void featureshowcase()

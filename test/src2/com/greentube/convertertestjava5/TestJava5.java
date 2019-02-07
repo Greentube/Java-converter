@@ -65,6 +65,12 @@ public class TestJava5 extends TestJava4
         assertO(e3.toString(), "TS101-work");    	
         ToDoEntry<TimeStamp,Runnable> e4 = new ToDoEntry<TimeStamp,Runnable>(new TimeStamp2(47),r);
         assertO(e4.toString(), "TS47:00-work");
+        
+        Entry<Overwriter,Overwriter> e9 = new Entry<>(new Overwriter(),new Overwriter());
+        assertI(combine(e9),34);
+        List<OverwriterBase> lb = new ArrayList<>();
+        appendto(lb);
+        assertI(lb.get(0).z(5),4);
     }
 
     private static <T> Entry<T, T> twice(T value) 
@@ -78,6 +84,16 @@ public class TestJava5 extends TestJava4
     private static <T> T selector(T a, T b, int n) 
     {   return n==0 ? a : b;
     }
+    
+    private static <T extends OverwriterBase> int combine(Entry<T,T> e)
+    {
+        return 10 * e.getKey().z(4) + e.getValue().z(5);
+    }
+    private static void appendto(List<? super Overwriter> l)
+    {
+        l.add(new Overwriter());
+    }
+    
 
     public static void forinlooptest() 
     {   System.out.println("- for in loop");
