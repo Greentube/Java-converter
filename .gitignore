@@ -3,6 +3,7 @@
 /build/
 /**/build/
 /**/csharpproject/bin
+/**/csharpproject/obj
 /**/csharpproject/build
 /**/csharpproject/obj/Debug
 /**/csharpproject/obj/Release
