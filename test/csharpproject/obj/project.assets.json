@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "targets": {
     ".NETCoreApp,Version=v1.1": {
       "Libuv/1.9.1": {
@@ -7045,18 +7045,30 @@
       "projectUniqueName": "C:\\Users\\rgraf\\Documents\\java-converter\\test\\csharpproject\\testcsharp.csproj",
       "projectName": "testcsharp",
       "projectPath": "C:\\Users\\rgraf\\Documents\\java-converter\\test\\csharpproject\\testcsharp.csproj",
+      "packagesPath": "C:\\Users\\rgraf\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\rgraf\\Documents\\java-converter\\test\\csharpproject\\obj\\",
       "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "C:\\Users\\rgraf\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
       "originalTargetFrameworks": [
         "netcoreapp1.1"
       ],
-      "files": {
-        "lib/netcoreapp1.1/testcsharp.dll": "C:\\Users\\rgraf\\Documents\\java-converter\\test\\csharpproject\\bin\\placeholder\\netcoreapp1.1\\testcsharp.dll"
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {},
+        "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "netcoreapp1.1": {
           "projectReferences": {}
         }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
       }
     },
     "frameworks": {
@@ -7064,7 +7076,8 @@
         "dependencies": {
           "Microsoft.NETCore.App": {
             "target": "Package",
-            "version": "1.1.2"
+            "version": "[1.1.2, )",
+            "autoReferenced": true
           }
         }
       }

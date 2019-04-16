@@ -9,10 +9,16 @@ public class HecToc
 {
     public static void main(String args[])
     {
+        Run(new int[]{1,2,3,4,5,6,7}); // warm-up
+        Run(new int[]{5,2,6,3,2,1,7});
+    }
+
+    public static void Run(int[] digits)
+    {
         double start = (double) System.currentTimeMillis(); 
             
         List<Expression> l = new ArrayList<>();
-        for (List<Constant> p:computePartitionings(0,6))
+        for (List<Constant> p:computePartitionings(0,digits.length))
         {   for (Expression e:buildExpressions(p)) 
             {   l.add(e); 
             }        
@@ -20,30 +26,15 @@ public class HecToc
 //        for (Expression e:l)
 //        {   System.out.println(e);
 //        }
-        System.out.println("total expressions:"+l.size());
+        int numexpr = l.size();
 
-        trycombo(l, new int[]{5,2,6,3,2,1}, 100, true);
-        
-//        for (int a=1; a<=9; a++)
-//        {   for (int b=1; b<=9; b++)
-//            {   for (int c=1; c<=9; c++)
-//                {   for (int d=1; d<=9; d++)
-//                    {   for (int e=1; e<=9; e++)
-//                        {   for (int f=1; f<=9; f++)
-//                            {   int hits = trycombo(l, new int[]{a,b,c,d,e,f}, 99, false);
-//                                if (hits<=0) 
-//                                {   System.out.println("No solution for "+a+""+b+""+c+""+d+""+e+""+f);
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-              
+        int hits = trycombo(l, digits, 100, !true);
+                      
         double end = (double) System.currentTimeMillis(); 
         
-        System.out.println("total time: "+(int)(end-start));          
+        System.out.println("hectoc expressions: "+numexpr);
+        System.out.println("hectoc hits: "+ hits);
+        System.out.println("hectoc total time: "+(int)(end-start));          
     }
     
     public static int trycombo(List<Expression> l, int[] values, int targetvalue, boolean printit)
