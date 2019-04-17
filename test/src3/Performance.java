@@ -135,7 +135,8 @@ public class Performance
             m.remove(keys[4]);
             m.remove(keys[1]);
             for (int i=0; i<5000; i++) 
-            {   m.get(keys[i%keys.length]);                
+            {   Object k = keys[i%keys.length]; 
+                if (m.containsKey(k)) { m.get(k); }                
             }
             for (int i=0; i<keys.length; i++) 
             {   m.remove(keys[i]);
