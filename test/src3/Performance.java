@@ -84,8 +84,9 @@ public class Performance
 
         double s6 = (double) System.currentTimeMillis();
 
+        int polysum = 0;
         for (int i=0; i<1000; i++) 
-        {   testPolymorphism();
+        {   polysum = testPolymorphism();
         }
         
         double s7 = (double) System.currentTimeMillis();
@@ -102,7 +103,7 @@ public class Performance
         System.out.println("HashMap (String)     " + ((int)(s4-s3)) +" ms");
         System.out.println("LinkedList           " + ((int)(s5-s4)) +" ms");
         System.out.println("Arrays               " + ((int)(s6-s5)) +" ms");
-        System.out.println("Polymorphism         " + ((int)(s7-s6)) +" ms");
+        System.out.println("Polymorphism         " + ((int)(s7-s6)) +" ms" + " outcome: "+polysum);
         System.out.println("Sort                 " + ((int)(s8-s7)) +" ms");
         System.out.println("Total                " + ((int)(sx-s1)) +" ms");
     }
@@ -194,11 +195,13 @@ public class Performance
         }
     }
 
-    public static void testPolymorphism() 
-    {   C c[] = new C[]{new C(5), new C1(7), new C2(8)};
+    public static int testPolymorphism() 
+    {   int sum = 0;
+        C c[] = new C[]{new C(5), new C1(7), new C2(8)};
         for (int i=0; i<150000; i++) 
-        {   c[i%c.length].get();
+        {   sum += c[i%c.length].get();
         }
+        return sum;
     }
 
     static class C
