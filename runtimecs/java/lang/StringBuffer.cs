@@ -46,8 +46,10 @@ namespace java.lang { public class StringBuffer
     }
     
     public StringBuffer append(char[] ca)
-    {   content.Append(ca);
-        return this;
+    {   lock (content)
+        {   content.Append(ca);
+            return this;
+        }
     }
         
     public int length()
