@@ -1,4 +1,5 @@
 //load// java/lang/Object
+//reference// java/lang/NullPointerException
 var java_lang_StringBuilder = function() 
 {   this._parts = null;
     this._length = 0;
@@ -41,7 +42,13 @@ _defclass(java_lang_StringBuilder, java_lang_Object, null,
     {   this.append_1Ljava_lang_String$(_d2s(x));
         return this;
     },
-    
+    append_1AC: function(x) 
+    {   
+        if (x===null) {throw (new java_lang_NullPointerException())._0()._e; }
+        this.append_1Ljava_lang_String$(String.fromCharCode.apply(null, x)); 
+        return this;
+    },
+
     length_0: function() 
     {   return this._length;
     },

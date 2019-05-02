@@ -1,4 +1,5 @@
 //load// java/lang/Object
+//reference// java/lang/NullPointerException
 var java_lang_StringBuffer = function() 
 {   this._parts = null;
     this._length = 0;
@@ -39,6 +40,12 @@ _defclass(java_lang_StringBuffer, java_lang_Object, null,
     },
     append_1D: function(x) 
     {   this.append_1Ljava_lang_String$(_d2s(x));
+        return this;
+    },
+    append_1AC: function(x) 
+    {   
+        if (x===null) {throw (new java_lang_NullPointerException())._0()._e; }
+        this.append_1Ljava_lang_String$(String.fromCharCode.apply(null, x)); 
         return this;
     },
     

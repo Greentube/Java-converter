@@ -2132,6 +2132,10 @@ public class TestJava4
         c.append(Double.NEGATIVE_INFINITY);
         c.append(0.0/0.0);
         assertO(c.toString(), "double:4.0-52.523-5.0Infinity-InfinityNaN");
+        
+        c = new StringBuffer("array:");
+        c.append(new char[]{'a','b','c','d'});
+        assertO(c.toString(), "array:abcd");
     }
     
     public static void stringbuildertest()
@@ -2162,7 +2166,11 @@ public class TestJava4
     	StringBuilder c = new StringBuilder();
     	c.append(b.toString());
     	assertB(!b.equals(c));
-    	assertB(b.toString().equals(c.toString()));    	    
+    	assertB(b.toString().equals(c.toString()));
+    	
+        c = new StringBuilder("array:");
+        c.append(new char[]{'a','b','c','d'});
+        assertO(c.toString(), "array:abcd");    	    
     }
     
     public static void vectortest() {

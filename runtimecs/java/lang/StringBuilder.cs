@@ -34,6 +34,11 @@ namespace java.lang { public class StringBuilder
     {   content.Append(SYSTEM.str(d));
         return this;
     }
+    
+    public StringBuilder append(char[] ca)
+    {   content.Append(ca);
+        return this;
+    }
         		
     public int length()
     {   return content.Length;
