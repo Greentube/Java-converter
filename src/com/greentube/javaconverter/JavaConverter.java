@@ -194,8 +194,9 @@ public class JavaConverter extends Frontend
         System.out.println(
             "  -js                       Directory where to store javascript files\n"
           + "  -cs                       Directory where to store c# files\n"
-          + "  -csruntime                Also write C# runtime library files to output folder" );
-          
+          + "  -csruntime                Also write C# runtime library files to output folder\n"
+          + "  -recursive                Convert all .java files in this directory and sub-directories"); 
+
     }
 
     public static void main(String args[]) 
@@ -234,12 +235,47 @@ public class JavaConverter extends Frontend
                 System.exit(1);
             }
         }
-        // converter operation
+        
+        // converter operation: 
+        // patch arguments for possibility to specify all files in a folder for conversion        
         else 
-        {   int exitCode = new JavaConverter().run(args);
+        {   ArrayList<String> a = new ArrayList<>();
+            ArrayList<File> files = new ArrayList<>();
+            for (int i=0; i<args.length; i++)
+            {   if (args[i].equals("-recursive") && i+1<args.length)
+                {   if (!scanRecursively(new File(args[i+1]), files))
+                    {   System.out.println("Can not find source directory: "+args[i+1]);
+                        System.exit(1);
+                    }
+                    i++;   
+                }
+                else
+                {   a.add(args[i]);
+                }
+            }
+            for (int i=0; i<files.size(); i++)
+            {   a.add(files.get(i).getPath());
+            }
+
+            int exitCode = new JavaConverter().run(a.<String>toArray(new String[0]));
             if (exitCode != 0) 
             {   System.exit(exitCode);
             }
         }
     }
+
+    public static boolean scanRecursively(File directory, ArrayList<File>files)
+    {
+        if (!directory.isDirectory()) { return false; }
+        for (File f:directory.listFiles())
+        {   
+            if (f.isFile() && f.getName().endsWith(".java"))
+            {   files.add(f);
+            }
+            else 
+            {   scanRecursively(f, files);
+            }
+        }        
+        return true;
+    } 
 }
