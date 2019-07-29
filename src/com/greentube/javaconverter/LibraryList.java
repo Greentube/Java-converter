@@ -667,9 +667,9 @@ public class LibraryList
     };
 
 
-    static HashMap<String,HashSet<String>> map = null;
+    private static HashMap<String,HashSet<String>> map = null;
 
-    public static void buildList() 
+    private static void buildList() 
     {   
         map = new HashMap<>();
         for (int i=0; i<supported.length; i++) 

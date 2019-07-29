@@ -108,9 +108,14 @@ public class JavaConverter extends Frontend
     @Override
     protected void processNoErrors(CompilationUnit unit) 
     {   
-        LibraryList.buildList();
-        ArrayList<String> errorlist = new ArrayList<String>(0);        
-        unit.checkRestrictions(errorlist);
+        ArrayList<String> errorlist = new ArrayList<String>(0);
+        try
+        {   unit.checkRestrictions(errorlist);
+        }
+        catch (RuntimeException e) 
+        {   errorlist.add(e.getMessage());
+        }
+        
         if (errorlist.size()==0) 
         {   if (destDirJS!=null) 
             {   try 
