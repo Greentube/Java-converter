@@ -89,7 +89,7 @@ public class CodePrinter
     public void println() 
     {
         try 
-        {   ow.write("\n");
+        {   ow.write(System.lineSeparator());
             linehasstarted=false;            
         }
         catch (IOException e) 
