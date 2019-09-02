@@ -39,12 +39,10 @@ Basically the language features of java 8 are provided with the following restri
     This feature would be a horror to get right in all conversion targets. Since its use
     is already quite disfavoured in the first place, the converter does not allow it at all.
       
-- Method/constructor overloading only based on number of parameters
-    Instead of implementing the java way of using the full type signatures
-    of all parameters, the javascript target uses a simpler system that 
-    takes only the number of parameters into account. As a consequence, it is not possible
-    to have multiple identically named methods with the same number of parameters 
-    and the same static/non-static state in the same class.         
+- Method/constructor overloading may be less powerful
+    Overloading is supported to some extent, but there are some restrictions.
+    Specifically it is not possible to later add overloads to
+    an already defined name in a child class.
       
 - No hiding of fields and methods 
     No two instance fields in objects that are somehow inherited from each other can have the 

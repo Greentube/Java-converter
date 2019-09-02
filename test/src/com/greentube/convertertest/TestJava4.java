@@ -295,8 +295,8 @@ public class TestJava4
         assertB(tob3[0][1]!=null);
 
         assertB(tob instanceof Object);
-        assertB(tob.toString() != null); 
-        assertB(new int[2].toString() != null);
+        assertAnyString(tob.toString()); 
+        assertAnyString(new int[2].toString());
         
         sa = new String[2];
         String [] sa1 = new String[2];
@@ -452,9 +452,14 @@ public class TestJava4
         
         
         // check if the toString operation delivers at least some string
-        assertB(new Object().toString()!=null);
-        assertB(new ClassWithNoToString().toString()!=null);
-
+        assertAnyString(new Object().toString());
+        assertAnyString(new ClassWithNoToString().toString());
+        // check if hashCode delivers at least some hash
+        double h = new ClassWithNoToString().hashCode();
+        assertB(h>=Integer.MIN_VALUE && h<=Integer.MAX_VALUE);
+        h = (new ClassWithNoToString[3]).hashCode();
+        assertB(h>=Integer.MIN_VALUE && h<=Integer.MAX_VALUE);
+        
         // do some number type casting
         int i;
         double d;
@@ -3012,5 +3017,15 @@ public class TestJava4
         for (int i=0; i<value.length; i++) 
         {   assertO(value[i],expected[i]);
         }
+    }
+    
+    public static void assertAnyString(Object o)
+    {
+        if (o instanceof String)
+        {   return;
+        }    
+        System.err.println("Received "+o+" instead of a string");  
+        printstack();
+        return;
     }
 }

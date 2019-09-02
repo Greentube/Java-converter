@@ -10,7 +10,7 @@ a bug in the converter and will either be fixed or also documented here.
 
 - Different default implementation of hashCode()
     Objects not overriding hashCode will provide a default implementation that may deliver
-    an extremely weak hash (only depending on the object's class). Do not 
+    an extremely weak hash (just '1' for javascript targets). Do not 
     use these as keys in any Hashtable/HashMap/HashSet. 
     The String and Double objects will create a good hash, but a different one as is specified 
     in java. Do not rely on certain hash values for specific strings.
@@ -18,7 +18,7 @@ a bug in the converter and will either be fixed or also documented here.
 - Different default implementation of toString()
     Objects not overriding toString() will provide a default implementation
     that is conversion target specific. Do only use it to create a human readable debug output and
-    do not rely on any specific format. When the javascript program is additinoally minified
+    do not rely on any specific format. When the javascript program is additionally minified
     class names will also be completely stripped and the default toString() will 
     generate no meaningful output at all.
 

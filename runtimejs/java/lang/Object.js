@@ -11,7 +11,8 @@ java_lang_Object.prototype._0 = function()
 };
 
 java_lang_Object.prototype.toString_0 = function()
-{   return this.constructor.name;
+{   var s = this.constructor.name;
+    return s ? s : "";
 };
 
 java_lang_Object.prototype.equals_1 = function(a)
@@ -19,8 +20,8 @@ java_lang_Object.prototype.equals_1 = function(a)
 };
 
 java_lang_Object.prototype.hashCode_0 = function()
-{   // there is no real way to access any true object identity, so use a hash of the class name instead
-    return this.constructor.name.hashCode_0();  
+{   // there is no real way to access any true object identity
+    return 1;  
 };
 
 // add default attributes 
@@ -343,8 +344,9 @@ Array.prototype.toString_0 = function ()
 {   var s="[";
     for (var i=1; i<this._d; i++) { s=s+"["; }
     if (this._t._isString) { return s+this._t; }
-    if (this._t._superinterfaces) { return s+"L?;"; }
-    return s+"L"+this._t.name + ";";
+    if (this._t._superinterfaces) { return s+"L?;"; }    
+    var n = this._t.name;
+    return n ? (s+"L"+n+";") : (s+"L;");
 };
 
 Array.prototype.hashCode_0 = function () 
