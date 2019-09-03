@@ -9,6 +9,7 @@ public class InitializerBlockTest extends InitializerBlockParent {
 	public static PrintStream str;
 	
 	static {
+	   System.out.println("Logging at static initializer time");
 		str = System.out; 
 		something = 112233;
 		overridden = 3;

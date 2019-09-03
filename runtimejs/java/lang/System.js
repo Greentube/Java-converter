@@ -3,8 +3,8 @@
 //reference// java/lang/IndexOutOfBoundsException
 //complete// java/io/PrintStream
 
-var java_lang_System_out = (new java_io_PrintStream())._1(console.log);
-var java_lang_System_err = (new java_io_PrintStream())._1(console.warn);
+var java_lang_System_out = (new java_io_PrintStream())._1(false);
+var java_lang_System_err = (new java_io_PrintStream())._1(true);
 
 var java_lang_System_arraycopy_5 = function(src, srcPos, dest, destPos, length) 
 {   if (src==null || dest==null) 

@@ -2,13 +2,13 @@
 //load// java/lang/Object
 var java_io_PrintStream = function() 
 {   java_lang_Object.call(this);
-    this._logfunction = null;
+    this._warn = false;
     this._line = null;    
 };
 _defclass (java_io_PrintStream, java_lang_Object, null, 
 {
-    _1: function(logfunction) 
-    {   this._logfunction = logfunction;
+    _1: function(warn) 
+    {   this._warn = warn;
         this._line = [];
         return this;
     },     
@@ -36,7 +36,8 @@ _defclass (java_io_PrintStream, java_lang_Object, null,
     println_0: function() 
     {   var l = this._line.join("");
         this._line = [];
-        this._logfunction(l);
+        if (this._warn) console.warn(l);
+        else            console.log(l);
     },
     
     println_1Z: function(v) 
