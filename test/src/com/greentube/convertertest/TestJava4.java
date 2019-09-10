@@ -6,6 +6,7 @@ import com.greentube._convertertest2.ModifierTestOtherPackageSubClass;
 import com.greentube._convertertest2.TestInterface_X;
 import com.greentube._convertertest2.TestObject2_;
 import com.greentube._convertertest2._TestInterface2;
+import com.greentube._convertertest2.ExtendsEmptyInterface;
 import com.greentube.convertertestreserved.debugger.arguments;
 import com.greentube.convertertestreserved.event.lock;
 import com.greentube.convertert€st_3.InitSequenceTestA;
@@ -388,6 +389,8 @@ public class TestJava4
         assertB(t2 instanceof _TestInterface2);
         TestInterface f2 = (_TestInterface2) t2;
         assertO(f2.hello(), "hello");
+        ExtendsEmptyInterface eef = null;
+        assertB(eef instanceof ExtendsEmptyInterface, false);
         
         // check type inclusion relation between some built-in types
         assertB(a instanceof Object);

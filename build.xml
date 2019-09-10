@@ -198,7 +198,7 @@
         </unzip>
         
         <!-- compile the whole converter (including the generated sources) -->          
-        <javac compiler="javac1.7" destdir="${basedir}/build/package" includeAntRuntime="true">
+        <javac compiler="javac1.7" destdir="${basedir}/build/package" includeAntRuntime="true" debug="on">
             <src path="${basedir}/src"/>    
             <src path="${basedir}/gen"/>    
             <src path="${extendjpath}/src/frontend"/>
@@ -218,7 +218,7 @@
             <fileset dir="${basedir}/build/package"/>
             <manifest>
                  <attribute name="Main-Class" value="com.greentube.javaconverter.JavaConverter"/>
-                 <attribute name="Implementation-Version" value="2.10.9"/>
+                 <attribute name="Implementation-Version" value="2.10.10"/>
                  <attribute name="Version-Date" value="${timestamp}"/>
             </manifest>         
         </jar>          

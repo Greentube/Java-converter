@@ -113,7 +113,8 @@ public class JavaConverter extends Frontend
         {   unit.checkRestrictions(errorlist);
         }
         catch (RuntimeException e) 
-        {   errorlist.add(e.getMessage());
+        {   e.printStackTrace(System.out);
+            errorlist.add(e.getMessage());
         }
         
         if (errorlist.size()==0) 
@@ -122,7 +123,8 @@ public class JavaConverter extends Frontend
                 {   unit.generateJS(destDirJS);
                 }
                 catch (RuntimeException e) 
-                {   errorlist.add(e.getMessage());
+                {   e.printStackTrace(System.out);
+                    errorlist.add(e.getMessage());
                 }
             }
             if (destDirCS!=null) 
@@ -130,7 +132,8 @@ public class JavaConverter extends Frontend
                 {   unit.generateCS(destDirCS);       
                 }
                 catch (RuntimeException e) 
-                {   errorlist.add(e.getMessage());
+                {   e.printStackTrace(System.out);
+                    errorlist.add(e.getMessage());
                 }
             }            
         }

@@ -617,8 +617,12 @@ aspect Util {
         for (Access ac: id.getSuperInterfaceList()) 
         {   while (ac instanceof Dot) { ac=((Dot)ac).getRight(); }
             TypeDecl t = (ac instanceof TypeAccess) ? ((TypeAccess) ac).type() 
-                                                    : ((ParTypeAccess) ac).type();      
-            if (overridesInterfaceMethodOf ( (InterfaceDecl) t , false )) 
+                                                    : ((ParTypeAccess) ac).type();  
+            if (! (t instanceof InterfaceDecl))
+            {   System.out.println("WARNING! Super-interface was found to not be an InterfaceDecl: "
+                       + t.fullName());                
+            }                                                        
+            else if (overridesInterfaceMethodOf ( (InterfaceDecl) t , false )) 
             {   return true;
             }           
         }
