@@ -138,6 +138,10 @@ public class TestJava8 extends TestJava7
         m.forEach(bc.andThen((k, v) -> count[0]++));
         assertO(m, x);
         assertI(count[0], 4);
+        
+        count[0]=0;
+        m.forEach((k,v) -> { count[0] += v.intValue(); } );
+        assertI(count[0], 17+4+8+15);
     }
     
     public static void removeiftest()

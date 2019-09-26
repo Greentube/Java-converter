@@ -31,6 +31,12 @@ public class ConverterAntTask extends Task
     {   
         this.classpath = path;
     }
+    private boolean verbose=false;
+    public void setVerbose(String v) 
+    {   
+        this.verbose = v.toLowerCase().equals("true");
+    }
+    
 
     public void execute() throws BuildException 
     {   
@@ -50,6 +56,9 @@ public class ConverterAntTask extends Task
         if (classpath!=null) 
         {   args.add("-classpath");
             args.add(classpath);
+        }
+        if (verbose)
+        {   args.add("-verbose");
         }
 
         for (int i=0; i<filesets.size(); i++)

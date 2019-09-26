@@ -63,6 +63,9 @@
                 <include name="*.jrag"/>
                 <include name="*.jadd"/>
             </fileset>
+            <fileset dir="${extendjpath}/java8/grammar">
+                    <include name="*.ast"/>
+            </fileset>
             <fileset dir="${extendjpath}/java7/grammar">
                 <include name="*.ast"/>
             </fileset>
@@ -75,9 +78,6 @@
             <fileset dir="${extendjpath}/java7/backend">
                 <include name="*.jrag"/>
                 <include name="*.jadd"/>
-            </fileset>
-            <fileset dir="${extendjpath}/java8/grammar">
-                    <include name="*.ast"/>
             </fileset>
             <fileset dir="${extendjpath}/java8/frontend">
                 <include name="*.jadd"/>
@@ -98,10 +98,10 @@
     	
     	<!-- add the compilier and scanner from the extendj folder as is -->
         <copy todir="${basedir}/gen/org/extendj/parser" >
-            <fileset dir="${extendjpath}/java8/src/gen/org/extendj/parser"/>
+            <fileset dir="${extendjpath}/src/gen/org/extendj/parser"/>
         </copy>
         <copy todir="${basedir}/gen/org/extendj/scanner" >
-            <fileset dir="${extendjpath}/java8/src/gen/org/extendj/scanner"/>
+            <fileset dir="${extendjpath}/src/gen/org/extendj/scanner"/>
         </copy>
     	
     </target>
@@ -123,56 +123,76 @@
         <!-- extract necessary bootstrap classes (file format of java 1.8) for use with the converter -->
         <unzip src="${basedir}/rt.jar" dest="${basedir}/build/package">
             <patternset>
-                <include name="java/io/PrintStream.class" />
-                <include name="java/io/FilterOutputStream.class" />
-                <include name="java/io/OutputStream.class" />
-                <include name="java/lang/AbstractStringBuilder.class" />
-            	<include name="java/lang/AutoCloseable.class" />
-            	<include name="java/lang/Boolean.class" />              
-                <include name="java/lang/Byte.class" />
-                <include name="java/lang/Character.class" />
-                <include name="java/lang/CharSequence.class" />
-                <include name="java/lang/Double.class" />
-                <include name="java/lang/Enum.class" />
-                <include name="java/lang/Integer.class" />
-                <include name="java/lang/Iterable.class" />
-                <include name="java/lang/Math.class" />
-                <include name="java/lang/Number.class" />
-                <include name="java/lang/Object.class" />
-                <include name="java/lang/Runnable.class" />
-                <include name="java/lang/Short.class" />
-                <include name="java/lang/StringBuffer.class" />
-                <include name="java/lang/StringBuilder.class" />
-                <include name="java/lang/String.class" />
-                <include name="java/lang/System.class" />
-                <include name="java/lang/Throwable.class" />
-                <include name="java/util/AbstractCollection.class" />
-                <include name="java/util/AbstractList.class" />
-                <include name="java/util/AbstractMap.class" />
-                <include name="java/util/AbstractSet.class" />
-                <include name="java/util/ArrayList.class" />
-                <include name="java/util/Arrays.class" />               
-                <include name="java/util/Collection.class" />
-                <include name="java/util/Comparator.class" />
-                <include name="java/util/Enumeration.class" />
-                <include name="java/util/HashMap.class" />
-                <include name="java/util/HashSet.class" />
-                <include name="java/util/Hashtable.class" />
-                <include name="java/util/Iterator.class" />
-                <include name="java/util/LinkedList.class" />
-                <include name="java/util/List.class" />
-                <include name="java/util/Map.class" />
-                <include name="java/util/Set.class" />
-                <include name="java/util/Vector.class" />
-                <include name="java/util/Dictionary.class" />
-                <include name="java/util/function.Supplier.class" />
-                <include name="java/util/function.Predicate.class" />
-                <include name="java/util/function.Function.class" />
-                <include name="java/util/function.UnaryOperator.class" />
-                <include name="java/util/function.Consumer.class" />
-                <include name="java/util/function.BiConsumer.class" />
+                <include name="java/io/Closeable*.class" />
+                <include name="java/io/Flushable*.class" />
+                <include name="java/io/PrintStream*.class" />
+                <include name="java/io/PrintWriter*.class" />
+                <include name="java/io/FileOutputStream*.class" />
+                <include name="java/io/FilterOutputStream*.class" />
+                <include name="java/io/InputStream*.class" />
+                <include name="java/io/ObjectInputStream*.class" />
+                <include name="java/io/ObjectOutputStream*.class" />
+                <include name="java/io/OutputStream*.class" />
+                <include name="java/io/Serializable*.class" />
+                <include name="java/lang/AbstractStringBuilder*.class" />
+                <include name="java/lang/Appendable*.class" />
+            	<include name="java/lang/AutoCloseable*.class" />
+            	<include name="java/lang/Boolean*.class" />              
+                <include name="java/lang/Byte*.class" />
+                <include name="java/lang/Character*.class" />
+                <include name="java/lang/CharSequence*.class" />
+                <include name="java/lang/Class*.class" />                
+                <include name="java/lang/Cloneable*.class" />            	
+                <include name="java/lang/Comparable*.class" />
+                <include name="java/lang/Double*.class" />
+                <include name="java/lang/Enum*.class" />
+                <include name="java/lang/FunctionalInterface*.class" />
+                <include name="java/lang/Integer*.class" />
+                <include name="java/lang/Iterable*.class" />
+                <include name="java/lang/Math*.class" />
+                <include name="java/lang/Number*.class" />
+                <include name="java/lang/Object*.class" />
+                <include name="java/lang/Runnable*.class" />
+                <include name="java/lang/SafeVarargs*.class" />
+                <include name="java/lang/SecurityManager*.class" />
+                <include name="java/lang/Short*.class" />
+                <include name="java/lang/StackTraceElement*.class" />
+                <include name="java/lang/StringBuffer*.class" />
+                <include name="java/lang/StringBuilder*.class" />
+                <include name="java/lang/String*.class" />
+                <include name="java/lang/System*.class" />
+                <include name="java/lang/Throwable*.class" />
+                <include name="java/lang/Throwable*.class" />
+                <include name="java/nio/charset/Charset*.class" />
+                <include name="java/util/AbstractCollection*.class" />
+                <include name="java/util/AbstractList*.class" />
+                <include name="java/util/AbstractMap*.class" />
+                <include name="java/util/AbstractSequentialList*.class" />
+                <include name="java/util/AbstractSet*.class" />
+                <include name="java/util/ArrayList*.class" />
+                <include name="java/util/Arrays*.class" />               
+                <include name="java/util/Collection*.class" />
+                <include name="java/util/Comparator*.class" />
+                <include name="java/util/Deque*.class" />
+                <include name="java/util/Enumeration*.class" />
+                <include name="java/util/HashMap*.class" />
+                <include name="java/util/HashSet*.class" />
+                <include name="java/util/Hashtable*.class" />
+                <include name="java/util/Iterator*.class" />
+                <include name="java/util/LinkedList*.class" />
+                <include name="java/util/List*.class" />
+                <include name="java/util/Locale*.class" />
+                <include name="java/util/Map*.class" />
+                <include name="java/util/Properties*.class" />
+                <include name="java/util/Queue*.class" />
+                <include name="java/util/RandomAccess*.class" />
+                <include name="java/util/Set*.class" />
+                <include name="java/util/Vector*.class" />
+                <include name="java/util/Dictionary*.class" />
+                <include name="java/util/function/*.class" />
 
                 <include name="java/lang/Throwable.class" />
+                <include name="java/lang/Error.class" />
                 <include name="java/lang/Exception.class" />
                 <include name="java/lang/RuntimeException.class" />
                 <include name="java/lang/IllegalArgumentException.class" />             
@@ -218,7 +238,7 @@
             <fileset dir="${basedir}/build/package"/>
             <manifest>
                  <attribute name="Main-Class" value="com.greentube.javaconverter.JavaConverter"/>
-                 <attribute name="Implementation-Version" value="2.10.10"/>
+                 <attribute name="Implementation-Version" value="2.11.0"/>
                  <attribute name="Version-Date" value="${timestamp}"/>
             </manifest>         
         </jar>          
