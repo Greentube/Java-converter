@@ -869,7 +869,7 @@ aspect GenerateJS
     
     public void CastExpr.generateJS(CodePrinterJS out) 
     {
-        TypeDecl t = type();
+        TypeDecl t = type().erasure();
         if (t.isPrimitiveType()) 
         {   TypeDecl et = getExpr().type();
             if (t.isByte()) 
