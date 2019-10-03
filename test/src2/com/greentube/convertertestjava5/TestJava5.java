@@ -225,7 +225,14 @@ public class TestJava5 extends TestJava4
             }
             public void run() {}
         };
-        assertO(r.toString(), "a=null");        
+        assertO(r.toString(), "a=null");      
+        
+        assertO(InnerEnum.ONE.toString(), "ONE");  
+    }
+
+    public static enum InnerEnum
+    {
+        ONE, TWO, THREE
     }
 
     public static void varargstest() 
