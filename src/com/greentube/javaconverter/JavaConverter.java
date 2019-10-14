@@ -207,7 +207,7 @@ public class JavaConverter extends Frontend
 
     }
 
-    public static void main(String args[]) 
+    public static int mainWithExitCode(String args[]) 
     {   
         // add possibility to launch the linker instead of the the converter
         if (args.length>0 && args[0].equals("link")) 
@@ -237,10 +237,11 @@ public class JavaConverter extends Frontend
             }
             try 
             {   JavaScriptLinker.link(roots, searchpath, outputfile, startupcode);
+                return 0;
             }
             catch (IOException e) 
             {   System.out.println(e.getMessage());
-                System.exit(1);
+                return 1;
             }
         }
         
@@ -253,7 +254,7 @@ public class JavaConverter extends Frontend
             {   if (args[i].equals("-recursive") && i+1<args.length)
                 {   if (!scanRecursively(new File(args[i+1]), files))
                     {   System.out.println("Can not find source directory: "+args[i+1]);
-                        System.exit(1);
+                        return 1;
                     }
                     i++;   
                 }
@@ -265,12 +266,15 @@ public class JavaConverter extends Frontend
             {   a.add(files.get(i).getPath());
             }
 
-            int exitCode = new JavaConverter().run(a.<String>toArray(new String[0]));
-            if (exitCode != 0) 
-            {   System.exit(exitCode);
-            }
+            return new JavaConverter().run(a.<String>toArray(new String[0]));
         }
     }
+
+    public static void main(String args[])
+    {
+        int exitCode = mainWithExitCode(args);
+        if (exitCode!=0) System.exit(exitCode);
+    } 
 
     public static boolean scanRecursively(File directory, ArrayList<File>files)
     {
