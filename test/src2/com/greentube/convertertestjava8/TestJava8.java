@@ -127,6 +127,27 @@ public class TestJava8 extends TestJava7
         l.forEach(e -> target.add(e+"!"));
         assertO(target.toString(), "[hey!, this!, is!, nice!]");
         
+        target.clear();
+        ArrayList<String> al = new ArrayList<>();
+        al.add("one");
+        al.add("two");
+        al.forEach(e -> target.add(e));
+        AbstractCollection<String> abc = al;
+        abc.forEach(e -> target.add(e));
+        AbstractList<String> abl = al;
+        abl.forEach(e -> target.add(e));
+        Vector<String> vec = new Vector<>();
+        vec.add("x");
+        vec.add("y");
+        vec.forEach(e -> target.add(e));
+        LinkedList<String> ll = new LinkedList<>();
+        ll.add("x");
+        ll.add("y");
+        ll.forEach(e -> target.add(e));
+        assertO(target.toString(), "[one, two, one, two, one, two, x, y, x, y]");
+        
+        
+        
         HashMap<String,Integer> m = new HashMap<>();
         m.put("a", Integer.valueOf(17));
         m.put("b", Integer.valueOf(4));
