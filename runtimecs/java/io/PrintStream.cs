@@ -4,20 +4,28 @@ namespace java.io { public class PrintStream {
 
     private readonly bool iserr;
     private readonly System.Text.StringBuilder line;
+
+    public delegate void LineConsumer(string line);
+    private LineConsumer redirection;
         
     public PrintStream(bool iserr) : base() 
     {   this.iserr = iserr;
         this.line = new System.Text.StringBuilder();
+        this.redirection = null;
     }
 
     private void finishLine()       // must be called with a lock on 'line'
-    {   if (iserr) 
-        {   System.Console.Error.WriteLine(line.ToString());
+    {   string l = line.ToString();
+        line.Clear();
+        if (redirection!=null)
+        {   redirection(l);
+        }
+        else if (iserr) 
+        {   System.Console.Error.WriteLine(l);
         }
         else 
-        {   System.Console.WriteLine(line.ToString());
+        {   System.Console.WriteLine(l);
         }  
-        line.Clear();
     }
 
     // public interface is thread-safe
@@ -90,6 +98,15 @@ namespace java.io { public class PrintStream {
     {   lock (line)
         {   line.Append(java.lang.SYSTEM.str(o));
             finishLine();
+        }
+    }
+    
+    // installation hook to re-direct the output to some
+    // arbitrary location    
+    public void redirect(LineConsumer redirection)
+    {
+        lock (line)
+        {   this.redirection = redirection;
         }
     }
 }}
