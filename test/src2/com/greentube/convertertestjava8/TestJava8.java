@@ -65,7 +65,7 @@ public class TestJava8 extends TestJava7
         System.out.println("- non-static lambda expression");
     
         NonstaticLambdas n = new NonstaticLambdas();
-        assertI(n.makesum(), (3+4*2+5*3+4*3)+3+5);
+        assertI(n.makesum(), (3+4*2+5*3+4*3)+3+5+3*2);
         assertI(n.makesum2(), (3*4*5*3*5)+3+5);
     }
 

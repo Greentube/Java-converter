@@ -3,7 +3,7 @@ package com.greentube.convertert€st_3;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OuterCläss {
+public class OuterCläss extends OuterClässParent {
 	static int c = 99;
 
 	int p;
@@ -64,7 +64,7 @@ public class OuterCläss {
 	public String workWithLocalClass() {
 		class LocalClass {
 			int x=7;
-			int y=3 + p;
+			int y=3 + p + parentAttribute + parentMethod();
 			{ y += x; }
 		}
 		
@@ -87,7 +87,7 @@ public class OuterCläss {
 		
 		new Fetcher() {
 			public void fetch(int[] i) {
-				i[0] = p;
+				i[0] = p + parentAttribute + parentMethod();
 			}			
 		}.fetch(x);
 		r = r+","+x[0];
@@ -98,7 +98,7 @@ public class OuterCläss {
 					public void run() {
 						new Runnable() {
 							public void run() {
-								p+=getL();
+								p+=getL() + parentMethod();
 							}
 						}.run();
 					}

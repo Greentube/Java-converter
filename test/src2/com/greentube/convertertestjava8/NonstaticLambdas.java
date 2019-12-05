@@ -1,6 +1,6 @@
 package com.greentube.convertertestjava8;
 
-public class NonstaticLambdas 
+public class NonstaticLambdas extends NonStaticLambdasBase 
 {
     int x;
     int y;
@@ -12,7 +12,7 @@ public class NonstaticLambdas
     
     public int makesum()
     {
-        return computeplusxy((a,b,c) -> a+2*b+3*c+4*x);
+        return computeplusxy((a,b,c) -> a+2*b+3*c+4*x+3*z);
     }
     
     public int makesum2()

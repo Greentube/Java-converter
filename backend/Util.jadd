@@ -590,6 +590,30 @@ aspect Util {
         return false;
     }
     
+    public int TypeDecl.nestingLevelInside(TypeDecl t)
+    {
+        if (this==t) { return 0; }   
+        
+        int level = -1;     
+        TypeDecl enclosing = enclosingType();   
+        if (enclosing==t) 
+        {   level = 1; 
+        }
+        else 
+        {   if (enclosing!=null)
+            {   int l1 = enclosing.nestingLevelInside(t);
+                if (l1>=0) { level = 1+l1; }
+            }
+            TypeDecl st = supertype();
+            if (st!=null && !st.isObject())
+            {   
+                int l2 = st.nestingLevelInside(t);
+                if (l2>=0) { level = l2; }
+            }
+        }
+        return level;
+    }
+    
     public boolean ClassDecl.hasSimilarConstructors(int numpar)
     {
         // check if there are two or more constructors with the same number of parameters

@@ -196,12 +196,8 @@ aspect GenerateJS
         } 
         else if (!isRightChildOfDot()) 
         {   out.print("this.");
-            TypeDecl t = hostType();
-            if (t!=m.hostType() && t.isInnerTypeOf(m.hostType())) 
-            {   while (t!=m.hostType()) 
-                {   out.print("_o.");
-                    t = t.enclosingType();
-                }
+            for (int i = hostType().nestingLevelInside(m.hostType()); i>0; i--)
+            {   out.print("_o.");
             }
             out.printIdentifier(m.name(),"_"+m.makeJSSuffix());
             out.print("(");
@@ -258,12 +254,8 @@ aspect GenerateJS
         }
         out.print("this");
         // check if accessing the instance of an outer class
-        TypeDecl t = hostType();
-        if (t!=type() && t.isInnerTypeOf(type())) 
-        {   while (t!=type()) 
-            {   out.print("._o");
-                t = t.enclosingType();
-            }
+        for (int i=hostType().nestingLevelInside(type()); i>0; i--) 
+        {   out.print("._o");
         }       
     }
     public void ArrayTypeAccess.generateJS(CodePrinterJS out) 
@@ -296,13 +288,8 @@ aspect GenerateJS
         else if (v.isInstanceVariable()) 
         {   if (!hasPrevExpr()) 
             {   out.print("this.");
-                TypeDecl t = hostType();
-                if (t!=v.hostType() && t.isInnerTypeOf(v.hostType())) 
-                {   while (t!=v.hostType()) 
-                    {
-                        out.print("_o.");
-                        t = t.enclosingType();
-                    }
+                for (int i=hostType().nestingLevelInside(v.hostType()); i>0; i--) 
+                {   out.print("_o.");
                 }       
             }
             else

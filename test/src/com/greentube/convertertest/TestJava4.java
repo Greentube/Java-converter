@@ -2825,11 +2825,11 @@ public class TestJava4
     	m = x.self.self.self.new MemberClass(33);
         assertO(m.toString(),"33,4711");
     	
-    	assertO(x.workWithLocalClass(), "L4721");
-    	assertO(new OuterCläss(33).workWithLocalClass(), "L43");
+    	assertO(x.workWithLocalClass(), "L4742");
+    	assertO(new OuterCläss(33).workWithLocalClass(), "L64");
     	
-    	assertO(x.workWithAnonymousClass(), "A54,4711,4788,7,4788-4788-77,17");
-    	assertO(new OuterCläss(91).workWithAnonymousClass(), "A54,91,168,7,168-168-77,17");
+    	assertO(x.workWithAnonymousClass(), "A54,4732,4792,7,4792-4792-77,17");
+    	assertO(new OuterCläss(91).workWithAnonymousClass(), "A54,112,172,7,172-172-77,17");
 
     	int[] i= new int[1];
     	new OuterCläss(666).getFetcher().fetch(i);

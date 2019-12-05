@@ -228,13 +228,9 @@ aspect GenerateCS
         else 
         {   out.print(m.hostType().isClassDecl() ? "this":"@this");
             out.print(".");
-            TypeDecl t = hostType();
-            if (t!=m.hostType() && t.isInnerTypeOf(m.hostType())) 
-            {   while (t!=m.hostType()) 
-                {   out.print("_o");
-                    out.print(".");
-                    t = t.enclosingType();
-                }
+            for (int i=hostType().nestingLevelInside(m.hostType()); i>0; i--)
+            {
+                 out.print("_o.");
             }
             out.printCSMethodName(m.name(),false);
         }
@@ -281,11 +277,9 @@ aspect GenerateCS
         }
         out.print("this");
         // check if accessing the instance of an outer class
-        if (t!=type() && t.isInnerTypeOf(type())) 
-        {   while (t!=type()) 
-            {   out.print("._o");
-                t = t.enclosingType();
-            }
+        for (int i=t.nestingLevelInside(type()); i>0; i--)
+        {   out.print("._o");
+            t = t.enclosingType();
         }       
     }
     
@@ -335,12 +329,9 @@ aspect GenerateCS
             } 
             else
             {   out.print("this.");
-                TypeDecl t = hostType();
-                if (t!=v.hostType() && t.isInnerTypeOf(v.hostType())) 
-                {   while (t!=v.hostType()) 
-                    {   out.print("_o.");
-                        t = t.enclosingType();
-                    }
+                for (int i=hostType().nestingLevelInside(v.hostType()); i>0; i--)
+                {
+                    out.print("_o.");
                 }       
             }       
             out.printIdentifier(getID(), "_f");
