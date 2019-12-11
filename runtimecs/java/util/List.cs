@@ -1,10 +1,10 @@
 namespace java.util { public interface List: Collection
 {
-    bool add(System.Object e);
+//    bool add(System.Object e);
     void add(int index, System.Object element);
-    bool addAll(Collection c);
+//    bool addAll(Collection c);
     bool addAll(int index, Collection c);
-    void clear();
+//    void clear();
 //   bool contains(System.Object o);
 //   bool containsAll(Collection c);
 //   bool Equals(System.Object o);
@@ -14,10 +14,11 @@ namespace java.util { public interface List: Collection
 //   bool isEmpty();
 //   Iterator iterator();
     int lastIndexOf(System.Object o);
+//    bool remove(System.Object o);
     System.Object remove(int index);
-    bool removeAll(Collection c);
+//    bool removeAll(Collection c);
     void replaceAll(java.util.function.UnaryOperator unaryoperator);
-    bool retainAll(Collection c);
+//    bool retainAll(Collection c);
     System.Object set(int index, System.Object element);
     void sort(java.util.Comparator c);
 //   int size();

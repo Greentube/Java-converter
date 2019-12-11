@@ -7,21 +7,11 @@ namespace java.util { public abstract class AbstractList : AbstractCollection, L
     public abstract System.Object remove(int index);        
  
     // add functionality on top of the subclass implementation        
-    public virtual bool add(System.Object e) 
+    public override bool add(System.Object e) 
     {   add(size(), e);
         return true;
     }           
-        
-    public virtual bool addAll(Collection c) 
-    {   Iterator i = c.iterator();
-        bool didappend = false;
-        while (i.hasNext()) 
-        {   this.add(i.next());
-            didappend = true;
-        }        
-        return didappend;
-    }
-        
+                
     public virtual bool addAll(int index, Collection c) 
     {   Iterator i = c.iterator();
         int pos = index;
@@ -32,8 +22,10 @@ namespace java.util { public abstract class AbstractList : AbstractCollection, L
         }        
         return didappend;
     }               
-        
-    public virtual void clear() 
+    
+    
+    // OPTIMIZATION
+    public override void clear() 
     {   for (int i=size()-1; i>=0; i--) 
         {   remove(i);
         }
@@ -82,34 +74,27 @@ namespace java.util { public abstract class AbstractList : AbstractCollection, L
         }
         return -1;
     }       
-        
-    public virtual bool removeAll(Collection c) 
-    {   return filter(c,false); 
+    
+    
+    // OPTIMIZATION
+    public override bool remove(System.Object o)
+    {
+        int idx = indexOf(o);
+        if (idx>=0) 
+        { 
+            remove(idx); 
+            return true;
+        }
+        return false; 
     }
+       
 
     public virtual void replaceAll(java.util.function.UnaryOperator unaryoperator)
     {   java.util.List_c.replaceAll(this,unaryoperator);        
     }
-        
-    public virtual bool retainAll(Collection c) 
-    {   return filter(c,true); 
-    }
-        
+
     public virtual void sort(java.util.Comparator c)
     {   java.util.List_c.sort(this,c);
-    }    
- 
-    private bool filter(Collection collection, bool keep) 
-    {   bool modified=false;
-        for (int i=size()-1; i>=0; i--) 
-        {   System.Object o = get(i);
-            bool c = collection.contains(o);
-            if ((c && !keep) || (!c && keep)) 
-            {   remove(i);
-                modified = true;
-            }
-        }
-        return modified;
     }    
 }}
     

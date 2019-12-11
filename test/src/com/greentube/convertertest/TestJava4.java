@@ -101,6 +101,7 @@ public class TestJava4
         hashmaptest();        
         hashsettest();        
         linkedlisttest();        
+        collectionremovaltest();        
         secondaryclassestest();
         complexoperationtest();
         initsequencetest();
@@ -2306,16 +2307,15 @@ public class TestJava4
     	
         List l;
         l = new ArrayList();
+        Collection c = l;
         ArrayList l2 = new ArrayList();
         assertO(l.toString(),"[]");
         assertO(l,l2);
         assertO(l,new Vector());
         assertB(l2.equals(new Vector()));
              
-        l.add ("alice");
-        l.add ("bob");
-        l.add ("carl");
-        l.add ("doris");
+        c.add ("alice");
+        c.addAll (Arrays.asList("bob","carl","doris"));
         assertO(l.toString(),"[alice, bob, carl, doris]");
         l.add (3, "corbin");
         l.add (5, "xavier");
@@ -2331,7 +2331,7 @@ public class TestJava4
         l2.add("corbin");
         l2.add("xavier");
         
-        assertB(l.contains("bob"));
+        assertB(c.contains("bob"));
         assertB(!l.contains("marge"));
         assertB(!l.contains(Byte.valueOf((byte)4)));
         assertB(!l.contains(null));
@@ -2376,7 +2376,7 @@ public class TestJava4
         assertB(!it.hasNext());
         
         assertI(l.lastIndexOf("carl"), 2);
-        l.add("carl");
+        c.add("carl");
         assertI(l.lastIndexOf("carl"), 6);        
         l.remove(2);
         assertO(l.toString(),"[alice, bob, corbin, doris, xavier, carl]");
@@ -2387,12 +2387,12 @@ public class TestJava4
         l2.add("bob");
         l2.add("xavier");
         assertO(l.toString(),"[alice, bob, corbin, xavier, carl]");
-        l.removeAll(l2);
+        c.removeAll(l2);
         assertO(l.toString(),"[alice, corbin, carl]");
-        l.add("dodo");
-        l.add(null);
-        l.add("elvis");
-        l.add(null);
+        c.add("dodo");
+        c.add(null);
+        c.add("elvis");
+        c.add(null);
         assertO(l.toString(),"[alice, corbin, carl, dodo, null, elvis, null]");
         l.remove(l.indexOf(null));       
         assertO(l.toString(),"[alice, corbin, carl, dodo, elvis, null]");
@@ -2403,19 +2403,19 @@ public class TestJava4
         l.removeAll(l2);
         assertO(l.toString(),"[alice, null, corbin, carl, dodo, elvis, null]");        
         l2.add(null);
-        l.removeAll(l2);
+        c.removeAll(l2);
         assertO(l.toString(),"[alice, corbin, carl, dodo, elvis]");        
         l.add(4, null);
         assertO(l.toString(),"[alice, corbin, carl, dodo, null, elvis]");        
         
-        l2.clear();
+        ((Collection)l2).clear();
         l2.add("corbin");
         l2.add(null);
         l2.add("heimo");
         assertO(l2.toString(),"[corbin, null, heimo]");     
         assertB(l2.contains(null));
         assertI(l.size(),6);
-        l.retainAll(l2);        
+        c.retainAll(l2);        
         assertI(l.size(),2);
         assertO(l.toString(),"[corbin, null]");
         l.set(1, "more");
@@ -2431,7 +2431,7 @@ public class TestJava4
         assertB(oa instanceof Object[]);
         assertB(!(oa instanceof String[]));
         
-        List itt = new ArrayList();
+        Collection itt = new ArrayList();
         itt.add(Integer.valueOf(5));
         itt.add(Integer.valueOf(8));
         itt.add(Integer.valueOf(11));
@@ -2443,6 +2443,8 @@ public class TestJava4
         	if (e.intValue()%2==1) iti.remove();
         }
         assertO(itt.toString(), "[8, 14]");
+        itt.remove(Integer.valueOf(8));
+        assertO(itt.toString(), "[14]");
     }
     
     
@@ -2655,6 +2657,27 @@ public class TestJava4
     	}
     	assertI(m3.size(),2);
     	assertO(m2,m3);
+    	
+    	Map m4 = new HashMap();
+    	m4.put("ONE", Integer.valueOf(1));
+        m4.put("TWO", Integer.valueOf(2));
+        m4.put("THREE", Integer.valueOf(3));
+        m4.put("FOUR", Integer.valueOf(4));
+        m4.put("FIVE", Integer.valueOf(5));
+    	Set keys = m4.keySet();
+    	assertB(m4.containsKey("ONE"));
+    	keys.remove("ONE");   // access keys via the Set
+        assertB(! m4.containsKey("ONE"));
+        assertB(m4.containsKey("FOUR"));
+        keys.retainAll(Arrays.asList("TWO","THREE","FOUR"));
+        assertB(m4.containsKey("FOUR"));
+        assertB(! m4.containsKey("FIVE"));
+        assertI(3, m4.size());
+        keys.removeAll(Arrays.asList("TWO","THREE"));
+        assertI(1, m4.size());
+        assertB(m4.containsKey("FOUR"));
+        keys.clear();
+        assertI(0, m4.size());
     }
     
     public static void hashsettest() {
@@ -2761,6 +2784,41 @@ public class TestJava4
         	if (e.intValue()%2==1) iti.remove();
         }
         assertO(itt.toString(), "[8, 14]");            	
+    }
+    
+    public static void collectionremovaltest()
+    {
+        System.out.println("- collection removal");
+        
+        // test to remove elements from various collections
+        collectionremovaltest(new ArrayList(Arrays.asList("SOME","MORE","WORDS","FOR","A","TEST")));
+        collectionremovaltest(new Vector(Arrays.asList("SOME","MORE","WORDS","FOR","A","TEST")));
+        collectionremovaltest(new LinkedList(Arrays.asList("SOME","MORE","WORDS","FOR","A","TEST")));
+        collectionremovaltest(new HashSet(Arrays.asList("SOME","MORE","WORDS","FOR","A","TEST")));
+           
+        HashMap m = new HashMap();
+        m.put("SOME","?");    
+        m.put("MORE","?");    
+        m.put("WORDS","?");    
+        m.put("FOR","?");    
+        m.put("A","?");    
+        m.put("TEST","?");
+        collectionremovaltest(m.keySet());
+        assertI(m.size(), 0);
+        
+    }
+    
+    private static void collectionremovaltest(Collection c)
+    {
+        assertI(6, c.size());
+        c.remove("WORDS");
+        assertI(5, c.size());
+        c.retainAll(Arrays.asList("SOME","MORE","XXX","TEST"));
+        assertI(3, c.size());
+        c.removeAll(Arrays.asList("TEST","nonsense"));
+        assertI(2, c.size());
+        c.clear();
+        assertI(0, c.size());
     }
     
     public static void secondaryclassestest() 

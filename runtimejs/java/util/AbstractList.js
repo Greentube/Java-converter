@@ -20,34 +20,25 @@ _defclass(java_util_AbstractList, java_util_AbstractCollection, [java_util_List]
     {   this.add_2(this.size_0(), obj);
         return true;
     },   
-   
-    addAll_1: function(collection) 
-    {   var i = collection.iterator_0();
-        var didappend = false;
-        while (i.hasNext_0()) 
-        {   this.add_1(i.next_0());
-            didappend = true;
-        }
-        return didappend;
-    },
-    
-    addAll_2: function(index, collection) 
-    {   var i = collection.iterator_0();
+              
+    addAll_2: function(index, c) 
+    {   var i = c.iterator_0();
         var pos = index;
         var didappend = false;
-        while (i.hasNext_0()) {
-            this.add_2(pos++, i.next_0());
+        while (i.hasNext_0()) 
+        {   this.add_2(pos++, i.next_0());
             didappend = true;
         }        
         return didappend;
-    },          
-    
+    },
+
+    // OPTIMIZATION    
 	clear_0: function() 
     {   for (var i=this.size_0()-1; i>=0; i--) 
         {   this.remove_1I(i);
         }
 	},      
-    
+
     //contains       implemented by AbstractCollection
     //containsAll    implemented by AbstractCollection
 
@@ -91,33 +82,17 @@ _defclass(java_util_AbstractList, java_util_AbstractCollection, [java_util_List]
         }
         return -1;
     },
- 
-    removeAll_1: function (collection) 
-    {   if (collection===null) 
-        {   throw (new java_lang_NullPointerException())._0()._e;
-        }
-        return this._filter(collection,false);
-    },
     
-    retainAll_1: function (collection) 
-    {   if (collection===null)
-        {   throw (new java_lang_NullPointerException())._0()._e;
+    // OPTIMIZATION        
+    remove_1: function(obj)
+    {
+        var idx = this.indexOf_1(obj);
+        if (idx>=0)
+        {
+            this.remove_1I(idx);
+            return true;
         }
-        return this._filter(collection,true);
-    },
-    
-    _filter: function(collection, keep) 
-    {      
-        var modified=false;
-        for (var i=this.size_0()-1; i>=0; i--) 
-        {   var o = this.get_1(i);
-            var c = collection.contains_1(o);
-            if ((c && !keep) || (!c && keep)) 
-            {   this.remove_1I(i);
-                modified = true;
-            }
-        }
-        return modified;
+        return false;
     },
         
     // toString_0      implemented by AbstractCollection  	           

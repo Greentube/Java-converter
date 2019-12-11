@@ -6,11 +6,37 @@
 //load// java/lang/Object
 //load// java/util/Collection
 //reference// java/util/Iterator
+//reference// java/lang/UnsupportedOperationException
 var java_util_AbstractCollection = function() 
 {
 };
 _defclass(java_util_AbstractCollection, java_lang_Object, [java_util_Collection], 
 {   
+    add_1 : function(obj)
+    {
+        throw (new java_lang_UnsupportedOperationException())._0()._e; 
+    },
+    
+    addAll_1: function(collection) 
+    {   var i = collection.iterator_0();
+        var didappend = false;
+        while (i.hasNext_0()) 
+        {   if (this.add_1(i.next_0()))
+            {   didappend = true;
+            }
+        }
+        return didappend;
+    },
+    
+    clear_0 : function()
+    {
+        var i = this.iterator_0();
+        while (i.hasNext_0()) 
+        {   i.next_0();
+            i.remove_0();
+        }
+    },
+
     contains_1: function(obj) 
     {   var i = this.iterator_0();
         while (i.hasNext_0()) 
@@ -36,6 +62,53 @@ _defclass(java_util_AbstractCollection, java_lang_Object, [java_util_Collection]
     },
     
     //iterator        abstract - must be implemented by subclass
+    
+    remove_1: function(o)
+    {
+        var i = this.iterator_0();
+        var didremove = false;
+        while (i.hasNext_0()) 
+        {   var e = i.next_0();
+            if (o===null ? e===null : o.equals_1(e)) 
+            {   i.remove_0();
+                return true;
+            }
+        }
+        return false;                
+    },
+    
+    removeAll_1: function (collection) 
+    {   if (collection===null) 
+        {   throw (new java_lang_NullPointerException())._0()._e;
+        }
+        var i = this.iterator_0();
+        var didremove = false;
+        while (i.hasNext_0()) 
+        {   var o = i.next_0();
+            if (collection.contains_1(o)) 
+            {   didremove = true;
+                i.remove_0();
+            }
+        }
+        return didremove;        
+    },
+    
+    retainAll_1: function (collection) 
+    {   if (collection===null) 
+        {   throw (new java_lang_NullPointerException())._0()._e;
+        }
+        var i = this.iterator_0();
+        var didremove = false;
+        while (i.hasNext_0()) 
+        {   var o = i.next_0();
+            if (!collection.contains_1(o)) 
+            {   didremove = true;
+                i.remove_0();
+            }
+        }
+        return didremove;        
+    },   
+    
     //size            abstract - must be implemented by subclass
 
     toArray_0: function () 

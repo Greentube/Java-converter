@@ -15,12 +15,18 @@ var java_util_Collection = {
 }; 
 
 // -- methods:
+// boolean add(Object o)
+// boolean addAll(Collection c)
+// void clear()
 // boolean	contains(Object o)
 // boolean	containsAll(Collection<?> c)
 // boolean	equals(Object o)
 // int	hashCode()
 // boolean	isEmpty()
 // Iterator<E>	iterator()
+// boolean remove(Object o)
+// boolean removeAll(Collection c)
+// boolean retainAll(Collection)
 // int	size()
 // Object[]	toArray()
 // String toString()

@@ -184,6 +184,14 @@ namespace java.util { class HashMapKeyView : AbstractCollection, Set
     {   this.map = m;
     }     
 
+    
+    // OPTIMIZATION
+    public override void clear()
+    {  
+        map.clear();
+    }
+    
+    // OPTIMIZATION
     public override bool contains(System.Object o) 
     {   return map.containsKey(o);
     }      
@@ -214,7 +222,18 @@ namespace java.util { class HashMapKeyView : AbstractCollection, Set
     public override Iterator iterator() 
     {   return new HashMapIterator(map,true);
     }
-            
+    
+    // OPTIMIZATION    
+    public override bool remove(System.Object o)
+    {
+        if (map.containsKey(o))
+        {
+            map.remove(o);
+            return true;
+        }
+        return false;
+    }
+    
     public override int size() 
     {   return map.size();
     }          
@@ -230,7 +249,8 @@ namespace java.util { class HashMapValueView : AbstractCollection
     public HashMapValueView(HashMapImpl m) 
     {   this.map = m;
     }        
-            
+
+    // OPTIMIZATION
     public override bool contains(System.Object o) 
     {   return map.containsValue(o);
     }      

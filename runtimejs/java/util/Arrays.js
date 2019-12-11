@@ -134,7 +134,7 @@ _defclass(java_util_FixSizedArrayList, java_util_AbstractList, null,
     {   throw (new java_lang_UnsupportedOperationException())._0()._e;
     },
 
-    remove_1: function (idx) 
+    remove_1I: function (idx) 
     {   throw (new java_lang_UnsupportedOperationException())._0()._e;
     },
 

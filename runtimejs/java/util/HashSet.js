@@ -22,25 +22,16 @@ _defclass(java_util_HashSet, java_util_AbstractCollection, [java_util_Set],
     {   return this._map.put_2(e, java_util_HashSet_PRESENT)===null;
     },           
         
-    addAll_1: function(c) 
-    {   var i = c.iterator_0();
-        var didappend = false;
-        while (i.hasNext_0()) 
-        {   if (this.add(i.next_0())) {
-                didappend = true;
-            }
-        }        
-        return didappend;
-    },
-        
+    // OPTIMIZATION
     clear_0: function() 
     {   this._map.clear_0();
     },
         
+    // OPTIMIZATION
     contains_1: function(e) 
     {   return this._map.containsKey_1(e);
     },
-        
+
     // containsAll        implemented by AbstractCollection
                     
     equals_1: function(o) 
@@ -62,11 +53,13 @@ _defclass(java_util_HashSet, java_util_AbstractCollection, [java_util_Set],
     iterator_0: function() 
     {   return this._map.keySet_0().iterator_0();
     },
-                
+
+    // OPTIMIZATION
     remove_1: function(key) 
     {   return this._map.remove_1(key)!==null;
     },
         
+    // OPTIMIZATION
     removeAll_1: function(collection) 
     {   var i = collection.iterator_0();
         var didremove = false;
@@ -76,19 +69,6 @@ _defclass(java_util_HashSet, java_util_AbstractCollection, [java_util_Set],
             }
         }        
         return didremove;            
-    },
-        
-    retainAll_1: function(collection) 
-    {   var i = this.iterator_0();
-        var didremove = false;
-        while (i.hasNext_0()) 
-        {   var e = i.next_0();
-            if (!collection.contains_1(e)) 
-            {   i.remove_0();
-                didremove = true;
-            }
-        }
-        return didremove;
     },
         
     size_0: function() 

@@ -154,7 +154,7 @@ _defclass(java_util_LinkedList, java_util_AbstractList, null,
     {   return this.remove_1I(this.size_0()-1);
     },
     
-    // optimized operations
+    // OPTIMIZATION
     clear_0: function() 
     {   var h = this._head;
         h.next = h;

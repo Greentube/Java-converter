@@ -11,29 +11,20 @@ namespace java.util { public class HashSet : AbstractCollection, Set
     {   addAll(c);
     }
         
-    public virtual bool add(System.Object e) 
+    public override bool add(System.Object e) 
     {   return map.put(e, PRESENT)==null;
     }           
-        
-    public virtual bool addAll(Collection c) 
-    {   Iterator i = c.iterator();
-        bool didappend = false;
-        while (i.hasNext()) 
-        {   if (this.add(i.next())) 
-            {   didappend = true;
-            }
-        }        
-        return didappend;
-    }
-        
-    public virtual void clear() 
+
+    // OPTIMIZATION    
+    public override void clear() 
     {   map.clear();
     }
         
+    // OPTIMIZATION
     public override bool contains(System.Object e) 
     {   return map.containsKey(e);
     }
-        
+
     // containsAll        implemented by AbstractCollection
                     
     public override bool Equals(System.Object o) 
@@ -55,12 +46,15 @@ namespace java.util { public class HashSet : AbstractCollection, Set
     public override Iterator iterator() 
     {   return map.keySet().iterator();
     }
-                
-    public virtual bool remove(System.Object key) 
+    
+
+    // OPTIMIZATION    
+    public override bool remove(System.Object key) 
     {   return map.remove(key)!=null;
     }
-        
-    public virtual bool removeAll(Collection collection) 
+    
+    // OPTIMIZATION
+    public override bool removeAll(Collection collection) 
     {   Iterator i = collection.iterator();
         bool didremove = false;
         while (i.hasNext()) 
@@ -69,20 +63,7 @@ namespace java.util { public class HashSet : AbstractCollection, Set
             }
         }        
         return didremove;            
-    }
-        
-    public virtual bool retainAll(Collection collection) 
-    {   Iterator i = this.iterator();
-        bool didremove = false;
-        while (i.hasNext()) 
-        {   System.Object e = i.next();
-            if (!collection.contains(e)) 
-            {   i.remove();
-                didremove = true;
-            }
-        }
-        return didremove;
-    }
+    }        
         
     public override int size() 
     {   return map.size();

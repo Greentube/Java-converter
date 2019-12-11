@@ -2,6 +2,30 @@ using java.lang;
 
 namespace java.util { public abstract class AbstractCollection : Collection
 {
+    public virtual bool add(System.Object obj)
+    {
+        throw new java.lang.UnsupportedOperationException();
+    }
+    public virtual bool addAll(Collection c)
+    {   Iterator i = c.iterator();
+        bool didappend = false;
+        while (i.hasNext()) 
+        {   if (this.add(i.next()))
+            {   didappend = true;
+            }
+        }        
+        return didappend;
+    }
+    
+    public virtual void clear()
+    {
+        java.util.Iterator i = iterator();
+        while (i.hasNext()) 
+        {   i.next();
+            i.remove();
+        }
+    }
+    
     public virtual bool contains(System.Object obj)
     {   Iterator i = this.iterator();
         while (i.hasNext()) 
@@ -20,9 +44,49 @@ namespace java.util { public abstract class AbstractCollection : Collection
     }
 
     // Equals        // default object behaviour
+
+    public virtual bool remove(System.Object o)
+    {
+        java.util.Iterator i = iterator();
+        while (i.hasNext()) 
+        {   System.Object e = i.next();
+            if (o==null ? e==null : o.Equals(e)) 
+            {   i.remove();
+                return true;
+            }
+        }
+        return false;                        
+    }
     
     public virtual bool removeIf(java.util.function.Predicate predicate)
     {   return java.util.Collection_c.removeIf(this,predicate);
+    }
+    
+    public virtual bool removeAll(Collection c)
+    {
+        java.util.Iterator i = iterator();
+        bool didremove = false;
+        while (i.hasNext()) 
+        {   System.Object o = i.next();
+            if (c.contains(o)) 
+            {   didremove = true;
+                i.remove();
+            }
+        }
+        return didremove;        
+    }
+    public virtual bool retainAll(Collection c)
+    {
+        java.util.Iterator i = iterator();
+        bool didremove = false;
+        while (i.hasNext()) 
+        {   System.Object o = i.next();
+            if (!c.contains(o)) 
+            {   didremove = true;
+                i.remove();
+            }
+        }
+        return didremove;        
     }
         
     // GetHashCode   // default object behaviour        

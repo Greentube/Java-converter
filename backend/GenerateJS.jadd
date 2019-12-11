@@ -522,7 +522,23 @@ aspect GenerateJS
     public String MethodDecl.makeJSSuffix()
     {
         int numpar = getNumParameter();
-        if (! hostType().hasSimilarMethods(name(), numpar, isStatic()) ) 
+        boolean forcelongdesignator = false;
+        
+        // can not use short method designator for 'remove' methods use to implement the
+        // List interface's remove(int) method 
+        if ("remove".equals(name()) && numpar==1 && getParameter(0).type().isInt())
+        {    
+             String fullname = hostType().name()+"."+hostType().packageName();
+             if (fullname.equals("java.util.List") 
+              || fullname.equals("java.util.ArrayList")
+              || fullname.equals("java.util.LinkedList")
+              || fullname.equals("java.util.AbstractList")
+              || fullname.equals("java.util.Vector"))
+             {  forcelongdesignator = true;
+             }
+        }
+        
+        if (!forcelongdesignator && ! hostType().hasSimilarMethods(name(), numpar, isStatic()) ) 
         {   return "" + numpar;
         }
         

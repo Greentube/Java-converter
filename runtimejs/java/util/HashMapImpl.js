@@ -213,6 +213,13 @@ var java_util_HashMapKeyView = function(map)
 };    
 _defclass(java_util_HashMapKeyView, java_util_AbstractCollection, [java_util_Set], 
 {    
+
+    // OPTIMIZATIONS
+    clear_0: function()
+    {
+        this.map.clear_0();
+    },
+    
     contains_1: function(o) 
     {   return this.map.containsKey_1(o);
     },        
@@ -241,6 +248,17 @@ _defclass(java_util_HashMapKeyView, java_util_AbstractCollection, [java_util_Set
 
 // boolean	isEmpty()              // implemented by AbstractCollection
 
+    // OPTIMIZATION
+    remove_1: function(obj)
+    {
+        if (this.map.containsKey_1(obj))
+        {
+            this.map.remove_1(obj);
+            return true;
+        }
+        return false;
+    },
+
     iterator_0: function() 
     {   return new java_util_HashMapIterator(this.map, true, this.map._collectKeys_0());
     },
@@ -259,6 +277,8 @@ var java_util_HashMapValueView = function(map)
 };
 _defclass(java_util_HashMapValueView, java_util_AbstractCollection, [java_util_Collection], 
 { 
+  
+    // OPTIMIZATION
     contains_1: function(o) 
     {   return this.map.containsValue_1(o);
     },        

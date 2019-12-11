@@ -182,8 +182,7 @@ namespace java.util { public class LinkedList : AbstractList
     {   return remove(size()-1);
     } 
                 
-    // overrides that can speed up certain operations
-    
+    // OPTIMIZATION
     public override void clear() 
     {   Node h = head;
         h.next = h;

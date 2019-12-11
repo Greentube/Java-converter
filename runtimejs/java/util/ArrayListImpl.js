@@ -71,21 +71,24 @@ _defclass(java_util_ArrayListImpl, java_util_AbstractList, null,
     trimToSize_0: function() 
     {   // no operation. the underlying array is always trimmed.
     },
-    
-    // optimized operations
+
+    // OPTIMIZATION
     add_1: function(obj) 
     {   this._storage.push(obj);
         return true;
     },
-    
+
+    // OPTIMIZATION
     clear_0: function() 
     {   this._storage.length = 0;
     },      
-    
+
+    // OPTIMIZATION
     toArray_0: function () 
     {   return _arr(java_lang_Object, 1, this._storage.slice());
     },    
     
+    // OPTIMIZATION
     toArray_1: function (a) 
     {   return _arr(a._t, a._d, this._storage.slice());
     },    

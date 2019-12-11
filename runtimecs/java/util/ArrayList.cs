@@ -74,7 +74,8 @@ namespace java.util { public class ArrayListImpl: AbstractList
         }            
     }
         
-    // overrides that can speed up certain operations
+    
+    // OPTIMIZATION
     public override bool add(System.Object e) 
     {   if (len>=buffer.Length) 
         {   System.Object[] newbuffer = new System.Object[buffer.Length*2];
@@ -84,7 +85,8 @@ namespace java.util { public class ArrayListImpl: AbstractList
         buffer[len++] = e;
         return true;
     }
-        
+
+    // OPTIMIZATION
     public override void clear() 
     {   for (int i=0; i<len; i++) 
         {     // remove garbage references
@@ -92,17 +94,20 @@ namespace java.util { public class ArrayListImpl: AbstractList
         }
         len = 0;
     }                
-        
+       
+    // OPTIMIZATION
     public override System.Object[] toArray() 
     {   System.Object[] copy = new System.Object[len];
         System.Array.Copy(buffer,0,copy,0,len);
         return copy;
     }       
     
+    // OPTIMIZATION
     public override System.Object[] toArray(System.Object[]a)
     {   System.Object[] copy = (System.Object[]) 
             System.Array.CreateInstance(a.GetType().GetElementType(),len);
         System.Array.Copy(buffer,0,copy,0,len);
         return copy;
     }
+   
 }}

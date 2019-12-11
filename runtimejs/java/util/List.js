@@ -37,6 +37,7 @@ var java_util_List = {
 // Iterator<E>	iterator()                             // inherited from Collection
 // int	lastIndexOf(Object o)
 // E remove(int index)
+// boolean remove(Object o)
 // boolean	removeAll(Collection<?> c)
 // boolean	retainAll(Collection<?> c)
 // E	set(int index, E element)
