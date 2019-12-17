@@ -13,7 +13,7 @@ namespace java.lang { public class Throwable: System.Exception
     }
     public void printStackTrace()
     {
-        System.Console.Error.WriteLine(this.trace);
+        SYSTEM.err_f.println(this.trace);
     }
     virtual public System.String getMessage()
     {
