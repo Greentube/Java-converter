@@ -626,23 +626,51 @@ aspect GenerateCS
     {
         getLeftOperand().generateUsingResultCS(out);
         out.print("<<");
-        getRightOperand().generateUsingResultCS(out);
+        if (getRightOperand().type().isLong())
+        {	
+        	out.print("((int)");
+        	getRightOperand().generateUsingResultCS(out);
+        	out.print(")");
+        }
+        else 
+        {	getRightOperand().generateUsingResultCS(out);
+        }
 
     }
     public void RShiftExpr.generateCS(CodePrinterCS out) 
     {
         getLeftOperand().generateUsingResultCS(out);
         out.print(">>");
-        getRightOperand().generateUsingResultCS(out);   
+        if (getRightOperand().type().isLong())
+        {	
+        	out.print("((int)");
+        	getRightOperand().generateUsingResultCS(out);
+        	out.print(")");
+        }
+        else 
+        {	getRightOperand().generateUsingResultCS(out);
+        }
     }
     public void URShiftExpr.generateCS(CodePrinterCS out) 
     {
-        out.print("((int)(");
-        out.print("((uint)(");
-        getLeftOperand().generateUsingResultCS(out);
-        out.print("))>>");
-        getRightOperand().generateUsingResultCS(out);
-        out.print("))");    
+    	if (getLeftOperand().type().isLong() || getRightOperand().type().isLong())
+    	{
+        	out.print("((long)(");
+        	out.print("((ulong)(");
+        	getLeftOperand().generateUsingResultCS(out);
+        	out.print("))>>((int)");
+        	getRightOperand().generateUsingResultCS(out);
+        	out.print(")))");    	
+    	}
+    	else
+    	{ 
+        	out.print("((int)(");
+        	out.print("((uint)(");
+        	getLeftOperand().generateUsingResultCS(out);
+        	out.print("))>>");
+        	getRightOperand().generateUsingResultCS(out);
+        	out.print("))");
+       	}    
     }
     
     
@@ -692,6 +720,16 @@ aspect GenerateCS
                 } 
                 else
                 {   out.print("((int)(");
+                }               
+                e.generateUsingResultCS(out);
+                out.print("))");
+            }
+            else if (t.isLong()) 
+            {   if (e.type().isDouble()) 
+                {   out.print("(SYSTEM.castToLong(");
+                } 
+                else
+                {   out.print("((long)(");
                 }               
                 e.generateUsingResultCS(out);
                 out.print("))");

@@ -104,7 +104,6 @@ aspect CheckRestrictions
     public void TypeAccess.checkRestrictions(ArrayList<String> errorlist) 
     {
         TypeDecl t = type();
-        if (t.isLong())  reportRestriction(errorlist, "Type 'long' not supported");
         if (t.isFloat()) reportRestriction(errorlist, "Type 'float' not supported");
         if (t.isClassDecl() || t.isInterfaceDecl())
         {     if (!LibraryList.isAllowed(t.erasure().typeName()))
@@ -118,18 +117,10 @@ aspect CheckRestrictions
     {
         reportRestriction(errorlist, "Type 'float' not supported");         
     }   
-    public void LongType.checkRestrictions(ArrayList<String> errorlist) 
-    {
-        reportRestriction(errorlist, "Type 'long' not supported");
-    }   
 
     public void FloatingPointLiteral.checkRestrictions(ArrayList<String> errorlist) 
     {
         reportRestriction(errorlist, "Type 'float' not supported");         
-    }
-    public void LongLiteral.checkRestrictions(ArrayList<String> errorlist) 
-    {
-        reportRestriction(errorlist, "Type 'long' not supported");
     }
     
                                       
@@ -252,19 +243,6 @@ aspect CheckRestrictions
                 {   reportRestriction(errorlist, 
                        "Comparators for java core sort functions must be guaranteed to be non-null");            
                 }
-            }
-        }
-        
-        // test for correct usage of library methods returning a 'long'
-        if (m.type().isLong()) 
-        {   Expr parentexp = (Expr) getParent();
-            while ((parentexp instanceof Dot) && (parentexp.getParent() instanceof Expr)) 
-            {   parentexp = (Expr) parentexp.getParent();
-            }
-            if (!(parentexp instanceof CastExpr) || !(parentexp.type().isDouble() || parentexp.type().isInt()) )
-            {   reportRestriction(errorlist, 
-                    "Can only use this library method when casting the result explicitly to double or int"                
-                );  
             }
         }
         

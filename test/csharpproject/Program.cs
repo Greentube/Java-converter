@@ -1,19 +1,20 @@
-﻿using java.lang;
-
+﻿
 namespace testcsharp
 {
     class Program
     {
         static void Main(string[] args)
         {
-//            SYSTEM.out_f.redirect(Print);
-            com.greentube.test.Launcher.main(args);
-//            Performance.main(args);
+			try
+			{
+				com.greentube.test.Launcher.main(args);
+			}	
+			catch (System.Exception e)
+			{
+				System.Console.WriteLine(e.ToString());
+				System.Console.WriteLine(e.StackTrace);
+			}
         }
         
-        static void Print(string line)
-        {
-            System.Console.WriteLine("["+line);
-        }
     }
 }

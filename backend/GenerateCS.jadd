@@ -714,6 +714,7 @@ aspect GenerateCS
             else if (isChar()) { out.print("char"); } 
             else if (isBoolean()) { out.print("bool"); }
             else if (isDouble()) { out.print("double"); }
+            else if (isLong()) { out.print("long"); }
             else 
             {   throw new RuntimeException("Type not supported:"+fullName());
             }
@@ -776,6 +777,9 @@ aspect GenerateCS
         } 
         else if (this instanceof ConstantInt) 
         {   out.print(""+intValue());
+        }
+        else if (this instanceof ConstantLong) 
+        {   out.print(""+longValue());
         }
         else if (this instanceof ConstantString) 
         {   StringBuilder sb = new StringBuilder();

@@ -9,7 +9,7 @@ import java.util.*;
 public class TestParent 
 {
     Vector dummyvector;
-    static int staticparentattribute = 66;
+    static long staticparentattribute = 66;
 
     public TestParent() 
     {   dummyvector = new Vector();

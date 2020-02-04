@@ -149,6 +149,7 @@
                 <include name="java/lang/FunctionalInterface*.class" />
                 <include name="java/lang/Integer*.class" />
                 <include name="java/lang/Iterable*.class" />
+                <include name="java/lang/Long*.class" />
                 <include name="java/lang/Math*.class" />
                 <include name="java/lang/Number*.class" />
                 <include name="java/lang/Object*.class" />
@@ -238,7 +239,7 @@
             <fileset dir="${basedir}/build/package"/>
             <manifest>
                  <attribute name="Main-Class" value="com.greentube.javaconverter.JavaConverter"/>
-                 <attribute name="Implementation-Version" value="2.12.0"/>
+                 <attribute name="Implementation-Version" value="2.13.0"/>
                  <attribute name="Version-Date" value="${timestamp}"/>
             </manifest>         
         </jar>          

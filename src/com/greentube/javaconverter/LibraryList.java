@@ -91,6 +91,17 @@ public class LibraryList
             "java.util.Iterator iterator()",
             "void forEach(java.util.function.Consumer)",
         },
+        {   "java.lang.Long",
+            
+            "<init>(long)",
+            "long longValue()",
+            "long parseLong(java.lang.String)",
+            "java.lang.String toString(long)",
+            "java.lang.String toHexString(long)",
+            "java.lang.Long valueOf(long)",
+            "MIN_VALUE",
+            "MAX_VALUE",
+        },        
         {   "java.lang.Math",
             
             "double abs(double)",

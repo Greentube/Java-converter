@@ -45,7 +45,11 @@ namespace java.lang { public class Double
     public static double parseDouble(System.String s)
     {
         double result;
-        if (System.Double.TryParse(s, out result))
+        if (System.Double.TryParse(
+        		s, 
+        		System.Globalization.NumberStyles.Float,
+        		System.Globalization.CultureInfo.InvariantCulture, 
+        		out result))
         {   return result;
         }
         throw new java.lang.NumberFormatException();

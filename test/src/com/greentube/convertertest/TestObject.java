@@ -52,7 +52,7 @@ public class TestObject extends TestParentIntermediate
     }
 
     public int accessParentStatic() 
-    {   return super.staticparentattribute + super.staticmethod() - 88;
+    {   return ((int)super.staticparentattribute) + super.staticmethod() - 88;
     }
 
     public int accessOwnStatic() 
