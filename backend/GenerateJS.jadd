@@ -564,7 +564,7 @@ aspect GenerateJS
     {
         if (isPrimitiveType()) 
         {   if (isBoolean()) { out.print("false"); } 
-            else { out.print("0"); } 
+        	else { out.print("0"); } 
         } 
         else
         {   out.print("null");
@@ -575,6 +575,7 @@ aspect GenerateJS
     {
         if (isPrimitiveType())
         {   if (isInt()) { return "I"; }
+        	else if (isLong()) { return "L"; }
             else if (isByte()) { return "B"; }
             else if (isChar()) { return "C"; }
             else if (isShort()) { return "S"; }
@@ -603,6 +604,7 @@ aspect GenerateJS
         TypeDecl et = elementType();
         if (et.isPrimitiveType()) 
         {   if (et.isInt()) { out.print("\"I\""); }
+        	else if (et.isLong()) { out.print("\"L\""); }
             else if (et.isByte()) { out.print("\"B\""); }
             else if (et.isChar()) { out.print("\"C\""); }
             else if (et.isShort()) { out.print("\"S\""); }
@@ -685,6 +687,15 @@ aspect GenerateJS
         }
         else if (this instanceof ConstantInt) 
         {   out.print(""+intValue());
+        }
+        else if (this instanceof ConstantLong) 
+        {   long v = longValue();
+        	if (v>-9007199254740992L && v<9007199254740992L) 
+        	{	out.print(""+v);
+        	}
+        	else
+        	{	out.print("(new _long( " + ((int)v) + "," + ((int)(v>>32)) +"))");
+        	} 
         }
         else if (this instanceof ConstantString) 
         {   generateStringJS(out, stringValue());

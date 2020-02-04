@@ -51,20 +51,10 @@ var java_lang_Math_rint_1 = function (x)
     {   return (Math.floor(x) % 2 === 0) ? Math.floor(x) : Math.round(x);
     }
 };
-var java_lang_Math_roundAsDouble_1D = function (x) 
-{   if (isNaN(x)) return 0;
-    var large = 9.223372036854776E18;
-    if (x>=large)  return large;
-    if (x<=-large) return -large;
-    return Math.round(x);
+var java_lang_Math_round_1D = function (x) 
+{   _castTOlong(Math.round(x));
 };
-var java_lang_Math_roundAsInt_1D = function (x) 
-{   if (isNaN(x)) return 0;
-    var large = 9.223372036854776E18;
-    if (x>=large) return -1;
-    if (x<=-large) return 0;
-    return Math.round(x) | 0;
-};
+
 var java_lang_Math_signum_1D = function(x) 
 {   return x<0 ? -1 : x>0 ? 1 : x;
 };

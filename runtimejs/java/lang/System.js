@@ -33,9 +33,6 @@ var java_lang_System_arraycopy_5 = function(src, srcPos, dest, destPos, length)
 var java_lang_System_exit_1 = function(status) 
 {
 };    
-var java_lang_System_currentTimeMillisAsDouble_0 = function() 
-{   return Date.now();
+var java_lang_System_currentTimeMillis_0 = function() 
+{   return _long_from_integral(Date.now());
 };
-var java_lang_System_currentTimeMillisAsInt_0 = function() 
-{   return Date.now() | 0;
-};    

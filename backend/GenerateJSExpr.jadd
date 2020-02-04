@@ -171,17 +171,7 @@ aspect GenerateJS
         {   TypeDecl t = m.hostType();
             String tname = t.uniqueName();
             String n = m.name();
-            if (t.packageName().equals("java.lang") && (t.uniqueName().equals("Math") || t.uniqueName().equals("System"))) 
-            {   // special handling of the Math.round and System.currentTimeMillis methods
-                if (m.type().isLong())      
-                {   Expr parentexp = (Expr) getParent();
-                    while ((parentexp instanceof Dot) && (parentexp.getParent() instanceof Expr)) 
-                    {   parentexp = (Expr) parentexp.getParent();
-                    }
-                    n = n + (parentexp.type().isInt() ? "AsInt" : "AsDouble"); 
-                }
-            }
-            
+             
             out.printAndMemorizeReference(t.packageName(),tname);            
             out.print("_");
             out.printIdentifier(n,"_"+m.makeJSSuffix());
@@ -218,6 +208,7 @@ aspect GenerateJS
         // generate parameters 
         for (int i=0; i<getNumArg(); i++) 
         {   if (i>0) { out.print(", "); }
+        
             // do necessary data conversion for some built-in methods 
             // to clarify the use of a char instead of a int 
             TypeDecl ht = m.hostType();
@@ -603,7 +594,14 @@ aspect GenerateJS
     {
         getDest().generateJS(out);
         out.print(" = ");
-        getSource().generateUsingResultJS(out);
+        if (getDest().type().isLong() && ! getSource().type().isLong())
+        {	out.print("_castTOlong(");
+        	getSource().generateUsingResultJS(out);
+        	out.print(")");
+        }
+        else
+        {	getSource().generateUsingResultJS(out);
+        }
     }
         
     // --- Binary ---
@@ -798,15 +796,35 @@ aspect GenerateJS
     }
     public void EQExpr.generateJS(CodePrinterJS out) 
     {
-        getLeftOperand().generateUsingResultJS(out);
-        out.print("===");
-        getRightOperand().generateUsingResultJS(out);   
+        if (getLeftOperand().type().isLong() || getLeftOperand().type().isLong())
+        {
+        	out.print("_long_equals(_castTOlong(");
+        	getLeftOperand().generateUsingResultJS(out);
+        	out.print("),_castTOlong(");
+        	getRightOperand().generateUsingResultJS(out);
+        	out.print("))");
+        } 
+        else
+        {	getLeftOperand().generateUsingResultJS(out);
+        	out.print("===");
+        	getRightOperand().generateUsingResultJS(out);
+        }   
     }
     public void NEExpr.generateJS(CodePrinterJS out) 
     {
-        getLeftOperand().generateUsingResultJS(out);
-        out.print("!==");
-        getRightOperand().generateUsingResultJS(out);   
+        if (getLeftOperand().type().isLong() || getLeftOperand().type().isLong())
+        {
+        	out.print("(!_long_equals(_castTOlong(");
+        	getLeftOperand().generateUsingResultJS(out);
+        	out.print("),_castTOlong(");
+        	getRightOperand().generateUsingResultJS(out);
+        	out.print(")))");
+        } 
+        else
+        {	getLeftOperand().generateUsingResultJS(out);
+        	out.print("!==");
+        	getRightOperand().generateUsingResultJS(out);
+        }   
     }
     public void GEExpr.generateJS(CodePrinterJS out) 
     {
@@ -860,27 +878,39 @@ aspect GenerateJS
         if (t.isPrimitiveType()) 
         {   TypeDecl et = getExpr().type();
             if (t.isByte()) 
-            {   out.print("_castTObyte(");
+            {   if (!et.isByte()) { out.print("_castTObyte("); }
                 getExpr().generateUsingResultJS(out);
-                out.print(")");
+                if (!et.isByte()) { out.print(")"); }
             } 
             else if (t.isChar()) 
-            {   out.print("_castTOchar(");
+            {   if (!et.isChar()) { out.print("_castTOchar("); }
                 getExpr().generateUsingResultJS(out);
-                out.print(")");
+                if (!et.isChar()) { out.print(")"); }
             } 
             else if (t.isShort()) 
-            {   out.print("_castTOshort(");
+            {   if (!et.isShort()) { out.print("_castTOshort("); }
                 getExpr().generateUsingResultJS(out);
-                out.print(")");
+                if (!et.isShort()) { out.print(")"); }
             } 
             else if (t.isInt()) 
-            {   if (!et.isLong() && !et.isInt()) { out.print("_castTOint("); }
+            {   if (!et.isInt()) { out.print("_castTOint("); }
                 getExpr().generateUsingResultJS(out);
-                if (!et.isLong() && !et.isInt()) { out.print(")"); }
+                if (!et.isInt()) { out.print(")"); }
             } 
+            else if (t.isLong())
+           	{	if (!et.isLong()) { out.print("_castTOlong("); }
+                getExpr().generateUsingResultJS(out);
+                if (!et.isLong()) { out.print(")"); }
+            }
             else if (t.isDouble()) 
-            {   getExpr().generateUsingResultJS(out);
+            {   if (et.isLong()) 
+            	{	out.print("_castTOdouble(");
+            		getExpr().generateUsingResultJS(out);
+            		out.print(")");
+            	}
+            	else
+            	{	getExpr().generateUsingResultJS(out);
+            	}
             } 
             else
             {   throw new RuntimeException("Type not supported:"+t.fullName());
@@ -989,7 +1019,7 @@ aspect GenerateJS
             (   (ta instanceof ArrayTypeWithSizeAccess) 
                 && ta.type().elementType().isPrimitiveType()
             )
-            {   out.print(ta.type().elementType().isBoolean()?"false":"0");
+            {   ta.type().elementType().generateDefaultValueJS(out);
             } 
             else
             {   out.print("null");

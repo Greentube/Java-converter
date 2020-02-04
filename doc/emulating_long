@@ -1,0 +1,15 @@
+Emulating 'long' values in javascript
+-------------------------------------
+
+Javascript has only a single numerical data type: Number. 
+This can basically just hold a double precision floating point value (with optimizations done
+by the javascript engine to allow faster operation in case of integral values).
+ 
+As long as the values are not too big in magnitude (lower than -2^53 or higher than 2^53) 
+a normal Number can be used. For values that would need too many digits, a specific
+emulation object must be created:
+Emulation of big 64 bit values is done with an immutable object that stores the 
+two 32-bit halves of the value as individual numbers, each in the range of  0 to 2^32-1.
+Here only positive numbers are used to represent the internal bit pattern, but if the
+highest bit of the high value is '1', the whole long is considered to be negative 
+according to the twos-complement semantics.

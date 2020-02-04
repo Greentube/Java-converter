@@ -255,7 +255,10 @@ function _castTOshort(a)
 }
 
 function _castTOint(a) 
-{   // check various possibilities for a (could be NaN)
+{   
+	if (a instanceof _long) { return a.low; }
+	
+	// check various possibilities for a (could be NaN)
     if (a>=0) 
     {   // is a positive number (comparator would fail otherwise)
         if (a>2147483647) return 2147483647
@@ -272,11 +275,29 @@ function _castTOint(a)
     }
 }
 
+function _castTOlong(a)
+{
+	if (a instanceof _long) { return a; }
+	if (isNaN(a)) return 0;	
+	if (a < -9223372036854775808) { return java_lang_Long_MIN$005fVALUE; }
+	if (a > 9223372036854775807) { return java_lang_Long_MAX$005fVALUE; } 
+	return _long_from_integral(Math.round(a));	
+}
+
+function _castTOdouble(a)
+{
+	if (a instanceof _long) 
+	{	if (a.high<2147483648) return a.low + a.high * 4294967296; // positive values
+		return - (a.high * 4294967296 + a.low);  // negative values
+	}	
+	return a;
+}
 
 // attach runtime type information to an already created one-dimensional javascript array.
 // returns the array itself for easy chaining
 // typedescriptor is either one of the strings: 
 //  "I"  (int)
+//  "L"  (long)
 //  "B"  (byte) 
 //  "C"  (char) 
 //  "S"  (short)
@@ -595,3 +616,29 @@ function(delim_o, parts_o)
     // if encountered only strings, the join is easy
     return parts_o.join(delim);
 };
+
+
+// implement datatype long as an immutable object with two numerical components
+var _long = function (low, high)
+{
+	this.low = low;
+	this.high = high;
+}
+var _long_from_integral = function(n)
+{
+	// must create an object to hold the value
+	if (n<-9007199254740992 || n>9007199254740992) 
+	{
+		return new _long(n, n<0 ? 0xffffffff : 0);	
+	}
+	// can use the value as is
+	return n;	
+}
+
+var _long_equals = function(a,b)
+{
+	if ((a instanceof _long) && (b instanceof _long))
+	{	 return (a.low === b.low) && (a.high === b.high);
+	}
+	return a===b;
+}
