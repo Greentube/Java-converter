@@ -174,11 +174,6 @@ aspect CheckRestrictions
         // Autoboxing in assignments
         checkAutoBoxing(getSource().type(), getDest().type(), errorlist);
         
-        if ( (!(this instanceof AssignSimpleExpr)) 
-        && (getSource().type().isLong() || getDest().type().isLong() ))
-        {	reportRestriction(errorlist, "Can not use 'long' values in compound assignment.");
-        }
-        
         super.checkRestrictions(errorlist);                 
     }
     
@@ -440,13 +435,7 @@ aspect CheckRestrictions
     public void Unary.checkRestrictions(ArrayList<String> errorlist) 
     {  
         checkUnboxing(getOperand(), errorlist);
-        
-        if ((this instanceof PreIncExpr) || (this instanceof PreDecExpr) 
-        ||  (this instanceof PostIncExpr) || (this instanceof PostDecExpr))
-        {	if (type().isLong()) 
-        	{	reportRestriction(errorlist, "Can not use 'long' values in inc/dec operations.");
-        	}
-        }        
+            
         super.checkRestrictions(errorlist);                                     
     }
     

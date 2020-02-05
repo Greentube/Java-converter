@@ -35,13 +35,17 @@ var java_lang_Long_MIN$005fVALUE = new _long(0x80000000, 0x00000000);
  
 var java_lang_Long_parseLong_1 = function(s) 
 {
-	return 0;   
+	var n = Number(s);
+    if (isNaN(n)) 
+    {   throw (new java_lang_NumberFormatException())._0()._e; 
+    }
+    return _long_from_double(n);
 };
 var java_lang_Long_toString_1 = function(i) 
-{   return "unknown long";
+{   return _long_to_string(i);
 };
 var java_lang_Long_toHexString_1 = function(i) 
-{   return (i<0 ? 4294967296+i : i).toString(16);
+{   return "<"+_low_from_long(i).toString(16)+":"+_high_from_long(i).toString(16)+">";
 };
 var java_lang_Long_valueOf_1L = function(l) 
 {   return new java_lang_Long()._1L(l);

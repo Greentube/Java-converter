@@ -52,7 +52,7 @@ var java_lang_Math_rint_1 = function (x)
     }
 };
 var java_lang_Math_round_1D = function (x) 
-{   _castTOlong(Math.round(x));
+{   return _long_from_double(x);
 };
 
 var java_lang_Math_signum_1D = function(x) 

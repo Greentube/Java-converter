@@ -34,5 +34,5 @@ var java_lang_System_exit_1 = function(status)
 {
 };    
 var java_lang_System_currentTimeMillis_0 = function() 
-{   return _long_from_integral(Date.now());
+{   return _long_from_double(Date.now());
 };

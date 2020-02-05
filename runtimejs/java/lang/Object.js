@@ -187,7 +187,8 @@ function _d2s(d)
 
 // convert any primitive type to a string 
 function _p2s(c) 
-{   return String(c);
+{   if (c instanceof _long) { return _long_to_string(c); } 
+	return String(c);
 }
 
 // convert any object to a string - and give "null" for null reference
@@ -278,10 +279,7 @@ function _castTOint(a)
 function _castTOlong(a)
 {
 	if (a instanceof _long) { return a; }
-	if (isNaN(a)) return 0;	
-	if (a < -9223372036854775808) { return java_lang_Long_MIN$005fVALUE; }
-	if (a > 9223372036854775807) { return java_lang_Long_MAX$005fVALUE; } 
-	return _long_from_integral(Math.round(a));	
+	return _long_from_double(a);	
 }
 
 function _castTOdouble(a)
@@ -624,21 +622,86 @@ var _long = function (low, high)
 	this.low = low;
 	this.high = high;
 }
-var _long_from_integral = function(n)
+
+// methods to compose/decompose long values (can be either an object or just a Number) 
+var _low_from_long = function(l)
 {
-	// must create an object to hold the value
-	if (n<-9007199254740992 || n>9007199254740992) 
-	{
-		return new _long(n, n<0 ? 0xffffffff : 0);	
+	// this is indeed an object
+	if (l instanceof _long)		
+	{	return l.low;
 	}
-	// can use the value as is
+	// is a number - construct the low as if it were an object
+	if (l>=0) { return l; }
+	else      { return l+4294967296; }	
+}
+var _high_from_long = function(l)
+{
+	// this is indeed an object
+	if (l instanceof _long)
+	{	return l.high;
+	}
+	// is a number - construct the high as if it were an object
+	if (l>=0) { return 0; }
+	else      { return 0xffffffff; }	
+}
+
+var _long_from_components = function(low,high)
+{
+	// decide if can use just a single Number 
+	if (high===0 && low<=0x7fffffff)  
+	{	return low;				
+	}
+	else if (high===0xffffffff && low>=0x80000000)
+	{	return 4294967296-low;	
+	}
+	// no shortcuts - must create an object
+	return new _long(low,high);
+}
+
+// convert any double to a long
+var _long_from_double = function(n)
+{
+	// special cases of parameter
+	if (isNaN(n)) return 0;	
+	if (n < -9223372036854775808) { return _long_min; }
+	if (n > 9223372036854775807) { return _long_max; } 
+	
+	n = Math.round(n);
+
+	// must create an object to hold the value if the value exceeds the possible range
+	if (n<-2147483648 || n>2147483647) 
+	{
+		var mod = ((n%4294967296)+4294967296)%4294967296;  // non-negative modulus
+		if (n>=0)
+		{	return new _long((n-mod) / 4294967296, mod);
+		}
+		else
+		{	return new _long((n-mod) / 4294967296 + 4294967296, mod);  // twos-complement
+		}
+	}
+	// can use a Number value directly
 	return n;	
 }
 
 var _long_equals = function(a,b)
 {
-	if ((a instanceof _long) && (b instanceof _long))
-	{	 return (a.low === b.low) && (a.high === b.high);
-	}
-	return a===b;
+	return _low_from_long(a) === _low_from_long(b)
+	&&     _high_from_long(a) === _high_from_long(b);
 }
+var _long_to_string = function(l)
+{	
+	var low = _low_from_long(l);
+	var high = _high_from_long(l);
+	
+	if (high < 2147483648)	// positive value  
+	{	return (high*4294967296 + low).toString();
+	}
+	else                    // negative value
+	{	return ((high-4294967296)*4294967296 + low).toString();
+	}
+}
+
+// certain constant values
+var _long_min = new _long(0x80000000, 0x00000000);
+var _long_max = new _long(0x7fffffff, 0xffffffff);
+

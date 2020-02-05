@@ -690,11 +690,11 @@ aspect GenerateJS
         }
         else if (this instanceof ConstantLong) 
         {   long v = longValue();
-        	if (v>-9007199254740992L && v<9007199254740992L) 
+        	if (v>=Integer.MIN_VALUE && v<=Integer.MAX_VALUE) 
         	{	out.print(""+v);
         	}
         	else
-        	{	out.print("(new _long( " + ((int)v) + "," + ((int)(v>>32)) +"))");
+        	{	out.print("(new _long(" + (v & 0x00000000ffffffffL) + "," + (v>>>32) +"))");
         	} 
         }
         else if (this instanceof ConstantString) 
