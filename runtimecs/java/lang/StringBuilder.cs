@@ -43,6 +43,11 @@ namespace java.lang { public class StringBuilder
     public int length()
     {   return content.Length;
     }
+    
+    public StringBuilder delete(int start, int end)
+    {   content.Remove(start, end-start);
+    	return this;
+    }
 
     public override System.String ToString()
     {   return content.ToString();

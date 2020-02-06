@@ -57,6 +57,13 @@ namespace java.lang { public class StringBuffer
         {   return content.Length;
         }
     }
+    
+    public StringBuffer delete(int start, int end)
+    {   lock (content)
+    	{	content.Remove(start, end-start);
+    		return this;
+    	}
+    }
 
     public override System.String ToString()
     {   lock (content)
