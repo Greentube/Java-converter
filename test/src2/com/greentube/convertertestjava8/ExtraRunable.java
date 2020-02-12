@@ -1,6 +1,6 @@
 package com.greentube.convertertestjava8;
 
-public class ExtraRunable implements Runnable 
+public class ExtraRunable implements Runnable, Iterable<String>
 {
 	public void run()
 	{	
@@ -9,5 +9,9 @@ public class ExtraRunable implements Runnable
 	public String walk()
 	{	
 		return "WALK";	
+	}
+	public java.util.Iterator<String> iterator()
+	{		
+		return null;
 	}
 }

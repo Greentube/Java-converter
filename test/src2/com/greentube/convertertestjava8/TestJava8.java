@@ -501,10 +501,13 @@ public class TestJava8 extends TestJava7
         assertO(vi.toString(), "[4711]");
         
         assertO(ib.buildRunable().walk(), "WALK");
-        Vector<ExtraRunable> ve = new Vector<>();
-        ve.add(ib.buildRunable());        
-        assertO(ve.elementAt(0).walk(), "WALK");
+        testNullIterator(ib.buildRunable());
     }
+    private static void testNullIterator(Iterable<String> it)
+    {
+    	assertO(it.iterator(),null);
+    }
+    
 
     
     public static void featureshowcase()
