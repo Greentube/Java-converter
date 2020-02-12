@@ -106,13 +106,15 @@ namespace java.lang { public class SYSTEM  // need to uppercase to avoid name cl
         {   if (parseback==v) { s=s2; }
         }
                 
-        // check if need to add decimal places
-        if (s.IndexOf('.')<0) { return s + ".0"; }
+        // use decimal point regardless of localisation settings
+        s = s.Replace(',','.');                
+         // check if need to add decimal places
+        if (s.IndexOf('.')<0) { s = s + ".0"; }
         // need to patch exponent to match java style
         int idx = s.indexOf("+");
         if (idx>0) { s = s.Remove(idx,1); }
-        // use decimal point regardless of localisation settings
-        return s.Replace(',','.');
+        
+ 		return s;
     }
     
     public static System.String str(int v) 

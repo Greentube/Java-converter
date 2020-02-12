@@ -30,6 +30,7 @@ public class TestJava8 extends TestJava7
         customcomparator();
         sortliststest();
         staticimporttest();
+        specializedoverridetest();
         featureshowcase();
         assertO(new AnnotationsTest().toString(),"[]AnnotationsTest");        
     }
@@ -484,6 +485,16 @@ public class TestJava8 extends TestJava7
     {
         System.out.println("- test static import");
         assertI(m(), 7);
+    }
+    
+    public static void specializedoverridetest()
+    {
+        System.out.println("- test specialized override");
+        
+        IntegerBuilder ib = new IntegerBuilder();
+        assertI(ib.build().intValue(), 4711);
+        ObjectBuilder ob = ib;
+        assertO(ob.build(), Integer.valueOf(4711));    	
     }
 
     
