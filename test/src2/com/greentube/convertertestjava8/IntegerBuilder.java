@@ -6,5 +6,9 @@ public class IntegerBuilder extends ObjectBuilder {
 	{
 		return new Integer(4711);
 	}
-
+	
+	public ExtraRunable buildRunable()
+	{
+		return new ExtraRunable();
+	}
 }

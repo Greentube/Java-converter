@@ -494,7 +494,16 @@ public class TestJava8 extends TestJava7
         IntegerBuilder ib = new IntegerBuilder();
         assertI(ib.build().intValue(), 4711);
         ObjectBuilder ob = ib;
-        assertO(ob.build(), Integer.valueOf(4711));    	
+        assertO(ob.build(), Integer.valueOf(4711));
+        
+        Vector<Integer> vi = new Vector<>();
+        vi.add(ib.build());
+        assertO(vi.toString(), "[4711]");
+        
+        assertO(ib.buildRunable().walk(), "WALK");
+        Vector<ExtraRunable> ve = new Vector<>();
+        ve.add(ib.buildRunable());        
+        assertO(ve.elementAt(0).walk(), "WALK");
     }
 
     
