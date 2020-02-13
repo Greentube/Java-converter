@@ -6,4 +6,9 @@ public class TestParentIntermediate2 extends TestParentIntermediate
     {   
         return 4711;
     }
+    
+    public int mul(int a, int b)
+    {
+    	return a*b;
+    }
 }

@@ -41,7 +41,11 @@ public class TestObject extends TestParentIntermediate
     {
         return 1;
     }
-
+    public int mul(int a, int b)
+    {
+    	return a*b;
+    }
+    
     public int shadowAttributeSum()
     {   int somenumber = 123;
         return shadowAttribute() + somenumber + staticmethod();
@@ -65,7 +69,7 @@ public class TestObject extends TestParentIntermediate
     }
 
     public int depth() 
-    {   return super.depth()+xyz();
+    {   return super.depth()+mul(xyz(),1);
     }
 
     public int depth(int multiplier) 

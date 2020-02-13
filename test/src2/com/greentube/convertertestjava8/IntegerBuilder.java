@@ -11,4 +11,9 @@ public class IntegerBuilder extends ObjectBuilder {
 	{
 		return new ExtraRunable();
 	}
+	
+	public Integer indirectlyBuild()
+	{
+		return build();
+	}
 }

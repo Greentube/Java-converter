@@ -15,6 +15,7 @@ public interface TestInterface {
     
     int add(int a, int b);
     String hello();
+    int mul(int a, int b);
     
     public static int constant1 = 6;
     public static String constant2 = "Hi";

@@ -323,7 +323,47 @@ aspect GenerateCS
             }
             out.println(");");                        
             out.println("}");
-        }  
+        }
+          
+        // add absent abstract methods when implementing interfaces in an abstract class
+        if (isAbstract())
+        {	ArrayList<MethodDecl> neededabstracts = new ArrayList<MethodDecl>();
+        	for (Access ac: getImplementsList() ) 
+	        {   while (ac instanceof Dot) ac=((Dot)ac).getRight();        
+	            TypeDecl t = (ac instanceof TypeAccess) ? ((TypeAccess) ac).type() 
+	                                                    : ((ParTypeAccess) ac).type(); 
+	            for(BodyDecl bd: ((InterfaceDecl)t).recursivelyGetBodyDecl())
+	            {   if (bd instanceof MethodDecl) 
+	                {   MethodDecl md = (MethodDecl) bd;
+	                    if 
+	                    (      !md.isDefault() 
+	                        && !this.hasMethodWithSignature(md.signature(), null)
+	                        && md.isSupportedInLibraries() 
+	                        && !neededabstracts.contains(md)
+	                    )
+	                    {   neededabstracts.add(md); 
+	                    }
+	                }
+	            }
+	        }
+	        for (MethodDecl md:neededabstracts) 
+	        {   out.print("public abstract ");
+	            md.getTypeAccess().generateCS(out);
+	            out.print(" ");
+	            out.printIdentifier(md.name());
+	            out.print("(");
+	            int numpar = md.getNumParameter();
+	            for (int i=0; i<numpar; i++)
+	            {   if (i!=0) { out.print(", "); }
+	                md.getParameter(i).getTypeAccess().generateCS(out);
+	                if (i==numpar-1 && md.isVariableArity()) 
+	                {   out.print("[]");
+	                }        
+	                out.print(" p"+i);                     
+	            }
+	            out.println(");");                        
+	        }	        
+		}         
         
         // add synthetic methods for array dimensioning of needed
         generateDimsCS(out);
@@ -640,8 +680,27 @@ aspect GenerateCS
                     {   if (b instanceof MethodDecl && overrides((MethodDecl)b) ) 
                         {   isoverriding = true;
                         }
-                    }                                 
-                }                    
+                    }
+                	// test if this method overrides an implicitly created abstract method implementing interface
+					if (c.isAbstract())
+					{	for (Access ac: c.getImplementsList() ) 
+	        			{   while (ac instanceof Dot) ac=((Dot)ac).getRight();        
+	            			TypeDecl t = (ac instanceof TypeAccess) ? ((TypeAccess) ac).type() 
+	                        			                            : ((ParTypeAccess) ac).type(); 
+	            			for(BodyDecl bd: ((InterfaceDecl)t).recursivelyGetBodyDecl())
+	            			{   if (bd instanceof MethodDecl) 
+	                			{   MethodDecl md = (MethodDecl) bd;
+	                    			if 
+	                    			(      !md.isDefault() 
+	                        			&& this.sameSignature(md)
+	                    			)
+	                    			{	isoverriding = true;
+	                    			}
+	                    		}
+	                    	}
+	                    }
+	                }
+	            }
                 out.print("public ");
                 out.print(isoverriding ? "override " : (isAbstract() ? "abstract ":"virtual "));             
             }       

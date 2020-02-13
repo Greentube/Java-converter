@@ -493,6 +493,7 @@ public class TestJava8 extends TestJava7
         
         IntegerBuilder ib = new IntegerBuilder();
         assertI(ib.build().intValue(), 4711);
+        assertI(ib.indirectlyBuild().intValue(), 4711);
         ObjectBuilder ob = ib;
         assertO(ob.build(), Integer.valueOf(4711));
         

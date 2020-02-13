@@ -6,6 +6,10 @@ public class TestObject2_ implements _TestInterface2 {
     {
     	return a+b;
     }
+    public int mul(int a, int b)
+    {
+    	return a*b;
+    }
     public String hello()
     {
     	return "hello";
