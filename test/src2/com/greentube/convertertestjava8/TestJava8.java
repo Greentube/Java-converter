@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.function.*;
 
 import com.greentube.convertertestjava7.TestJava7;
+import com.greentube.covarianttest.CoVariant;
 
 import static com.greentube.convertertestjava8.p2.WithStaticMethod.m;
 
@@ -503,7 +504,11 @@ public class TestJava8 extends TestJava7
         
         assertO(ib.buildRunable().walk(), "WALK");
         testNullIterator(ib.buildRunable());
+                
+        CoVariant cv = new CoVariant();
+//        cv.addComponentFactories(cv.getAssetDatabase());   (NOT WORKING YET IN C#!)
     }
+    
     private static void testNullIterator(Iterable<String> it)
     {
     	assertO(it.iterator(),null);
