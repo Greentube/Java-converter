@@ -64,6 +64,13 @@ Basically the language features of java 8 are provided with the following restri
     exp.valueOf(4711)    // where exp evaluates to an object of type Integer 
     Since the expression will just be eliminated during conversion, it must not
     have any possible side effects.
+	
+- Covariant return types are not completely supported
+	In the case that a class implements an interface method but with a return type
+	that is a subtype of the one declard in the interface, then the 
+	method call in C# may not be converted to using a proper down-cast. This
+	then leads to a subsequent C# compiler error. For this specific case
+	do a manual cast in the java code.
       
 - Limited subset of java core classes
     The converter core itself provides a limited subset of the java core classes and
