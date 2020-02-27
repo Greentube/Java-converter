@@ -1,9 +1,13 @@
-namespace java.lang { public class NumberFormatException: IllegalArgumentException
-{
-    public NumberFormatException() : base()
-    {   
+namespace java.lang 
+{ 
+    public class NumberFormatException: IllegalArgumentException
+    {
+        public NumberFormatException() : base()
+        {   
+        }
+        
+        public NumberFormatException(System.String message) : base(message)
+        {   
+        }
     }
-    public NumberFormatException(System.String message) : base(message)
-    {   
-    }
-}}
+}

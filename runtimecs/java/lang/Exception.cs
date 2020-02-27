@@ -1,9 +1,13 @@
-namespace java.lang { public class Exception: java.lang.Throwable
+namespace java.lang 
 {
-    public Exception() : base()
-    {   
+    public class Exception: java.lang.Throwable
+    {
+        public Exception() : base()
+        {   
+        }
+        
+        public Exception(System.String message) : base(message)
+        {   
+        }
     }
-    public Exception(System.String message) : base(message)
-    {   
-    }
-}}
+}

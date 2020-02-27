@@ -1,9 +1,13 @@
-namespace java.lang { public class UnsupportedOperationException: RuntimeException
+namespace java.lang 
 {
-    public UnsupportedOperationException() : base()
-    {   
+    public class UnsupportedOperationException: RuntimeException
+    {
+        public UnsupportedOperationException() : base()
+        {   
+        }
+        
+        public UnsupportedOperationException(System.String message) : base(message)
+        {   
+        }
     }
-    public UnsupportedOperationException(System.String message) : base(message)
-    {   
-    }
-}}
+}

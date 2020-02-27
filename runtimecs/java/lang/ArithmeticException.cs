@@ -1,9 +1,13 @@
-namespace java.lang { public class ArithmeticException: RuntimeException
+namespace java.lang 
 {
-    public ArithmeticException() : base()
-    {   
+    public class ArithmeticException: RuntimeException
+    {
+        public ArithmeticException() : base()
+        {   
+        }
+        
+        public ArithmeticException(System.String message) : base(message)
+        {   
+        }
     }
-    public ArithmeticException(System.String message) : base(message)
-    {   
-    }
-}}
+}

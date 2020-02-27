@@ -1,9 +1,13 @@
-namespace java.lang { public class IllegalArgumentException: RuntimeException
-{
-    public IllegalArgumentException() : base()
-    {   
+namespace java.lang 
+{ 
+    public class IllegalArgumentException: RuntimeException
+    {
+        public IllegalArgumentException() : base()
+        {   
+        }
+        
+        public IllegalArgumentException(System.String message) : base(message)
+        {   
+        }
     }
-    public IllegalArgumentException(System.String message) : base(message)
-    {   
-    }
-}}
+}

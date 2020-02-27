@@ -1,12 +1,17 @@
-namespace java.util { public interface Iterator
+namespace java.util 
 {
-    bool hasNext();
-    System.Object next();
-    void remove();
-}}
-namespace java.util { public static class Iterator_c
-{
-    public static void remove(Iterator @this)
-    {   throw new java.lang.UnsupportedOperationException();
+    public interface Iterator
+    {
+        bool hasNext();
+        System.Object next();
+        void remove();
     }
-}}
+
+    public static class Iterator_c
+    {
+        public static void remove(Iterator @this)
+        {   
+            throw new java.lang.UnsupportedOperationException();
+        }
+    }
+}

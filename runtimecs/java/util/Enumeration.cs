@@ -1,5 +1,8 @@
-namespace java.util { public interface Enumeration
+namespace java.util 
 {
-    bool hasMoreElements();
-    System.Object nextElement();
-}}
+    public interface Enumeration
+    {
+        bool hasMoreElements();
+        System.Object nextElement();
+    }
+}

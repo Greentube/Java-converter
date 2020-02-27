@@ -1,9 +1,13 @@
-namespace java.lang { public class NullPointerException: RuntimeException
+namespace java.lang 
 {
-    public NullPointerException() : base()
-    {   
+    public class NullPointerException: RuntimeException
+    {
+        public NullPointerException() : base()
+        {   
+        }
+
+        public NullPointerException(System.String message) : base(message)
+        {   
+        }
     }
-    public NullPointerException(System.String message) : base(message)
-    {   
-    }
-}}
+}

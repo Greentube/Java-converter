@@ -1,9 +1,13 @@
-namespace java.lang { public class IndexOutOfBoundsException: RuntimeException
-{
-    public IndexOutOfBoundsException() : base()
-    {   
+namespace java.lang 
+{ 
+    public class IndexOutOfBoundsException: RuntimeException
+    {
+        public IndexOutOfBoundsException() : base()
+        {   
+        }
+
+        public IndexOutOfBoundsException(System.String message) : base(message)
+        {   
+        }
     }
-    public IndexOutOfBoundsException(System.String message) : base(message)
-    {   
-    }
-}}
+}

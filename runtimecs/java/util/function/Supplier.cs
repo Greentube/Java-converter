@@ -1,4 +1,7 @@
-namespace java.util.function { public interface Supplier
+namespace java.util.function 
 {
-    System.Object get();
-}}
+    public interface Supplier
+    {
+        System.Object get();
+    }
+}

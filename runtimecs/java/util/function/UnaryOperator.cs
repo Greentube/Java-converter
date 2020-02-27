@@ -1,3 +1,6 @@
-namespace java.util.function { public interface UnaryOperator : Function
+namespace java.util.function 
 {
-}}
+    public interface UnaryOperator : Function
+    {
+    }
+}

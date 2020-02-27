@@ -1,4 +1,7 @@
-namespace java.lang { public interface Runnable
+namespace java.lang 
 {
-    void run();
-}}
+    public interface Runnable
+    {
+        void run();
+    }
+}
