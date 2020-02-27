@@ -19,8 +19,8 @@ namespace java.lang
             lock (content)
             {   
                 content.Append(SYSTEM.str(o));
-                return this;
             }
+            return this;
         }
             
         public StringBuffer append(bool b)
@@ -28,8 +28,8 @@ namespace java.lang
             lock (content)
             {   
                 content.Append(SYSTEM.str(b));
-                return this;
             }
+            return this;
         }
 
         public StringBuffer append(char c)
@@ -37,8 +37,8 @@ namespace java.lang
             lock (content)
             {   
                 content.Append(c);
-                return this;
             }
+            return this;
         }
 
         public StringBuffer append(int i)
@@ -46,8 +46,8 @@ namespace java.lang
             lock (content)
             {   
                 content.Append(i);
-                return this;
             }
+            return this;
         }
             
         public StringBuffer append(double d)
@@ -55,8 +55,8 @@ namespace java.lang
             lock (content)
             {   
                 content.Append(SYSTEM.str(d));
-                return this;
             }
+            return this;
         }
         
         public StringBuffer append(char[] ca)
@@ -64,8 +64,22 @@ namespace java.lang
             lock (content)
             {   
                 content.Append(ca);
-                return this;
             }
+            return this;
+        }
+        
+        public StringBuffer delete(int start, int end)
+        {
+            lock (content)
+            {
+                int cl = content.Length;
+                if (start<0 || start>cl || start>end) 
+                {
+                    throw new IndexOutOfBoundsException();
+                }
+                content.Remove(start, (end<cl?end:cl) - start);
+            }
+            return this;
         }
             
         public int length()

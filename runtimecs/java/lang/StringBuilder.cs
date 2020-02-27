@@ -49,7 +49,18 @@ namespace java.lang
             content.Append(ca);
             return this;
         }
-                    
+        
+        public StringBuilder delete(int start, int end)
+        {
+            int cl = content.Length;
+            if (start<0 || start>cl || start>end) 
+            {
+                throw new IndexOutOfBoundsException();
+            }
+            content.Remove(start, (end<cl?end:cl) - start);
+            return this;
+        }
+        
         public int length()
         {   
             return content.Length;

@@ -2145,6 +2145,13 @@ public class TestJava4
         c = new StringBuffer("array:");
         c.append(new char[]{'a','b','c','d'});
         assertO(c.toString(), "array:abcd");
+        
+        c.delete(2,5);
+        assertO(c.toString(), "ar:abcd");
+        c.delete(5, c.length());
+        assertO(c.toString(),"ar:ab");
+        c.delete(0, c.length());
+        assertO(c.toString(),"");
     }
     
     public static void stringbuildertest()
@@ -2179,7 +2186,14 @@ public class TestJava4
     	
         c = new StringBuilder("array:");
         c.append(new char[]{'a','b','c','d'});
-        assertO(c.toString(), "array:abcd");    	    
+        assertO(c.toString(), "array:abcd");    
+        
+        c.delete(2,5);
+        assertO(c.toString(), "ar:abcd");
+        c.delete(5, c.length());
+        assertO(c.toString(),"ar:ab");
+        c.delete(1, 100);
+        assertO(c.toString(),"a");        
     }
     
     public static void vectortest() {

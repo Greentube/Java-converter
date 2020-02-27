@@ -191,8 +191,9 @@ the result to a double or int. For example:  double now = (double) System.curren
             "java.lang.StringBuffer append(char)",
             "java.lang.StringBuffer append(int)",
             "java.lang.StringBuffer append(double)",
-            "java.lang.StringBuffer append(char[])",            
-            "int length()",         
+            "java.lang.StringBuffer append(char[])",
+            "java.lang.StringBuffer delete(int, int)",
+            "int length()",			
         },
         {   "java.lang.StringBuilder",
             
@@ -205,7 +206,8 @@ the result to a double or int. For example:  double now = (double) System.curren
             "java.lang.StringBuilder append(int)",
             "java.lang.StringBuilder append(double)",
             "java.lang.StringBuilder append(char[])",            
-            "int length()",         
+            "java.lang.StringBuilder delete(int, int)",
+            "int length()",			
         },
         {   "java.lang.System",
             
@@ -290,8 +292,8 @@ the result to a double or int. For example:  double now = (double) System.curren
             "void sort(java.util.Comparator)",              
 
             "<init>()",
-            "<init>(java.util.Collection)",         
-            "void trimToSize()",                        
+            "<init>(java.util.Collection)",			
+            "void trimToSize()",						
         },
         {   "java.util.Arrays",
             
@@ -325,8 +327,8 @@ the result to a double or int. For example:  double now = (double) System.curren
         },
         {   "java.util.Enumeration",
             
-            "boolean hasMoreElements()",        
-            "java.lang.Object nextElement()",           
+            "boolean hasMoreElements()",		
+            "java.lang.Object nextElement()",			
         },
         {   "java.util.HashMap",
             
@@ -392,7 +394,7 @@ the result to a double or int. For example:  double now = (double) System.curren
         },
         {   "java.util.Iterator",
             
-            "boolean hasNext()",        
+            "boolean hasNext()",		
             "java.lang.Object next()",
             "void remove()",
         },
@@ -431,7 +433,7 @@ the result to a double or int. For example:  double now = (double) System.curren
             "java.lang.Object getFirst()",
             "java.lang.Object getLast()",
             "java.lang.Object removeFirst()",
-            "java.lang.Object removeLast()",            
+            "java.lang.Object removeLast()",			
         },
         {   "java.util.List",
         
@@ -459,12 +461,12 @@ the result to a double or int. For example:  double now = (double) System.curren
             "java.lang.Object remove(int)",
             "void replaceAll(java.util.function.UnaryOperator)",
             "java.lang.Object set(int, java.lang.Object)",
-            "void sort(java.util.Comparator)",              
+            "void sort(java.util.Comparator)",    		    
         },
         {   "java.util.Map",
         
             "void clear()",
-            "boolean containsKey(java.lang.Object)",    
+            "boolean containsKey(java.lang.Object)",	
             "boolean containsValue(java.lang.Object)",
             "void forEach(java.util.function.BiConsumer)",                 
             "java.lang.Object get(java.lang.Object)",
@@ -703,4 +705,3 @@ the result to a double or int. For example:  double now = (double) System.curren
         },
         {   "java.lang.SuppressWarnings"
         },
-
