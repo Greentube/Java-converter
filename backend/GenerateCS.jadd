@@ -47,11 +47,14 @@ aspect GenerateCS
         }
 
 		out.println("using java.lang;");
+		out.println();
 
         if (packageName().length()>0) 
         {   out.print("namespace ");
-            generatePackageNameCS(out);           
-            out.print(" { ");
+            generatePackageNameCS(out);  
+            out.println();         
+            out.println("{");
+            out.increaseIndent();
         }
         
         boolean enum_has_abstract=false;
@@ -68,7 +71,7 @@ aspect GenerateCS
         {   superclass().generateNameCS(out);
         }
         else
-        {   out.printCSQualifiedIdentifier("System.Object");
+        {   out.print("object");
         }
         for (Access ac: getImplementsList() ) 
         {   out.print(", ");
@@ -193,7 +196,8 @@ aspect GenerateCS
             {   for (FieldDeclarator fd:bd.fieldDeclarations()) 
                 {   if (fd.isStatic() && fd.getInit()!=null) 
                     {   if (!havestaticconstructor) 
-                        {   out.print("static ");
+                        {   out.println();
+                        	out.print("static ");
                             out.printIdentifier(uniqueName());
                             out.println("()");
                             out.println("{");
@@ -211,7 +215,8 @@ aspect GenerateCS
             } 
             else if (bd instanceof StaticInitializer) 
             {   if (!havestaticconstructor) 
-                {   out.print("static ");
+                {   out.println();
+                	out.print("static ");
                     out.printIdentifier(uniqueName());
                     out.println("() {");
                     out.increaseIndent();
@@ -379,9 +384,11 @@ aspect GenerateCS
         generateDimsCS(out);
     
         out.decreaseIndent(); 
-        out.print("}");
+        out.println("}");
         if (packageName().length()>0) 
-        {   out.print("}");
+        {   
+        	out.decreaseIndent();
+        	out.println("}");
         }
         out.println();
     }
@@ -390,12 +397,15 @@ aspect GenerateCS
     public void InterfaceDecl.generateCS(CodePrinterCS out) 
     {
     	out.println("using java.lang;");
-    
+    	out.println();
+    	
         boolean haspackage = packageName().length()>0;
         if (haspackage) 
         {   out.print("namespace ");
-            generatePackageNameCS(out); 
-            out.print(" { ");                     
+            generatePackageNameCS(out);
+            out.println(); 
+            out.println("{");
+            out.increaseIndent();                     
         }
         out.print("public interface ");
         out.printIdentifier(uniqueName());
@@ -474,8 +484,12 @@ aspect GenerateCS
             generateDimsCS(out);
                         
             out.decreaseIndent();
-            out.print("}"); 
-            if (haspackage) { out.print("}"); }     
+            out.println("}"); 
+            if (haspackage) 
+            {
+            	out.decreaseIndent(); 	
+            	out.println("}"); 
+            }     
             out.println();                      
         }       
     }  
@@ -483,6 +497,9 @@ aspect GenerateCS
     public void ReferenceType.generateDimsCS(CodePrinterCS out)
     {
         HashMap<Object,int[]> m = out.retrieveDims();
+        
+        if (m.size()>0) { out.println(); }
+        
         for (Object en:m.keySet()) 
         {   TypeDecl type = (TypeDecl) en;
             int[] id_and_depth = m.get(type);
@@ -556,6 +573,7 @@ aspect GenerateCS
         boolean needouter = hostType().needsEnclosing();
         int numpar = getNumParameter();
                 
+        out.println();
         out.print("public ");       
         out.printIdentifier(hostType().uniqueName());
         out.print("(");         
@@ -661,6 +679,8 @@ aspect GenerateCS
     }    
     public void MethodDecl.generateCS(CodePrinterCS out, boolean omitbody, Access overwritereturntype) 
     {
+        out.println();
+    
         boolean isinterfaceextension = false;
         // perform some checks for class methods
         if (hostType().isClassDecl())
@@ -807,10 +827,10 @@ aspect GenerateCS
         	String pn = erased.packageName();
             String s = (pn.length()>0) ? pn+"."+erased.uniqueName() : erased.uniqueName();
             
-            if (s.equals("java.lang.String")) { s = "System.String"; }
-            else if (s.equals("java.lang.Object")) { s = "System.Object"; }
+            if (s.equals("java.lang.String")) { out.print("string"); return; }
+            else if (s.equals("java.lang.Object")) { out.print("object"); return; }
             else if (s.equals("java.lang.System")) { s = "java.lang.SYSTEM"; }
-            else if (s.equals("java.lang.CharSequence")) { s = "System.Object"; }
+            else if (s.equals("java.lang.CharSequence")) { out.print("object"); return; }
             
             out.printCSQualifiedIdentifier(s+typenameSuffix);             
         }
