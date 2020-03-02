@@ -193,12 +193,12 @@ namespace java.util
         // redirect default interface methods
         public virtual System.Object getOrDefault(System.Object key, System.Object def)
         {   
-            return java.util.Map_c.getOrDefault(this,key,def);
+            return java.util.Map_0009.getOrDefault(this,key,def);
         }
         
         public virtual void forEach(java.util.function.BiConsumer biconsumer)
         {   
-            java.util.Map_c.forEach(this,biconsumer);
+            java.util.Map_0009.forEach(this,biconsumer);
         }    
     }
     

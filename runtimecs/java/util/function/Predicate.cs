@@ -8,7 +8,7 @@ namespace java.util.function
         bool test(System.Object s);
     }
 
-    public static class Predicate_c
+    public static class Predicate_0009
     {
         public static Predicate and(Predicate @this, Predicate other)
         {   
@@ -50,15 +50,15 @@ namespace java.util.function
         }
         public virtual Predicate and(Predicate other)
         {   
-            return Predicate_c.and(this,other);
+            return Predicate_0009.and(this,other);
         }
         public virtual Predicate negate()
         {   
-            return Predicate_c.negate(this);
+            return Predicate_0009.negate(this);
         }
         public virtual Predicate or(Predicate other)
         {   
-            return Predicate_c.or(this,other);
+            return Predicate_0009.or(this,other);
         }
     }        
 

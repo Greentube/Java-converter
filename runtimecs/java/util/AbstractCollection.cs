@@ -72,7 +72,7 @@ namespace java.util
         
         public virtual bool removeIf(java.util.function.Predicate predicate)
         {   
-            return java.util.Collection_c.removeIf(this,predicate);
+            return java.util.Collection_0009.removeIf(this,predicate);
         }
         
         public virtual bool removeAll(Collection c)
@@ -157,7 +157,7 @@ namespace java.util
         // redirect default interface method
         public virtual void forEach(java.util.function.Consumer consumer)
         {   
-            java.lang.Iterable_c.forEach(this,consumer);
+            java.lang.Iterable_0009.forEach(this,consumer);
         }
     }
 }

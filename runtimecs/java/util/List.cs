@@ -29,7 +29,7 @@ namespace java.util
     //   System.String ToString();    
     }
 
-    public static class List_c
+    public static class List_0009
     {
         public static void sort(List @this, Comparator c)
         {   

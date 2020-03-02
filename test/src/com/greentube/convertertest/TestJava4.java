@@ -72,6 +72,8 @@ public class TestJava4
         System.out.println(3.1415);
         System.out.println('X');
 
+        assertI(com.greentube.convertertestreserved.event.TestObject.magic, 4711);
+
         staticattributestest();
         constructortest();
         arraytest();

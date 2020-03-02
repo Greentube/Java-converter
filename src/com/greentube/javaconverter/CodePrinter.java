@@ -15,6 +15,8 @@ public class CodePrinter
     boolean afteropeningbrace;
     char lastchar;
     
+    boolean disabled;
+    
     public CodePrinter(File outputfolder, String filename, String escapesign, HashSet<String> reservedidentifiers) 
     {   
         try
@@ -34,11 +36,22 @@ public class CodePrinter
         this.escapesign = escapesign;
         this.reservedidentifiers = reservedidentifiers;
         this.lastchar = 0;
+        this.disabled = false;
     }
 
     public File getOutputFolder()
     {
         return outputfolder;
+    }
+    
+    public void disableWriting()
+    {    
+    	disabled = true;
+    }
+    
+    public void enableWriting()
+    {    	
+    	disabled = false;
     }
 
     public void finish()  
@@ -67,16 +80,16 @@ public class CodePrinter
         if (s.length()<1) { return; }
         try        
         {   if (!linehasstarted) 
-            {   for (int i=0; i<indent; i++) ow.write("    ",0,4);
+            {   for (int i=0; i<indent && !disabled; i++) { ow.write("    ",0,4); }
                 linehasstarted=true;
             }
             
             // prevent clashing '-' and '+' operators 
             if ( lastchar==s.charAt(0) && (lastchar=='-' || lastchar=='+') ) 
-            {   ow.write(' ');
+            {   if (!disabled) { ow.write(' '); }
             }
             
-            ow.write(s,0,s.length());
+            if (!disabled) { ow.write(s,0,s.length()); }
             afteropeningbrace = s.equals("{");
             lastchar = s.charAt(s.length()-1);
         } 
@@ -89,7 +102,7 @@ public class CodePrinter
     public void println() 
     {
         try 
-        {   ow.write(System.lineSeparator());
+        {   if (!disabled) { ow.write(System.lineSeparator()); }
             linehasstarted=false;            
         }
         catch (IOException e) 

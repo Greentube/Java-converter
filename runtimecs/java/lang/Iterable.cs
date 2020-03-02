@@ -6,7 +6,7 @@ namespace java.lang
         void forEach(java.util.function.Consumer consumer);
     }
 
-    public static class Iterable_c
+    public static class Iterable_0009
     {
         public static void forEach(Iterable @this, java.util.function.Consumer consumer)
         {   

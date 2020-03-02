@@ -20,7 +20,7 @@ namespace java.util
         System.String ToString();
     }
     
-    public static class Map_c
+    public static class Map_0009
     {
         public static System.Object getOrDefault(Map @this, System.Object key, System.Object def)
         {   

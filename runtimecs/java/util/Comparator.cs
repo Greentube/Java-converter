@@ -7,7 +7,7 @@ namespace java.util
         Comparator thenComparing(Comparator other);
     }
 
-    public static class Comparator_c
+    public static class Comparator_0009
     {
         public static Comparator reversed(Comparator @this)
         {   
@@ -36,7 +36,7 @@ namespace java.util
         }            
         public virtual Comparator thenComparing(Comparator other)
         {   
-            return Comparator_c.thenComparing(this,other);
+            return Comparator_0009.thenComparing(this,other);
         }    
         public virtual Comparator reversed()
         {   

@@ -8,6 +8,8 @@ public class CodePrinterCS extends CodePrinter
     private HashSet<String> pendingLabels;	
     private HashMap<Object,int[]> dims;     // TypeDecl -> [identifier,deepest] 
 
+    private HashMap<String,HashSet<String>> identifierMeanings;
+    
     public CodePrinterCS(File outputfolder, String filename) 
     {   
         super
@@ -32,6 +34,8 @@ public class CodePrinterCS extends CodePrinter
         
         pendingLabels = new HashSet<>();
         dims = new HashMap<>();
+        
+        identifierMeanings = new HashMap<>();
     }
 
 
@@ -56,6 +60,71 @@ public class CodePrinterCS extends CodePrinter
         }   
         printIdentifier(name);
     }
+    
+    public void printCSQualifiedIdentifier(String name)
+    {  	
+    	String ownname;
+    	String packagename;
+    	
+    	// split into own name and package name
+    	int lastdot = name.lastIndexOf(".");
+    	if (lastdot<=0 || lastdot>=name.length()-1)
+    	{
+    		ownname = name;
+    		packagename = "";
+    	}
+    	else
+    	{
+        	packagename = name.substring(0,lastdot);
+        	ownname = name.substring(lastdot+1);    		
+    	}
+    	
+    	// trace all different meanings of a reference name    	
+    	if (!identifierMeanings.containsKey(ownname)) { identifierMeanings.put(ownname, new HashSet<>()); }
+    	identifierMeanings.get(ownname).add(packagename);
+    	
+    	// when there are different meanings to a name, need to fully qualify it
+    	if (identifierMeanings.get(ownname).size()!=1)
+    	{	
+        	StringTokenizer parts = new StringTokenizer(packagename,".");
+            while (parts.hasMoreTokens()) 
+            {   printIdentifier(parts.nextToken());
+            	print(".");
+            }    		
+    	}
+    	printIdentifier(ownname);    	
+    }
+    
+    public void printUsingsForQualifiedIdentifiers()
+    {
+    	for (String ownname : identifierMeanings.keySet())
+    	{
+    		HashSet<String> packagenames = identifierMeanings.get(ownname);
+    		// only use short names if there is only one
+    		if (packagenames.size()==1)
+    		{
+    			for (String packagename : packagenames)
+    			{
+    				// can omit package name for java.lang
+    				if (packagename.length()>0 && !packagename.equals("java.lang"))
+	    			{
+	    				print("using ");    			
+	    				printIdentifier(ownname);
+	    				print(" = ");
+	    				StringTokenizer parts = new StringTokenizer(packagename,".");    			
+	                	while (parts.hasMoreTokens()) 
+	                	{   
+	                		printIdentifier(parts.nextToken()); 
+	                		print(".");              	
+	                	}    
+	                	printIdentifier(ownname);                
+	                	println(";");
+	    			}
+    			}
+    		}    	
+    	}
+    }
+    
     
     public void setPendingLabel(String l, String suffix)
     {

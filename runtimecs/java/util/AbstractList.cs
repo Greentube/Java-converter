@@ -107,12 +107,12 @@ namespace java.util
 
         public virtual void replaceAll(java.util.function.UnaryOperator unaryoperator)
         {   
-            java.util.List_c.replaceAll(this,unaryoperator);        
+            java.util.List_0009.replaceAll(this,unaryoperator);        
         }
 
         public virtual void sort(java.util.Comparator c)
         {   
-            java.util.List_c.sort(this,c);
+            java.util.List_0009.sort(this,c);
         }    
     }
         

@@ -7,7 +7,7 @@ namespace java.util
         void remove();
     }
 
-    public static class Iterator_c
+    public static class Iterator_0009
     {
         public static void remove(Iterator @this)
         {   

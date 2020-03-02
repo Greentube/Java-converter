@@ -21,7 +21,7 @@ namespace java.util
         System.String ToString();
     }
 
-    public static class Collection_c
+    public static class Collection_0009
     {
         public static bool removeIf(Collection @this, java.util.function.Predicate predicate)
         {   

@@ -212,8 +212,7 @@ aspect GenerateCS
             {   out.print("java.lang.StringExtensions.join");
             }
             else 
-            {   m.hostType().generateNameCS(out);
-                if (m.hostType() instanceof InterfaceDecl) out.print("_c");
+            {   m.hostType().generateNameCS(out, (m.hostType() instanceof InterfaceDecl)  ? "\t":"");
                 out.print(".");
                 out.printCSMethodName(m.name(),true);
             }
@@ -316,10 +315,7 @@ aspect GenerateCS
     {     
         Variable v = varDecl();
         if (v.isClassVariable()) 
-        {   v.hostType().generateNameCS(out);
-            if (v.hostType().isInterfaceDecl()) 
-            {   out.print("_c"); 
-            }
+        {   v.hostType().generateNameCS(out, v.hostType().isInterfaceDecl() ? "\t":"");
             out.print(".");
             out.printIdentifier(getID(), "_f");
         } 

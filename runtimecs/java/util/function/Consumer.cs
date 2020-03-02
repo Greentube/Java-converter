@@ -6,7 +6,7 @@ namespace java.util.function
         Consumer andThen(Consumer other);
     }
 
-    public static class Consumer_c
+    public static class Consumer_0009
     {
         public static Consumer andThen(Consumer @this, Consumer other)
         {   
@@ -33,7 +33,7 @@ namespace java.util.function
         }
         public virtual Consumer andThen(Consumer other)
         {   
-            return Consumer_c.andThen(this,other);
+            return Consumer_0009.andThen(this,other);
         }
     }
 }        

@@ -7,7 +7,7 @@ namespace java.util.function
         Function compose(Function other);
     }
     
-    public static class Function_c
+    public static class Function_0009
     {
         public static Function andThen(Function @this, Function other)
         {   
@@ -40,11 +40,11 @@ namespace java.util.function
         }
         public virtual Function andThen(Function other)
         {   
-            return Function_c.andThen(this,other);
+            return Function_0009.andThen(this,other);
         }
         public virtual Function compose(Function other)
         {   
-            return Function_c.compose(this,other);
+            return Function_0009.compose(this,other);
         }
     }        
 

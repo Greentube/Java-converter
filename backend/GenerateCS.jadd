@@ -22,6 +22,10 @@ aspect GenerateCS
                 CodePrinter.escapePackagePath(t.packageName(),"_") 
                   + CodePrinter.escapeIdentifier(t.uniqueName(),".cs","_",null)
             );
+            out.disableWriting();
+            t.generateCS(out);
+            out.enableWriting();
+            out.printUsingsForQualifiedIdentifiers();
             t.generateCS(out);
             out.finish();       
         }
@@ -33,12 +37,16 @@ aspect GenerateCS
         {   CodePrinterCS o2 = new CodePrinterCS(out.getOutputFolder(), 
                   CodePrinter.escapePackagePath(t.packageName(),"_") 
                 + CodePrinter.escapeIdentifier(t.uniqueName(),".cs","_",null)
-            );
+            );            
+            o2.disableWriting();
+            t.generateCS(o2);
+            o2.enableWriting();
+            o2.printUsingsForQualifiedIdentifiers();
             t.generateCS(o2);
             o2.finish();
         }
 
-        out.println("using java.lang;");  
+		out.println("using java.lang;");
 
         if (packageName().length()>0) 
         {   out.print("namespace ");
@@ -55,12 +63,12 @@ aspect GenerateCS
         out.print(hasAbstract() || enum_has_abstract ? "public abstract class ":"public class ");
         out.printIdentifier(uniqueName());
         out.print(": ");
-
+		
         if (hasSuperClass()) 
         {   superclass().generateNameCS(out);
         }
         else
-        {   out.print("System.Object");
+        {   out.printCSQualifiedIdentifier("System.Object");
         }
         for (Access ac: getImplementsList() ) 
         {   out.print(", ");
@@ -255,7 +263,9 @@ aspect GenerateCS
             
             out.print("public static ");
             out.printIdentifier(uniqueName());
-            out.println(" valueOf(System.String s)");
+            out.print(" valueOf(");
+            out.printCSQualifiedIdentifier("System.String");
+            out.println(" s)");
             out.println("{");
             out.increaseIndent();
             out.println("switch (s)");
@@ -313,8 +323,8 @@ aspect GenerateCS
             out.println(")");                        
             out.println("{");
             if (!md.isVoid()) { out.print("return "); }
-            md.hostType().generateNameCS(out);
-            out.print("_c.");
+            md.hostType().generateNameCS(out, "\t");
+            out.print(".");
             out.printCSMethodName(md.name(),true);
             out.print("(this");
             for (int i=0; i<numpar; i++) 
@@ -379,7 +389,8 @@ aspect GenerateCS
         
     public void InterfaceDecl.generateCS(CodePrinterCS out) 
     {
-        out.println("using java.lang;");  
+    	out.println("using java.lang;");
+    
         boolean haspackage = packageName().length()>0;
         if (haspackage) 
         {   out.print("namespace ");
@@ -434,7 +445,7 @@ aspect GenerateCS
             }
             out.print("public static class ");
             out.printIdentifier(uniqueName());
-            out.println("_c ");
+            out.println("_0009");
             out.println("{");
             out.increaseIndent();
             
@@ -765,6 +776,10 @@ aspect GenerateCS
      * referenced from other places.
      */
     public void TypeDecl.generateNameCS(CodePrinterCS out) 
+	{
+		generateNameCS(out,"");
+	}
+    public void TypeDecl.generateNameCS(CodePrinterCS out, String typenameSuffix) 
     {
         if (isPrimitiveType()) 
         {   if (isInt()) { out.print("int"); }
@@ -782,25 +797,22 @@ aspect GenerateCS
         {   out.print("void");
         } 
         else if (isArrayDecl()) 
-        {   elementType().generateNameCS(out);
+        {   elementType().generateNameCS(out,typenameSuffix);
             for (int i=dimension(); i>0; i--) 
             {   out.print("[]");
             }
         } 
         else 
         {   TypeDecl erased = erasure();
-            String s = erased.packageName()+"."+erased.uniqueName();
-            if (s.equals("java.lang.String")) { out.print("System.String"); }
-            else if (s.equals("java.lang.Object")) { out.print("System.Object"); }
-            else if (s.equals("java.lang.System")) { out.print("java.lang.SYSTEM"); }
-            else if (s.equals("java.lang.CharSequence")) { out.print("System.Object"); }
-            else
-            {   StringTokenizer t = new StringTokenizer(s,".");
-                for (int i=0; t.hasMoreElements(); i++) 
-                {   if (i>0) { out.print("."); }
-                    out.printIdentifier(t.nextToken());
-                }
-            }
+        	String pn = erased.packageName();
+            String s = (pn.length()>0) ? pn+"."+erased.uniqueName() : erased.uniqueName();
+            
+            if (s.equals("java.lang.String")) { s = "System.String"; }
+            else if (s.equals("java.lang.Object")) { s = "System.Object"; }
+            else if (s.equals("java.lang.System")) { s = "java.lang.SYSTEM"; }
+            else if (s.equals("java.lang.CharSequence")) { s = "System.Object"; }
+            
+            out.printCSQualifiedIdentifier(s+typenameSuffix);             
         }
     }
     public void ReferenceType.generatePackageNameCS(CodePrinterCS out) 

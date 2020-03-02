@@ -6,7 +6,7 @@ namespace java.util.function
         BiConsumer andThen(BiConsumer other);
     }
 
-    public static class BiConsumer_c
+    public static class BiConsumer_0009
     {
         public static BiConsumer andThen(BiConsumer @this, BiConsumer other)
         {   
@@ -33,7 +33,7 @@ namespace java.util.function
         }
         public virtual BiConsumer andThen(BiConsumer other)
         {   
-            return BiConsumer_c.andThen(this,other);
+            return BiConsumer_0009.andThen(this,other);
         }
     }
 }        
