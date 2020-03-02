@@ -151,6 +151,7 @@ public class JavaConverter extends Frontend
         options.addKeyValueOption("-js");
         options.addKeyValueOption("-cs");
         options.addKeyValueOption("-csruntime");
+        options.addKeyOption("-allowlong");
     }
 
     @Override
@@ -160,6 +161,9 @@ public class JavaConverter extends Frontend
         if (result != 0) 
         {   return result;
         }
+
+        LibraryList.allow_long = program.options().hasOption("-allowlong");
+        
         if (program.options().hasValueForOption("-js")) 
         {   String d = program.options().getValueForOption("-js");
             destDirJS = new File(d);
@@ -171,6 +175,11 @@ public class JavaConverter extends Frontend
                     );
                     return EXIT_CONFIG_ERROR;
                 }
+            }
+            if (LibraryList.allow_long) 
+            {
+            	System.out.println("Error: can not generate javascript when long datatype is allowed"); 
+                return EXIT_CONFIG_ERROR;
             }
         }
         if (program.options().hasValueForOption("-cs")) 

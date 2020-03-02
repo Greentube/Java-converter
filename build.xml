@@ -149,6 +149,7 @@
                 <include name="java/lang/FunctionalInterface*.class" />
                 <include name="java/lang/Integer*.class" />
                 <include name="java/lang/Iterable*.class" />
+                <include name="java/lang/Long*.class" />
                 <include name="java/lang/Math*.class" />
                 <include name="java/lang/Number*.class" />
                 <include name="java/lang/Object*.class" />

@@ -4,6 +4,8 @@ import java.util.*;
 
 public class LibraryList 
 {   
+	public static boolean allow_long = false;
+	
     static String[][] supported = 
     {   
         // normal classes/interfaces and methods
@@ -700,21 +702,41 @@ public class LibraryList
 
     };
 
+    static String[][] supported_for_long = 
+    {   
+        {   "java.lang.Long",
+            
+            "<init>(long)",
+            "long longValue()",
+            "long parseLong(java.lang.String)",
+            "java.lang.String toString(long)",
+            "java.lang.String toHexString(long)",
+            "java.lang.Long valueOf(long)",
+            "MIN_VALUE",
+            "MAX_VALUE",
+        }
+    };
+    
 
     private static HashMap<String,HashSet<String>> map = null;
 
     private static void buildList() 
     {   
         map = new HashMap<>();
-        for (int i=0; i<supported.length; i++) 
-        {   String classname = supported[i][0];
+        addToList(map, supported);
+        if (allow_long) addToList(map, supported_for_long);
+    }
+    private static void addToList(HashMap<String,HashSet<String>> map, String[][] list)
+    {
+        for (int i=0; i<list.length; i++) 
+        {   String classname = list[i][0];
             HashSet<String> members = new HashSet<>();
             map.put(classname,  members);
             
-            for (int j=1; j<supported[i].length; j++) 
-            {   members.add(supported[i][j]);
+            for (int j=1; j<list[i].length; j++) 
+            {   members.add(list[i][j]);
             }
-        }          
+        }              	
     }
     
 

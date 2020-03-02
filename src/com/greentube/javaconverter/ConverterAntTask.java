@@ -26,6 +26,10 @@ public class ConverterAntTask extends Task
     public void setCsruntime(String f)
     {   csruntime = f;
     }
+    private boolean allowlong=false;
+    public void setAllowLong(String v)
+    {   allowlong = v.toLowerCase().equals("true");
+    }
     private String classpath=null;
     public void setClasspath(String path) 
     {   
@@ -52,6 +56,9 @@ public class ConverterAntTask extends Task
         if (csruntime!=null)
         {   args.add("-csruntime");
             args.add(csruntime);
+        }
+        if (allowlong)
+        {   args.add("-allowlong");
         }
         if (classpath!=null) 
         {   args.add("-classpath");

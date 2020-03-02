@@ -7,7 +7,7 @@
   	
   	<delete dir="${basedir}/csharpproject/build"/>
     <mkdir dir="${basedir}/csharpproject/build" />  	
-    <convertJava cs="${basedir}/csharpproject/build" csruntime="${basedir}/../runtimecs">
+    <convertJava cs="${basedir}/csharpproject/build" csruntime="${basedir}/../runtimecs" allowlong="true">
         <fileset dir="${basedir}/src">        
             <include name="**/*.java"/> 
         </fileset>
@@ -15,6 +15,9 @@
             <include name="**/*.java"/> 
         </fileset>
         <fileset dir="${basedir}/src3">        
+            <include name="**/*.java"/> 
+        </fileset>
+        <fileset dir="${basedir}/src4">        
             <include name="**/*.java"/> 
         </fileset>
     </convertJava>

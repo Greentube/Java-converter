@@ -54,6 +54,14 @@ namespace java.lang
             // normal arithmetic 
             return a / b;
         }
+        public static long div(long a, long b) 
+        {   
+            // handle a weird special case for java compatibility
+            if (a==-9223372036854775808 && b==-1) { return a; }
+            if (b==0) { throw new java.lang.ArithmeticException(); }
+            // normal arithmetic 
+            return a / b;
+        }
             
         public static sbyte castToByte(double x) 
         {   
@@ -86,6 +94,24 @@ namespace java.lang
             { // is a negative number
                 if (a<-2147483648) { return -2147483648; }
                 return (int) System.Math.Ceiling(a);    
+            }
+        }
+        public static long castToLong(double a) 
+        {   // NaN will be cast to 0
+            if (System.Double.IsNaN(a)) 
+            {
+                return 0;
+            // check various possibilities 
+            }
+            else if (a>=0) 
+            { // is a positive number 
+                if (a>9223372036854775807) { return 9223372036854775807; }
+                return (long) System.Math.Floor(a);   
+            }
+            else 
+            { // is a negative number
+                if (a<-9223372036854775808) { return -9223372036854775808; }
+                return (long) System.Math.Ceiling(a);    
             }
         }
 
@@ -157,10 +183,30 @@ namespace java.lang
         {   
             return dest = (sbyte) (dest+s);
         }    
+        public static long ASSIGNPLUS(ref long dest, int s)
+        {   
+            return dest = dest+s;
+        }    
         public static double ASSIGNPLUS(ref double dest, int s)
         {   
             return dest = dest+s;
         }    
+        public static int ASSIGNPLUS(ref int dest, long s)
+        {   
+            return dest = castToInt(dest+s);
+        }
+        public static short ASSIGNPLUS(ref short dest, long s)
+        {   
+            return dest = castToShort(dest+s);
+        }
+        public static char ASSIGNPLUS(ref char dest, long s)
+        {   
+            return dest = castToChar(dest+s);
+        }
+        public static sbyte ASSIGNPLUS(ref sbyte dest, long s)
+        {   
+            return dest = castToByte(dest+s);
+        }        
         public static int ASSIGNPLUS(ref int dest, double s)
         {   
             return dest = castToInt(dest+s);
@@ -177,6 +223,10 @@ namespace java.lang
         {   
             return dest = castToByte(dest+s);
         }
+        public static long ASSIGNPLUS(ref long dest, double s)
+        {   
+            return dest = castToLong(dest+s);
+        }
 
         public static short ASSIGNMINUS(ref short dest, int s)
         {   
@@ -190,7 +240,35 @@ namespace java.lang
         {   
             return dest = (sbyte) (dest-s);
         }    
+        public static long ASSIGNMINUS(ref long dest, int s)
+        {   
+            return dest = (dest-s);
+        }    
         public static double ASSIGNMINUS(ref double dest, int s)
+        {   
+            return dest = dest-s;
+        }    
+        public static int ASSIGNMINUS(ref int dest, long s)
+        {   
+            return dest = (int) (dest-s);
+        }    
+        public static short ASSIGNMINUS(ref short dest, long s)
+        {   
+            return dest = (short) (dest-s);
+        }    
+        public static char ASSIGNMINUS(ref char dest, long s)
+        {   
+            return dest = (char) (dest-s);
+        }    
+        public static sbyte ASSIGNMINUS(ref sbyte dest, long s)
+        {   
+            return dest = (sbyte) (dest-s);
+        }    
+        public static long ASSIGNMINUS(ref long dest, long s)
+        {   
+            return dest = (dest-s);
+        }    
+        public static double ASSIGNMINUS(ref double dest, long s)
         {   
             return dest = dest-s;
         }    
@@ -210,6 +288,10 @@ namespace java.lang
         {   
             return dest = castToByte(dest-s);
         }
+        public static long ASSIGNMINUS(ref long dest, double s)
+        {   
+            return dest = castToLong(dest-s);
+        }
 
         public static int ASSIGNDIV(ref int dest, int s)
         {
@@ -227,10 +309,38 @@ namespace java.lang
         {   
             return dest = (sbyte) div(dest,s);
         }    
+        public static long ASSIGNDIV(ref long dest, int s)
+        {   
+            return dest = div(dest,s);
+        }    
         public static double ASSIGNDIV(ref double dest, int s)
         {   
             return dest = dest / s;
+        }
+        public static int ASSIGNDIV(ref int dest, long s)
+        {
+            return dest = (int) div(dest,s);
+        }
+        public static short ASSIGNDIV(ref short dest, long s)
+        {   
+            return dest = (short) div(dest,s);
         }    
+        public static char ASSIGNDIV(ref char dest, long s)
+        {   
+            return dest = (char) div(dest,s);
+        }    
+        public static sbyte ASSIGNDIV(ref sbyte dest, long s)
+        {   
+            return dest = (sbyte) div(dest,s);
+        }    
+        public static long ASSIGNDIV(ref long dest, long s)
+        {   
+            return dest = div(dest,s);
+        }
+        public static double ASSIGNDIV(ref double dest, long s)
+        {   
+            return dest = dest / s;
+        }            
         public static int ASSIGNDIV(ref int dest, double s)
         {   
             return dest = castToInt(dest/s);
@@ -246,6 +356,10 @@ namespace java.lang
         public static sbyte ASSIGNDIV(ref sbyte dest, double s)
         {   
             return dest = castToByte(dest/s);
+        }
+        public static long ASSIGNDIV(ref long dest, double s)
+        {   
+            return dest = castToLong(dest/s);
         }
         public static double ASSIGNDIV(ref double dest, double s)
         {   
@@ -264,10 +378,34 @@ namespace java.lang
         {   
             return dest = (sbyte) (dest*s);
         }    
+        public static long ASSIGNMUL(ref long dest, int s)
+        {   
+            return dest = (dest*s);
+        }    
         public static double ASSIGNMUL(ref double dest, int s)
         {   
             return dest = dest*s;
         }    
+        public static int ASSIGNMUL(ref int dest, long s)
+        {   
+            return dest = (int) (dest*s);
+        }    
+        public static short ASSIGNMUL(ref short dest, long s)
+        {   
+            return dest = (short) (dest*s);
+        }    
+        public static char ASSIGNMUL(ref char dest, long s)
+        {   
+            return dest = (char) (dest*s);
+        }    
+        public static sbyte ASSIGNMUL(ref sbyte dest, long s)
+        {   
+            return dest = (sbyte) (dest*s);
+        }    
+        public static double ASSIGNMUL(ref double dest, long s)
+        {   
+            return dest = dest*s;
+        }            
         public static int ASSIGNMUL(ref int dest, double s)
         {   
             return dest = castToInt(dest*s);
@@ -284,6 +422,10 @@ namespace java.lang
         {   
             return dest = castToByte(dest*s);
         }
+        public static long ASSIGNMUL(ref long dest, double s)
+        {   
+            return dest = castToLong(dest*s);
+        }
 
         public static short ASSIGNMOD(ref short dest, int s)
         {   
@@ -297,10 +439,34 @@ namespace java.lang
         {   
             return dest = (sbyte) (dest%s);
         }    
+        public static long ASSIGNMOD(ref long dest, int s)
+        {   
+            return dest = (dest%s);
+        }    
         public static double ASSIGNMOD(ref double dest, int s)
         {   
             return dest = dest%s;
+        }        
+        public static int ASSIGNMOD(ref int dest, long s)
+        {   
+            return dest = (int) (dest%s);
         }    
+        public static short ASSIGNMOD(ref short dest, long s)
+        {   
+            return dest = (short) (dest%s);
+        }    
+        public static char ASSIGNMOD(ref char dest, long s)
+        {   
+            return dest = (char) (dest%s);
+        }    
+        public static sbyte ASSIGNMOD(ref sbyte dest, long s)
+        {   
+            return dest = (sbyte) (dest%s);
+        }    
+        public static double ASSIGNMOD(ref double dest, long s)
+        {   
+            return dest = dest%s;
+        }                
         public static int ASSIGNMOD(ref int dest, double s)
         {   
             return dest = castToInt(dest%s);
@@ -317,18 +483,42 @@ namespace java.lang
         {   
             return dest = castToByte(dest%s);
         }
+        public static long ASSIGNMOD(ref long dest, double s)
+        {   
+            return dest = castToLong(dest%s);
+        }
 
         public static short ASSIGNAND(ref short dest, int s)
         {   
-            return dest = (short) (((int)dest)&((int)s));
+            return dest = (short) (((int)dest)&s);
         }    
         public static char ASSIGNAND(ref char dest, int s)
         {   
-            return dest = (char) (((int)dest)&((int)s));
+            return dest = (char) (((int)dest)&s);
         }    
         public static sbyte ASSIGNAND(ref sbyte dest, int s)
         {   
+            return dest = (sbyte) (((int)dest)&s);
+        }    
+        public static long ASSIGNAND(ref long dest, int s)
+        {   
+            return dest = (long) (((long)dest)&s);
+        }    
+        public static short ASSIGNAND(ref short dest, long s)
+        {   
+            return dest = (short) (((int)dest)&((int)s));
+        }    
+        public static char ASSIGNAND(ref char dest, long s)
+        {   
+            return dest = (char) (((int)dest)&((int)s));
+        }    
+        public static sbyte ASSIGNAND(ref sbyte dest, long s)
+        {   
             return dest = (sbyte) (((int)dest)&((int)s));
+        }    
+        public static long ASSIGNAND(ref long dest, long s)
+        {   
+            return dest = (long) (((long)dest)&(s));
         }    
 
         public static short ASSIGNOR(ref short dest, int s)
@@ -343,6 +533,26 @@ namespace java.lang
         {   
             return dest = (sbyte) (((int)dest)|((int)s));
         }    
+        public static long ASSIGNOR(ref long dest, int s)
+        {   
+            return dest = (long) (dest|((long)s));
+        }    
+        public static short ASSIGNOR(ref short dest, long s)
+        {   
+            return dest = (short) (((int)dest)|((int)s));
+        }    
+        public static char ASSIGNOR(ref char dest, long s)
+        {   
+            return dest = (char) (((int)dest)|((int)s));
+        }    
+        public static sbyte ASSIGNOR(ref sbyte dest, long s)
+        {   
+            return dest = (sbyte) (((int)dest)|((int)s));
+        }    
+        public static long ASSIGNOR(ref long dest, long s)
+        {   
+            return dest = (long) (((long)dest)|((long)s));
+        }    
 
         public static short ASSIGNXOR(ref short dest, int s)
         {   
@@ -355,6 +565,27 @@ namespace java.lang
         public static sbyte ASSIGNXOR(ref sbyte dest, int s)
         {   
             return dest = (sbyte) (((int)dest)^((int)s));
+        }    
+        public static long ASSIGNXOR(ref long dest, int s)
+        {   
+            return dest = (long) (((long)dest)^((int)s));
+        }    
+
+        public static short ASSIGNXOR(ref short dest, long s)
+        {   
+            return dest = (short) (((int)dest)^((int)s));
+        }    
+        public static char ASSIGNXOR(ref char dest, long s)
+        {   
+            return dest = (char) (((int)dest)^((int)s));
+        }    
+        public static sbyte ASSIGNXOR(ref sbyte dest, long s)
+        {   
+            return dest = (sbyte) (((int)dest)^((int)s));
+        }    
+        public static long ASSIGNXOR(ref long dest, long s)
+        {   
+            return dest = (long) (((long)dest)^((long)s));
         }    
 
         public static short ASSIGNLSHIFT(ref short dest, int s)
@@ -369,6 +600,26 @@ namespace java.lang
         {   
             return dest = (sbyte) (((int)dest)<<((int)s));
         }    
+        public static int ASSIGNLSHIFT(ref int dest, long s)
+        {   
+            return dest = ((dest)<<((int)s));
+        }    
+        public static short ASSIGNLSHIFT(ref short dest, long s)
+        {   
+            return dest = (short) (((int)dest)<<((int)s));
+        }    
+        public static char ASSIGNLSHIFT(ref char dest, long s)
+        {   
+            return dest = (char) (((int)dest)<<((int)s));
+        }    
+        public static sbyte ASSIGNLSHIFT(ref sbyte dest, long s)
+        {   
+            return dest = (sbyte) (((int)dest)<<((int)s));
+        }    
+        public static long ASSIGNLSHIFT(ref long dest, long s)
+        {   
+            return dest = (long) (((long)dest)<<((int)s));
+        }    
 
         public static short ASSIGNRSHIFT(ref short dest, int s)
         {   
@@ -382,23 +633,68 @@ namespace java.lang
         {   
             return dest = (sbyte) (((int)dest)>>((int)s));
         }    
+        public static long ASSIGNRSHIFT(ref long dest, int s)
+        {   
+            return dest = ((dest)>>((int)s));
+        }    
+        public static int ASSIGNRSHIFT(ref int dest, long s)
+        {   
+            return dest = ((dest)>>((int)s));
+        }    
+        public static short ASSIGNRSHIFT(ref short dest, long s)
+        {   
+            return dest = (short) (((int)dest)>>((int)s));
+        }    
+        public static char ASSIGNRSHIFT(ref char dest, long s)
+        {   
+            return dest = (char) (((int)dest)>>((int)s));
+        }    
+        public static sbyte ASSIGNRSHIFT(ref sbyte dest, long s)
+        {   
+            return dest = (sbyte) (((int)dest)>>((int)s));
+        }    
+
 
         public static int ASSIGNURSHIFT(ref int dest, int s)
         {   
-            return dest = (int) (((uint)dest)>>((int)s));
+            return dest = (int) (((uint)dest)>>s);
         }    
         public static short ASSIGNURSHIFT(ref short dest, int s)
         {   
-            return dest = (short) (((uint)dest)>>((int)s));
+            return dest = (short) (((uint)dest)>>s);
         }    
         public static char ASSIGNURSHIFT(ref char dest, int s)
         {   
-            return dest = (char) (((uint)dest)>>((int)s));
+            return dest = (char) (((uint)dest)>>s);
         }    
         public static sbyte ASSIGNURSHIFT(ref sbyte dest, int s)
         {   
-            return dest = (sbyte) (((uint)dest)>>((int)s));
+            return dest = (sbyte) (((uint)dest)>>s);
+        }            
+        public static long ASSIGNURSHIFT(ref long dest, int s)
+        {   
+            return dest = (long) (((ulong)dest)>>s);
+        }            
+        public static int ASSIGNURSHIFT(ref int dest, long s)
+        {   
+            return dest = (int) (((uint)dest)>>((int)s));
         }    
+        public static short ASSIGNURSHIFT(ref short dest, long s)
+        {   
+            return dest = (short) (((uint)dest)>>((int)s));
+        }    
+        public static char ASSIGNURSHIFT(ref char dest, long s)
+        {   
+            return dest = (char) (((uint)dest)>>((int)s));
+        }    
+        public static sbyte ASSIGNURSHIFT(ref sbyte dest, long s)
+        {   
+            return dest = (sbyte) (((uint)dest)>>((int)s));
+        }            
+        public static long ASSIGNURSHIFT(ref long dest, long s)
+        {   
+            return dest = (long) (((ulong)dest)>>((int)s));
+        }            
     }
     
     

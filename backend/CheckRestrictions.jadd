@@ -104,7 +104,7 @@ aspect CheckRestrictions
     public void TypeAccess.checkRestrictions(ArrayList<String> errorlist) 
     {
         TypeDecl t = type();
-        if (t.isLong())  reportRestriction(errorlist, "Type 'long' not supported");
+        if (t.isLong() && !LibraryList.allow_long) { reportRestriction(errorlist, "Type 'long' not supported"); }
         if (t.isFloat()) reportRestriction(errorlist, "Type 'float' not supported");
         if (t.isClassDecl() || t.isInterfaceDecl())
         {     if (!LibraryList.isAllowed(t.erasure().typeName()))
@@ -120,7 +120,7 @@ aspect CheckRestrictions
     }   
     public void LongType.checkRestrictions(ArrayList<String> errorlist) 
     {
-        reportRestriction(errorlist, "Type 'long' not supported");
+        if (!LibraryList.allow_long) { reportRestriction(errorlist, "Type 'long' not supported"); }
     }   
 
     public void FloatingPointLiteral.checkRestrictions(ArrayList<String> errorlist) 
@@ -129,7 +129,7 @@ aspect CheckRestrictions
     }
     public void LongLiteral.checkRestrictions(ArrayList<String> errorlist) 
     {
-        reportRestriction(errorlist, "Type 'long' not supported");
+        if (!LibraryList.allow_long) { reportRestriction(errorlist, "Type 'long' not supported"); }
     }
     
                                       
@@ -256,7 +256,7 @@ aspect CheckRestrictions
         }
         
         // test for correct usage of library methods returning a 'long'
-        if (m.type().isLong()) 
+        if (m.type().isLong() && !LibraryList.allow_long) 
         {   Expr parentexp = (Expr) getParent();
             while ((parentexp instanceof Dot) && (parentexp.getParent() instanceof Expr)) 
             {   parentexp = (Expr) parentexp.getParent();
