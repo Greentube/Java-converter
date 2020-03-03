@@ -1,4 +1,4 @@
-using java.util;
+using java.lang;
 
 namespace java.io 
 { 
@@ -41,7 +41,7 @@ namespace java.io
         {   
             lock (line) 
             {   
-                line.Append(java.lang.SYSTEM.str(b)); 
+                line.Append(SYSTEM.str(b)); 
             }
         }
         
@@ -49,7 +49,7 @@ namespace java.io
         {   
             lock (line)
             {   
-                line.Append(java.lang.SYSTEM.str(d));
+                line.Append(SYSTEM.str(d));
             }
         }
         
@@ -69,11 +69,11 @@ namespace java.io
             }
         }
         
-        public void print(System.Object o) 
+        public void print(object o) 
         {   
             lock (line)
             {   
-                line.Append(java.lang.SYSTEM.str(o));
+                line.Append(SYSTEM.str(o));
             }
         }
             
@@ -89,7 +89,7 @@ namespace java.io
         {   
             lock (line)
             {   
-                line.Append(java.lang.SYSTEM.str(b));
+                line.Append(SYSTEM.str(b));
                 finishLine();
             }
         }
@@ -98,7 +98,7 @@ namespace java.io
         {   
             lock (line)
             {   
-                line.Append(java.lang.SYSTEM.str(d));
+                line.Append(SYSTEM.str(d));
                 finishLine();
             }
         }
@@ -121,11 +121,11 @@ namespace java.io
             }
         }
         
-        public void println(System.Object o) 
+        public void println(object o) 
         {   
             lock (line)
             {   
-                line.Append(java.lang.SYSTEM.str(o));
+                line.Append(SYSTEM.str(o));
                 finishLine();
             }
         }

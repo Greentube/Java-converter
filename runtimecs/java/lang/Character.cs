@@ -14,7 +14,7 @@ namespace java.lang
             return value;
         }
             
-        public override bool Equals(System.Object o)
+        public override bool Equals(object o)
         {   
             if (o == null || !(o is Character)) return false;
             return ((Character)o).value == value;
@@ -25,24 +25,22 @@ namespace java.lang
             return (int) value;
         }
 
-        public override System.String ToString()
+        public override string ToString()
         {   
             return Character.toString(value);
         }
 
-        public static System.String toString(char c)
+        public static string toString(char c)
         {   
             return c.ToString();
         }
 
-        public static java.lang.Character valueOf(char c)
+        public static Character valueOf(char c)
         {   
-            return new java.lang.Character(c);
+            return new Character(c);
         }
           
         public const char MIN_005fVALUE_f = (char) 0;
         public const char MAX_005fVALUE_f = (char) 0xffff;        
-        public const char MIN_VALUE = (char) 0;
-        public const char MAX_VALUE = (char) 0xffff;        
     }
 }

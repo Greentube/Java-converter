@@ -6,7 +6,7 @@ namespace java.lang
         {   
         }
 
-        public NullPointerException(System.String message) : base(message)
+        public NullPointerException(string message) : base(message)
         {   
         }
     }

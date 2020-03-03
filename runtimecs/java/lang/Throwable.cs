@@ -2,14 +2,14 @@ namespace java.lang
 {
     public class Throwable: System.Exception
     {    
-        private readonly System.String message;
-        private readonly System.String trace;
+        private readonly string message;
+        private readonly string trace;
         
         public Throwable() : this(null)
         {   
         }
         
-        public Throwable(System.String message) : base()
+        public Throwable(string message) : base()
         {   
             this.message = message;
             this.trace = System.Environment.StackTrace;
@@ -17,15 +17,15 @@ namespace java.lang
         
         public void printStackTrace()
         {
-            SYSTEM.err.println(this.trace);
+            SYSTEM.err_f.println(this.trace);
         }
         
-        virtual public System.String getMessage()
+        virtual public string getMessage()
         {
             return message;
         }    
         
-        override public System.String ToString()
+        override public string ToString()
         {        
             if (message==null) { return this.GetType().FullName; }
             else { return this.GetType().FullName + ": " + message; }

@@ -1,3 +1,5 @@
+using java.lang;
+
 namespace java.util 
 {
     public class Hashtable : HashMapImpl
@@ -16,22 +18,22 @@ namespace java.util
             lock(this) { base.clear(); }
         }
             
-        public override bool containsKey(System.Object key) 
+        public override bool containsKey(object key) 
         {   
             lock(this) { return base.containsKey(key); }
         }
             
-        public override bool containsValue(System.Object value) 
+        public override bool containsValue(object value) 
         {   
             lock(this) { return base.containsValue(value); }
         }
                 
-        public override bool Equals(System.Object o) 
+        public override bool Equals(object o) 
         {   
             lock(this) { return base.Equals(o); }
         }
             
-        public override System.Object get(System.Object key) 
+        public override object get(object key) 
         {   
             lock(this) { return base.get(key); }
         }
@@ -51,7 +53,7 @@ namespace java.util
             lock(this) { return base.keySet(); }
         }
             
-        public override System.Object put(System.Object key, System.Object value) 
+        public override object put(object key, object value) 
         {   
             lock(this) { return base.put(key,value); }
         }
@@ -61,7 +63,7 @@ namespace java.util
             lock(this) { base.putAll(m); }
         }
             
-        public override System.Object remove(System.Object key) 
+        public override object remove(object key) 
         {   
             lock(this) { return base.remove(key); }
         }
@@ -71,7 +73,7 @@ namespace java.util
             lock(this) { return base.size(); }
         }
             
-        public override System.String ToString() 
+        public override string ToString() 
         {   
             lock(this) { return base.ToString(); }
         }
@@ -83,12 +85,12 @@ namespace java.util
 
          
         // extra methods available for Hashtable
-        public virtual System.Object Clone() 
+        public virtual object Clone() 
         {   
             lock(this) { return new Hashtable(this); }
         }
         
-        public virtual bool contains(System.Object value) 
+        public virtual bool contains(object value) 
         {   
             lock(this) { return base.containsValue(value); }
         }

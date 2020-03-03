@@ -1,8 +1,10 @@
+using java.lang;
+
 namespace java.util.function 
 {
     public interface BiConsumer
     {
-        void accept(System.Object t, System.Object u);
+        void accept(object t, object u);
         BiConsumer andThen(BiConsumer other);
     }
 
@@ -10,8 +12,7 @@ namespace java.util.function
     {
         public static BiConsumer andThen(BiConsumer @this, BiConsumer other)
         {   
-            if (@this==null) { throw new System.NullReferenceException(); }
-            if (other==null) { throw new System.ArgumentNullException(); }
+            if (@this==null || other==null) { throw new NullPointerException(); }
             return new BiConsumerAndThen(@this,other);
         }
     }
@@ -26,7 +27,7 @@ namespace java.util.function
             this.a = a;
             this.b = b;
         }
-        public void accept(System.Object t, System.Object u)
+        public void accept(object t, object u)
         {   
             a.accept(t,u);
             b.accept(t,u);

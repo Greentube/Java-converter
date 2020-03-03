@@ -2,16 +2,16 @@ namespace java.lang
 {
     public class Enum 
     {
-        private readonly System.String n;
+        private readonly string n;
         private readonly int o;
                
-        public Enum(System.String name, int ordinal) 
+        public Enum(string name, int ordinal) 
         {   
             n = name;
             o = ordinal;
         }
 
-        public override bool Equals(System.Object obj) 
+        public override bool Equals(object obj) 
         {   
             return this==obj;
         }
@@ -21,12 +21,12 @@ namespace java.lang
             return o;
         }
 
-        public override System.String ToString()
+        public override string ToString()
         {   
             return n;
         }
 
-        public System.String name()
+        public string name()
         {   
             return n;
         }

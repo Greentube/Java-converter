@@ -6,7 +6,7 @@ namespace java.lang
         {   
         }
 
-        public NegativeArraySizeException(System.String message) : base(message)
+        public NegativeArraySizeException(string message) : base(message)
         {   
         }
     }

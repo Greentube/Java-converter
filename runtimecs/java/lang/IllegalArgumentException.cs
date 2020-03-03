@@ -6,7 +6,7 @@ namespace java.lang
         {   
         }
         
-        public IllegalArgumentException(System.String message) : base(message)
+        public IllegalArgumentException(string message) : base(message)
         {   
         }
     }

@@ -14,7 +14,7 @@ namespace java.lang
             return value;
         }
 
-        public override bool Equals(System.Object o)
+        public override bool Equals(object o)
         {   
             if (o == null || !(o is Byte)) return false;
             return ((Byte)o).value == value;
@@ -25,24 +25,22 @@ namespace java.lang
             return (int) value;
         }
 
-        public override System.String ToString()
+        public override string ToString()
         {   
             return Byte.toString(value);
         }
         
-        public static System.String toString(sbyte b)
+        public static string toString(sbyte b)
         {   
             return b.ToString();
         }
 
-        public static java.lang.Byte valueOf(sbyte b)
+        public static Byte valueOf(sbyte b)
         {   
-            return new java.lang.Byte(b);
+            return new Byte(b);
         }
            
         public const sbyte MIN_005fVALUE_f = -128;
         public const sbyte MAX_005fVALUE_f = 127;
-        public const sbyte MIN_VALUE = -128;
-        public const sbyte MAX_VALUE = 127;
     }
 }

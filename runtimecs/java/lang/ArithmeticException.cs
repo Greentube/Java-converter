@@ -6,7 +6,7 @@ namespace java.lang
         {   
         }
         
-        public ArithmeticException(System.String message) : base(message)
+        public ArithmeticException(string message) : base(message)
         {   
         }
     }

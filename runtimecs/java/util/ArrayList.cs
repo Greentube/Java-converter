@@ -1,3 +1,5 @@
+using java.lang;
+
 namespace java.util 
 {
     public class ArrayList: ArrayListImpl
@@ -13,12 +15,12 @@ namespace java.util
 
     public class ArrayListImpl: AbstractList
     {        
-        private System.Object[] buffer;
+        private object[] buffer;
         private int len;
         
         public ArrayListImpl() : base() 
         {   
-            buffer = new System.Object[10];
+            buffer = new object[10];
             len = 0;            
         }
             
@@ -28,26 +30,26 @@ namespace java.util
         }
             
         // implement to satisfy AbstractList requirements
-        public override System.Object get(int index) 
+        public override object get(int index) 
         {   
-            if (index<0 || index>=len) { throw new System.IndexOutOfRangeException(); }
+            if (index<0 || index>=len) { throw new IndexOutOfBoundsException(); }
             return buffer[index];
         }
 
-        public override System.Object set(int index, System.Object element) 
+        public override object set(int index, object element) 
         {   
-            if (index<0 || index>=len) { throw new System.IndexOutOfRangeException(); }
-            System.Object prev = buffer[index];
+            if (index<0 || index>=len) { throw new IndexOutOfBoundsException(); }
+            object prev = buffer[index];
             buffer[index] = element;
             return prev; 
         }
             
-        public override void add(int index, System.Object element) 
+        public override void add(int index, object element) 
         {   
-            if (index<0 || index>len) { throw new System.IndexOutOfRangeException(); }
+            if (index<0 || index>len) { throw new IndexOutOfBoundsException(); }
             if (len>=buffer.Length) 
             {   
-                System.Object[] newbuffer = new System.Object[buffer.Length*2];
+                object[] newbuffer = new object[buffer.Length*2];
                 System.Array.Copy(buffer,0, newbuffer,0, buffer.Length);
                 buffer = newbuffer;
             }            
@@ -59,10 +61,10 @@ namespace java.util
             len++;
         }
 
-        public override System.Object remove(int index) 
+        public override object remove(int index) 
         {   
-            if (index<0 || index>=len) { throw new System.IndexOutOfRangeException(); }
-            System.Object prev = buffer[index];
+            if (index<0 || index>=len) { throw new IndexOutOfBoundsException(); }
+            object prev = buffer[index];
             if (index<len-1) 
             {   
                 System.Array.Copy(buffer, index+1, buffer, index, len-1-index);
@@ -81,7 +83,7 @@ namespace java.util
         {   
             if (len < buffer.Length) 
             {   
-                System.Object[] newbuffer = new System.Object[len];
+                object[] newbuffer = new object[len];
                 System.Array.Copy(buffer,0, newbuffer,0, len);
                 buffer = newbuffer;
             }            
@@ -89,11 +91,11 @@ namespace java.util
             
         
         // OPTIMIZATION
-        public override bool add(System.Object e) 
+        public override bool add(object e) 
         {   
             if (len>=buffer.Length) 
             {   
-                System.Object[] newbuffer = new System.Object[buffer.Length*2];
+                object[] newbuffer = new object[buffer.Length*2];
                 System.Array.Copy(buffer,0, newbuffer,0, buffer.Length);
                 buffer = newbuffer;
             }            
@@ -112,18 +114,17 @@ namespace java.util
         }                
            
         // OPTIMIZATION
-        public override System.Object[] toArray() 
+        public override object[] toArray() 
         {   
-            System.Object[] copy = new System.Object[len];
+            object[] copy = new object[len];
             System.Array.Copy(buffer,0,copy,0,len);
             return copy;
         }       
         
         // OPTIMIZATION
-        public override System.Object[] toArray(System.Object[]a)
+        public override object[] toArray(object[]a)
         {   
-            System.Object[] copy = (System.Object[]) 
-                System.Array.CreateInstance(a.GetType().GetElementType(),len);
+            object[] copy = (object[]) System.Array.CreateInstance(a.GetType().GetElementType(),len);
             System.Array.Copy(buffer,0,copy,0,len);
             return copy;
         }

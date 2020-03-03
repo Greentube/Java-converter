@@ -6,7 +6,7 @@ namespace java.lang
         {   
         }
         
-        public NumberFormatException(System.String message) : base(message)
+        public NumberFormatException(string message) : base(message)
         {   
         }
     }

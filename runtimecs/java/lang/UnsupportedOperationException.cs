@@ -6,7 +6,7 @@ namespace java.lang
         {   
         }
         
-        public UnsupportedOperationException(System.String message) : base(message)
+        public UnsupportedOperationException(string message) : base(message)
         {   
         }
     }

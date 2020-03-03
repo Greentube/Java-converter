@@ -6,7 +6,7 @@ namespace java.lang
         {   
         }
         
-        public ClassCastException(System.String message) : base(message)
+        public ClassCastException(string message) : base(message)
         {   
         }
     }

@@ -14,7 +14,7 @@ namespace java.lang
             return value;
         }
 
-        public override bool Equals(System.Object o)
+        public override bool Equals(object o)
         {
             if (o==null || !(o is Boolean)) return false;
             return ((Boolean)o).value == value;
@@ -25,12 +25,12 @@ namespace java.lang
             return value ? 1231 : 1237;
         }
 
-        public override System.String ToString()
+        public override string ToString()
         {   
             return Boolean.toString(value);
         }
             
-        public static System.String toString(bool b)
+        public static string toString(bool b)
         {   
             return b ? "true" : "false";
         }
@@ -42,7 +42,5 @@ namespace java.lang
 
         public static readonly Boolean FALSE_f = new Boolean(false);
         public static readonly Boolean TRUE_f = new Boolean(true);
-        public static readonly Boolean FALSE = FALSE_f;
-        public static readonly Boolean TRUE = TRUE_f;
     }
 }

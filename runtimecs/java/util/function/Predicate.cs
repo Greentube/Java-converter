@@ -1,3 +1,5 @@
+using java.lang;
+
 namespace java.util.function 
 { 
     public interface Predicate
@@ -5,32 +7,30 @@ namespace java.util.function
         Predicate and(Predicate other);
         Predicate negate();
         Predicate or(Predicate other);
-        bool test(System.Object s);
+        bool test(object s);
     }
 
     public static class Predicate_0009
     {
         public static Predicate and(Predicate @this, Predicate other)
         {   
-            if (@this==null) { throw new System.NullReferenceException(); }
-            if (other==null) { throw new System.ArgumentNullException(); }
+            if (@this==null || other==null) { throw new NullPointerException(); }
             return new PredicateAnd(@this,other);
         }
         
         public static Predicate negate(Predicate @this)
         {   
-            if (@this==null) { throw new System.NullReferenceException(); }
+            if (@this==null) { throw new NullPointerException(); }
             return new PredicateNegate(@this);
         }
         
         public static Predicate or(Predicate @this, Predicate other)
         {   
-            if (@this==null) { throw new System.NullReferenceException(); }
-            if (other==null) { throw new System.ArgumentNullException(); }
+            if (@this==null || other==null) { throw new NullPointerException(); }
             return new PredicateOr(@this,other);
         }
         
-        public static Predicate isEqual(System.Object tobj) 
+        public static Predicate isEqual(object tobj) 
         {   
             return new PredicateIsEqual(tobj);
         }
@@ -38,13 +38,13 @@ namespace java.util.function
 
     public class PredicateIsEqual : Predicate
     {
-        private readonly System.Object tobj;
+        private readonly object tobj;
         
-        public PredicateIsEqual(System.Object tobj) 
+        public PredicateIsEqual(object tobj) 
         {   
             this.tobj = tobj;
         }
-        public virtual bool test(System.Object o)
+        public virtual bool test(object o)
         {   
             return tobj==null ? o==null : tobj.Equals(o);
         }
@@ -73,7 +73,7 @@ namespace java.util.function
             this.b = b;
         }
         
-        public override bool test(System.Object o)
+        public override bool test(object o)
         {   
             return a.test(o) && b.test(o);
         }
@@ -87,7 +87,7 @@ namespace java.util.function
         {   
             this.a = a;
         }
-        public override bool test(System.Object o)
+        public override bool test(object o)
         {   
             return !a.test(o);
         }
@@ -104,7 +104,7 @@ namespace java.util.function
             this.a = a;
             this.b = b;
         }
-        public override bool test(System.Object o)
+        public override bool test(object o)
         {   
             return a.test(o) || b.test(o);
         }

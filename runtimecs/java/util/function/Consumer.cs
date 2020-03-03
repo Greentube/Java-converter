@@ -1,8 +1,10 @@
+using java.lang;
+
 namespace java.util.function 
 { 
     public interface Consumer
     {
-        void accept(System.Object s);
+        void accept(object s);
         Consumer andThen(Consumer other);
     }
 
@@ -10,8 +12,7 @@ namespace java.util.function
     {
         public static Consumer andThen(Consumer @this, Consumer other)
         {   
-            if (@this==null) { throw new System.NullReferenceException(); }
-            if (other==null) { throw new System.ArgumentNullException(); }
+            if (@this==null || other==null) { throw new NullPointerException(); }
             return new ConsumerAndThen(@this,other);
         }
     }
@@ -26,7 +27,7 @@ namespace java.util.function
             this.a = a;
             this.b = b;
         }
-        public void accept(System.Object o)
+        public void accept(object o)
         {   
             a.accept(o);
             b.accept(o);

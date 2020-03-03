@@ -24,7 +24,7 @@ namespace java.lang
             return isInfinite(value);
         }
             
-        public override bool Equals(System.Object o) 
+        public override bool Equals(object o) 
         {   
             if (o==null || !(o is Double)) return false;
             return ((Double)o).value == value;
@@ -38,9 +38,9 @@ namespace java.lang
             return  a ^ b;
         }
 
-        public override System.String ToString() 
+        public override string ToString() 
         {   
-            return java.lang.SYSTEM.str(value);
+            return SYSTEM.str(value);
         }
 
         public static bool isNaN(double d) 
@@ -53,7 +53,7 @@ namespace java.lang
             return System.Double.IsInfinity(d);
         }    
         
-        public static double parseDouble(System.String s)
+        public static double parseDouble(string s)
         {
             double result;
             if 
@@ -67,26 +67,22 @@ namespace java.lang
             )
             {   return result;
             }
-            throw new java.lang.NumberFormatException();
+            throw new NumberFormatException();
         }
             
-        public static System.String toString(double d)
+        public static string toString(double d)
         {   
-            return java.lang.SYSTEM.str(d);
+            return SYSTEM.str(d);
         }
             
-        public static java.lang.Double valueOf(double d)
+        public static Double valueOf(double d)
         {   
-            return new java.lang.Double(d);
+            return new Double(d);
         }
             
         public const double MIN_005fVALUE_f = 4.9E-324;
         public const double MAX_005fVALUE_f = 1.7976931348623157E308;
         public const double POSITIVE_005fINFINITY_f = 1.0/0.0;
         public const double NEGATIVE_005fINFINITY_f = -1.0/0.0;
-        public const double MIN_VALUE = 4.9E-324;
-        public const double MAX_VALUE = 1.7976931348623157E308;
-        public const double POSITIVE_INFINITY = 1.0/0.0;
-        public const double NEGATIVE_INFINITY = -1.0/0.0;
     }
 }

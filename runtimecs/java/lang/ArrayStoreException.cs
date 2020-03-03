@@ -6,7 +6,7 @@ namespace java.lang
         {   
         }
         
-        public ArrayStoreException(System.String message) : base(message)
+        public ArrayStoreException(string message) : base(message)
         {   
         }   
     }

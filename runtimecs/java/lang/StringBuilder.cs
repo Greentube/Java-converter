@@ -9,12 +9,12 @@ namespace java.lang
             content = new System.Text.StringBuilder();
         }
 
-        public StringBuilder(System.String startValue)
+        public StringBuilder(string startValue)
         {   
             content = new System.Text.StringBuilder(startValue);
         }
 
-        public StringBuilder append(System.Object o)
+        public StringBuilder append(object o)
         {   
             content.Append(SYSTEM.str(o));
             return this;
@@ -66,7 +66,7 @@ namespace java.lang
             return content.Length;
         }
 
-        public override System.String ToString()
+        public override string ToString()
         {   
             return content.ToString();
         }

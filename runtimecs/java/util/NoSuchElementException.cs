@@ -1,12 +1,14 @@
+using java.lang;
+
 namespace java.util 
 { 
-    public class NoSuchElementException: java.lang.RuntimeException
+    public class NoSuchElementException: RuntimeException
     {
         public NoSuchElementException() : base()
         {   
         }
 
-        public NoSuchElementException(System.String message) : base(message)
+        public NoSuchElementException(string message) : base(message)
         {   
         }
     }

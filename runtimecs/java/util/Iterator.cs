@@ -1,9 +1,11 @@
+using java.lang;
+
 namespace java.util 
 {
     public interface Iterator
     {
         bool hasNext();
-        System.Object next();
+        object next();
         void remove();
     }
 
@@ -11,7 +13,7 @@ namespace java.util
     {
         public static void remove(Iterator @this)
         {   
-            throw new java.lang.UnsupportedOperationException();
+            throw new UnsupportedOperationException();
         }
     }
 }

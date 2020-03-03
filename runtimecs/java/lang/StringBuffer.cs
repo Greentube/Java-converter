@@ -9,12 +9,12 @@ namespace java.lang
             content = new System.Text.StringBuilder();
         }
 
-        public StringBuffer(System.String startValue)
+        public StringBuffer(string startValue)
         {   
             content = new System.Text.StringBuilder(startValue);
         }
 
-        public StringBuffer append(System.Object o)
+        public StringBuffer append(object o)
         {   
             lock (content)
             {   
@@ -90,7 +90,7 @@ namespace java.lang
             }
         }
 
-        public override System.String ToString()
+        public override string ToString()
         {   
             lock (content)
             {   

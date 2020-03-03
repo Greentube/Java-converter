@@ -6,7 +6,7 @@ namespace java.lang
         {   
         }
 
-        public IndexOutOfBoundsException(System.String message) : base(message)
+        public IndexOutOfBoundsException(string message) : base(message)
         {   
         }
     }

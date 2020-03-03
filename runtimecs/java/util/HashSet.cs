@@ -1,8 +1,10 @@
+using java.lang;
+
 namespace java.util 
 { 
     public class HashSet : AbstractCollection, Set
     {
-        private static System.Object PRESENT = new System.Object();
+        private static readonly object PRESENT = new object();
         private readonly HashMap map;
             
         public HashSet() 
@@ -15,7 +17,7 @@ namespace java.util
             addAll(c);
         }
             
-        public override bool add(System.Object e) 
+        public override bool add(object e) 
         {   
             return map.put(e, PRESENT)==null;
         }           
@@ -27,14 +29,14 @@ namespace java.util
         }
             
         // OPTIMIZATION
-        public override bool contains(System.Object e) 
+        public override bool contains(object e) 
         {   
             return map.containsKey(e);
         }
 
         // containsAll        implemented by AbstractCollection
                         
-        public override bool Equals(System.Object o) 
+        public override bool Equals(object o) 
         {   
             if (o==null || !(o is Set)) { return false; }
             Set s = (Set) o;
@@ -59,7 +61,7 @@ namespace java.util
         
 
         // OPTIMIZATION    
-        public override bool remove(System.Object key) 
+        public override bool remove(object key) 
         {   
             return map.remove(key)!=null;
         }

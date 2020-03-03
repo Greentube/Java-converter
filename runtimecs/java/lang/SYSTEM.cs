@@ -4,10 +4,8 @@ namespace java.lang
     {
         public static readonly java.io.PrintStream out_f = new java.io.PrintStream(false);
         public static readonly java.io.PrintStream err_f = new java.io.PrintStream(true);
-        public static readonly java.io.PrintStream @out = out_f;
-        public static readonly java.io.PrintStream err = err_f;
            
-        public static void arraycopy(System.Object src, int srcPos, System.Object dest, int destPos, int length) 
+        public static void arraycopy(object src, int srcPos, object dest, int destPos, int length) 
         {   
             System.Array.Copy((System.Array)src, srcPos, (System.Array)dest, destPos, length);
         }
@@ -24,7 +22,7 @@ namespace java.lang
                         
         public static T[][] dim<T>(int n0, int n1) 
         {   
-            if (n0<0) { throw new java.lang.NegativeArraySizeException(); }
+            if (n0<0) { throw new NegativeArraySizeException(); }
             T[][] a = new T[n0][];
             for (int i0=0; n1>=0 && i0<n0; i0++) { a[i0] = new T[n1]; }
             return a;
@@ -32,7 +30,7 @@ namespace java.lang
         
         public static T[][][] dim<T>(int n0, int n1, int n2) 
         {   
-            if (n0<0) throw new java.lang.NegativeArraySizeException();
+            if (n0<0) throw new NegativeArraySizeException();
             T[][][] a = new T[n0][][];
             for (int i0=0; n1>=0 && i0<n0; i0++) { a[i0] = dim<T>(n1,n2); }
             return a;
@@ -40,7 +38,7 @@ namespace java.lang
         
         public static T[][][][] dim<T>(int n0, int n1, int n2, int n3) 
         {   
-            if (n0<0) throw new java.lang.NegativeArraySizeException();
+            if (n0<0) throw new NegativeArraySizeException();
             T[][][][] a = new T[n0][][][];
             for (int i0=0; n1>=0 && i0<n0; i0++) { a[i0] = dim<T>(n1,n2,n3); }
             return a;
@@ -50,7 +48,7 @@ namespace java.lang
         {   
             // handle a weird special case for java compatibility
             if (a==-2147483648 && b==-1) { return a; }
-            if (b==0) { throw new java.lang.ArithmeticException(); }
+            if (b==0) { throw new ArithmeticException(); }
             // normal arithmetic 
             return a / b;
         }
@@ -58,7 +56,7 @@ namespace java.lang
         {   
             // handle a weird special case for java compatibility
             if (a==-9223372036854775808 && b==-1) { return a; }
-            if (b==0) { throw new java.lang.ArithmeticException(); }
+            if (b==0) { throw new ArithmeticException(); }
             // normal arithmetic 
             return a / b;
         }
@@ -115,22 +113,22 @@ namespace java.lang
             }
         }
 
-        public static System.String str(bool v) 
+        public static string str(bool v) 
         {   
             return v ? "true" : "false";
         }
         
-        public static System.String str(sbyte v) 
+        public static string str(sbyte v) 
         {   
             return v.ToString();
         }    
         
-        public static System.String str(char v) 
+        public static string str(char v) 
         {   
             return v.ToString();    
         }
 
-        public static System.String str(double v) 
+        public static string str(double v) 
         {   
             if (System.Double.IsNaN(v)) { return "NaN"; }
             if (System.Double.IsNegativeInfinity(v)) { return "-Infinity"; }
@@ -138,8 +136,8 @@ namespace java.lang
             
             // java builds shortest possible representation that does not lose precision
             // try to also find a short representation by using different formats
-            System.String s = v.ToString("R");
-            System.String s2 = v.ToString("G16");
+            string s = v.ToString("R");
+            string s2 = v.ToString("G16");
             double parseback;
             if (s2.Length<s.Length && System.Double.TryParse(s2,out parseback))
             {   
@@ -157,17 +155,17 @@ namespace java.lang
             return s;
         }
         
-        public static System.String str(int v) 
+        public static string str(int v) 
         {   
             return v.ToString("d");
         }
                 
-        public static System.String str(System.Object o) 
+        public static string str(object o) 
         {   
             return (o==null) ? "null" : o.ToString();
         }
         
-        public static System.String ASSIGNPLUS(ref System.String dest, System.String s)
+        public static string ASSIGNPLUS(ref string dest, string s)
         {   
             return dest = str(dest) + s;
         }    
@@ -700,12 +698,12 @@ namespace java.lang
     
     public static class StringExtensions
     {        
-        public static char charAt(this System.String str, int index) 
+        public static char charAt(this string str, int index) 
         {   
             return str[index];
         }
             
-        public static int compareTo(this System.String str, System.String other) 
+        public static int compareTo(this string str, string other) 
         {   
             int l1 = str.Length;
             int l2 = other.Length;    
@@ -718,51 +716,50 @@ namespace java.lang
             return l1-l2;
         }
             
-        public static System.String concat(this System.String str, System.String other)         
+        public static string concat(this string str, string other)         
         {   
-            if (str==null) { throw new System.NullReferenceException(); }
-            if (other==null) { throw new System.ArgumentNullException(); }
-            return System.String.Concat(str,other);
+            if (str==null || other==null) { throw new NullPointerException(); }
+            return string.Concat(str,other);
         }
         
-        public static bool contains(this System.String @this, System.Object other)
+        public static bool contains(this string @this, object other)
         {   
             return @this.indexOf(other.ToString())>=0;        
         }
             
-        public static bool endsWith(this System.String str, System.String other) 
+        public static bool endsWith(this string str, string other) 
         {   
             return str.EndsWith(other);
         }
             
-        public static int indexOf(this System.String str, System.String other) 
+        public static int indexOf(this string str, string other) 
         {   
             return str.IndexOf(other);
         }
             
-        public static int indexOf(this System.String str, int c) 
+        public static int indexOf(this string str, int c) 
         {   
             return str.IndexOf((char)c);
         }
             
-        public static int indexOf(this System.String str, System.String other, int from) 
+        public static int indexOf(this string str, string other, int from) 
         {   
             return str.IndexOf(other,from);
         }
             
-        public static int indexOf(this System.String str, int c, int from) 
+        public static int indexOf(this string str, int c, int from) 
         {   
             return str.IndexOf((char)c, from);
         }
       
-        public static bool isEmpty(this System.String str) 
+        public static bool isEmpty(this string str) 
         {   
             return str.Length<=0;
         }
         
-        public static System.String join(System.Object delim, System.Object[] parts)
+        public static string join(object delim, object[] parts)
         {   
-            System.String d = SYSTEM.str(delim);
+            string d = SYSTEM.str(delim);
             System.Text.StringBuilder b = new System.Text.StringBuilder();
             for (int i=0; i<parts.Length; i++)
             {   
@@ -772,69 +769,69 @@ namespace java.lang
             return b.ToString();
         }
             
-        public static int lastIndexOf(this System.String str, System.String other) 
+        public static int lastIndexOf(this string str, string other) 
         {   
             return str.LastIndexOf(other);
         }
             
-        public static int lastIndexOf(this System.String str, int c) 
+        public static int lastIndexOf(this string str, int c) 
         {   
             return str.LastIndexOf((char)c);
         }
             
-        public static int lastIndexOf(this System.String str, System.String other, int from) 
+        public static int lastIndexOf(this string str, string other, int from) 
         {   
             return str.LastIndexOf(other,from);
         }
             
-        public static int lastIndexOf(this System.String str, int c, int from) 
+        public static int lastIndexOf(this string str, int c, int from) 
         {       
             return str.LastIndexOf((char)c, from);
         }
                 
-        public static int length(this System.String str) 
+        public static int length(this string str) 
         {   
             return str.Length;
         }
                 
-        public static System.String replace(this System.String str, char oldchar, char newchar) 
+        public static string replace(this string str, char oldchar, char newchar) 
         {   
             return str.Replace(oldchar,newchar);
         }
         
-        public static System.String replace(this System.String str, System.Object oldstr, System.Object newstr) 
+        public static string replace(this string str, object oldstr, object newstr) 
         {   
             return str.Replace(oldstr.ToString(),newstr.ToString());
         }
             
-        public static bool startsWith(this System.String str, System.String other) 
+        public static bool startsWith(this string str, string other) 
         {   
             return str.StartsWith(other);
         }
         
-        public static System.String[] split(this System.String str, System.String delim, int limit=0) 
+        public static string[] split(this string str, string delim, int limit=0) 
         {   
             // short-cut for empty string
             if (str.Length<1) 
             {   
-                return new System.String[]{""};
+                return new string[]{""};
             }
             
             // special behaviour for empty delimiter string
             if (delim==null || delim.Length<1)
             {   
-                System.String[] l;
+                string[] l;
                 if (limit<0) 
                 {   
-                    l = new System.String[str.Length+1];
+                    l = new string[str.Length+1];
                 } 
                 else if (limit==0) 
                 {   
-                    l = new System.String[str.Length];
+                    l = new string[str.Length];
                 } 
                 else 
                 {   
-                    l = new System.String[Math.min(str.Length+1,limit)];
+                    l = new string[Math.min(str.Length+1,limit)];
                 }
                 for (int i=0; i<l.Length; i++) 
                 {   
@@ -846,11 +843,11 @@ namespace java.lang
             // normal operation
             if (limit>0) 
             {   
-                return str.Split(new System.String[]{delim}, limit, System.StringSplitOptions.None);
+                return str.Split(new string[]{delim}, limit, System.StringSplitOptions.None);
             }
             else
             {   
-                System.String[] l = str.Split(new System.String[]{delim}, System.StringSplitOptions.None );
+                string[] l = str.Split(new string[]{delim}, System.StringSplitOptions.None );
                 if (limit==0) 
                 {   
                     int len = l.Length;
@@ -861,22 +858,22 @@ namespace java.lang
             }
         }
             
-        public static System.String substring(this System.String str, int beginIndex) 
+        public static string substring(this string str, int beginIndex) 
         {   
             return str.Substring(beginIndex);
         }
             
-        public static System.String substring(this System.String str, int beginIndex, int endIndex) 
+        public static string substring(this string str, int beginIndex, int endIndex) 
         {   
             return str.Substring(beginIndex, endIndex-beginIndex);
         }
             
-        public static char[] toCharArray(this System.String str) 
+        public static char[] toCharArray(this string str) 
         {   
             return str.ToCharArray();
         }
             
-        public static System.String trim(this System.String str) 
+        public static string trim(this string str) 
         {   
             return str.Trim();
         }        

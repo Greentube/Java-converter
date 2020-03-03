@@ -1,3 +1,5 @@
+using java.lang;
+
 namespace java.util 
 {
     public class LinkedList : AbstractList
@@ -39,20 +41,20 @@ namespace java.util
         }
         
         // implement to satisfy AbstractList requirements
-        public override System.Object get(int index) 
+        public override object get(int index) 
         {   
             return seek(index).element;
         }
         
-        public override System.Object set(int index, System.Object element) 
+        public override object set(int index, object element) 
         {   
             Node n = seek(index);
-            System.Object prev = n.element;
+            object prev = n.element;
             n.element = element;
             return prev;
         }
         
-        public override void add(int index, System.Object element) 
+        public override void add(int index, object element) 
         {   
             Node n = new Node(element);
             Node y;
@@ -74,7 +76,7 @@ namespace java.util
             return;
         }
                
-        public override System.Object remove(int index) 
+        public override object remove(int index) 
         {   
             Node n = seek(index);
             Node x = n.prev;
@@ -107,7 +109,7 @@ namespace java.util
         // Even the special "head" object can be retrieved by given len as index.
         private Node seek(int index) 
         {   
-            if (index<0 || index>=len) { throw new System.IndexOutOfRangeException(); }
+            if (index<0 || index>=len) { throw new IndexOutOfBoundsException(); }
             if (index==0) { return head.next; }
             if (index==len-1) { return head.prev; }
             
@@ -171,11 +173,11 @@ namespace java.util
         // internal data container
         class Node 
         {   
-            public System.Object element;
+            public object element;
             public Node prev;
             public Node next; 
 
-            public Node(System.Object element) 
+            public Node(object element) 
             {   
                 this.element = element;
                 prev = null;
@@ -185,32 +187,32 @@ namespace java.util
 
                        
         // extra convenience methods of LinkedList
-        public virtual void addFirst(System.Object obj) 
+        public virtual void addFirst(object obj) 
         {   
             add(0,obj);
         }
 
-        public virtual void addLast(System.Object obj) 
+        public virtual void addLast(object obj) 
         {   
             add(size(),obj);
         }
         
-        public virtual System.Object getFirst() 
+        public virtual object getFirst() 
         {   
             return get(0);
         }
 
-        public virtual System.Object getLast() 
+        public virtual object getLast() 
         {   
             return get(size()-1);
         }
         
-        public virtual System.Object removeFirst() 
+        public virtual object removeFirst() 
         {   
             return remove(0);
         }        
             
-        public virtual System.Object removeLast() 
+        public virtual object removeLast() 
         {   
             return remove(size()-1);
         } 

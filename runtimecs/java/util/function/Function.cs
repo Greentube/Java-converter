@@ -1,8 +1,10 @@
+using java.lang;
+
 namespace java.util.function 
 {
     public interface Function
     {
-        System.Object apply(System.Object s);
+        object apply(object s);
         Function andThen(Function other);
         Function compose(Function other);
     }
@@ -11,15 +13,13 @@ namespace java.util.function
     {
         public static Function andThen(Function @this, Function other)
         {   
-            if (@this==null) { throw new System.NullReferenceException(); }
-            if (other==null) { throw new System.ArgumentNullException(); }
+            if (@this==null || other==null) { throw new NullPointerException(); }
             return new FunctionAndThen(@this,other);
         }
         
         public static Function compose(Function @this, Function other)
         {   
-            if (@this==null) { throw new System.NullReferenceException(); }
-            if (other==null) { throw new System.ArgumentNullException(); }
+            if (@this==null || other==null) { throw new NullPointerException(); }
             return new FunctionAndThen(other,@this);
         }
 
@@ -34,7 +34,7 @@ namespace java.util.function
         public FunctionIdentity() 
         {        
         }
-        public virtual System.Object apply(System.Object o)
+        public virtual object apply(object o)
         {   
             return o;
         }
@@ -58,7 +58,7 @@ namespace java.util.function
             this.a = a;
             this.b = b;
         }
-        public override System.Object apply(System.Object o)
+        public override object apply(object o)
         {   
             return b.apply(a.apply(o));
         }

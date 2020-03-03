@@ -1,34 +1,36 @@
+using java.lang;
+
 namespace java.util 
 { 
     public static class Arrays 
     {    
-        public static List asList(System.Object[] a)
+        public static List asList(object[] a)
         {   
-            if (a==null) { throw new System.ArgumentNullException(); }
-            return new java.util.FixSizedArrayList(a);
+            if (a==null) { throw new NullPointerException(); }
+            return new FixSizedArrayList(a);
         }
         
-        public static void sort(System.Object[] a, Comparator comparator)
+        public static void sort(object[] a, Comparator comparator)
         {   
             sort(a,0,a.Length,comparator);
         }
         
-        public static void sort(System.Object[] a, int fromIndex, int toIndex, Comparator comparator)
+        public static void sort(object[] a, int fromIndex, int toIndex, Comparator comparator)
         {   
-            if (fromIndex<0 || toIndex>a.Length) { throw new System.IndexOutOfRangeException(); }
+            if (fromIndex<0 || toIndex>a.Length) { throw new IndexOutOfBoundsException(); }
             int len = toIndex-fromIndex;
-            if (len<0 || comparator==null) { throw new System.ArgumentException(); }
-            mergesort(a,fromIndex,len,comparator, (len>=4) ? new System.Object[len/2] : null);        
+            if (len<0 || comparator==null) { throw new IllegalArgumentException(); }
+            mergesort(a,fromIndex,len,comparator, (len>=4) ? new object[len/2] : null);        
         }     
 
-        private static void mergesort(System.Object[] a, int start, int len, Comparator c, System.Object[] tmp)
+        private static void mergesort(object[] a, int start, int len, Comparator c, object[] tmp)
         {
             // simple case: only two elements 
             if (len==2)
             {   
                 if (c.compare(a[start],a[start+1]) > 0)
                 {   
-                    System.Object x = a[start];
+                    object x = a[start];
                     a[start] = a[start+1];
                     a[start+1] = x;
                 }
@@ -39,7 +41,7 @@ namespace java.util
                 // bring first two elements in correct order
                 if (c.compare(a[start],a[start+1]) > 0)
                 {   
-                    System.Object x = a[start];
+                    object x = a[start];
                     a[start] = a[start+1];
                     a[start+1] = x;
                 }
@@ -49,7 +51,7 @@ namespace java.util
                     // check if 3rd element must even be moved to first position
                     if (c.compare(a[start],a[start+2]) > 0)
                     {   
-                        System.Object x = a[start+2];
+                        object x = a[start+2];
                         a[start+2] = a[start+1];
                         a[start+1] = a[start];
                         a[start] = x;
@@ -57,7 +59,7 @@ namespace java.util
                     // move to middle position
                     else
                     {   
-                        System.Object x = a[start+1];
+                        object x = a[start+1];
                         a[start+1] = a[start+2];
                         a[start+2] = x;
                     }
@@ -120,34 +122,34 @@ namespace java.util
 
     public class FixSizedArrayList: AbstractList
     {        
-        private readonly System.Object[] buffer;
+        private readonly object[] buffer;
         
-        internal FixSizedArrayList(System.Object[] buffer) : base() 
+        internal FixSizedArrayList(object[] buffer) : base() 
         {   
             this.buffer = buffer;    
         }    
             
         // implement to satisfy AbstractList requirements
-        public override System.Object get(int index) 
+        public override object get(int index) 
         {   
             return buffer[index];
         }
 
-        public override System.Object set(int index, System.Object element) 
+        public override object set(int index, object element) 
         {   
-            System.Object prev = buffer[index];
+            object prev = buffer[index];
             buffer[index] = element;
             return prev; 
         }
             
-        public override void add(int index, System.Object element) 
+        public override void add(int index, object element) 
         {   
-            throw new java.lang.UnsupportedOperationException();
+            throw new UnsupportedOperationException();
         }
 
-        public override System.Object remove(int index) 
+        public override object remove(int index) 
         {   
-            throw new java.lang.UnsupportedOperationException();
+            throw new UnsupportedOperationException();
         }
             
         public override int size() 

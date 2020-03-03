@@ -1,3 +1,5 @@
+using java.lang;
+
 namespace java.util 
 {
     public class HashMap : HashMapImpl
@@ -13,13 +15,13 @@ namespace java.util
 
     public class HashMapImpl : Map
     {
-        internal readonly System.Collections.Generic.Dictionary<System.Object,System.Object> data;        
+        internal readonly System.Collections.Generic.Dictionary<object,object> data;        
         private bool hasNullKey;
-        private System.Object valueForNullKey;
+        private object valueForNullKey;
             
         public HashMapImpl() 
         {   
-            data = new System.Collections.Generic.Dictionary<System.Object,System.Object>();
+            data = new System.Collections.Generic.Dictionary<object,object>();
             hasNullKey = false;
             valueForNullKey = null;
         }
@@ -36,13 +38,13 @@ namespace java.util
             valueForNullKey = null;
         }
             
-        public virtual bool containsKey(System.Object key) 
+        public virtual bool containsKey(object key) 
         {   
             if (key==null) { return hasNullKey; }
             else { return data.ContainsKey(key); }
         }
             
-        public virtual bool containsValue(System.Object value) 
+        public virtual bool containsValue(object value) 
         {   
             if (hasNullKey) 
             {   
@@ -58,26 +60,26 @@ namespace java.util
             return data.ContainsValue(value);
         }
                 
-        public override bool Equals(System.Object o) 
+        public override bool Equals(object o) 
         {   
             if (o==null || !(o is Map)) { return false; }
             Map m = (Map) o;
             if (size() != m.size()) { return false; }
             for (Iterator it=keySet().iterator(); it.hasNext(); ) 
             {   
-                System.Object k = it.next();
+                object k = it.next();
                 if (! m.containsKey(k)) { return false; }
-                System.Object v1 = get(k);
-                System.Object v2 = m.get(k);
+                object v1 = get(k);
+                object v2 = m.get(k);
                 if (! (v1==null ? v2==null : v1.Equals(v2)) ) { return false; }
             }            
             return true; 
         }
             
-        public virtual System.Object get(System.Object key) 
+        public virtual object get(object key) 
         {   
             if (key==null) { return valueForNullKey; }
-            System.Object v;
+            object v;
             data.TryGetValue(key, out v);
             return v;
         }
@@ -87,8 +89,8 @@ namespace java.util
             int sum = 0;
             for (Iterator it=this.keySet().iterator(); it.hasNext(); ) 
             {   
-                System.Object k = it.next();
-                System.Object v = get(k);
+                object k = it.next();
+                object v = get(k);
                 int c = (k==null ? 0 : k.GetHashCode()) ^ (v==null ? 0 : v.GetHashCode());
                 sum = (sum + c) & -1;
             }
@@ -105,18 +107,18 @@ namespace java.util
             return new HashMapKeyView(this);
         }
             
-        public virtual System.Object put(System.Object key, System.Object value) 
+        public virtual object put(object key, object value) 
         {   
             if (key==null) 
             {   
-                System.Object prev = valueForNullKey;
+                object prev = valueForNullKey;
                 hasNullKey = true;
                 valueForNullKey = value;
                 return prev;
             }
             else
             {   
-                System.Object prev;
+                object prev;
                 data.TryGetValue(key, out prev);
                 data[key] = value;
                 return prev;
@@ -127,12 +129,12 @@ namespace java.util
         {   
             for (Iterator it=m.keySet().iterator(); it.hasNext(); ) 
             {   
-                System.Object key = it.next();
+                object key = it.next();
                 this.put(key, m.get(key));
             }
         }
             
-        public virtual System.Object remove(System.Object key) 
+        public virtual object remove(object key) 
         {   
             if (key==null) 
             {   
@@ -142,7 +144,7 @@ namespace java.util
                 }
                 else 
                 {   
-                    System.Object prev = valueForNullKey;
+                    object prev = valueForNullKey;
                     hasNullKey = false;
                     valueForNullKey = null;
                     return prev;
@@ -150,7 +152,7 @@ namespace java.util
             }
             else 
             {   
-                System.Object prev;
+                object prev;
                 if (data.TryGetValue(key, out prev)) {   data.Remove(key); }
                 return prev;
             }
@@ -161,14 +163,14 @@ namespace java.util
             return data.Count + (hasNullKey ? 1:0); 
         }
             
-        public override System.String ToString() 
+        public override string ToString() 
         {   
             System.Text.StringBuilder b = new System.Text.StringBuilder("{");
             bool first=true;
             for (Iterator it=keySet().iterator(); it.hasNext(); ) 
             {   
-                System.Object k = it.next();
-                System.Object v = get(k);
+                object k = it.next();
+                object v = get(k);
                 if (first) 
                 {   
                     first=false;
@@ -191,7 +193,7 @@ namespace java.util
         }        
         
         // redirect default interface methods
-        public virtual System.Object getOrDefault(System.Object key, System.Object def)
+        public virtual object getOrDefault(object key, object def)
         {   
             return java.util.Map_0009.getOrDefault(this,key,def);
         }
@@ -218,14 +220,14 @@ namespace java.util
         }
         
         // OPTIMIZATION
-        public override bool contains(System.Object o) 
+        public override bool contains(object o) 
         {   
             return map.containsKey(o);
         }      
                 
         // containsAll_1                   // implemented by AbstractCollection
 
-        public override bool Equals(System.Object o) 
+        public override bool Equals(object o) 
         {   
             if (o==null || !(o is HashMapKeyView)) { return false; }
             HashMapKeyView c = (HashMapKeyView) o;
@@ -242,7 +244,7 @@ namespace java.util
             int h = 0;
             for (Iterator it=iterator(); it.hasNext(); ) 
             {   
-                System.Object e = it.next();
+                object e = it.next();
                 h = (h + (e==null ? 0 : e.GetHashCode())) & -1;
             }
             return h;
@@ -256,7 +258,7 @@ namespace java.util
         }
         
         // OPTIMIZATION    
-        public override bool remove(System.Object o)
+        public override bool remove(object o)
         {
             if (map.containsKey(o))
             {
@@ -285,7 +287,7 @@ namespace java.util
         }        
 
         // OPTIMIZATION
-        public override bool contains(System.Object o) 
+        public override bool contains(object o) 
         {   
             return map.containsValue(o);
         }      
@@ -313,7 +315,7 @@ namespace java.util
     {
         private readonly HashMapImpl map;
         private readonly bool deliverKeys;
-        private readonly System.Object[] keys;
+        private readonly object[] keys;
         private int n;
             
         public HashMapIterator(HashMapImpl map, bool deliverKeys) 
@@ -321,7 +323,7 @@ namespace java.util
             this.map = map;
             this.deliverKeys = deliverKeys;
                 
-            this.keys = new System.Object[map.size()]; 
+            this.keys = new object[map.size()]; 
             // when having a null key, the last array element will not be overwritten here
             map.data.Keys.CopyTo(this.keys,0); 
             this.n = 0;
@@ -332,9 +334,9 @@ namespace java.util
             return n<keys.Length;
         }
             
-        public System.Object next() 
+        public object next() 
         {   
-            System.Object k = keys[n];
+            object k = keys[n];
             n++;                
             return deliverKeys ? k : map.get(k);
         }
@@ -349,7 +351,7 @@ namespace java.util
             return hasNext();
         }            
         
-        public System.Object nextElement() 
+        public object nextElement() 
         {   
             return next();
         }

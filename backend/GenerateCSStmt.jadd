@@ -45,18 +45,26 @@ aspect GenerateCS
         out.println();
         int n = getNumStmt();
         for (int i=0; i<n; i++) 
-        {   Stmt s = getStmt(i);
+        {   // scope of variables in java extend only below, but in c# this 
+        	// also extends upwards. there could then be some additional clashing which
+        	// can be avoided by adding a block layer   
+        	Stmt s = getStmt(i);
             if (s instanceof VarDeclStmt) 
-            {   if (hadNonDeclStatements) 
+            {   HashSet<String> allvars = new HashSet<>();
+            	for (VariableDeclarator vd: ((VarDeclStmt)s).getDeclaratorList())
+            	{	allvars.add(vd.getID());
+            	}
+            	boolean declaressame = false;
+				for (int j=0; j<i; j++)
+				{
+					declaressame = declaressame || getStmt(j).declaresAnyLocalVariable(allvars);
+				}                        
+            	if (declaressame) 
                 {   out.print("{");
                     extraBraces++;
-                    hadNonDeclStatements = false;
                 }
             } 
-            else 
-            {   hadNonDeclStatements = true;
-            }
-            s.generateCS(out);
+			s.generateCS(out);
         }
         if (continuelabel!=null && out.removePendingLabel(continuelabel,"c")) 
         {   out.printIdentifier(continuelabel);
@@ -87,7 +95,7 @@ aspect GenerateCS
         }
         else if (continuelabel!=null) 
         {   out.println();
-            out.print("{");
+            out.println("{");
             out.increaseIndent();
             stmt.generateCS(out);
             if (out.removePendingLabel(continuelabel,"c"))
@@ -96,7 +104,7 @@ aspect GenerateCS
             }            
             out.decreaseIndent();
             out.println();
-            out.print("}");
+            out.println("}");
         } 
         else 
         {   out.println();

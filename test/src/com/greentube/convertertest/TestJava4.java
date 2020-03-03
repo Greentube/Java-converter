@@ -1075,7 +1075,6 @@ public class TestJava4
     public static void controlstructurestest()
     {
     	System.out.println("- controlstructures");
-    	
     	int v=0,w=3;
     	for (int i=0, j=1; i<5; i++,j*=2) {
     		assertI(j, 1<<i);
@@ -1084,14 +1083,14 @@ public class TestJava4
     	assertI(v,31);
     	assertI(w,3);    	
     	{
-    	   int i,j,s;
+    	   int x,y,z;
     	   int k = 4;
     	   int n = 7;
-            for (s = 1, i = n, j = 1; i != n - k; i--, j++) {
-                s *= i;
-                s /= j;
+            for (z = 1, x = n, y = 1; x != n - k; x--, y++) {
+                z *= x;
+                z /= y;
             }
-            assertI(s,35);	
+            assertI(z,35);	
     	}
     	
     	int x,y=1,z=4;
@@ -1942,6 +1941,8 @@ public class TestJava4
         assertO(a,"null@!2");
         a = a + ('3' + '1');
         assertO(a,"null@!2100");
+        a  = "small";        
+        assertO(a.concat(" text"), "small text");
         
         // some special characters
         a = "üäö € \000\003\7";

@@ -14,7 +14,7 @@ namespace java.lang
             return value;
         }
 
-        public override bool Equals(System.Object o)
+        public override bool Equals(object o)
         {   
             if (o==null || !(o is Long)) return false;
             return ((Long)o).value == value;
@@ -25,36 +25,34 @@ namespace java.lang
             return (int)(value^(value>>32));		
         }
 
-        public override System.String ToString()
+        public override string ToString()
         {   
             return Long.toString(value);
         }
 
-        public static long parseLong(System.String s)
+        public static long parseLong(string s)
         {
             long result;
             if (System.Int64.TryParse(s, out result)) { return result; }
-            throw new java.lang.NumberFormatException();
+            throw new NumberFormatException();
         }
 
-        public static System.String toString(long i)
+        public static string toString(long i)
         {   
             return i.ToString("d");
         }    
         
-        public static System.String toHexString(long i)
+        public static string toHexString(long i)
         {   
             return i.ToString("x");
         }
             
-        public static java.lang.Long valueOf(long i)
+        public static Long valueOf(long i)
         {   
-            return new java.lang.Long(i);
+            return new Long(i);
         }
 
         public const long MIN_005fVALUE_f = -9223372036854775808;
         public const long MAX_005fVALUE_f =  9223372036854775807;
-        public const long MIN_VALUE = -9223372036854775808;
-        public const long MAX_VALUE =  9223372036854775807;
     }
 }

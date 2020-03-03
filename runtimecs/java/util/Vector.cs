@@ -1,3 +1,5 @@
+using java.lang;
+
 namespace java.util 
 { 
     public class Vector: ArrayListImpl
@@ -11,22 +13,22 @@ namespace java.util
         }
         
         // add locking to existing implementations 
-        public override System.Object get(int index) 
+        public override object get(int index) 
         {   
             lock(this) { return base.get(index); }
         }
 
-        public override System.Object set(int index, System.Object element) 
+        public override object set(int index, object element) 
         {   
             lock(this) { return base.set(index,element); }
         }
             
-        public override void add(int index, System.Object element) 
+        public override void add(int index, object element) 
         {   
             lock(this) { base.add(index,element); }
         }
 
-        public override System.Object remove(int index) 
+        public override object remove(int index) 
         {   
             lock(this) { return base.remove(index); }
         }
@@ -41,7 +43,7 @@ namespace java.util
             lock(this) { base.trimToSize(); }
         }
             
-        public override bool add(System.Object e) 
+        public override bool add(object e) 
         {   
             lock(this) { return base.add(e); }
         }
@@ -51,12 +53,12 @@ namespace java.util
             lock(this) { base.clear(); }
         }                
             
-        public override System.Object[] toArray() 
+        public override object[] toArray() 
         {   
             lock(this) { return base.toArray(); }
         }       
         
-        public override System.Object[] toArray(System.Object[]a)
+        public override object[] toArray(object[]a)
         {   
             lock(this) { return base.toArray(a); }
         }
@@ -64,17 +66,17 @@ namespace java.util
         
         // methods only available for Vector    
         
-        public virtual void addElement(System.Object o) 
+        public virtual void addElement(object o) 
         {   
             lock(this) { base.add(o); }
         }
         
-        public virtual System.Object Clone() 
+        public virtual object Clone() 
         {   
             lock(this) { return new Vector(this); }
         }
 
-        public virtual void copyInto(System.Object[] array)
+        public virtual void copyInto(object[] array)
         {   
             lock (this)
             {   
@@ -85,7 +87,7 @@ namespace java.util
             }
         }
        
-        public virtual System.Object elementAt(int i) 
+        public virtual object elementAt(int i) 
         {   
             lock(this) { return base.get(i); }
         }
@@ -95,12 +97,12 @@ namespace java.util
             lock(this) { return new AbstractListIterator(this); }
         }
 
-        public virtual System.Object firstElement() 
+        public virtual object firstElement() 
         {   
             lock(this) { return base.get(0); }
         }
 
-        public virtual int indexOf(System.Object o, int index) 
+        public virtual int indexOf(object o, int index) 
         {   
             lock(this)
             {   
@@ -112,17 +114,17 @@ namespace java.util
             return -1;
         }
 
-        public virtual void insertElementAt(System.Object o, int index) 
+        public virtual void insertElementAt(object o, int index) 
         {   
             lock(this) { base.add(index,o); }
         }
       
-        public virtual System.Object lastElement() 
+        public virtual object lastElement() 
         {   
             lock(this) { return base.get(base.size()-1); }
         }
 
-        public virtual int lastIndexOf(System.Object o, int index) 
+        public virtual int lastIndexOf(object o, int index) 
         {   
             lock(this)
             {   
@@ -139,7 +141,7 @@ namespace java.util
             lock(this) { base.clear(); }
         }
 
-        public virtual bool removeElement(System.Object o) 
+        public virtual bool removeElement(object o) 
         {   
             lock(this)
             {   
@@ -161,7 +163,7 @@ namespace java.util
             lock(this) { base.remove(index); }
         }
 
-        public virtual void setElementAt(System.Object o, int index) 
+        public virtual void setElementAt(object o, int index) 
         {   
             lock(this) { base.set(index,o); }
         }
@@ -172,7 +174,7 @@ namespace java.util
             {   
                 if (newsize<=0) 
                 {   
-                    if (newsize<0) { throw new System.IndexOutOfRangeException();  }
+                    if (newsize<0) { throw new IndexOutOfBoundsException();  }
                     clear();
                 } 
                 else 

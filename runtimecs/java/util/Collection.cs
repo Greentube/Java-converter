@@ -1,14 +1,16 @@
+using java.lang;
+
 namespace java.util 
 { 
-    public interface Collection: java.lang.Iterable
+    public interface Collection: Iterable
     {   
-        bool add(System.Object o);
+        bool add(object o);
         bool addAll(Collection c);
         void clear(); 
-        bool contains(System.Object o);
+        bool contains(object o);
         bool containsAll(Collection c);
-        bool Equals(System.Object o);
-        bool remove(System.Object o);
+        bool Equals(object o);
+        bool remove(object o);
         bool removeIf(java.util.function.Predicate predicate);
         bool removeAll(Collection c);
         bool retainAll(Collection c);
@@ -16,9 +18,9 @@ namespace java.util
         bool isEmpty();
     //  Iterator iterator();
         int size();
-        System.Object[] toArray();
-        System.Object[] toArray(System.Object[]a);
-        System.String ToString();
+        object[] toArray();
+        object[] toArray(object[]a);
+        string ToString();
     }
 
     public static class Collection_0009
@@ -29,7 +31,7 @@ namespace java.util
             bool didremove = false;
             while (i.hasNext()) 
             {   
-                System.Object o = i.next();
+                object o = i.next();
                 if (predicate.test(o)) 
                 {   
                     didremove = true;

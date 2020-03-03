@@ -5,7 +5,8 @@ namespace java.lang
         private readonly int value;
 
         public Integer(int v) 
-        {   value = v;
+        {   
+            value = v;
         }
 
         public int intValue() 
@@ -13,7 +14,7 @@ namespace java.lang
             return value;
         }
 
-        public override bool Equals(System.Object o)
+        public override bool Equals(object o)
         {   
             if (o==null || !(o is Integer)) return false;
             return ((Integer)o).value == value;
@@ -24,36 +25,34 @@ namespace java.lang
             return value;
         }
 
-        public override System.String ToString()
+        public override string ToString()
         {   
             return Integer.toString(value);
         }
 
-        public static int parseInt(System.String s)
+        public static int parseInt(string s)
         {
             int result;
             if (System.Int32.TryParse(s, out result)) { return result; }            
-            throw new java.lang.NumberFormatException();
+            throw new NumberFormatException();
         }
 
-        public static System.String toString(int i)
+        public static string toString(int i)
         {   
             return i.ToString("d");
         }    
         
-        public static System.String toHexString(int i)
+        public static string toHexString(int i)
         {   
             return i.ToString("x");
         }
             
-        public static java.lang.Integer valueOf(int i)
+        public static Integer valueOf(int i)
         {   
-            return new java.lang.Integer(i);
+            return new Integer(i);
         }
 
         public const int MIN_005fVALUE_f = -2147483648;
         public const int MAX_005fVALUE_f =  2147483647;        
-        public const int MIN_VALUE = -2147483648;
-        public const int MAX_VALUE =  2147483647;        
     }
 }

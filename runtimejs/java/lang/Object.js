@@ -1,6 +1,7 @@
 //reference// java/lang/NegativeArraySizeException
 //reference// java/lang/ClassCastException
 //reference// java/lang/ArithmeticException
+//reference// java/lang/NullPointerException
 
 // definition of the base class for all java classes except for String and arrays
 var java_lang_Object = function() {};    // allocator function
@@ -393,7 +394,9 @@ String.prototype.contains_1 = function(o)
 }
 
 String.prototype.concat_1 = function (str) 
-{   return this.concat(str);
+{   
+    if (str==null) { throw (new java_lang_NullPointerException())._0()._e; }
+    return this.concat(str);
 };
 
 String.prototype.endsWith_1 = function(suffix) 

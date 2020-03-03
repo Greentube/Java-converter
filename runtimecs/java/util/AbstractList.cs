@@ -1,15 +1,17 @@
+using java.lang;
+
 namespace java.util 
 { 
     public abstract class AbstractList : AbstractCollection, List
     {       
         // must be implemented by a modifiable subclass
-        public abstract System.Object get(int index);
-        public abstract System.Object set(int index, System.Object element);        
-        public abstract void add(int index, System.Object element);
-        public abstract System.Object remove(int index);        
+        public abstract object get(int index);
+        public abstract object set(int index, object element);        
+        public abstract void add(int index, object element);
+        public abstract object remove(int index);        
      
         // add functionality on top of the subclass implementation        
-        public override bool add(System.Object e) 
+        public override bool add(object e) 
         {   
             add(size(), e);
             return true;
@@ -37,7 +39,7 @@ namespace java.util
             }
         }
             
-        public override bool Equals(System.Object b) 
+        public override bool Equals(object b) 
         {   
             if (b==null || ! (b is List)) { return false; }
             int s = this.size();
@@ -48,8 +50,8 @@ namespace java.util
             }
             for (int i=0; i<s; i++) 
             {   
-                System.Object e1 = this.get(i);
-                System.Object e2 = l.get(i);
+                object e1 = this.get(i);
+                object e2 = l.get(i);
                 if (! (e1==null ? e2==null : e1.Equals(e2))) { return false; }
             }
             return true;  
@@ -61,13 +63,13 @@ namespace java.util
             int s = size();
             for (int i=0; i<s; i++) 
             {   
-                System.Object e = get(i);
+                object e = get(i);
                 hashCode = ( 31*hashCode + (e==null ? 0 : e.GetHashCode()) ) & (-1);
             }
             return hashCode;            
         }
             
-        public virtual int indexOf(System.Object o) 
+        public virtual int indexOf(object o) 
         {   
             int s = size();
             for (int i=0; i<s; i++) 
@@ -82,7 +84,7 @@ namespace java.util
             return new AbstractListIterator(this); 
         }
             
-        public virtual int lastIndexOf(System.Object o) 
+        public virtual int lastIndexOf(object o) 
         {   
             for (int i=size()-1; i>=0; i--) 
             {   
@@ -93,7 +95,7 @@ namespace java.util
         
         
         // OPTIMIZATION
-        public override bool remove(System.Object o)
+        public override bool remove(object o)
         {
             int idx = indexOf(o);
             if (idx>=0) 
@@ -132,10 +134,10 @@ namespace java.util
             return n < list.size();
         }
 
-        public System.Object next() 
+        public object next() 
         {   
-            if (n>=list.size()) { throw new java.util.NoSuchElementException(); }
-            System.Object v = list.get(n);  
+            if (n>=list.size()) { throw new NoSuchElementException(); }
+            object v = list.get(n);  
             n++;
             return v;    
         }
@@ -143,7 +145,7 @@ namespace java.util
         public void remove() 
         {   
             int before = n-1;
-            if (before<0) { throw new java.lang.IllegalStateException(); }
+            if (before<0) { throw new IllegalStateException(); }
             list.remove(before);        
             n=before;
         }
@@ -153,7 +155,7 @@ namespace java.util
             return hasNext();
         }            
         
-        public System.Object nextElement() 
+        public object nextElement() 
         {   
             return next();
         }

@@ -4,9 +4,9 @@ namespace java.util
 {
     public abstract class AbstractCollection : Collection
     {
-        public virtual bool add(System.Object obj)
+        public virtual bool add(object obj)
         {
-            throw new java.lang.UnsupportedOperationException();
+            throw new UnsupportedOperationException();
         }
         
         public virtual bool addAll(Collection c)
@@ -32,12 +32,12 @@ namespace java.util
             }
         }
         
-        public virtual bool contains(System.Object obj)
+        public virtual bool contains(object obj)
         {   
             Iterator i = this.iterator();
             while (i.hasNext()) 
             {   
-                System.Object o = i.next();
+                object o = i.next();
                 if (obj==null ? o==null : obj.Equals(o)) { return true; }
             }
             return false;
@@ -55,12 +55,12 @@ namespace java.util
 
         // Equals        // default object behaviour
 
-        public virtual bool remove(System.Object o)
+        public virtual bool remove(object o)
         {
             java.util.Iterator i = iterator();
             while (i.hasNext()) 
             {   
-                System.Object e = i.next();
+                object e = i.next();
                 if (o==null ? e==null : o.Equals(e)) 
                 {   
                     i.remove();
@@ -81,7 +81,7 @@ namespace java.util
             bool didremove = false;
             while (i.hasNext()) 
             {   
-                System.Object o = i.next();
+                object o = i.next();
                 if (c.contains(o)) 
                 {   
                     didremove = true;
@@ -97,7 +97,7 @@ namespace java.util
             bool didremove = false;
             while (i.hasNext()) 
             {   
-                System.Object o = i.next();
+                object o = i.next();
                 if (!c.contains(o)) 
                 {   
                     didremove = true;
@@ -117,9 +117,9 @@ namespace java.util
         public abstract Iterator iterator();        
         public abstract int size();
             
-        public virtual System.Object[] toArray() 
+        public virtual object[] toArray() 
         {   
-            System.Object[] a = new System.Object[size()];
+            object[] a = new object[size()];
             int cursor=0;
             for (Iterator i=this.iterator(); i.hasNext(); ) 
             {   
@@ -127,9 +127,9 @@ namespace java.util
             }
             return a;        
         }
-        public virtual System.Object[] toArray(System.Object[] ta) 
+        public virtual object[] toArray(object[] ta) 
         {   
-            System.Object[] a = (System.Object[]) 
+            object[] a = (object[]) 
             System.Array.CreateInstance(ta.GetType().GetElementType(),size());
             int cursor=0;
             for (Iterator i=this.iterator(); i.hasNext(); ) 
@@ -139,7 +139,7 @@ namespace java.util
             return a;        
         }
                     
-        public override System.String ToString() 
+        public override string ToString() 
         {   
             System.Text.StringBuilder b = new System.Text.StringBuilder("[");
             bool first=true;
@@ -147,7 +147,7 @@ namespace java.util
             {       
                 if (!first) { b.Append(", "); }
                 first=false;
-                System.Object o = i.next();
+                object o = i.next();
                 b.Append((o==null) ? "null" : o.ToString());
             }
             b.Append("]");
@@ -157,7 +157,7 @@ namespace java.util
         // redirect default interface method
         public virtual void forEach(java.util.function.Consumer consumer)
         {   
-            java.lang.Iterable_0009.forEach(this,consumer);
+            Iterable_0009.forEach(this,consumer);
         }
     }
 }

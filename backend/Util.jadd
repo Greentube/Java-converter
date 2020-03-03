@@ -10,6 +10,24 @@ import java.util.regex.Pattern;
 
 aspect Util {
 
+	/**
+	* Check if there is any declaration of a local variable with any of the given
+	* names inside this node.   
+	*/
+	public boolean ASTNode.declaresAnyLocalVariable(HashSet<String> allvars)
+    {   
+    	for (int i=0; i<getNumChild(); i++) 
+        {   if (getChild(i).declaresAnyLocalVariable(allvars)) { return true; }
+        }
+        return false;
+    }        
+	public boolean VariableDeclarator.declaresAnyLocalVariable(HashSet<String> allvars)
+    {   
+    	if (allvars.contains(getID())) { return true; }
+    	return super.declaresAnyLocalVariable(allvars);
+    }        
+
+
     /** Check if the result of an expression is guaranteed to fit into an integer number with 
      * less than 20 bits of precision. This is helpful to allow optimization of the 
      * multiplication operation in javascript. 

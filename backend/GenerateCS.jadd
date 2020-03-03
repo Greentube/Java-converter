@@ -268,9 +268,7 @@ aspect GenerateCS
             
             out.print("public static ");
             out.printIdentifier(uniqueName());
-            out.print(" valueOf(");
-            out.printCSQualifiedIdentifier("System.String");
-            out.println(" s)");
+            out.println(" valueOf(string s)");
             out.println("{");
             out.increaseIndent();
             out.println("switch (s)");
@@ -442,16 +440,22 @@ aspect GenerateCS
         }
 
         out.decreaseIndent();
-        out.print("}");
-        if (haspackage) { out.print("}"); }     
-        out.println();
+        out.println("}"); 
+        if (haspackage) 
+        {
+           	out.decreaseIndent(); 	
+         	out.println("}"); 
+        }     
+        out.println();                      
                 
         // add special class for static fields and static/default methods 
         if (needstatic) 
         {   if (haspackage) {
                 out.print("namespace ");
                 generatePackageNameCS(out);
-                out.print(" { ");
+                out.println();
+                out.println("{");
+                out.increaseIndent();
             }
             out.print("public static class ");
             out.printIdentifier(uniqueName());

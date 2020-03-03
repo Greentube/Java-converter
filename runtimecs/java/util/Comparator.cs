@@ -1,8 +1,10 @@
+using java.lang;
+
 namespace java.util 
 {
     public interface Comparator
     {
-        int compare(System.Object o1, System.Object o2);
+        int compare(object o1, object o2);
         Comparator reversed();
         Comparator thenComparing(Comparator other);
     }
@@ -11,13 +13,12 @@ namespace java.util
     {
         public static Comparator reversed(Comparator @this)
         {   
-            if (@this==null) { throw new System.NullReferenceException(); }
+            if (@this==null) { throw new NullPointerException(); }
             return new ComparatorReversed(@this);
         }
         public static Comparator thenComparing(Comparator @this, Comparator other)
         {   
-            if (@this==null) { throw new System.NullReferenceException(); }
-            if (other==null) { throw new System.ArgumentNullException(); }
+            if (@this==null || other==null) { throw new NullPointerException(); }
             return new ComparatorThenComparing(@this, other);
         }
     }
@@ -30,7 +31,7 @@ namespace java.util
         {   
             this.other = other;
         }
-        public virtual int compare(System.Object o1, System.Object o2)
+        public virtual int compare(object o1, object o2)
         {   
             return other.compare(o2,o1);
         }            
@@ -51,7 +52,7 @@ namespace java.util
         { 
             this.second = second;
         }
-        public override int compare(System.Object o1, System.Object o2)
+        public override int compare(object o1, object o2)
         {   
             int v = other.compare(o1,o2);
             if (v!=0) { return v; }

@@ -1,12 +1,12 @@
 namespace java.lang 
 {
-    public class RuntimeException: java.lang.Exception
+    public class RuntimeException: Exception
     {
         public RuntimeException() : base()
         {   
         }
 
-        public RuntimeException(System.String message) : base(message)
+        public RuntimeException(string message) : base(message)
         {   
         }
     }
