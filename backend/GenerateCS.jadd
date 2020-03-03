@@ -325,6 +325,7 @@ aspect GenerateCS
             }
             out.println(")");                        
             out.println("{");
+            out.increaseIndent();
             if (!md.isVoid()) { out.print("return "); }
             md.hostType().generateNameCS(out, "\t");
             out.print(".");
@@ -334,6 +335,7 @@ aspect GenerateCS
             {   out.print(", ");
                 out.print("p"+i);                            
             }
+            out.decreaseIndent();
             out.println(");");                        
             out.println("}");
         }
