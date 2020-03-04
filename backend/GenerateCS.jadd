@@ -25,7 +25,7 @@ aspect GenerateCS
             out.disableWriting();
             t.generateCS(out);
             out.enableWriting();
-            out.printUsingsForQualifiedIdentifiers();
+            out.printUsingsForQualifiedIdentifiers(t.packageName());
             t.generateCS(out);
             out.finish();       
         }
@@ -41,7 +41,7 @@ aspect GenerateCS
             o2.disableWriting();
             t.generateCS(o2);
             o2.enableWriting();
-            o2.printUsingsForQualifiedIdentifiers();
+            o2.printUsingsForQualifiedIdentifiers(t.packageName());
             t.generateCS(o2);
             o2.finish();
         }
@@ -443,22 +443,11 @@ aspect GenerateCS
 
         out.decreaseIndent();
         out.println("}"); 
-        if (haspackage) 
-        {
-           	out.decreaseIndent(); 	
-         	out.println("}"); 
-        }     
         out.println();                      
                 
         // add special class for static fields and static/default methods 
         if (needstatic) 
-        {   if (haspackage) {
-                out.print("namespace ");
-                generatePackageNameCS(out);
-                out.println();
-                out.println("{");
-                out.increaseIndent();
-            }
+        {  
             out.print("public static class ");
             out.printIdentifier(uniqueName());
             out.println("_0009");
@@ -490,14 +479,14 @@ aspect GenerateCS
             generateDimsCS(out);
                         
             out.decreaseIndent();
-            out.println("}"); 
-            if (haspackage) 
-            {
-            	out.decreaseIndent(); 	
-            	out.println("}"); 
-            }     
-            out.println();                      
+            out.println("}");                     
         }       
+        
+        if (haspackage) 
+        {
+           	out.decreaseIndent(); 	
+         	out.println("}"); 
+        }             
     }  
 
     public void ReferenceType.generateDimsCS(CodePrinterCS out)

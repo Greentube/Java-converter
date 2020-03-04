@@ -95,7 +95,7 @@ public class CodePrinterCS extends CodePrinter
     	printIdentifier(ownname);    	
     }
     
-    public void printUsingsForQualifiedIdentifiers()
+    public void printUsingsForQualifiedIdentifiers(String unitpackagename)
     {
     	for (String ownname : identifierMeanings.keySet())
     	{
@@ -105,8 +105,13 @@ public class CodePrinterCS extends CodePrinter
     		{
     			for (String packagename : packagenames)
     			{
-    				// can omit package name for java.lang
-    				if (packagename.length()>0 && !packagename.equals("java.lang"))
+    				// can omit package name for java.lang and own package
+    				if 
+    				(
+    					packagename.length()>0 
+    					&& !packagename.equals("java.lang") 
+    					&& !packagename.contentEquals(unitpackagename)
+    				)
 	    			{
 	    				print("using ");    			
 	    				printIdentifier(ownname);
