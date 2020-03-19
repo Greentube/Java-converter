@@ -711,19 +711,22 @@ aspect GenerateCS
 					if (c.isAbstract())
 					{	for (Access ac: c.getImplementsList() ) 
 	        			{   while (ac instanceof Dot) ac=((Dot)ac).getRight();        
-	            			TypeDecl t = (ac instanceof TypeAccess) ? ((TypeAccess) ac).type() 
-	                        			                            : ((ParTypeAccess) ac).type(); 
-	            			for(BodyDecl bd: ((InterfaceDecl)t).recursivelyGetBodyDecl())
-	            			{   if (bd instanceof MethodDecl) 
-	                			{   MethodDecl md = (MethodDecl) bd;
-	                    			if 
-	                    			(      !md.isDefault() 
-	                        			&& this.sameSignature(md)
-	                    			)
-	                    			{	isoverriding = true;
-	                    			}
-	                    		}
-	                    	}
+	            			TypeDecl t = null;
+	            			if (ac instanceof TypeAccess) t = ((TypeAccess) ac).type();
+	            			else if (ac instanceof ParTypeAccess) t = ((ParTypeAccess) ac).type(); 
+	            			if (t!=null && t instanceof InterfaceDecl)
+	            			{	for(BodyDecl bd: ((InterfaceDecl)t).recursivelyGetBodyDecl())
+		            			{   if (bd instanceof MethodDecl) 
+		                			{   MethodDecl md = (MethodDecl) bd;
+		                    			if 
+		                    			(      !md.isDefault() 
+		                        			&& this.sameSignature(md)
+		                    			)
+		                    			{	isoverriding = true;
+		                    			}
+		                    		}
+		                    	}
+		                    }
 	                    }
 	                }
 	            }
