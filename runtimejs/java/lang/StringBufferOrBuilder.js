@@ -27,6 +27,18 @@ _defclass(java_lang_StringBufferOrBuilder, java_lang_Object, null,
     {   this.append_1Ljava_lang_String$(x===null ? "null" : x.toString_0());
         return this;
     },
+    append_1Ljava_lang_StringBuffer$: function(x) 
+    {   this.append_1Ljava_lang_String$(x===null ? "null" : x.toString_0());
+        return this;
+    },
+    append_1Ljava_lang_CharSequence$: function(x) 
+    {   this.append_1Ljava_lang_String$(x===null ? "null" : x.toString_0());
+        return this;
+    },
+    append_1Ljava_lang_StringBuilder$: function(x) 
+    {   this.append_1Ljava_lang_String$(x===null ? "null" : x.toString_0());
+        return this;
+    },
     append_1Z: function(x) 
     {   this.append_1Ljava_lang_String$(x ? "true":"false");
         return this;
@@ -77,6 +89,22 @@ _defclass(java_lang_StringBufferOrBuilder, java_lang_Object, null,
     length_0: function() 
     {   return this._length;
     },
+  
+  	setLength_1: function(l)
+  	{
+  		if (l<0)
+		{
+			{throw (new java_lang_IndexOutOfBoundsException())._0()._e; }
+		}		
+		if (l<this._length)
+		{
+			this.delete_2(l,this._length);		
+		}
+		else if (l>this._length)
+		{
+			this.append_1Ljava_lang_String$( Array((l-this._length)+1).join("\u0000") );
+		}		  	
+  	},
   
     toString_0: function() 
     {   return this._parts.join("");

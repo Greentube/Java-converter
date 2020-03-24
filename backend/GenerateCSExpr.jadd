@@ -211,6 +211,9 @@ aspect GenerateCS
         {   if (m.hostType().isString() && m.name().equals("join")) 
             {   out.print("java.lang.StringExtensions.join");
             }
+			else if (m.hostType().isString() && m.name().equals("valueOf")) 
+            {   out.print("java.lang.StringExtensions.valueOf");
+            }            
             else 
             {   m.hostType().generateNameCS(out, (m.hostType() instanceof InterfaceDecl)  ? "\t":"");
                 out.print(".");

@@ -90,6 +90,15 @@ namespace java.lang
             }
         }
 
+        public void setLength(int l)
+        {
+        	if (l<0) { throw new IndexOutOfBoundsException(); }
+        	lock (content)
+        	{	
+        		content.Length = l;
+        	}
+        }
+
         public override string ToString()
         {   
             lock (content)

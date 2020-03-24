@@ -203,6 +203,7 @@
                 <include name="java/lang/NumberFormatException.class" />
                 <include name="java/long/UnsupportedOperationException.class" /> 
                 <include name="java/util/NoSuchElementException.class" />
+                <include name="java/io/IOException.class" />
 
                 <include name="java/lang/annotation/*.class" />
                 <include name="java/lang/Deprecated.class" />             
@@ -215,6 +216,11 @@
                 <include name="java/awt/Panel.class" /> 
                 <include name="java/awt/Container.class" />
                 <include name="java/awt/Component.class" />
+                <include name="java/util/Random.class" />
+                <include name="java/io/Reader.class" />
+                <include name="java/io/BufferedReader.class" />
+                <include name="java/io/IOException.class" />
+                <include name="java/util/regex/Pattern.class" />
             </patternset>
         </unzip>
         

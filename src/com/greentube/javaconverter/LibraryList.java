@@ -173,7 +173,14 @@ public class LibraryList
             "java.lang.String substring(int)",
             "java.lang.String substring(int, int)",
             "char[] toCharArray()",
-            "java.lang.String trim()",
+            "java.lang.String trim()",           
+            "java.lang.String valueOf(boolean)",
+            "java.lang.String valueOf(char)",
+            "java.lang.String valueOf(char[])",
+            "java.lang.String valueOf(char[], int, int)",
+            "java.lang.String valueOf(double)",
+            "java.lang.String valueOf(int)",
+            "java.lang.String valueOf(java.lang.Object)",
         },
         {   "java.lang.StringBuffer",
             
@@ -181,6 +188,9 @@ public class LibraryList
             "<init>(java.lang.String)",
             "java.lang.StringBuffer append(java.lang.Object)",
             "java.lang.StringBuffer append(java.lang.String)",
+            "java.lang.StringBuffer append(java.lang.StringBuffer)",
+            "java.lang.StringBuffer append(java.lang.StringBuilder)",
+            "java.lang.StringBuffer append(java.lang.CharSequence)",
             "java.lang.StringBuffer append(boolean)",
             "java.lang.StringBuffer append(char)",
             "java.lang.StringBuffer append(int)",
@@ -188,6 +198,7 @@ public class LibraryList
             "java.lang.StringBuffer append(char[])",
             "java.lang.StringBuffer delete(int, int)",
             "int length()",			
+            "void setLength(int)"
         },
         {   "java.lang.StringBuilder",
             
@@ -195,6 +206,9 @@ public class LibraryList
             "<init>(java.lang.String)",
             "java.lang.StringBuilder append(java.lang.Object)",
             "java.lang.StringBuilder append(java.lang.String)",
+            "java.lang.StringBuilder append(java.lang.StringBuffer)",
+            "java.lang.StringBuilder append(java.lang.StringBuilder)",
+            "java.lang.StringBuilder append(java.lang.CharSequence)",
             "java.lang.StringBuilder append(boolean)",
             "java.lang.StringBuilder append(char)",
             "java.lang.StringBuilder append(int)",
@@ -202,6 +216,7 @@ public class LibraryList
             "java.lang.StringBuilder append(char[])",            
             "java.lang.StringBuilder delete(int, int)",
             "int length()",			
+            "void setLength(int)"
         },
         {   "java.lang.System",
             
@@ -574,6 +589,7 @@ public class LibraryList
             
             "java.lang.Object get()",
         },
+       
         
         // exceptions
         {   "java.lang.Throwable",
@@ -687,6 +703,15 @@ public class LibraryList
             "<init>()",            
             "<init>(java.lang.String)",            
         },       
+        {   "java.io.IOException",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
+            "<init>()",            
+            "<init>(java.lang.String)",            
+        },       
+        
         
         // annotations
         {   "java.lang.Deprecated"
@@ -714,7 +739,15 @@ public class LibraryList
             "java.lang.Long valueOf(long)",
             "MIN_VALUE",
             "MAX_VALUE",
-        }
+        },
+        {   "java.lang.String",
+        
+        	"java.lang.String valueOf(long)",
+        },
+        {   "java.lang.System",
+            
+            "long nanoTime()",
+        },
     };
     
 
@@ -730,11 +763,11 @@ public class LibraryList
     {
         for (int i=0; i<list.length; i++) 
         {   String classname = list[i][0];
-            HashSet<String> members = new HashSet<>();
-            map.put(classname,  members);
-            
+        	if (!map.containsKey(classname))
+            {	map.put(classname,  new HashSet<>());
+            }            
             for (int j=1; j<list[i].length; j++) 
-            {   members.add(list[i][j]);
+            {   map.get(classname).add(list[i][j]);
             }
         }              	
     }
@@ -745,10 +778,15 @@ public class LibraryList
         // generate map at first call for fast retrieval if not done already
         if (map==null) { buildList(); }
         
-        // everything from outside any java. package is assumed to be valid
-        if (!fullclassname.startsWith("java.")) return true;
-        // only allow white-listed classes
-        return map.containsKey(fullclassname);            
+        // test provided standard classes 
+        if (fullclassname.startsWith("java.lang.") 
+        ||  fullclassname.startsWith("java.io.")
+        ||  fullclassname.startsWith("java.util.")
+        )
+        {        	
+        	return map.containsKey(fullclassname);
+        }
+        return true;
     }
 
     public static boolean isAllowed(String fullclassname, String membername)
@@ -773,19 +811,27 @@ public class LibraryList
         }
         
         // support these on the abstract intermediary classes
-        if (fullclassname.equals("java.lang.AbstractStringBuilder") && membername.equals("int length()"))
-        {    return true;
+        if (fullclassname.equals("java.lang.AbstractStringBuilder"))        	
+        {   if (membername.equals("int length()")) return true;
+        	if (membername.equals("void setLength(int)")) return true;
         } 
         if (fullclassname.equals("java.util.AbstractSequentialList") && membername.equals("java.util.Iterator iterator()"))
         {    return true;
         } 
         
-        // everything from outside any java. package is assumed to be valid
-        if (!fullclassname.startsWith("java.")) { return true; }
-        // only allow white-listed classes
-        if (!map.containsKey(fullclassname)) { return false; }            
-        // provided class only allows whitelisted members
-        return map.get(fullclassname).contains(membername);	
+        // test provided standard classes 
+        if (fullclassname.startsWith("java.lang.") 
+        ||  fullclassname.startsWith("java.io.")
+        ||  fullclassname.startsWith("java.util.")
+        )
+        {        	
+        	// only allow white-listed classes
+        	if (!map.containsKey(fullclassname)) { return false; }            
+        	// 	provided class only allows whitelisted members
+        	return map.get(fullclassname).contains(membername);
+        }
+        
+        return true;
     }
     
     public static List<String> getRuntimeClassList()

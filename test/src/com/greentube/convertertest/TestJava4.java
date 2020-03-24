@@ -2155,6 +2155,19 @@ public class TestJava4
         assertO(c.toString(),"ar:ab");
         c.delete(0, c.length());
         assertO(c.toString(),"");
+        
+        c.setLength(0);
+        c.append(new StringBuffer("stringbuffer"));
+        c.append(new StringBuilder("stringbuilder"));
+        assertO(c.toString(),"stringbufferstringbuilder"); 
+        c.setLength(6);
+        assertO(c.toString(),"string"); 
+        c.setLength(10);
+        assertO(c.toString(),"string\u0000\u0000\u0000\u0000"); 
+        c.setLength(11);
+        assertO(c.toString(),"string\u0000\u0000\u0000\u0000\u0000"); 
+        c.setLength(0);
+        assertO(c.toString(),""); 
     }
     
     public static void stringbuildertest()
@@ -2196,7 +2209,18 @@ public class TestJava4
         c.delete(5, c.length());
         assertO(c.toString(),"ar:ab");
         c.delete(1, 100);
-        assertO(c.toString(),"a");        
+        assertO(c.toString(),"a");      
+
+        c.setLength(0);
+        c.append(new StringBuffer("stringbuffer"));
+        c.append(new StringBuilder("stringbuilder"));
+        assertO(c.toString(),"stringbufferstringbuilder");        
+        c.setLength(6);
+        assertO(c.toString(),"string"); 
+        c.setLength(10);
+        assertO(c.toString(),"string\u0000\u0000\u0000\u0000"); 
+        c.setLength(0);
+        assertO(c.toString(),""); 
     }
     
     public static void vectortest() {

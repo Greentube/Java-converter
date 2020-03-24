@@ -32,7 +32,7 @@ namespace java.lang
             
         public static string toString(bool b)
         {   
-            return b ? "true" : "false";
+            return SYSTEM.str(b);
         }
             
         public static Boolean valueOf(bool b)

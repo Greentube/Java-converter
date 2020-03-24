@@ -186,7 +186,7 @@ function _d2s(d)
     }
 }
 
-// convert any primitive type to a string 
+// convert primitive integral or boolean type to a string 
 function _p2s(c) 
 {   return String(c);
 }
@@ -598,3 +598,11 @@ function(delim_o, parts_o)
     // if encountered only strings, the join is easy
     return parts_o.join(delim);
 };
+
+var java_lang_String_valueOf_1Z = _p2s;
+var java_lang_String_valueOf_1C = _c2s;
+var java_lang_String_valueOf_1D = _d2s;
+var java_lang_String_valueOf_1I = _p2s;
+var java_lang_String_valueOf_1Ljava_lang_Object$ = _str;
+var java_lang_String_valueOf_1AC = _array2str;
+var java_lang_String_valueOf_3 = _subarray2str;

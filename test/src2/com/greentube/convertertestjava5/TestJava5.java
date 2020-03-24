@@ -10,6 +10,7 @@ public class TestJava5 extends TestJava4
         TestJava4.main(args);   
 
         System.out.println ("-- converter test suite for java 5" );
+        valueoftest();
         genericstest();
         forinlooptest();
         enumtest();
@@ -29,6 +30,21 @@ public class TestJava5 extends TestJava4
 //        c = o2.elementAt(0);
 //        System.out.println("c3: " + c);        
     }
+    
+    public static void valueoftest()
+    {
+    	System.out.println("- valueof");
+    	assertO(String.valueOf(true), "true");
+    	assertO(String.valueOf(false), "false");
+    	assertO(String.valueOf('z'), "z");
+    	assertO(String.valueOf(new char[] {'5','a','\u0000'}), "5a\u0000");
+    	assertO(String.valueOf(new char[] {'5','a','\u0000','b','d'}, 3,2), "bd");
+    	assertO(String.valueOf(55.0), "55.0");
+    	assertO(String.valueOf(4711), "4711");    	
+    	assertO(String.valueOf(new Integer(4)), "4");    	
+    	assertO(String.valueOf((Object)null), "null");    	
+    }
+
     
     public static void genericstest() 
     {   System.out.println("- generics");

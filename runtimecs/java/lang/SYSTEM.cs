@@ -4,7 +4,8 @@ namespace java.lang
     {
         public static readonly java.io.PrintStream out_f = new java.io.PrintStream(false);
         public static readonly java.io.PrintStream err_f = new java.io.PrintStream(true);
-           
+        public static readonly long startTicks_f = System.DateTimeOffset.Now.Ticks;
+        
         public static void arraycopy(object src, int srcPos, object dest, int destPos, int length) 
         {   
             System.Array.Copy((System.Array)src, srcPos, (System.Array)dest, destPos, length);
@@ -18,6 +19,11 @@ namespace java.lang
         public static long currentTimeMillis() 
         {   
             return System.DateTimeOffset.Now.ToUnixTimeMilliseconds();
+        }
+        
+        public static long nanoTime() 
+        {   
+            return (System.DateTimeOffset.Now.Ticks - startTicks_f) * 100;
         }
                         
         public static T[][] dim<T>(int n0, int n1) 
@@ -768,6 +774,47 @@ namespace java.lang
             }
             return b.ToString();
         }
+        
+        public static string valueOf(bool b)
+        {
+        	return SYSTEM.str(b);
+        }
+        
+        public static string valueOf(char c)
+        {
+        	return SYSTEM.str(c);
+        }
+        
+        public static string valueOf(char[] a)
+        {
+        	if (a==null)  { throw new NullPointerException(); }
+        	return new string(a);
+        }
+        
+		public static string valueOf(char[] a, int offset, int count)
+		{
+        	if (a==null)  { throw new NullPointerException(); }
+        	if (offset<0 || count<0 || offset+count>a.Length) 
+        	{
+        		throw new IndexOutOfBoundsException();
+        	}
+			return new string(a,offset,count);
+		}
+		        		        
+		public static string valueOf(double d)
+		{
+			return SYSTEM.str(d);
+		}
+		        
+		public static string valueOf(int i)
+		{
+			return SYSTEM.str(i);
+		}        
+		
+		public static string valueOf(object o)
+		{
+			return SYSTEM.str(o);
+		}        
             
         public static int lastIndexOf(this string str, string other) 
         {   

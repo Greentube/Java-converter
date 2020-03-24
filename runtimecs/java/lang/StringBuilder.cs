@@ -65,6 +65,12 @@ namespace java.lang
         {   
             return content.Length;
         }
+        
+        public void setLength(int l)
+        {
+        	if (l<0) { throw new IndexOutOfBoundsException(); }
+        	content.Length = l;
+        }
 
         public override string ToString()
         {   
