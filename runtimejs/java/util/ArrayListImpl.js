@@ -15,7 +15,9 @@ _defclass(java_util_ArrayListImpl, java_util_AbstractList, null,
         this.addAll_1(collection);  // will throw if null
         return this;
     },
-  
+    _1I: function(capacity) 
+  	{	this._0();
+  	},	
     get_1: function(index) 
     {   if (index<0 || index>=this._storage.length)
         {   throw (new java_lang_IndexOutOfBoundsException())._0()._e; 

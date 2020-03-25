@@ -301,6 +301,7 @@ public class LibraryList
             "void sort(java.util.Comparator)",              
 
             "<init>()",
+            "<init>(int)",			
             "<init>(java.util.Collection)",			
             "void trimToSize()",						
         },
@@ -535,6 +536,7 @@ public class LibraryList
             "void sort(java.util.Comparator)",              
 
             "<init>()",
+            "<init>(int)",			
             "<init>(java.util.Collection)",
             "void addElement(java.lang.Object)",
             "java.lang.Object clone()",

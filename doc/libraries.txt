@@ -179,7 +179,14 @@ the result to a double or int. For example:  double now = (double) System.curren
             "java.lang.String substring(int)",
             "java.lang.String substring(int, int)",
             "char[] toCharArray()",
-            "java.lang.String trim()",
+            "java.lang.String trim()",           
+            "java.lang.String valueOf(boolean)",
+            "java.lang.String valueOf(char)",
+            "java.lang.String valueOf(char[])",
+            "java.lang.String valueOf(char[], int, int)",
+            "java.lang.String valueOf(double)",
+            "java.lang.String valueOf(int)",
+            "java.lang.String valueOf(java.lang.Object)",
         },
         {   "java.lang.StringBuffer",
             
@@ -187,6 +194,9 @@ the result to a double or int. For example:  double now = (double) System.curren
             "<init>(java.lang.String)",
             "java.lang.StringBuffer append(java.lang.Object)",
             "java.lang.StringBuffer append(java.lang.String)",
+            "java.lang.StringBuffer append(java.lang.StringBuffer)",
+            "java.lang.StringBuffer append(java.lang.StringBuilder)",
+            "java.lang.StringBuffer append(java.lang.CharSequence)",
             "java.lang.StringBuffer append(boolean)",
             "java.lang.StringBuffer append(char)",
             "java.lang.StringBuffer append(int)",
@@ -194,6 +204,7 @@ the result to a double or int. For example:  double now = (double) System.curren
             "java.lang.StringBuffer append(char[])",
             "java.lang.StringBuffer delete(int, int)",
             "int length()",			
+            "void setLength(int)"
         },
         {   "java.lang.StringBuilder",
             
@@ -201,6 +212,9 @@ the result to a double or int. For example:  double now = (double) System.curren
             "<init>(java.lang.String)",
             "java.lang.StringBuilder append(java.lang.Object)",
             "java.lang.StringBuilder append(java.lang.String)",
+            "java.lang.StringBuilder append(java.lang.StringBuffer)",
+            "java.lang.StringBuilder append(java.lang.StringBuilder)",
+            "java.lang.StringBuilder append(java.lang.CharSequence)",
             "java.lang.StringBuilder append(boolean)",
             "java.lang.StringBuilder append(char)",
             "java.lang.StringBuilder append(int)",
@@ -208,6 +222,7 @@ the result to a double or int. For example:  double now = (double) System.curren
             "java.lang.StringBuilder append(char[])",            
             "java.lang.StringBuilder delete(int, int)",
             "int length()",			
+            "void setLength(int)"
         },
         {   "java.lang.System",
             
@@ -292,6 +307,7 @@ the result to a double or int. For example:  double now = (double) System.curren
             "void sort(java.util.Comparator)",              
 
             "<init>()",
+            "<init>(int)",			
             "<init>(java.util.Collection)",			
             "void trimToSize()",						
         },
@@ -526,6 +542,7 @@ the result to a double or int. For example:  double now = (double) System.curren
             "void sort(java.util.Comparator)",              
 
             "<init>()",
+            "<init>(int)",			
             "<init>(java.util.Collection)",
             "void addElement(java.lang.Object)",
             "java.lang.Object clone()",
@@ -580,6 +597,7 @@ the result to a double or int. For example:  double now = (double) System.curren
             
             "java.lang.Object get()",
         },
+       
         
         // exceptions
         {   "java.lang.Throwable",
@@ -693,6 +711,15 @@ the result to a double or int. For example:  double now = (double) System.curren
             "<init>()",            
             "<init>(java.lang.String)",            
         },       
+        {   "java.io.IOException",
+            
+            "java.lang.String getMessage()",
+            "void printStackTrace()",
+            
+            "<init>()",            
+            "<init>(java.lang.String)",            
+        },       
+        
         
         // annotations
         {   "java.lang.Deprecated"

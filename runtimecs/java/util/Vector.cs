@@ -12,6 +12,10 @@ namespace java.util
         {
         }
         
+        public Vector(int capacity) : base()
+        {
+        }
+        
         // add locking to existing implementations 
         public override object get(int index) 
         {   

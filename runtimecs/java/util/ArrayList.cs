@@ -11,6 +11,11 @@ namespace java.util
         public ArrayList(Collection collection) : base(collection)
         {
         }
+        
+        public ArrayList(int capacity) : base()
+        {
+        }
+        
     }
 
     public class ArrayListImpl: AbstractList
