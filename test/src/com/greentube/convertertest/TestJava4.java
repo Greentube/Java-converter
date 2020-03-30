@@ -183,6 +183,13 @@ public class TestJava4
         assertI(to.self.self.self.staticparentattribute, 55);
         assertI(to.self.self.self.shadowAttribute(66), 66);
         assertO(java.lang.Integer.valueOf(44), new Integer(44));
+        
+        assertI(StaticClass.aa.length, 3);
+        assertI(StaticClass.aa[0], 0);
+        assertI(StaticClass.aa[1], 17);
+        assertI(StaticClass.aa[2], 99);
+        assertI(StaticClass.twingleton1.instance_member, 99);
+        assertI(StaticClass.twingleton2.instance_member, 3);
     }
     
     public static void constructortest()
@@ -2890,6 +2897,7 @@ public class TestJava4
     	assertI(InitSequenceTestA.a, 47);
     	assertI(InitSequenceTestB.b, 60);
     	assertI(InitSequenceTestC.c, 115);
+    	assertI(InitSequenceTestA.fetchfromc(), 115);
     	
     	assertI(InitializerBlockTest.something, 112233);
     	assertI(InitializerBlockTest.overridden, 44);

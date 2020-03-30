@@ -245,7 +245,7 @@
             <fileset dir="${basedir}/build/package"/>
             <manifest>
                  <attribute name="Main-Class" value="com.greentube.javaconverter.JavaConverter"/>
-                 <attribute name="Implementation-Version" value="2.13.1"/>
+                 <attribute name="Implementation-Version" value="2.13.2"/>
                  <attribute name="Version-Date" value="${timestamp}"/>
             </manifest>         
         </jar>          

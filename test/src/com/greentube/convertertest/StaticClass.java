@@ -209,4 +209,29 @@ public class StaticClass
 	   return this;
 	}
 
+	
+	// inter-dependent static definitions
+	public static int al = 99;
+	
+	public static StaticClass twingleton1 = new StaticClass();
+	
+	static {
+		al = 3;
+	}
+	public static int[] aa = new int[al];
+	static {
+		aa[2] = 99;		 
+	}	
+	static {
+		aa[1] = 17;		 
+	}	
+	
+	public int instance_member;
+	public StaticClass()
+	{
+		instance_member = al;
+	}
+	
+	public static StaticClass twingleton2 = new StaticClass();
+	
 }

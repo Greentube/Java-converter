@@ -282,7 +282,7 @@ aspect GenerateJS
             // check if this is inside a static initializer - must force early loading of accessed class
             BodyDecl bd = enclosingBodyDecl();
             if (bd.isField() || (bd instanceof StaticInitializer)) 
-            {   out.memorizeComplete(t.packageName(),t.uniqueName());
+            {   out.memorizeLoad(t.packageName(),t.uniqueName());
             }                                           
         }
         else if (v.isInstanceVariable()) 

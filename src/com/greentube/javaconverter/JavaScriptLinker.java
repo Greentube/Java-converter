@@ -108,8 +108,12 @@ public class JavaScriptLinker
             }
             for (String r:complete) 
             {   int i2 = assignIndex(r);
-                reachablereference.addEdge(idx,i2);
-                completionconstraints.add(new int[]{idx,i2});
+//    			if (idx==i2)
+//    			{
+//    				System.out.println("Detected complete dependency on itself: "+fn);
+//    			}
+            	reachablereference.addEdge(idx,i2);
+            	completionconstraints.add(new int[]{idx,i2});            	
             }
         }
 
