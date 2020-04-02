@@ -84,7 +84,7 @@ _defclass(java_util_AbstractList, java_util_AbstractCollection, [java_util_List]
     },
     
     // OPTIMIZATION        
-    remove_1: function(obj)
+    remove_1Ljava_lang_Object$: function(obj)
     {
         var idx = this.indexOf_1(obj);
         if (idx>=0)

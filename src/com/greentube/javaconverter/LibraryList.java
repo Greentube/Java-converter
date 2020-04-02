@@ -368,7 +368,7 @@ public class LibraryList
             "boolean isEmpty()",
             "void forEach(java.util.function.Consumer)",
             "java.util.Iterator iterator()",
-            "java.lang.Object remove(java.lang.Object)",
+            "boolean remove(java.lang.Object)",
             "boolean removeAll(java.util.Collection)",
             "boolean retainAll(java.util.Collection)",
             "int size()",

@@ -55,7 +55,7 @@ _defclass(java_util_HashSet, java_util_AbstractCollection, [java_util_Set],
     },
 
     // OPTIMIZATION
-    remove_1: function(key) 
+    remove_1Ljava_lang_Object$: function(key) 
     {   return this._map.remove_1(key)!==null;
     },
         
@@ -64,7 +64,7 @@ _defclass(java_util_HashSet, java_util_AbstractCollection, [java_util_Set],
     {   var i = collection.iterator_0();
         var didremove = false;
         while (i.hasNext_0()) 
-        {   if (this.remove_1(i.next_0())) 
+        {   if (this.remove_1Ljava_lang_Object$(i.next_0())) 
             {   didremove = true;
             }
         }        

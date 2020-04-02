@@ -63,7 +63,14 @@ _defclass(java_util_AbstractCollection, java_lang_Object, [java_util_Collection]
     
     //iterator        abstract - must be implemented by subclass
     
-    remove_1: function(o)
+    // disambiguity 
+	remove_1: function(o)
+	{
+		if (typeof o === 'number') { return this.remove_1I(o); }
+		else { return this.remove_1Ljava_lang_Object$(o); }
+	},
+    
+    remove_1Ljava_lang_Object$: function(o)
     {
         var i = this.iterator_0();
         var didremove = false;

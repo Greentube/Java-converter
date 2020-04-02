@@ -2311,9 +2311,20 @@ public class TestJava4
         
         c = (Vector) v.clone();
         c.removeElementAt(2);
-        c.removeElementAt(1);
+        c.remove(1);
         assertO(c.toString(), "[homer, lisa, meggy]");
-        
+        c.remove("lisa");
+        assertO(c.toString(), "[homer, meggy]");
+        {	AbstractList al= c; 
+        	al.remove(0);
+        }
+        assertO(c.toString(), "[meggy]");
+        {  
+            AbstractCollection ac= c; 
+        	ac.remove("meggy");
+        }
+        assertO(c.toString(), "[]");
+               
         c = (Vector) v.clone();
         c.set(3, "LISA");
         c.setElementAt("MARGE",1);
@@ -2430,6 +2441,21 @@ public class TestJava4
         assertO(l.toString(),"[alice, bob, corbin, doris, xavier, carl]");
         l.remove(l.indexOf("doris"));
         assertO(l.toString(),"[alice, bob, corbin, xavier, carl]");
+
+        l2 = new ArrayList(Arrays.asList("alice", "bob", "corbin", "xavier", "carl"));
+        assertO(l2.toString(), "[alice, bob, corbin, xavier, carl]");
+        l2.remove("corbin");
+        assertO(l2.toString(), "[alice, bob, xavier, carl]");
+        {	AbstractList al= l2; 
+        	al.remove(0);
+        }
+        assertO(l2.toString(), "[bob, xavier, carl]");
+        {  
+            AbstractCollection ac = l2; 
+        	ac.remove("bob");
+        }
+        assertO(l2.toString(), "[xavier, carl]");
+
         
         l2.clear();
         l2.add("bob");
@@ -2493,6 +2519,7 @@ public class TestJava4
         assertO(itt.toString(), "[8, 14]");
         itt.remove(Integer.valueOf(8));
         assertO(itt.toString(), "[14]");
+        
     }
     
     
@@ -2740,6 +2767,8 @@ public class TestJava4
     	assertB(s.contains(new Integer(44)));
     	assertB(s.contains(Integer.valueOf(43)));
     	assertI(s.hashCode(), 91);
+    	s.remove(Byte.valueOf((byte)4));
+    	assertB(!s.contains(Byte.valueOf((byte)4)));
     }
         
     public static void linkedlisttest() {
@@ -2831,7 +2860,10 @@ public class TestJava4
         	Integer e = (Integer) iti.next();
         	if (e.intValue()%2==1) iti.remove();
         }
-        assertO(itt.toString(), "[8, 14]");            	
+        assertO(itt.toString(), "[8, 14]");  
+        
+        itt.remove(Integer.valueOf(8));
+        assertO(itt.toString(), "[14]");  
     }
     
     public static void collectionremovaltest()
