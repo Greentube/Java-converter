@@ -90,8 +90,25 @@ public class TestJava5 extends TestJava4
 
         String s = asType((Object) "hi");
         assertO(s,"hi"); 
+        
+        assertB(true, isNull(null));
+        assertB(false, isNull("hi"));
+        assertB(false, isNull(new Integer(3)));
     }
 
+    private static boolean isNull(Object o)
+    {
+    	// return asType(o)==null;   // THIS DOES NOT WORK PROPERLY, SORRY
+    	// boolean isnull = asType(o)==null; return isnull; // THIS DOES NOT WORK, EITHER    	
+    	// return (asType(o)==null ? true : false);    // ALSO NOT WORKING
+    	
+//    	Object x = asType(o);	   		   // THIS IS WORKING!
+//    	return x==null;
+    	
+    	if (asType(o)==null) return true;  // THIS IS ALSO WORKING
+    	else return false;
+    }
+    
     public static <T extends Object > T asType(Object o) {
         return (T) o;
     }
