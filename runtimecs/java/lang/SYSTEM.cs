@@ -735,12 +735,12 @@ namespace java.lang
             
         public static bool endsWith(this string str, string other) 
         {   
-            return str.EndsWith(other);
+            return str.EndsWith(other, System.StringComparison.Ordinal);
         }
             
         public static int indexOf(this string str, string other) 
         {   
-            return str.IndexOf(other);
+            return str.IndexOf(other, System.StringComparison.Ordinal);
         }
             
         public static int indexOf(this string str, int c) 
@@ -818,7 +818,7 @@ namespace java.lang
             
         public static int lastIndexOf(this string str, string other) 
         {   
-            return str.LastIndexOf(other);
+            return str.LastIndexOf(other, System.StringComparison.Ordinal);
         }
             
         public static int lastIndexOf(this string str, int c) 
@@ -828,7 +828,7 @@ namespace java.lang
             
         public static int lastIndexOf(this string str, string other, int from) 
         {   
-            return str.LastIndexOf(other,from);
+            return str.LastIndexOf(other,from, System.StringComparison.Ordinal);
         }
             
         public static int lastIndexOf(this string str, int c, int from) 
@@ -853,7 +853,7 @@ namespace java.lang
             
         public static bool startsWith(this string str, string other) 
         {   
-            return str.StartsWith(other);
+            return str.StartsWith(other, System.StringComparison.Ordinal);
         }
         
         public static string[] split(this string str, string delim, int limit=0) 
